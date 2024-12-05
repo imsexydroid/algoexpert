@@ -1,0 +1,1302 @@
+{
+    "uid": "bst-traversal",
+    "testStrategy": "JSON",
+    "name": "BST Traversal",
+    "version": 0,
+    "releaseDate": "2000-05-04T00:00:00Z",
+    "category": "Binary Search Trees",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 43551,
+        "failureCount": 10547
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "227838234",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Clement Mihailescu",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 762
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Write three functions that take in a Binary Search Tree (BST) and an empty\n  array, traverse the BST, add its nodes' values to the input array, and return\n  that array. The three functions should traverse the BST using the in-order,\n  pre-order, and post-order tree-traversal techniques, respectively.\n</p>\n<p>\n  If you're unfamiliar with tree-traversal techniques, we recommend watching the\n  Conceptual Overview section of this question's video explanation before\n  starting to code.\n</p>\n<p>\n  Each <span>BST</span> node has an integer <span>value</span>, a\n  <span>left</span> child node, and a <span>right</span> child node. A node is\n  said to be a valid <span>BST</span> node if and only if it satisfies the BST\n  property: its <span>value</span> is strictly greater than the values of every\n  node to its left; its <span>value</span> is less than or equal to the values\n  of every node to its right; and its children nodes are either valid\n  <span>BST</span> nodes themselves or <span>None</span> / <span>null</span>.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">tree</span> =   10\n       /     \\\n      5      15\n    /   \\       \\\n   2     5       22\n /\n1\n<span class=\"CodeEditor-promptParameter\">array</span> = []\n</pre>\n<h3>Sample Output</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">inOrderTraverse</span>: [1, 2, 5, 5, 10, 15, 22] <span class=\"CodeEditor-promptComment\">// where the array is the input array</span>\n<span class=\"CodeEditor-promptParameter\">preOrderTraverse</span>: [10, 5, 2, 1, 5, 15, 22] <span class=\"CodeEditor-promptComment\">// where the array is the input array</span>\n<span class=\"CodeEditor-promptParameter\">postOrderTraverse</span>: [1, 2, 5, 5, 22, 15, 10] <span class=\"CodeEditor-promptComment\">// where the array is the input array</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\nRealize that in-order traversal simply means traversing left nodes before traversing current nodes before traversing right nodes. Try implementing this algorithm recursively by calling the inOrderTraverse method on a left node, then appending the current node's value to the input array, and then calling the inOrderTraverse method on a right node.\n</p>\n",
+        "\n<p>\nApply the same logic described in Hint #1 for the two other traversal methods, but change the order in which you do things.\n</p>"
+    ],
+    "spaceTime": "All three methods: O(n) time | O(n) space - where n is the number of nodes in the BST",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": "tree",
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\nusing namespace std;\n\nclass BST {\n public:\n  int value;\n  BST* left;\n  BST* right;\n\n  BST(int val);\n};\n\nvoid inOrderTraverse(BST* tree, vector<int>& array) {\n  // Write your code here.\n}\n\nvoid preOrderTraverse(BST* tree, vector<int>& array) {\n  // Write your code here.\n}\n\nvoid postOrderTraverse(BST* tree, vector<int>& array) {\n  // Write your code here.\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <vector>\nusing namespace std;\n\nclass BST {\n public:\n  int value;\n  BST* left;\n  BST* right;\n\n  BST(int val);\n};\n\n// O(n) time | O(n) space\nvoid inOrderTraverse(BST* tree, vector<int>& array) {\n  if (tree != nullptr) {\n    inOrderTraverse(tree->left, array);\n    array.push_back(tree->value);\n    inOrderTraverse(tree->right, array);\n  }\n}\n\n// O(n) time | O(n) space\nvoid preOrderTraverse(BST* tree, vector<int>& array) {\n  if (tree != nullptr) {\n    array.push_back(tree->value);\n    preOrderTraverse(tree->left, array);\n    preOrderTraverse(tree->right, array);\n  }\n}\n\n// O(n) time | O(n) space\nvoid postOrderTraverse(BST* tree, vector<int>& array) {\n  if (tree != nullptr) {\n    postOrderTraverse(tree->left, array);\n    postOrderTraverse(tree->right, array);\n    array.push_back(tree->value);\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nBST::BST(int val) {\n  value = val;\n  left = nullptr;\n  right = nullptr;\n}\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      BST* root = new BST(10);\n      root->left = new BST(5);\n      root->left->left = new BST(2);\n      root->left->left->left = new BST(1);\n      root->left->right = new BST(5);\n      root->right = new BST(15);\n      root->right->right = new BST(22);\n\n      vector<int> expectedInOrder{1, 2, 5, 5, 10, 15, 22};\n      vector<int> expectedPreOrder{10, 5, 2, 1, 5, 15, 22};\n      vector<int> expectedPostOrder{1, 2, 5, 5, 22, 15, 10};\n      vector<int> actualInOrder;\n      vector<int> actualPreOrder;\n      vector<int> actualPostOrder;\n\n      inOrderTraverse(root, actualInOrder);\n      preOrderTraverse(root, actualPreOrder);\n      postOrderTraverse(root, actualPostOrder);\n\n      assert(actualInOrder == expectedInOrder);\n      assert(actualPreOrder == expectedPreOrder);\n      assert(actualPostOrder == expectedPostOrder);\n    });\n  }\n};\n",
+            "unitTests": "BST::BST(int val) {\n  value = val;\n  left = nullptr;\n  right = nullptr;\n}\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      BST* root = new BST(10);\n      root->left = new BST(5);\n      root->left->left = new BST(2);\n      root->left->left->left = new BST(1);\n      root->left->right = new BST(5);\n      root->right = new BST(15);\n      root->right->right = new BST(22);\n\n      vector<int> expectedInOrder{1, 2, 5, 5, 10, 15, 22};\n      vector<int> expectedPreOrder{10, 5, 2, 1, 5, 15, 22};\n      vector<int> expectedPostOrder{1, 2, 5, 5, 22, 15, 10};\n      vector<int> actualInOrder;\n      vector<int> actualPreOrder;\n      vector<int> actualPostOrder;\n\n      inOrderTraverse(root, actualInOrder);\n      preOrderTraverse(root, actualPreOrder);\n      postOrderTraverse(root, actualPostOrder);\n\n      assert(actualInOrder == expectedInOrder);\n      assert(actualPreOrder == expectedPreOrder);\n      assert(actualPostOrder == expectedPostOrder);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\nusing System.Collections.Generic;\n\npublic class Program {\n  public static List<int> InOrderTraverse(BST tree, List<int> array) {\n    // Write your code here.\n    return new List<int>();\n  }\n\n  public static List<int> PreOrderTraverse(BST tree, List<int> array) {\n    // Write your code here.\n    return new List<int>();\n  }\n\n  public static List<int> PostOrderTraverse(BST tree, List<int> array) {\n    // Write your code here.\n    return new List<int>();\n  }\n\n  public class BST {\n    public int value;\n    public BST left;\n    public BST right;\n\n    public BST(int value) {\n      this.value = value;\n    }\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\n\npublic class Program {\n  // O(n) time | O(n) space\n  public static List<int> InOrderTraverse(BST tree, List<int> array) {\n    if (tree.left != null) {\n      InOrderTraverse(tree.left, array);\n    }\n    array.Add(tree.value);\n    if (tree.right != null) {\n      InOrderTraverse(tree.right, array);\n    }\n    return array;\n  }\n\n  // O(n) time | O(n) space\n  public static List<int> PreOrderTraverse(BST tree, List<int> array) {\n    array.Add(tree.value);\n    if (tree.left != null) {\n      PreOrderTraverse(tree.left, array);\n    }\n    if (tree.right != null) {\n      PreOrderTraverse(tree.right, array);\n    }\n    return array;\n  }\n\n  // O(n) time | O(n) space\n  public static List<int> PostOrderTraverse(BST tree, List<int> array) {\n    if (tree.left != null) {\n      PostOrderTraverse(tree.left, array);\n    }\n    if (tree.right != null) {\n      PostOrderTraverse(tree.right, array);\n    }\n    array.Add(tree.value);\n    return array;\n  }\n\n  public class BST {\n    public int value;\n    public BST left;\n    public BST right;\n\n    public BST(int value) {\n      this.value = value;\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System.Linq;\nusing System.Collections.Generic;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    var root = new Program.BST(10);\n    root.left = new Program.BST(5);\n    root.left.left = new Program.BST(2);\n    root.left.left.left = new Program.BST(1);\n    root.left.right = new Program.BST(5);\n    root.right = new Program.BST(15);\n    root.right.right = new Program.BST(22);\n\n    List<int> inOrder = new List<int> { 1, 2, 5, 5, 10, 15, 22 };\n    List<int> preOrder = new List<int> { 10, 5, 2, 1, 5, 15, 22 };\n    List<int> postOrder = new List<int> { 1, 2, 5, 5, 22, 15, 10 };\n\n    Utils.AssertTrue(Enumerable.SequenceEqual(\n      Program.InOrderTraverse(root, new List<int>()), inOrder\n    ));\n    Utils.AssertTrue(Enumerable.SequenceEqual(\n      Program.PreOrderTraverse(root, new List<int>()), preOrder\n    ));\n    Utils.AssertTrue(Enumerable.SequenceEqual(\n      Program.PostOrderTraverse(root, new List<int>()), postOrder\n    ));\n  }\n}\n",
+            "unitTests": "using System.Linq;\nusing System.Collections.Generic;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    var root = new Program.BST(10);\n    root.left = new Program.BST(5);\n    root.left.left = new Program.BST(2);\n    root.left.left.left = new Program.BST(1);\n    root.left.right = new Program.BST(5);\n    root.right = new Program.BST(15);\n    root.right.right = new Program.BST(22);\n\n    List<int> inOrder = new List<int> { 1, 2, 5, 5, 10, 15, 22 };\n    List<int> preOrder = new List<int> { 10, 5, 2, 1, 5, 15, 22 };\n    List<int> postOrder = new List<int> { 1, 2, 5, 5, 22, 15, 10 };\n\n    Utils.AssertTrue(Enumerable.SequenceEqual(\n      Program.InOrderTraverse(root, new List<int>()), inOrder\n    ));\n    Utils.AssertTrue(Enumerable.SequenceEqual(\n      Program.PreOrderTraverse(root, new List<int>()), preOrder\n    ));\n    Utils.AssertTrue(Enumerable.SequenceEqual(\n      Program.PostOrderTraverse(root, new List<int>()), postOrder\n    ));\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\ntype BST struct {\n\tValue int\n\n\tLeft  *BST\n\tRight *BST\n}\n\nfunc (tree *BST) InOrderTraverse(array []int) []int {\n\t// Write your code here.\n\treturn nil\n}\n\nfunc (tree *BST) PreOrderTraverse(array []int) []int {\n\t// Write your code here.\n\treturn nil\n}\n\nfunc (tree *BST) PostOrderTraverse(array []int) []int {\n\t// Write your code here.\n\treturn nil\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\ntype BST struct {\n\tValue int\n\n\tLeft  *BST\n\tRight *BST\n}\n\n// O(n) time | O(n) space\nfunc (tree *BST) InOrderTraverse(array []int) []int {\n\tif tree.Left != nil {\n\t\tarray = tree.Left.InOrderTraverse(array)\n\t}\n\tarray = append(array, tree.Value)\n\tif tree.Right != nil {\n\t\tarray = tree.Right.InOrderTraverse(array)\n\t}\n\treturn array\n}\n\n// O(n) time | O(n) space\nfunc (tree *BST) PreOrderTraverse(array []int) []int {\n\tarray = append(array, tree.Value)\n\tif tree.Left != nil {\n\t\tarray = tree.Left.PreOrderTraverse(array)\n\t}\n\tif tree.Right != nil {\n\t\tarray = tree.Right.PreOrderTraverse(array)\n\t}\n\treturn array\n}\n\n// O(n) time | O(n) space\nfunc (tree *BST) PostOrderTraverse(array []int) []int {\n\tif tree.Left != nil {\n\t\tarray = tree.Left.PostOrderTraverse(array)\n\t}\n\tif tree.Right != nil {\n\t\tarray = tree.Right.PostOrderTraverse(array)\n\t}\n\tarray = append(array, tree.Value)\n\treturn array\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc NewBST(value int) *BST {\n\treturn &BST{Value: value}\n}\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\troot := NewBST(10)\n\troot.Left = NewBST(5)\n\troot.Left.Left = NewBST(2)\n\troot.Left.Left.Left = NewBST(1)\n\troot.Left.Right = NewBST(5)\n\troot.Right = NewBST(15)\n\troot.Right.Right = NewBST(22)\n\n\tinOrder := []int{1, 2, 5, 5, 10, 15, 22}\n\tpreOrder := []int{10, 5, 2, 1, 5, 15, 22}\n\tpostOrder := []int{1, 2, 5, 5, 22, 15, 10}\n\n\trequire.Equal(t, inOrder, root.InOrderTraverse([]int{}))\n\trequire.Equal(t, preOrder, root.PreOrderTraverse([]int{}))\n\trequire.Equal(t, postOrder, root.PostOrderTraverse([]int{}))\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc NewBST(value int) *BST {\n\treturn &BST{Value: value}\n}\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\troot := NewBST(10)\n\troot.Left = NewBST(5)\n\troot.Left.Left = NewBST(2)\n\troot.Left.Left.Left = NewBST(1)\n\troot.Left.Right = NewBST(5)\n\troot.Right = NewBST(15)\n\troot.Right.Right = NewBST(22)\n\n\tinOrder := []int{1, 2, 5, 5, 10, 15, 22}\n\tpreOrder := []int{10, 5, 2, 1, 5, 15, 22}\n\tpostOrder := []int{1, 2, 5, 5, 22, 15, 10}\n\n\trequire.Equal(t, inOrder, root.InOrderTraverse([]int{}))\n\trequire.Equal(t, preOrder, root.PreOrderTraverse([]int{}))\n\trequire.Equal(t, postOrder, root.PostOrderTraverse([]int{}))\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public static List<Integer> inOrderTraverse(BST tree, List<Integer> array) {\n    // Write your code here.\n    return new ArrayList<Integer>();\n  }\n\n  public static List<Integer> preOrderTraverse(BST tree, List<Integer> array) {\n    // Write your code here.\n    return new ArrayList<Integer>();\n  }\n\n  public static List<Integer> postOrderTraverse(BST tree, List<Integer> array) {\n    // Write your code here.\n    return new ArrayList<Integer>();\n  }\n\n  static class BST {\n    public int value;\n    public BST left;\n    public BST right;\n\n    public BST(int value) {\n      this.value = value;\n    }\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n) time | O(n) space\n  public static List<Integer> inOrderTraverse(BST tree, List<Integer> array) {\n    if (tree.left != null) {\n      inOrderTraverse(tree.left, array);\n    }\n    array.add(tree.value);\n    if (tree.right != null) {\n      inOrderTraverse(tree.right, array);\n    }\n    return array;\n  }\n\n  // O(n) time | O(n) space\n  public static List<Integer> preOrderTraverse(BST tree, List<Integer> array) {\n    array.add(tree.value);\n    if (tree.left != null) {\n      preOrderTraverse(tree.left, array);\n    }\n    if (tree.right != null) {\n      preOrderTraverse(tree.right, array);\n    }\n    return array;\n  }\n\n  // O(n) time | O(n) space\n  public static List<Integer> postOrderTraverse(BST tree, List<Integer> array) {\n    if (tree.left != null) {\n      postOrderTraverse(tree.left, array);\n    }\n    if (tree.right != null) {\n      postOrderTraverse(tree.right, array);\n    }\n    array.add(tree.value);\n    return array;\n  }\n\n  static class BST {\n    public int value;\n    public BST left;\n    public BST right;\n\n    public BST(int value) {\n      this.value = value;\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var root = new Program.BST(10);\n    root.left = new Program.BST(5);\n    root.left.left = new Program.BST(2);\n    root.left.left.left = new Program.BST(1);\n    root.left.right = new Program.BST(5);\n    root.right = new Program.BST(15);\n    root.right.right = new Program.BST(22);\n\n    List<Integer> inOrder =\n      Arrays.asList(new Integer[] {1, 2, 5, 5, 10, 15, 22});\n    List<Integer> preOrder =\n      Arrays.asList(new Integer[] {10, 5, 2, 1, 5, 15, 22});\n    List<Integer> postOrder =\n      Arrays.asList(new Integer[] {1, 2, 5, 5, 22, 15, 10});\n\n    Utils.assertTrue(\n      Program.inOrderTraverse(root, new ArrayList<Integer>()).equals(inOrder)\n    );\n    Utils.assertTrue(\n      Program.preOrderTraverse(root, new ArrayList<Integer>()).equals(preOrder)\n    );\n    Utils.assertTrue(Program.postOrderTraverse(root, new ArrayList<Integer>())\n                       .equals(postOrder));\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var root = new Program.BST(10);\n    root.left = new Program.BST(5);\n    root.left.left = new Program.BST(2);\n    root.left.left.left = new Program.BST(1);\n    root.left.right = new Program.BST(5);\n    root.right = new Program.BST(15);\n    root.right.right = new Program.BST(22);\n\n    List<Integer> inOrder =\n      Arrays.asList(new Integer[] {1, 2, 5, 5, 10, 15, 22});\n    List<Integer> preOrder =\n      Arrays.asList(new Integer[] {10, 5, 2, 1, 5, 15, 22});\n    List<Integer> postOrder =\n      Arrays.asList(new Integer[] {1, 2, 5, 5, 22, 15, 10});\n\n    Utils.assertTrue(\n      Program.inOrderTraverse(root, new ArrayList<Integer>()).equals(inOrder)\n    );\n    Utils.assertTrue(\n      Program.preOrderTraverse(root, new ArrayList<Integer>()).equals(preOrder)\n    );\n    Utils.assertTrue(Program.postOrderTraverse(root, new ArrayList<Integer>())\n                       .equals(postOrder));\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function inOrderTraverse(tree, array) {\n  // Write your code here.\n}\n\nfunction preOrderTraverse(tree, array) {\n  // Write your code here.\n}\n\nfunction postOrderTraverse(tree, array) {\n  // Write your code here.\n}\n\n// Do not edit the lines below.\nexports.inOrderTraverse = inOrderTraverse;\nexports.preOrderTraverse = preOrderTraverse;\nexports.postOrderTraverse = postOrderTraverse;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space\nfunction inOrderTraverse(tree, array) {\n  if (tree !== null) {\n    inOrderTraverse(tree.left, array);\n    array.push(tree.value);\n    inOrderTraverse(tree.right, array);\n  }\n  return array;\n}\n\n// O(n) time | O(n) space\nfunction preOrderTraverse(tree, array) {\n  if (tree !== null) {\n    array.push(tree.value);\n    preOrderTraverse(tree.left, array);\n    preOrderTraverse(tree.right, array);\n  }\n  return array;\n}\n\n// O(n) time | O(n) space\nfunction postOrderTraverse(tree, array) {\n  if (tree !== null) {\n    postOrderTraverse(tree.left, array);\n    postOrderTraverse(tree.right, array);\n    array.push(tree.value);\n  }\n  return array;\n}\n\nexports.inOrderTraverse = inOrderTraverse;\nexports.preOrderTraverse = preOrderTraverse;\nexports.postOrderTraverse = postOrderTraverse;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nclass BST {\n  constructor(value) {\n    this.value = value;\n    this.left = null;\n    this.right = null;\n  }\n}\n\nit('Test Case #1', function () {\n  const root = new BST(10);\n  root.left = new BST(5);\n  root.left.left = new BST(2);\n  root.left.left.left = new BST(1);\n  root.left.right = new BST(5);\n  root.right = new BST(15);\n  root.right.right = new BST(22);\n  chai.expect(program.inOrderTraverse(root, [])).to.deep.equal([1, 2, 5, 5, 10, 15, 22]);\n  chai.expect(program.preOrderTraverse(root, [])).to.deep.equal([10, 5, 2, 1, 5, 15, 22]);\n  chai.expect(program.postOrderTraverse(root, [])).to.deep.equal([1, 2, 5, 5, 22, 15, 10]);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nclass BST {\n  constructor(value) {\n    this.value = value;\n    this.left = null;\n    this.right = null;\n  }\n}\n\nit('Test Case #1', function () {\n  const root = new BST(10);\n  root.left = new BST(5);\n  root.left.left = new BST(2);\n  root.left.left.left = new BST(1);\n  root.left.right = new BST(5);\n  root.right = new BST(15);\n  root.right.right = new BST(22);\n  chai.expect(program.inOrderTraverse(root, [])).to.deep.equal([1, 2, 5, 5, 10, 15, 22]);\n  chai.expect(program.preOrderTraverse(root, [])).to.deep.equal([10, 5, 2, 1, 5, 15, 22]);\n  chai.expect(program.postOrderTraverse(root, [])).to.deep.equal([1, 2, 5, 5, 22, 15, 10]);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nopen class BST(value: Int) {\n    var value = value\n    var left: BST? = null\n    var right: BST? = null\n}\n\nfun inOrderTraverse(tree: BST, array: MutableList<Int>): List<Int> {\n    // Write your code here.\n    return array\n}\n\nfun preOrderTraverse(tree: BST, array: MutableList<Int>): List<Int> {\n    // Write your code here.\n    return array\n}\n\nfun postOrderTraverse(tree: BST, array: MutableList<Int>): List<Int> {\n    // Write your code here.\n    return array\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nopen class BST(value: Int) {\n    var value = value\n    var left: BST? = null\n    var right: BST? = null\n}\n\n// O(n) time | O(n) space\nfun inOrderTraverse(tree: BST?, array: MutableList<Int>): List<Int> {\n    if (tree != null) {\n        inOrderTraverse(tree.left, array)\n        array.add(tree.value)\n        inOrderTraverse(tree.right, array)\n    }\n    return array\n}\n\n// O(n) time | O(n) space\nfun preOrderTraverse(tree: BST?, array: MutableList<Int>): List<Int> {\n    if (tree != null) {\n        array.add(tree.value)\n        preOrderTraverse(tree.left, array)\n        preOrderTraverse(tree.right, array)\n    }\n    return array\n}\n\n// O(n) time | O(n) space\nfun postOrderTraverse(tree: BST?, array: MutableList<Int>): List<Int> {\n    if (tree != null) {\n        postOrderTraverse(tree.left, array)\n        postOrderTraverse(tree.right, array)\n        array.add(tree.value)\n    }\n    return array\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.BST as BST\nimport com.algoexpert.program.inOrderTraverse as inOrderTraverse\nimport com.algoexpert.program.postOrderTraverse as postOrderTraverse\nimport com.algoexpert.program.preOrderTraverse as preOrderTraverse\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val tree = BST(10)\n        tree.left = BST(5)\n        tree.left!!.left = BST(2)\n        tree.left!!.left!!.left = BST(1)\n        tree.left!!.right = BST(5)\n        tree.right = BST(15)\n        tree.right!!.right = BST(22)\n\n        assert(inOrderTraverse(tree, mutableListOf<Int>()) == listOf(1, 2, 5, 5, 10, 15, 22))\n        assert(preOrderTraverse(tree, mutableListOf<Int>()) == listOf(10, 5, 2, 1, 5, 15, 22))\n        assert(postOrderTraverse(tree, mutableListOf<Int>()) == listOf(1, 2, 5, 5, 22, 15, 10))\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.BST as BST\nimport com.algoexpert.program.inOrderTraverse as inOrderTraverse\nimport com.algoexpert.program.postOrderTraverse as postOrderTraverse\nimport com.algoexpert.program.preOrderTraverse as preOrderTraverse\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val tree = BST(10)\n        tree.left = BST(5)\n        tree.left!!.left = BST(2)\n        tree.left!!.left!!.left = BST(1)\n        tree.left!!.right = BST(5)\n        tree.right = BST(15)\n        tree.right!!.right = BST(22)\n\n        assert(inOrderTraverse(tree, mutableListOf<Int>()) == listOf(1, 2, 5, 5, 10, 15, 22))\n        assert(preOrderTraverse(tree, mutableListOf<Int>()) == listOf(10, 5, 2, 1, 5, 15, 22))\n        assert(postOrderTraverse(tree, mutableListOf<Int>()) == listOf(1, 2, 5, 5, 22, 15, 10))\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def inOrderTraverse(tree, array):\n    # Write your code here.\n    pass\n\n\ndef preOrderTraverse(tree, array):\n    # Write your code here.\n    pass\n\n\ndef postOrderTraverse(tree, array):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(n) space\ndef inOrderTraverse(tree, array):\n    if tree is not None:\n        inOrderTraverse(tree.left, array)\n        array.append(tree.value)\n        inOrderTraverse(tree.right, array)\n    return array\n\n\n# O(n) time | O(n) space\ndef preOrderTraverse(tree, array):\n    if tree is not None:\n        array.append(tree.value)\n        preOrderTraverse(tree.left, array)\n        preOrderTraverse(tree.right, array)\n    return array\n\n\n# O(n) time | O(n) space\ndef postOrderTraverse(tree, array):\n    if tree is not None:\n        postOrderTraverse(tree.left, array)\n        postOrderTraverse(tree.right, array)\n        array.append(tree.value)\n    return array\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass BST:\n    def __init__(self, value):\n        self.value = value\n        self.left = None\n        self.right = None\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        root = BST(10)\n        root.left = BST(5)\n        root.left.left = BST(2)\n        root.left.left.left = BST(1)\n        root.left.right = BST(5)\n        root.right = BST(15)\n        root.right.right = BST(22)\n\n        inOrder = [1, 2, 5, 5, 10, 15, 22]\n        preOrder = [10, 5, 2, 1, 5, 15, 22]\n        postOrder = [1, 2, 5, 5, 22, 15, 10]\n\n        self.assertEqual(program.inOrderTraverse(root, []), inOrder)\n        self.assertEqual(program.preOrderTraverse(root, []), preOrder)\n        self.assertEqual(program.postOrderTraverse(root, []), postOrder)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass BST:\n    def __init__(self, value):\n        self.value = value\n        self.left = None\n        self.right = None\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        root = BST(10)\n        root.left = BST(5)\n        root.left.left = BST(2)\n        root.left.left.left = BST(1)\n        root.left.right = BST(5)\n        root.right = BST(15)\n        root.right.right = BST(22)\n\n        inOrder = [1, 2, 5, 5, 10, 15, 22]\n        preOrder = [10, 5, 2, 1, 5, 15, 22]\n        postOrder = [1, 2, 5, 5, 22, 15, 10]\n\n        self.assertEqual(program.inOrderTraverse(root, []), inOrder)\n        self.assertEqual(program.preOrderTraverse(root, []), preOrder)\n        self.assertEqual(program.postOrderTraverse(root, []), postOrder)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  def getNthFib(n)\n    # Write your code here.\n    return -1\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def getNthFib(n)\n    # Write your code here.\n    return -1\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.getNthFib\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.getNthFib\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  // This is an input class. Do not edit.\n  class BST {\n    var value: Int?\n    var left: BST?\n    var right: BST?\n\n    init(value: Int) {\n      self.value = value\n      left = nil\n      right = nil\n    }\n  }\n\n  func inOrderTraversal(tree: BST?, array: inout [Int]) -> [Int] {\n    // Write your code here.\n    return []\n  }\n\n  func preOrderTraversal(tree: BST?, array: inout [Int]) -> [Int] {\n    // Write your code here.\n    return []\n  }\n\n  func postOrderTraversal(tree: BST?, array: inout [Int]) -> [Int] {\n    // Write your code here.\n    return []\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  class BST {\n    var value: Int?\n    var left: BST?\n    var right: BST?\n\n    init(value: Int) {\n      self.value = value\n      left = nil\n      right = nil\n    }\n  }\n\n  // O(n) time | O(n) space\n  func inOrderTraversal(tree: BST?, array: inout [Int]) -> [Int] {\n    if tree !== nil {\n      inOrderTraversal(tree: tree?.left, array: &array)\n\n      if let value = tree?.value {\n        array.append(value)\n      }\n\n      inOrderTraversal(tree: tree?.right, array: &array)\n    }\n\n    return array\n  }\n\n  // O(n) time | O(n) space\n  func preOrderTraversal(tree: BST?, array: inout [Int]) -> [Int] {\n    if tree !== nil {\n      if let value = tree?.value {\n        array.append(value)\n      }\n\n      preOrderTraversal(tree: tree?.left, array: &array)\n      preOrderTraversal(tree: tree?.right, array: &array)\n    }\n\n    return array\n  }\n\n  // O(n) time | O(n) space\n  func postOrderTraversal(tree: BST?, array: inout [Int]) -> [Int] {\n    if tree !== nil {\n      postOrderTraversal(tree: tree?.left, array: &array)\n      postOrderTraversal(tree: tree?.right, array: &array)\n\n      if let value = tree?.value {\n        array.append(value)\n      }\n    }\n\n    return array\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n\n    runTest(\"Test Case 1\") { () throws in\n      let root = Program.BST(value: 10)\n      root.left = Program.BST(value: 5)\n      root.left!.left = Program.BST(value: 2)\n      root.left!.left!.left = Program.BST(value: 1)\n      root.left!.right = Program.BST(value: 5)\n      root.right = Program.BST(value: 15)\n      root.right!.right = Program.BST(value: 22)\n\n      let inOrder = [1, 2, 5, 5, 10, 15, 22]\n      let preOrder = [10, 5, 2, 1, 5, 15, 22]\n      let postOrder = [1, 2, 5, 5, 22, 15, 10]\n\n      var output1 = [Int]()\n      var output2 = [Int]()\n      var output3 = [Int]()\n      try assertEqual(inOrder, program.inOrderTraversal(tree: root, array: &output1))\n      try assertEqual(preOrder, program.preOrderTraversal(tree: root, array: &output2))\n      try assertEqual(postOrder, program.postOrderTraversal(tree: root, array: &output3))\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n\n    runTest(\"Test Case 1\") { () throws in\n      let root = Program.BST(value: 10)\n      root.left = Program.BST(value: 5)\n      root.left!.left = Program.BST(value: 2)\n      root.left!.left!.left = Program.BST(value: 1)\n      root.left!.right = Program.BST(value: 5)\n      root.right = Program.BST(value: 15)\n      root.right!.right = Program.BST(value: 22)\n\n      let inOrder = [1, 2, 5, 5, 10, 15, 22]\n      let preOrder = [10, 5, 2, 1, 5, 15, 22]\n      let postOrder = [1, 2, 5, 5, 22, 15, 10]\n\n      var output1 = [Int]()\n      var output2 = [Int]()\n      var output3 = [Int]()\n      try assertEqual(inOrder, program.inOrderTraversal(tree: root, array: &output1))\n      try assertEqual(preOrder, program.preOrderTraversal(tree: root, array: &output2))\n      try assertEqual(postOrder, program.postOrderTraversal(tree: root, array: &output3))\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "class BST {\n  value: number;\n  left: BST | null;\n  right: BST | null;\n\n  constructor(value: number) {\n    this.value = value;\n    this.left = null;\n    this.right = null;\n  }\n}\n\nexport function inOrderTraverse(tree: BST | null, array: number[]) {\n  // Write your code here.\n  return array;\n}\n\nexport function preOrderTraverse(tree: BST | null, array: number[]) {\n  // Write your code here.\n  return array;\n}\n\nexport function postOrderTraverse(tree: BST | null, array: number[]) {\n  // Write your code here.\n  return array;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass BST {\n  value: number;\n  left: BST | null;\n  right: BST | null;\n\n  constructor(value: number) {\n    this.value = value;\n    this.left = null;\n    this.right = null;\n  }\n}\n\n// O(n) time | O(n) space\nexport function inOrderTraverse(tree: BST | null, array: number[]) {\n  if (tree !== null) {\n    inOrderTraverse(tree.left, array);\n    array.push(tree.value);\n    inOrderTraverse(tree.right, array);\n  }\n  return array;\n}\n\n// O(n) time | O(n) space\nexport function preOrderTraverse(tree: BST | null, array: number[]) {\n  if (tree !== null) {\n    array.push(tree.value);\n    preOrderTraverse(tree.left, array);\n    preOrderTraverse(tree.right, array);\n  }\n  return array;\n}\n\n// O(n) time | O(n) space\nexport function postOrderTraverse(tree: BST | null, array: number[]) {\n  if (tree !== null) {\n    postOrderTraverse(tree.left, array);\n    postOrderTraverse(tree.right, array);\n    array.push(tree.value);\n  }\n  return array;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nclass BST {\n  value: number;\n  left: BST | null;\n  right: BST | null;\n\n  constructor(value: number) {\n    this.value = value;\n    this.left = null;\n    this.right = null;\n  }\n}\n\nit('Test Case #1', function () {\n  const root = new BST(10);\n  root.left = new BST(5);\n  root.left.left = new BST(2);\n  root.left.left.left = new BST(1);\n  root.left.right = new BST(5);\n  root.right = new BST(15);\n  root.right.right = new BST(22);\n  chai.expect(program.inOrderTraverse(root, [])).to.deep.equal([1, 2, 5, 5, 10, 15, 22]);\n  chai.expect(program.preOrderTraverse(root, [])).to.deep.equal([10, 5, 2, 1, 5, 15, 22]);\n  chai.expect(program.postOrderTraverse(root, [])).to.deep.equal([1, 2, 5, 5, 22, 15, 10]);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nclass BST {\n  value: number;\n  left: BST | null;\n  right: BST | null;\n\n  constructor(value: number) {\n    this.value = value;\n    this.left = null;\n    this.right = null;\n  }\n}\n\nit('Test Case #1', function () {\n  const root = new BST(10);\n  root.left = new BST(5);\n  root.left.left = new BST(2);\n  root.left.left.left = new BST(1);\n  root.left.right = new BST(5);\n  root.right = new BST(15);\n  root.right.right = new BST(22);\n  chai.expect(program.inOrderTraverse(root, [])).to.deep.equal([1, 2, 5, 5, 10, 15, 22]);\n  chai.expect(program.preOrderTraverse(root, [])).to.deep.equal([10, 5, 2, 1, 5, 15, 22]);\n  chai.expect(program.postOrderTraverse(root, [])).to.deep.equal([1, 2, 5, 5, 22, 15, 10]);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "tree",
+            "example": {
+                "nodes": [
+                    {
+                        "id": "10",
+                        "left": "5",
+                        "right": "15",
+                        "value": 10
+                    },
+                    {
+                        "id": "15",
+                        "left": null,
+                        "right": "22",
+                        "value": 15
+                    },
+                    {
+                        "id": "22",
+                        "left": null,
+                        "right": null,
+                        "value": 22
+                    },
+                    {
+                        "id": "5",
+                        "left": "2",
+                        "right": "5-2",
+                        "value": 5
+                    },
+                    {
+                        "id": "5-2",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "left": "1",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "left": null,
+                        "right": null,
+                        "value": 1
+                    }
+                ],
+                "root": "10"
+            },
+            "schema": {
+                "description": "A Binary Tree is represented by a list of <span>nodes</span> and a <span>root</span> node. Every node has to\nhave a unique string <span>id</span> that will be referenced by other nodes' <span>left</span> and <span>right</span>\npointers and by the <span>root</span>.\n",
+                "properties": {
+                    "nodes": {
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "left": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "right": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "value": {
+                                    "type": "integer"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "value",
+                                "left",
+                                "right"
+                            ],
+                            "type": "object"
+                        },
+                        "type": "array"
+                    },
+                    "root": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "root",
+                    "nodes"
+                ],
+                "type": "object"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "10",
+                        "left": "5",
+                        "right": "15",
+                        "value": 10
+                    },
+                    {
+                        "id": "15",
+                        "left": null,
+                        "right": "22",
+                        "value": 15
+                    },
+                    {
+                        "id": "22",
+                        "left": null,
+                        "right": null,
+                        "value": 22
+                    },
+                    {
+                        "id": "5",
+                        "left": "2",
+                        "right": "5-2",
+                        "value": 5
+                    },
+                    {
+                        "id": "5-2",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "left": "1",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "left": null,
+                        "right": null,
+                        "value": 1
+                    }
+                ],
+                "root": "10"
+            }
+        },
+        {
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "100",
+                        "left": "5",
+                        "right": "502",
+                        "value": 100
+                    },
+                    {
+                        "id": "502",
+                        "left": "204",
+                        "right": "55000",
+                        "value": 502
+                    },
+                    {
+                        "id": "55000",
+                        "left": "1001",
+                        "right": null,
+                        "value": 55000
+                    },
+                    {
+                        "id": "1001",
+                        "left": null,
+                        "right": "4500",
+                        "value": 1001
+                    },
+                    {
+                        "id": "4500",
+                        "left": null,
+                        "right": null,
+                        "value": 4500
+                    },
+                    {
+                        "id": "204",
+                        "left": "203",
+                        "right": "205",
+                        "value": 204
+                    },
+                    {
+                        "id": "205",
+                        "left": null,
+                        "right": "207",
+                        "value": 205
+                    },
+                    {
+                        "id": "207",
+                        "left": "206",
+                        "right": "208",
+                        "value": 207
+                    },
+                    {
+                        "id": "208",
+                        "left": null,
+                        "right": null,
+                        "value": 208
+                    },
+                    {
+                        "id": "206",
+                        "left": null,
+                        "right": null,
+                        "value": 206
+                    },
+                    {
+                        "id": "203",
+                        "left": null,
+                        "right": null,
+                        "value": 203
+                    },
+                    {
+                        "id": "5",
+                        "left": "2",
+                        "right": "15",
+                        "value": 5
+                    },
+                    {
+                        "id": "15",
+                        "left": "5-2",
+                        "right": "22",
+                        "value": 15
+                    },
+                    {
+                        "id": "22",
+                        "left": null,
+                        "right": "57",
+                        "value": 22
+                    },
+                    {
+                        "id": "57",
+                        "left": null,
+                        "right": "60",
+                        "value": 57
+                    },
+                    {
+                        "id": "60",
+                        "left": null,
+                        "right": null,
+                        "value": 60
+                    },
+                    {
+                        "id": "5-2",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "left": "1",
+                        "right": "3",
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": null,
+                        "right": null,
+                        "value": 3
+                    },
+                    {
+                        "id": "1",
+                        "left": "-51",
+                        "right": "1-2",
+                        "value": 1
+                    },
+                    {
+                        "id": "1-2",
+                        "left": null,
+                        "right": "1-3",
+                        "value": 1
+                    },
+                    {
+                        "id": "1-3",
+                        "left": null,
+                        "right": "1-4",
+                        "value": 1
+                    },
+                    {
+                        "id": "1-4",
+                        "left": null,
+                        "right": "1-5",
+                        "value": 1
+                    },
+                    {
+                        "id": "1-5",
+                        "left": null,
+                        "right": null,
+                        "value": 1
+                    },
+                    {
+                        "id": "-51",
+                        "left": "-403",
+                        "right": null,
+                        "value": -51
+                    },
+                    {
+                        "id": "-403",
+                        "left": null,
+                        "right": null,
+                        "value": -403
+                    }
+                ],
+                "root": "100"
+            }
+        },
+        {
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "10",
+                        "left": "5",
+                        "right": "15",
+                        "value": 10
+                    },
+                    {
+                        "id": "15",
+                        "left": null,
+                        "right": "22",
+                        "value": 15
+                    },
+                    {
+                        "id": "22",
+                        "left": null,
+                        "right": null,
+                        "value": 22
+                    },
+                    {
+                        "id": "5",
+                        "left": "2",
+                        "right": "5-2",
+                        "value": 5
+                    },
+                    {
+                        "id": "5-2",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "left": "1",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "left": "-5",
+                        "right": null,
+                        "value": 1
+                    },
+                    {
+                        "id": "-5",
+                        "left": "-15",
+                        "right": "-5-2",
+                        "value": -5
+                    },
+                    {
+                        "id": "-5-2",
+                        "left": null,
+                        "right": "-2",
+                        "value": -5
+                    },
+                    {
+                        "id": "-2",
+                        "left": null,
+                        "right": "-1",
+                        "value": -2
+                    },
+                    {
+                        "id": "-1",
+                        "left": null,
+                        "right": null,
+                        "value": -1
+                    },
+                    {
+                        "id": "-15",
+                        "left": "-22",
+                        "right": null,
+                        "value": -15
+                    },
+                    {
+                        "id": "-22",
+                        "left": null,
+                        "right": null,
+                        "value": -22
+                    }
+                ],
+                "root": "10"
+            }
+        },
+        {
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "10",
+                        "left": null,
+                        "right": null,
+                        "value": 10
+                    }
+                ],
+                "root": "10"
+            }
+        },
+        {
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "10",
+                        "left": "5",
+                        "right": "15",
+                        "value": 10
+                    },
+                    {
+                        "id": "15",
+                        "left": null,
+                        "right": "22",
+                        "value": 15
+                    },
+                    {
+                        "id": "22",
+                        "left": null,
+                        "right": "500",
+                        "value": 22
+                    },
+                    {
+                        "id": "500",
+                        "left": "50",
+                        "right": "1500",
+                        "value": 500
+                    },
+                    {
+                        "id": "1500",
+                        "left": null,
+                        "right": "10000",
+                        "value": 1500
+                    },
+                    {
+                        "id": "10000",
+                        "left": "2200",
+                        "right": null,
+                        "value": 10000
+                    },
+                    {
+                        "id": "2200",
+                        "left": null,
+                        "right": null,
+                        "value": 2200
+                    },
+                    {
+                        "id": "50",
+                        "left": null,
+                        "right": "200",
+                        "value": 50
+                    },
+                    {
+                        "id": "200",
+                        "left": null,
+                        "right": null,
+                        "value": 200
+                    },
+                    {
+                        "id": "5",
+                        "left": "2",
+                        "right": "5-2",
+                        "value": 5
+                    },
+                    {
+                        "id": "5-2",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "left": "1",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "left": null,
+                        "right": null,
+                        "value": 1
+                    }
+                ],
+                "root": "10"
+            }
+        },
+        {
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "5000",
+                        "left": "5",
+                        "right": "55000",
+                        "value": 5000
+                    },
+                    {
+                        "id": "55000",
+                        "left": null,
+                        "right": null,
+                        "value": 55000
+                    },
+                    {
+                        "id": "5",
+                        "left": "2",
+                        "right": "15",
+                        "value": 5
+                    },
+                    {
+                        "id": "15",
+                        "left": "5-2",
+                        "right": "22",
+                        "value": 15
+                    },
+                    {
+                        "id": "22",
+                        "left": null,
+                        "right": "502",
+                        "value": 22
+                    },
+                    {
+                        "id": "502",
+                        "left": "204",
+                        "right": null,
+                        "value": 502
+                    },
+                    {
+                        "id": "204",
+                        "left": "203",
+                        "right": "205",
+                        "value": 204
+                    },
+                    {
+                        "id": "205",
+                        "left": null,
+                        "right": "207",
+                        "value": 205
+                    },
+                    {
+                        "id": "207",
+                        "left": "206",
+                        "right": "208",
+                        "value": 207
+                    },
+                    {
+                        "id": "208",
+                        "left": null,
+                        "right": null,
+                        "value": 208
+                    },
+                    {
+                        "id": "206",
+                        "left": null,
+                        "right": null,
+                        "value": 206
+                    },
+                    {
+                        "id": "203",
+                        "left": null,
+                        "right": null,
+                        "value": 203
+                    },
+                    {
+                        "id": "5-2",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "left": "1",
+                        "right": "3",
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": null,
+                        "right": null,
+                        "value": 3
+                    },
+                    {
+                        "id": "1",
+                        "left": null,
+                        "right": "1-2",
+                        "value": 1
+                    },
+                    {
+                        "id": "1-2",
+                        "left": null,
+                        "right": "1-3",
+                        "value": 1
+                    },
+                    {
+                        "id": "1-3",
+                        "left": null,
+                        "right": "1-4",
+                        "value": 1
+                    },
+                    {
+                        "id": "1-4",
+                        "left": null,
+                        "right": "1-5",
+                        "value": 1
+                    },
+                    {
+                        "id": "1-5",
+                        "left": null,
+                        "right": null,
+                        "value": 1
+                    }
+                ],
+                "root": "5000"
+            }
+        }
+    ],
+    "jsonTests": [
+        {
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "10",
+                        "left": "5",
+                        "right": "15",
+                        "value": 10
+                    },
+                    {
+                        "id": "15",
+                        "left": null,
+                        "right": "22",
+                        "value": 15
+                    },
+                    {
+                        "id": "22",
+                        "left": null,
+                        "right": null,
+                        "value": 22
+                    },
+                    {
+                        "id": "5",
+                        "left": "2",
+                        "right": "5-2",
+                        "value": 5
+                    },
+                    {
+                        "id": "5-2",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "left": "1",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "left": null,
+                        "right": null,
+                        "value": 1
+                    }
+                ],
+                "root": "10"
+            }
+        },
+        {
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "100",
+                        "left": "5",
+                        "right": "502",
+                        "value": 100
+                    },
+                    {
+                        "id": "502",
+                        "left": "204",
+                        "right": "55000",
+                        "value": 502
+                    },
+                    {
+                        "id": "55000",
+                        "left": "1001",
+                        "right": null,
+                        "value": 55000
+                    },
+                    {
+                        "id": "1001",
+                        "left": null,
+                        "right": "4500",
+                        "value": 1001
+                    },
+                    {
+                        "id": "4500",
+                        "left": null,
+                        "right": null,
+                        "value": 4500
+                    },
+                    {
+                        "id": "204",
+                        "left": "203",
+                        "right": "205",
+                        "value": 204
+                    },
+                    {
+                        "id": "205",
+                        "left": null,
+                        "right": "207",
+                        "value": 205
+                    },
+                    {
+                        "id": "207",
+                        "left": "206",
+                        "right": "208",
+                        "value": 207
+                    },
+                    {
+                        "id": "208",
+                        "left": null,
+                        "right": null,
+                        "value": 208
+                    },
+                    {
+                        "id": "206",
+                        "left": null,
+                        "right": null,
+                        "value": 206
+                    },
+                    {
+                        "id": "203",
+                        "left": null,
+                        "right": null,
+                        "value": 203
+                    },
+                    {
+                        "id": "5",
+                        "left": "2",
+                        "right": "15",
+                        "value": 5
+                    },
+                    {
+                        "id": "15",
+                        "left": "5-2",
+                        "right": "22",
+                        "value": 15
+                    },
+                    {
+                        "id": "22",
+                        "left": null,
+                        "right": "57",
+                        "value": 22
+                    },
+                    {
+                        "id": "57",
+                        "left": null,
+                        "right": "60",
+                        "value": 57
+                    },
+                    {
+                        "id": "60",
+                        "left": null,
+                        "right": null,
+                        "value": 60
+                    },
+                    {
+                        "id": "5-2",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "left": "1",
+                        "right": "3",
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": null,
+                        "right": null,
+                        "value": 3
+                    },
+                    {
+                        "id": "1",
+                        "left": "-51",
+                        "right": "1-2",
+                        "value": 1
+                    },
+                    {
+                        "id": "1-2",
+                        "left": null,
+                        "right": "1-3",
+                        "value": 1
+                    },
+                    {
+                        "id": "1-3",
+                        "left": null,
+                        "right": "1-4",
+                        "value": 1
+                    },
+                    {
+                        "id": "1-4",
+                        "left": null,
+                        "right": "1-5",
+                        "value": 1
+                    },
+                    {
+                        "id": "1-5",
+                        "left": null,
+                        "right": null,
+                        "value": 1
+                    },
+                    {
+                        "id": "-51",
+                        "left": "-403",
+                        "right": null,
+                        "value": -51
+                    },
+                    {
+                        "id": "-403",
+                        "left": null,
+                        "right": null,
+                        "value": -403
+                    }
+                ],
+                "root": "100"
+            }
+        },
+        {
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "10",
+                        "left": "5",
+                        "right": "15",
+                        "value": 10
+                    },
+                    {
+                        "id": "15",
+                        "left": null,
+                        "right": "22",
+                        "value": 15
+                    },
+                    {
+                        "id": "22",
+                        "left": null,
+                        "right": null,
+                        "value": 22
+                    },
+                    {
+                        "id": "5",
+                        "left": "2",
+                        "right": "5-2",
+                        "value": 5
+                    },
+                    {
+                        "id": "5-2",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "left": "1",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "left": "-5",
+                        "right": null,
+                        "value": 1
+                    },
+                    {
+                        "id": "-5",
+                        "left": "-15",
+                        "right": "-5-2",
+                        "value": -5
+                    },
+                    {
+                        "id": "-5-2",
+                        "left": null,
+                        "right": "-2",
+                        "value": -5
+                    },
+                    {
+                        "id": "-2",
+                        "left": null,
+                        "right": "-1",
+                        "value": -2
+                    },
+                    {
+                        "id": "-1",
+                        "left": null,
+                        "right": null,
+                        "value": -1
+                    },
+                    {
+                        "id": "-15",
+                        "left": "-22",
+                        "right": null,
+                        "value": -15
+                    },
+                    {
+                        "id": "-22",
+                        "left": null,
+                        "right": null,
+                        "value": -22
+                    }
+                ],
+                "root": "10"
+            }
+        },
+        {
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "10",
+                        "left": null,
+                        "right": null,
+                        "value": 10
+                    }
+                ],
+                "root": "10"
+            }
+        },
+        {
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "10",
+                        "left": "5",
+                        "right": "15",
+                        "value": 10
+                    },
+                    {
+                        "id": "15",
+                        "left": null,
+                        "right": "22",
+                        "value": 15
+                    },
+                    {
+                        "id": "22",
+                        "left": null,
+                        "right": "500",
+                        "value": 22
+                    },
+                    {
+                        "id": "500",
+                        "left": "50",
+                        "right": "1500",
+                        "value": 500
+                    },
+                    {
+                        "id": "1500",
+                        "left": null,
+                        "right": "10000",
+                        "value": 1500
+                    },
+                    {
+                        "id": "10000",
+                        "left": "2200",
+                        "right": null,
+                        "value": 10000
+                    },
+                    {
+                        "id": "2200",
+                        "left": null,
+                        "right": null,
+                        "value": 2200
+                    },
+                    {
+                        "id": "50",
+                        "left": null,
+                        "right": "200",
+                        "value": 50
+                    },
+                    {
+                        "id": "200",
+                        "left": null,
+                        "right": null,
+                        "value": 200
+                    },
+                    {
+                        "id": "5",
+                        "left": "2",
+                        "right": "5-2",
+                        "value": 5
+                    },
+                    {
+                        "id": "5-2",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "left": "1",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "left": null,
+                        "right": null,
+                        "value": 1
+                    }
+                ],
+                "root": "10"
+            }
+        },
+        {
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "5000",
+                        "left": "5",
+                        "right": "55000",
+                        "value": 5000
+                    },
+                    {
+                        "id": "55000",
+                        "left": null,
+                        "right": null,
+                        "value": 55000
+                    },
+                    {
+                        "id": "5",
+                        "left": "2",
+                        "right": "15",
+                        "value": 5
+                    },
+                    {
+                        "id": "15",
+                        "left": "5-2",
+                        "right": "22",
+                        "value": 15
+                    },
+                    {
+                        "id": "22",
+                        "left": null,
+                        "right": "502",
+                        "value": 22
+                    },
+                    {
+                        "id": "502",
+                        "left": "204",
+                        "right": null,
+                        "value": 502
+                    },
+                    {
+                        "id": "204",
+                        "left": "203",
+                        "right": "205",
+                        "value": 204
+                    },
+                    {
+                        "id": "205",
+                        "left": null,
+                        "right": "207",
+                        "value": 205
+                    },
+                    {
+                        "id": "207",
+                        "left": "206",
+                        "right": "208",
+                        "value": 207
+                    },
+                    {
+                        "id": "208",
+                        "left": null,
+                        "right": null,
+                        "value": 208
+                    },
+                    {
+                        "id": "206",
+                        "left": null,
+                        "right": null,
+                        "value": 206
+                    },
+                    {
+                        "id": "203",
+                        "left": null,
+                        "right": null,
+                        "value": 203
+                    },
+                    {
+                        "id": "5-2",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "left": "1",
+                        "right": "3",
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": null,
+                        "right": null,
+                        "value": 3
+                    },
+                    {
+                        "id": "1",
+                        "left": null,
+                        "right": "1-2",
+                        "value": 1
+                    },
+                    {
+                        "id": "1-2",
+                        "left": null,
+                        "right": "1-3",
+                        "value": 1
+                    },
+                    {
+                        "id": "1-3",
+                        "left": null,
+                        "right": "1-4",
+                        "value": 1
+                    },
+                    {
+                        "id": "1-4",
+                        "left": null,
+                        "right": "1-5",
+                        "value": 1
+                    },
+                    {
+                        "id": "1-5",
+                        "left": null,
+                        "right": null,
+                        "value": 1
+                    }
+                ],
+                "root": "5000"
+            }
+        }
+    ],
+    "changelog": []
+}

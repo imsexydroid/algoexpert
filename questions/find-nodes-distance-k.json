@@ -1,0 +1,1370 @@
+{
+    "uid": "find-nodes-distance-k",
+    "testStrategy": "JSON",
+    "name": "Find Nodes Distance K",
+    "version": 0,
+    "releaseDate": "2021-01-31T00:00:00Z",
+    "category": "Binary Trees",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 9046,
+        "failureCount": 2768
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "504991260",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Tim Ruscica",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1855
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  You're given the root node of a Binary Tree, a <span>target</span> value of a\n  node that's contained in the tree, and a positive integer <span>k</span>.\n  Write a function that returns the values of all the nodes that are exactly\n  distance <span>k</span> from the node with <span>target</span> value.\n</p>\n<p>\n  The distance between two nodes is defined as the number of edges that must be\n  traversed to go from one node to the other. For example, the distance between\n  a node and its immediate left or right child is <span>1</span>. The same holds\n  in reverse: the distance between a node and its parent is <span>1</span>. In a\n  tree of three nodes where the root node has a left and right child, the left\n  and right children are distance <span>2</span> from each other.\n</p>\n<p>\n  Each <span>BinaryTree</span> node has an integer <span>value</span>, a\n  <span>left</span> child node, and a <span>right</span> child node. Children\n  nodes can either be <span>BinaryTree</span> nodes themselves or\n  <span>None</span> / <span>null</span>.\n</p>\n<p>\n  Note that all <span>BinaryTree</span> node values will be unique, and your\n  function can return the output values in any order.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">tree</span> = 1\n     /   \\\n    2     3\n  /   \\     \\\n 4     5     6\n           /   \\\n          7     8\n<span class=\"CodeEditor-promptParameter\">target</span> = 3\n<span class=\"CodeEditor-promptParameter\">k</span> = 2\n</pre>\n<h3>Sample Output</h3>\n<pre>\n[2, 7, 8] <span class=\"CodeEditor-promptComment\">// These values could be ordered differently.</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  Would it be easier to solve this problem if you had information about every\n  node's parent node?\n</p>\n",
+        "\n<p>\n  One approach to this problem is to find the parent nodes of all nodes in the\n  tree. With this information you can perform a breadth-first search starting at\n  the target node and traverse through each neighbor (left, right, and parent\n  node) of every node, keeping track of your distance from the target node at\n  each iteration. Once you reach a node that is distance <span>k</span> from the\n  target node, you can add it to your output array. You'll have to also keep\n  track of which nodes you've visited so as to avoid visiting the same nodes\n  over and over again.\n</p>\n",
+        "\n<p>\n  Another approach is to use a recursive depth-first-search algorithm as\n  follows:\n</p>\n<ul>\n  <li>\n    <b>Case #1</b>: when <span>currentNode == target</span>, search the subtree\n    rooted at <span>currentNode</span> for all nodes that are\n    <span>k</span> distance from <span>currentNode</span>.\n  </li>\n  <li>\n    <b>Case #2</b>: when <span>target</span> is in the left subtree of\n    <span>currentNode</span> at distance <span>L + 1</span>, look for nodes that\n    are distance <span>k - L - 1</span> in the right subtree of\n    <span>currentNode</span>.\n  </li>\n  <li>\n    <b>Case #3</b>: when <span>target</span> is in the right subtree of\n    <span>currentNode</span> at distance <span>L + 1</span>, do the same thing\n    as in case #2 but in the opposite subtree.\n  </li>\n  <li>\n    <b>Case #4</b>: when <span>target</span> is neither in the left nor in right\n    subtree of <span>currentNode</span>, stop recursing.\n  </li>\n</ul>"
+    ],
+    "spaceTime": "O(n) time | O(n) space - where n is the number of nodes in the tree",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": "tree",
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\n// This is an input class. Do not edit.\nclass BinaryTree {\n public:\n  int value;\n  BinaryTree* left = nullptr;\n  BinaryTree* right = nullptr;\n\n  BinaryTree(int value) { this->value = value; }\n};\n\nvector<int> findNodesDistanceK(BinaryTree* tree, int target, int k) {\n  // Write your code here.\n  return {};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <deque>\n#include <unordered_map>\n#include <unordered_set>\n#include <utility>\n#include <vector>\nusing namespace std;\n\n// This is an input class. Do not edit.\nclass BinaryTree {\n public:\n  int value;\n  BinaryTree* left = nullptr;\n  BinaryTree* right = nullptr;\n\n  BinaryTree(int value) { this->value = value; }\n};\n\nvector<int> breadthFirstSearchForNodesDistanceK(\n  BinaryTree* targetNode, unordered_map<int, BinaryTree*>& nodesToParent, int k\n);\nBinaryTree* getNodeFromValue(\n  int value, BinaryTree* tree, unordered_map<int, BinaryTree*>& nodesToParents\n);\nvoid populateNodesToParents(\n  BinaryTree* node,\n  unordered_map<int, BinaryTree*>& nodesToParents,\n  BinaryTree* parent\n);\n\n// O(n) time | O(n) space - where n is the number of nodes in the tree\nvector<int> findNodesDistanceK(BinaryTree* tree, int target, int k) {\n  unordered_map<int, BinaryTree*> nodesToParents;\n  populateNodesToParents(tree, nodesToParents, nullptr);\n  auto targetNode = getNodeFromValue(target, tree, nodesToParents);\n\n  return breadthFirstSearchForNodesDistanceK(targetNode, nodesToParents, k);\n}\n\nvector<int> breadthFirstSearchForNodesDistanceK(\n  BinaryTree* targetNode, unordered_map<int, BinaryTree*>& nodesToParents, int k\n) {\n  deque<pair<BinaryTree*, int>> queue = {pair<BinaryTree*, int>(targetNode, 0)};\n  unordered_set<int> seen = {targetNode->value};\n  while (queue.size() > 0) {\n    auto currentNode = queue.front().first;\n    auto distanceFromTarget = queue.front().second;\n    queue.pop_front();\n\n    if (distanceFromTarget == k) {\n      vector<int> nodesDistanceK;\n      for (auto item : queue) {\n        nodesDistanceK.push_back(item.first->value);\n      }\n      nodesDistanceK.push_back(currentNode->value);\n      return nodesDistanceK;\n    }\n\n    vector<BinaryTree*> connectedNodes = {\n      currentNode->left,\n      currentNode->right,\n      nodesToParents[currentNode->value],\n    };\n    for (auto node : connectedNodes) {\n      if (node == nullptr) continue;\n\n      if (seen.find(node->value) != seen.end()) continue;\n\n      seen.insert(node->value);\n      queue.push_back(pair<BinaryTree*, int>(node, distanceFromTarget + 1));\n    }\n  }\n\n  return {};\n}\n\nBinaryTree* getNodeFromValue(\n  int value, BinaryTree* tree, unordered_map<int, BinaryTree*>& nodesToParents\n) {\n  if (tree->value == value) return tree;\n\n  auto nodeParent = nodesToParents[value];\n  if (nodeParent->left != nullptr && nodeParent->left->value == value)\n    return nodeParent->left;\n\n  return nodeParent->right;\n}\n\nvoid populateNodesToParents(\n  BinaryTree* node,\n  unordered_map<int, BinaryTree*>& nodesToParents,\n  BinaryTree* parent\n) {\n  if (node != nullptr) {\n    nodesToParents[node->value] = parent;\n    populateNodesToParents(node->left, nodesToParents, node);\n    populateNodesToParents(node->right, nodesToParents, node);\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <vector>\nusing namespace std;\n\n// This is an input class. Do not edit.\nclass BinaryTree {\n public:\n  int value;\n  BinaryTree* left = NULL;\n  BinaryTree* right = NULL;\n\n  BinaryTree(int value) { this->value = value; }\n};\n\nint findDistanceFromNodeToTarget(\n  BinaryTree* node, int target, int k, vector<int>& nodesDistanceK\n);\nvoid addSubtreeNodeAtDistanceK(\n  BinaryTree* node, int distance, int k, vector<int>& nodesDistanceK\n);\n\n// O(n) time | O(n) space - where n is the number of nodes in the tree\nvector<int> findNodesDistanceK(BinaryTree* tree, int target, int k) {\n  vector<int> nodesDistanceK;\n  findDistanceFromNodeToTarget(tree, target, k, nodesDistanceK);\n  return nodesDistanceK;\n}\n\nint findDistanceFromNodeToTarget(\n  BinaryTree* node, int target, int k, vector<int>& nodesDistanceK\n) {\n  if (node == nullptr) return -1;\n\n  if (node->value == target) {\n    addSubtreeNodeAtDistanceK(node, 0, k, nodesDistanceK);\n    return 1;\n  }\n\n  int leftDistance =\n    findDistanceFromNodeToTarget(node->left, target, k, nodesDistanceK);\n  int rightDistance =\n    findDistanceFromNodeToTarget(node->right, target, k, nodesDistanceK);\n\n  if (leftDistance == k || rightDistance == k)\n    nodesDistanceK.push_back(node->value);\n\n  if (leftDistance != -1) {\n    addSubtreeNodeAtDistanceK(node->right, leftDistance + 1, k, nodesDistanceK);\n    return leftDistance + 1;\n  }\n\n  if (rightDistance != -1) {\n    addSubtreeNodeAtDistanceK(node->left, rightDistance + 1, k, nodesDistanceK);\n    return rightDistance + 1;\n  }\n\n  return -1;\n}\n\nvoid addSubtreeNodeAtDistanceK(\n  BinaryTree* node, int distance, int k, vector<int>& nodesDistanceK\n) {\n  if (node == nullptr) return;\n\n  if (distance == k) nodesDistanceK.push_back(node->value);\n  else {\n    addSubtreeNodeAtDistanceK(node->left, distance + 1, k, nodesDistanceK);\n    addSubtreeNodeAtDistanceK(node->right, distance + 1, k, nodesDistanceK);\n  }\n}"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\n#include <algorithm>\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      BinaryTree* root = new BinaryTree(1);\n      root->left = new BinaryTree(2);\n      root->right = new BinaryTree(3);\n      root->left->left = new BinaryTree(4);\n      root->left->right = new BinaryTree(5);\n      root->right->right = new BinaryTree(6);\n      root->right->right->left = new BinaryTree(7);\n      root->right->right->right = new BinaryTree(8);\n      int target = 3;\n      int k = 2;\n      vector<int> expected = {2, 7, 8};\n      auto actual = findNodesDistanceK(root, target, k);\n      sort(actual.begin(), actual.end());\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "#include <algorithm>\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      BinaryTree* root = new BinaryTree(1);\n      root->left = new BinaryTree(2);\n      root->right = new BinaryTree(3);\n      root->left->left = new BinaryTree(4);\n      root->left->right = new BinaryTree(5);\n      root->right->right = new BinaryTree(6);\n      root->right->right->left = new BinaryTree(7);\n      root->right->right->right = new BinaryTree(8);\n      int target = 3;\n      int k = 2;\n      vector<int> expected = {2, 7, 8};\n      auto actual = findNodesDistanceK(root, target, k);\n      sort(actual.begin(), actual.end());\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // This is an input class. Do not edit.\n  public class BinaryTree {\n    public int value;\n    public BinaryTree left = null;\n    public BinaryTree right = null;\n\n    public BinaryTree(int value) {\n      this.value = value;\n    }\n  }\n\n  public List<int> FindNodesDistanceK(BinaryTree tree, int target, int k) {\n    // Write your code here.\n    return new List<int>();\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // This is an input class. Do not edit.\n  public class BinaryTree {\n    public int value;\n    public BinaryTree left = null;\n    public BinaryTree right = null;\n\n    public BinaryTree(int value) {\n      this.value = value;\n    }\n  }\n\n  // O(n) time | O(n) space - where n is the number of nodes in the tree\n  public List<int> FindNodesDistanceK(BinaryTree tree, int target, int k) {\n    Dictionary<int, BinaryTree> nodesToParents =\n      new Dictionary<int, BinaryTree>();\n    populateNodesToParents(tree, nodesToParents, null);\n    BinaryTree targetNode = getNodeFromValue(target, tree, nodesToParents);\n    return breadthFirstSearchForNodesDistanceK(targetNode, nodesToParents, k);\n  }\n\n  public List<int> breadthFirstSearchForNodesDistanceK(\n    BinaryTree targetNode, Dictionary<int, BinaryTree> nodesToParents, int k\n  ) {\n    Queue<Tuple<BinaryTree, int> > queue = new Queue<Tuple<BinaryTree, int> >();\n    queue.Enqueue(new Tuple<BinaryTree, int>(targetNode, 0));\n\n    HashSet<int> seen = new HashSet<int>(targetNode.value);\n    seen.Add(targetNode.value);\n\n    while (queue.Count > 0) {\n      Tuple<BinaryTree, int> vals = queue.Dequeue();\n      BinaryTree currentNode = vals.Item1;\n      int distanceFromTarget = vals.Item2;\n\n      if (distanceFromTarget == k) {\n        List<int> nodeDistanceK = new List<int>();\n        foreach (var pair in queue) {\n          nodeDistanceK.Add(pair.Item1.value);\n        }\n        nodeDistanceK.Add(currentNode.value);\n        return nodeDistanceK;\n      }\n\n      List<BinaryTree> connectedNodes = new List<BinaryTree>();\n      connectedNodes.Add(currentNode.left);\n      connectedNodes.Add(currentNode.right);\n      connectedNodes.Add(nodesToParents[currentNode.value]);\n\n      foreach (var node in connectedNodes) {\n        if (node == null) continue;\n\n        if (seen.Contains(node.value)) continue;\n\n        seen.Add(node.value);\n        queue.Enqueue(new Tuple<BinaryTree, int>(node, distanceFromTarget + 1));\n      }\n    }\n\n    return new List<int>();\n  }\n\n  public BinaryTree getNodeFromValue(\n    int value, BinaryTree tree, Dictionary<int, BinaryTree> nodesToParents\n  ) {\n    if (tree.value == value) return tree;\n\n    BinaryTree nodeParent = nodesToParents[value];\n    if (nodeParent.left != null && nodeParent.left.value == value)\n      return nodeParent.left;\n\n    return nodeParent.right;\n  }\n\n  public void populateNodesToParents(\n    BinaryTree node,\n    Dictionary<int, BinaryTree> nodesToParents,\n    BinaryTree parent\n  ) {\n    if (node != null) {\n      nodesToParents[node.value] = parent;\n      populateNodesToParents(node.left, nodesToParents, node);\n      populateNodesToParents(node.right, nodesToParents, node);\n    }\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // This is an input class. Do not edit.\n  public class BinaryTree {\n    public int value;\n    public BinaryTree left = null;\n    public BinaryTree right = null;\n\n    public BinaryTree(int value) {\n      this.value = value;\n    }\n  }\n\n  // O(n) time | O(n) space - where n is the number of nodes in the tree\n  public List<int> FindNodesDistanceK(BinaryTree tree, int target, int k) {\n    List<int> nodesDistanceK = new List<int>();\n    findDistanceFromNodeToTarget(tree, target, k, nodesDistanceK);\n    return nodesDistanceK;\n  }\n\n  public int findDistanceFromNodeToTarget(\n    BinaryTree node, int target, int k, List<int> nodesDistanceK\n  ) {\n    if (node == null) return -1;\n\n    if (node.value == target) {\n      addSubtreeNodeAtDistanceK(node, 0, k, nodesDistanceK);\n      return 1;\n    }\n\n    int leftDistance =\n      findDistanceFromNodeToTarget(node.left, target, k, nodesDistanceK);\n    int rightDistance =\n      findDistanceFromNodeToTarget(node.right, target, k, nodesDistanceK);\n\n    if (leftDistance == k || rightDistance == k) nodesDistanceK.Add(node.value);\n\n    if (leftDistance != -1) {\n      addSubtreeNodeAtDistanceK(\n        node.right, leftDistance + 1, k, nodesDistanceK\n      );\n      return leftDistance + 1;\n    }\n\n    if (rightDistance != -1) {\n      addSubtreeNodeAtDistanceK(\n        node.left, rightDistance + 1, k, nodesDistanceK\n      );\n      return rightDistance + 1;\n    }\n\n    return -1;\n  }\n\n  void addSubtreeNodeAtDistanceK(\n    BinaryTree node, int distance, int k, List<int> nodesDistanceK\n  ) {\n    if (node == null) return;\n\n    if (distance == k) {\n      nodesDistanceK.Add(node.value);\n    } else {\n      addSubtreeNodeAtDistanceK(node.left, distance + 1, k, nodesDistanceK);\n      addSubtreeNodeAtDistanceK(node.right, distance + 1, k, nodesDistanceK);\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System.Collections.Generic;\nusing System.Linq;\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    Program.BinaryTree root = new Program.BinaryTree(1);\n    root.left = new Program.BinaryTree(2);\n    root.right = new Program.BinaryTree(3);\n    root.left.left = new Program.BinaryTree(4);\n    root.left.right = new Program.BinaryTree(5);\n    root.right.right = new Program.BinaryTree(6);\n    root.right.right.left = new Program.BinaryTree(7);\n    root.right.right.right = new Program.BinaryTree(8);\n    int target = 3;\n    int k = 2;\n    var expected = new List<int> { 2, 7, 8 };\n    var actual = new Program().FindNodesDistanceK(root, target, k);\n    actual.Sort();\n    Utils.AssertTrue(Enumerable.SequenceEqual(expected, actual));\n  }\n}\n",
+            "unitTests": "using System.Collections.Generic;\nusing System.Linq;\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    Program.BinaryTree root = new Program.BinaryTree(1);\n    root.left = new Program.BinaryTree(2);\n    root.right = new Program.BinaryTree(3);\n    root.left.left = new Program.BinaryTree(4);\n    root.left.right = new Program.BinaryTree(5);\n    root.right.right = new Program.BinaryTree(6);\n    root.right.right.left = new Program.BinaryTree(7);\n    root.right.right.right = new Program.BinaryTree(8);\n    int target = 3;\n    int k = 2;\n    var expected = new List<int> { 2, 7, 8 };\n    var actual = new Program().FindNodesDistanceK(root, target, k);\n    actual.Sort();\n    Utils.AssertTrue(Enumerable.SequenceEqual(expected, actual));\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\n// This is an input class. Do not edit.\ntype BinaryTree struct {\n\tValue int\n\n\tLeft  *BinaryTree\n\tRight *BinaryTree\n}\n\nfunc FindNodesDistanceK(tree *BinaryTree, target int, k int) []int {\n\t// Write your code here.\n\treturn nil\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// This is an input class. Do not edit.\ntype BinaryTree struct {\n\tValue int\n\n\tLeft  *BinaryTree\n\tRight *BinaryTree\n}\n\n// O(n) time | O(n) space - where n is the number of nodes in the tree\nfunc FindNodesDistanceK(tree *BinaryTree, target int, k int) []int {\n\tnodesToParents := map[int]*BinaryTree{}\n\tpopulateNodesToParents(tree, nodesToParents, nil)\n\ttargetNode := getNodeFromValue(target, tree, nodesToParents)\n\n\treturn breadthFirstSearchForNodesDistanceK(targetNode, nodesToParents, k)\n}\n\nfunc breadthFirstSearchForNodesDistanceK(targetNode *BinaryTree, nodesToParents map[int]*BinaryTree, k int) []int {\n\ttype item struct {\n\t\tnode     *BinaryTree\n\t\tdistance int\n\t}\n\t// We could use a more legitimate queue structure instead of a standard\n\t// list if we wanted to optimize our `.removeAt(0) operations.`\n\tqueue := []item{{node: targetNode, distance: 0}}\n\tseen := map[int]bool{targetNode.Value: true}\n\tvar currentItem item\n\tfor len(queue) > 0 {\n\t\tcurrentItem, queue = queue[0], queue[1:]\n\t\tcurrentNode, distanceFromTarget := currentItem.node, currentItem.distance\n\n\t\tif distanceFromTarget == k {\n\t\t\tnodesDistanceK := make([]int, 0)\n\t\t\tfor _, i := range queue {\n\t\t\t\tnodesDistanceK = append(nodesDistanceK, i.node.Value)\n\t\t\t}\n\t\t\tnodesDistanceK = append(nodesDistanceK, currentNode.Value)\n\t\t\treturn nodesDistanceK\n\t\t}\n\n\t\tconnectedNodes := []*BinaryTree{currentNode.Left, currentNode.Right, nodesToParents[currentNode.Value]}\n\t\tfor _, node := range connectedNodes {\n\t\t\tif node == nil {\n\t\t\t\tcontinue\n\t\t\t}\n\n\t\t\tif seen[node.Value] {\n\t\t\t\tcontinue\n\t\t\t}\n\n\t\t\tseen[node.Value] = true\n\t\t\tqueue = append(queue, item{node: node, distance: distanceFromTarget + 1})\n\t\t}\n\t}\n\n\treturn []int{}\n}\n\nfunc getNodeFromValue(value int, tree *BinaryTree, nodesToParents map[int]*BinaryTree) *BinaryTree {\n\tif tree.Value == value {\n\t\treturn tree\n\t}\n\n\tnodeParent := nodesToParents[value]\n\tif nodeParent.Left != nil && nodeParent.Left.Value == value {\n\t\treturn nodeParent.Left\n\t}\n\n\treturn nodeParent.Right\n}\n\nfunc populateNodesToParents(node *BinaryTree, nodesToParents map[int]*BinaryTree, parent *BinaryTree) {\n\tif node != nil {\n\t\tnodesToParents[node.Value] = parent\n\t\tpopulateNodesToParents(node.Left, nodesToParents, node)\n\t\tpopulateNodesToParents(node.Right, nodesToParents, node)\n\t}\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// This is an input class. Do not edit.\ntype BinaryTree struct {\n\tValue int\n\n\tLeft  *BinaryTree\n\tRight *BinaryTree\n}\n\n// O(n) time | O(n) space - where n is the number of nodes in the tree\nfunc FindNodesDistanceK(tree *BinaryTree, target int, k int) []int {\n\tnodesDistanceK := []int{}\n\tfindDistanceFromNodeToTarget(tree, target, k, &nodesDistanceK)\n\treturn nodesDistanceK\n}\n\nfunc findDistanceFromNodeToTarget(node *BinaryTree, target int, k int, nodesDistanceK *[]int) int {\n\tif node == nil {\n\t\treturn -1\n\t}\n\n\tif node.Value == target {\n\t\taddSubtreeNodesAtDistanceK(node, 0, k, nodesDistanceK)\n\t\treturn 1\n\t}\n\n\tleftDistance := findDistanceFromNodeToTarget(node.Left, target, k, nodesDistanceK)\n\trightDistance := findDistanceFromNodeToTarget(node.Right, target, k, nodesDistanceK)\n\n\tif leftDistance == k || rightDistance == k {\n\t\t*nodesDistanceK = append(*nodesDistanceK, node.Value)\n\t}\n\n\tif leftDistance != -1 {\n\t\taddSubtreeNodesAtDistanceK(node.Right, leftDistance+1, k, nodesDistanceK)\n\t\treturn leftDistance + 1\n\t}\n\n\tif rightDistance != -1 {\n\t\taddSubtreeNodesAtDistanceK(node.Left, rightDistance+1, k, nodesDistanceK)\n\t\treturn rightDistance + 1\n\t}\n\n\treturn -1\n}\n\nfunc addSubtreeNodesAtDistanceK(node *BinaryTree, distance int, k int, nodesDistanceK *[]int) {\n\tif node == nil {\n\t\treturn\n\t}\n\n\tif distance == k {\n\t\t*nodesDistanceK = append(*nodesDistanceK, node.Value)\n\t} else {\n\t\taddSubtreeNodesAtDistanceK(node.Left, distance+1, k, nodesDistanceK)\n\t\taddSubtreeNodesAtDistanceK(node.Right, distance+1, k, nodesDistanceK)\n\t}\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"sort\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\troot := &BinaryTree{Value: 1}\n\troot.Left = &BinaryTree{Value: 2}\n\troot.Right = &BinaryTree{Value: 3}\n\troot.Left.Left = &BinaryTree{Value: 4}\n\troot.Left.Right = &BinaryTree{Value: 5}\n\troot.Right.Right = &BinaryTree{Value: 6}\n\troot.Right.Right.Left = &BinaryTree{Value: 7}\n\troot.Right.Right.Right = &BinaryTree{Value: 8}\n\ttarget := 3\n\tk := 2\n\texpected := []int{2, 7, 8}\n\tactual := FindNodesDistanceK(root, target, k)\n\tsort.Ints(actual)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"sort\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\troot := &BinaryTree{Value: 1}\n\troot.Left = &BinaryTree{Value: 2}\n\troot.Right = &BinaryTree{Value: 3}\n\troot.Left.Left = &BinaryTree{Value: 4}\n\troot.Left.Right = &BinaryTree{Value: 5}\n\troot.Right.Right = &BinaryTree{Value: 6}\n\troot.Right.Right.Left = &BinaryTree{Value: 7}\n\troot.Right.Right.Right = &BinaryTree{Value: 8}\n\ttarget := 3\n\tk := 2\n\texpected := []int{2, 7, 8}\n\tactual := FindNodesDistanceK(root, target, k)\n\tsort.Ints(actual)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  // This is an input class. Do not edit.\n  static class BinaryTree {\n    public int value;\n    public BinaryTree left = null;\n    public BinaryTree right = null;\n\n    public BinaryTree(int value) {\n      this.value = value;\n    }\n  }\n\n  public ArrayList<Integer> findNodesDistanceK(\n    BinaryTree tree, int target, int k\n  ) {\n    // Write your code here.\n    return new ArrayList<Integer>();\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // This is an input class. Do not edit.\n  static class BinaryTree {\n    public int value;\n    public BinaryTree left = null;\n    public BinaryTree right = null;\n\n    public BinaryTree(int value) {\n      this.value = value;\n    }\n  }\n\n  static class Pair<U, V> {\n    public final U first;\n    public final V second;\n\n    private Pair(U first, V second) {\n      this.first = first;\n      this.second = second;\n    }\n  }\n\n  // O(n) time | O(n) space - where n is the number of nodes in the tree\n  public ArrayList<Integer> findNodesDistanceK(\n    BinaryTree tree, int target, int k\n  ) {\n    HashMap<Integer, BinaryTree> nodesToParents =\n      new HashMap<Integer, BinaryTree>();\n    populateNodesToParents(tree, nodesToParents, null);\n    BinaryTree targetNode = getNodeFromValue(target, tree, nodesToParents);\n    return breadthFirstSearchForNodesDistanceK(targetNode, nodesToParents, k);\n  }\n\n  public ArrayList<Integer> breadthFirstSearchForNodesDistanceK(\n    BinaryTree targetNode, HashMap<Integer, BinaryTree> nodesToParents, int k\n  ) {\n    Queue<Pair<BinaryTree, Integer>> queue =\n      new LinkedList<Pair<BinaryTree, Integer>>();\n    queue.offer(new Pair<BinaryTree, Integer>(targetNode, 0));\n\n    HashSet<Integer> seen = new HashSet<Integer>(targetNode.value);\n    seen.add(targetNode.value);\n\n    while (queue.size() > 0) {\n      Pair<BinaryTree, Integer> vals = queue.poll();\n      BinaryTree currentNode = vals.first;\n      int distanceFromTarget = vals.second;\n\n      if (distanceFromTarget == k) {\n        ArrayList<Integer> nodeDistanceK = new ArrayList<Integer>();\n        for (Pair<BinaryTree, Integer> pair : queue) {\n          nodeDistanceK.add(pair.first.value);\n        }\n        nodeDistanceK.add(currentNode.value);\n        return nodeDistanceK;\n      }\n\n      List<BinaryTree> connectedNodes = new ArrayList<BinaryTree>();\n      connectedNodes.add(currentNode.left);\n      connectedNodes.add(currentNode.right);\n      connectedNodes.add(nodesToParents.get(currentNode.value));\n\n      for (BinaryTree node : connectedNodes) {\n        if (node == null) continue;\n\n        if (seen.contains(node.value)) continue;\n\n        seen.add(node.value);\n        queue.add(new Pair<BinaryTree, Integer>(node, distanceFromTarget + 1));\n      }\n    }\n\n    return new ArrayList<Integer>();\n  }\n\n  public BinaryTree getNodeFromValue(\n    int value, BinaryTree tree, HashMap<Integer, BinaryTree> nodesToParents\n  ) {\n    if (tree.value == value) return tree;\n\n    BinaryTree nodeParent = nodesToParents.get(value);\n    if (nodeParent.left != null && nodeParent.left.value == value)\n      return nodeParent.left;\n\n    return nodeParent.right;\n  }\n\n  public void populateNodesToParents(\n    BinaryTree node, Map<Integer, BinaryTree> nodesToParents, BinaryTree parent\n  ) {\n    if (node != null) {\n      nodesToParents.put(node.value, parent);\n      populateNodesToParents(node.left, nodesToParents, node);\n      populateNodesToParents(node.right, nodesToParents, node);\n    }\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // This is an input class. Do not edit.\n  static class BinaryTree {\n    public int value;\n    public BinaryTree left = null;\n    public BinaryTree right = null;\n\n    public BinaryTree(int value) {\n      this.value = value;\n    }\n  }\n\n  // O(n) time | O(n) space - where n is the number of nodes in the tree\n  public ArrayList<Integer> findNodesDistanceK(\n    BinaryTree tree, int target, int k\n  ) {\n    ArrayList<Integer> nodesDistanceK = new ArrayList<Integer>();\n    findDistanceFromNodeToTarget(tree, target, k, nodesDistanceK);\n    return nodesDistanceK;\n  }\n\n  public int findDistanceFromNodeToTarget(\n    BinaryTree node, int target, int k, ArrayList<Integer> nodesDistanceK\n  ) {\n    if (node == null) return -1;\n\n    if (node.value == target) {\n      addSubtreeNodeAtDistanceK(node, 0, k, nodesDistanceK);\n      return 1;\n    }\n\n    int leftDistance =\n      findDistanceFromNodeToTarget(node.left, target, k, nodesDistanceK);\n    int rightDistance =\n      findDistanceFromNodeToTarget(node.right, target, k, nodesDistanceK);\n\n    if (leftDistance == k || rightDistance == k) nodesDistanceK.add(node.value);\n\n    if (leftDistance != -1) {\n      addSubtreeNodeAtDistanceK(\n        node.right, leftDistance + 1, k, nodesDistanceK\n      );\n      return leftDistance + 1;\n    }\n\n    if (rightDistance != -1) {\n      addSubtreeNodeAtDistanceK(\n        node.left, rightDistance + 1, k, nodesDistanceK\n      );\n      return rightDistance + 1;\n    }\n\n    return -1;\n  }\n\n  void addSubtreeNodeAtDistanceK(\n    BinaryTree node, int distance, int k, ArrayList<Integer> nodesDistanceK\n  ) {\n    if (node == null) return;\n\n    if (distance == k) {\n      nodesDistanceK.add(node.value);\n    } else {\n      addSubtreeNodeAtDistanceK(node.left, distance + 1, k, nodesDistanceK);\n      addSubtreeNodeAtDistanceK(node.right, distance + 1, k, nodesDistanceK);\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    Program.BinaryTree root = new Program.BinaryTree(1);\n    root.left = new Program.BinaryTree(2);\n    root.right = new Program.BinaryTree(3);\n    root.left.left = new Program.BinaryTree(4);\n    root.left.right = new Program.BinaryTree(5);\n    root.right.right = new Program.BinaryTree(6);\n    root.right.right.left = new Program.BinaryTree(7);\n    root.right.right.right = new Program.BinaryTree(8);\n    int target = 3;\n    int k = 2;\n    var expected = new ArrayList<Integer>(Arrays.asList(2, 7, 8));\n    var actual = new Program().findNodesDistanceK(root, target, k);\n    Collections.sort(actual);\n    Utils.assertTrue(expected.equals(actual));\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    Program.BinaryTree root = new Program.BinaryTree(1);\n    root.left = new Program.BinaryTree(2);\n    root.right = new Program.BinaryTree(3);\n    root.left.left = new Program.BinaryTree(4);\n    root.left.right = new Program.BinaryTree(5);\n    root.right.right = new Program.BinaryTree(6);\n    root.right.right.left = new Program.BinaryTree(7);\n    root.right.right.right = new Program.BinaryTree(8);\n    int target = 3;\n    int k = 2;\n    var expected = new ArrayList<Integer>(Arrays.asList(2, 7, 8));\n    var actual = new Program().findNodesDistanceK(root, target, k);\n    Collections.sort(actual);\n    Utils.assertTrue(expected.equals(actual));\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "// This is an input class. Do not edit.\nclass BinaryTree {\n  constructor(value) {\n    this.value = value;\n    this.left = null;\n    this.right = null;\n  }\n}\n\nfunction findNodesDistanceK(tree, target, k) {\n  // Write your code here.\n  return [];\n}\n\n// Do not edit the lines below.\nexports.BinaryTree = BinaryTree;\nexports.findNodesDistanceK = findNodesDistanceK;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// This is an input class. Do not edit.\nclass BinaryTree {\n  constructor(value) {\n    this.value = value;\n    this.left = null;\n    this.right = null;\n  }\n}\n\n// O(n) time | O(n) space - where n is the number of nodes in the tree\nfunction findNodesDistanceK(tree, target, k) {\n  const nodesToParents = {};\n  populateNodesToParents(tree, nodesToParents);\n  const targetNode = getNodeFromValue(target, tree, nodesToParents);\n\n  return breadthFirstSearchForNodesDistanceK(targetNode, nodesToParents, k);\n}\n\nfunction breadthFirstSearchForNodesDistanceK(targetNode, nodesToParents, k) {\n  // We could use a more legitimate queue structure instead of a standard\n  // array if we wanted to optimize our `.shift() operations.`\n  const queue = [[targetNode, 0]];\n  const seen = new Set([targetNode.value]);\n  while (queue.length > 0) {\n    const [currentNode, distanceFromTarget] = queue.shift();\n\n    if (distanceFromTarget === k) {\n      const nodesDistanceK = queue.map(pair => pair[0].value);\n      nodesDistanceK.push(currentNode.value);\n      return nodesDistanceK;\n    }\n\n    const connectedNodes = [currentNode.left, currentNode.right, nodesToParents[currentNode.value]];\n    for (const node of connectedNodes) {\n      if (node === null) continue;\n\n      if (seen.has(node.value)) continue;\n\n      seen.add(node.value);\n      queue.push([node, distanceFromTarget + 1]);\n    }\n  }\n\n  return [];\n}\n\nfunction getNodeFromValue(value, tree, nodesToParents) {\n  if (tree.value === value) return tree;\n\n  const nodeParent = nodesToParents[value];\n  if (nodeParent.left !== null && nodeParent.left.value === value) return nodeParent.left;\n\n  return nodeParent.right;\n}\n\nfunction populateNodesToParents(node, nodesToParents, parent = null) {\n  if (node !== null) {\n    nodesToParents[node.value] = parent;\n    populateNodesToParents(node.left, nodesToParents, node);\n    populateNodesToParents(node.right, nodesToParents, node);\n  }\n}\n\n// Do not edit the lines below.\nexports.BinaryTree = BinaryTree;\nexports.findNodesDistanceK = findNodesDistanceK;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// This is an input class. Do not edit.\nclass BinaryTree {\n  constructor(value) {\n    this.value = value;\n    this.left = null;\n    this.right = null;\n  }\n}\n\n// O(n) time | O(n) space - where n is the number of nodes in the tree\nfunction findNodesDistanceK(tree, target, k) {\n  const nodesDistanceK = [];\n  findDistanceFromNodeToTarget(tree, target, k, nodesDistanceK);\n  return nodesDistanceK;\n}\n\nfunction findDistanceFromNodeToTarget(node, target, k, nodesDistanceK) {\n  if (node === null) return -1;\n\n  if (node.value === target) {\n    addSubtreeNodeAtDistanceK(node, 0, k, nodesDistanceK);\n    return 1;\n  }\n\n  const leftDistance = findDistanceFromNodeToTarget(node.left, target, k, nodesDistanceK);\n  const rightDistance = findDistanceFromNodeToTarget(node.right, target, k, nodesDistanceK);\n\n  if (leftDistance === k || rightDistance === k) nodesDistanceK.push(node.value);\n\n  if (leftDistance !== -1) {\n    addSubtreeNodeAtDistanceK(node.right, leftDistance + 1, k, nodesDistanceK);\n    return leftDistance + 1;\n  }\n\n  if (rightDistance !== -1) {\n    addSubtreeNodeAtDistanceK(node.left, rightDistance + 1, k, nodesDistanceK);\n    return rightDistance + 1;\n  }\n\n  return -1;\n}\n\nfunction addSubtreeNodeAtDistanceK(node, distance, k, nodesDistanceK) {\n  if (node === null) return;\n\n  if (distance === k) nodesDistanceK.push(node.value);\n  else {\n    addSubtreeNodeAtDistanceK(node.left, distance + 1, k, nodesDistanceK);\n    addSubtreeNodeAtDistanceK(node.right, distance + 1, k, nodesDistanceK);\n  }\n}\n\n// Do not edit the lines below.\nexports.BinaryTree = BinaryTree;\nexports.findNodesDistanceK = findNodesDistanceK;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const root = new program.BinaryTree(1);\n  root.left = new program.BinaryTree(2);\n  root.right = new program.BinaryTree(3);\n  root.left.left = new program.BinaryTree(4);\n  root.left.right = new program.BinaryTree(5);\n  root.right.right = new program.BinaryTree(6);\n  root.right.right.left = new program.BinaryTree(7);\n  root.right.right.right = new program.BinaryTree(8);\n  const target = 3;\n  const k = 2;\n  const expected = [2, 7, 8];\n  const actual = program.findNodesDistanceK(root, target, k);\n  actual.sort();\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const root = new program.BinaryTree(1);\n  root.left = new program.BinaryTree(2);\n  root.right = new program.BinaryTree(3);\n  root.left.left = new program.BinaryTree(4);\n  root.left.right = new program.BinaryTree(5);\n  root.right.right = new program.BinaryTree(6);\n  root.right.right.left = new program.BinaryTree(7);\n  root.right.right.right = new program.BinaryTree(8);\n  const target = 3;\n  const k = 2;\n  const expected = [2, 7, 8];\n  const actual = program.findNodesDistanceK(root, target, k);\n  actual.sort();\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\n// This is an input class. Do not edit.\nopen class BinaryTree(value: Int) {\n    var value = value\n    var left: BinaryTree? = null\n    var right: BinaryTree? = null\n}\n\nfun findNodesDistanceK(tree: BinaryTree, target: Int, k: Int): List<Int> {\n    // Write your code here.\n    return listOf()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// This is an input class. Do not edit.\nopen class BinaryTree(value: Int) {\n    var value = value\n    var left: BinaryTree? = null\n    var right: BinaryTree? = null\n}\n\n// O(n) time | O(n) space - where n is the number of nodes in the tree\nfun findNodesDistanceK(tree: BinaryTree, target: Int, k: Int): List<Int> {\n    val nodesToParents = mutableMapOf<Int, BinaryTree?>()\n    populateNodesToParents(tree, nodesToParents)\n    val targetNode = getNodeFromValue(target, tree, nodesToParents)\n\n    return breadthFirstSearchForNodesDistanceK(targetNode, nodesToParents, k)\n}\n\nfun breadthFirstSearchForNodesDistanceK(targetNode: BinaryTree, nodesToParents: Map<Int, BinaryTree?>, k: Int): List<Int> {\n    // We could use a more legitimate queue structure instead of a standard\n    // list if we wanted to optimize our `.removeAt(0) operations.`\n    val queue = mutableListOf(Pair(targetNode, 0))\n    val seen = mutableSetOf(targetNode.value)\n    while (queue.size > 0) {\n        val (currentNode, distanceFromTarget) = queue.removeAt(0)\n\n        if (distanceFromTarget == k) {\n            val nodesDistanceK = queue.map() { it -> it.first.value }.toMutableList()\n            nodesDistanceK.add(currentNode.value)\n            return nodesDistanceK\n        }\n\n        val connectedNodes =\n            listOf(currentNode.left, currentNode.right, nodesToParents[currentNode.value])\n        for (node in connectedNodes) {\n            if (node == null) continue\n\n            if (node.value in seen) continue\n\n            seen.add(node.value)\n            queue.add(Pair(node, distanceFromTarget + 1))\n        }\n    }\n\n    return listOf()\n}\n\nfun getNodeFromValue(value: Int, tree: BinaryTree, nodesToParents: Map<Int, BinaryTree?>): BinaryTree {\n    if (tree.value == value) return tree\n\n    val nodeParent = nodesToParents[value]!!\n    if (nodeParent.left != null && nodeParent.left!!.value == value) return nodeParent.left!!\n\n    return nodeParent.right!!\n}\n\nfun populateNodesToParents(node: BinaryTree?, nodesToParents: MutableMap<Int, BinaryTree?>, parent: BinaryTree? = null) {\n    if (node != null) {\n        nodesToParents[node.value] = parent\n        populateNodesToParents(node.left, nodesToParents, node)\n        populateNodesToParents(node.right, nodesToParents, node)\n    }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// This is an input class. Do not edit.\nopen class BinaryTree(value: Int) {\n    var value = value\n    var left: BinaryTree? = null\n    var right: BinaryTree? = null\n}\n\n// O(n) time | O(n) space - where n is the number of nodes in the tree\nfun findNodesDistanceK(tree: BinaryTree, target: Int, k: Int): List<Int> {\n    val nodesDistanceK = mutableListOf<Int>()\n    findDistanceFromNodeToTarget(tree, target, k, nodesDistanceK)\n    return nodesDistanceK\n}\n\nfun findDistanceFromNodeToTarget(node: BinaryTree?, target: Int, k: Int, nodesDistanceK: MutableList<Int>): Int {\n    if (node == null) return -1\n\n    if (node.value == target) {\n        addSubtreeNodesAtDistanceK(node, 0, k, nodesDistanceK)\n        return 1\n    }\n\n    val leftDistance = findDistanceFromNodeToTarget(node.left, target, k, nodesDistanceK)\n    val rightDistance = findDistanceFromNodeToTarget(node.right, target, k, nodesDistanceK)\n\n    if (leftDistance == k || rightDistance == k) nodesDistanceK.add(node.value)\n\n    if (leftDistance != -1) {\n        addSubtreeNodesAtDistanceK(node.right, leftDistance + 1, k, nodesDistanceK)\n        return leftDistance + 1\n    }\n\n    if (rightDistance != -1) {\n        addSubtreeNodesAtDistanceK(node.left, rightDistance + 1, k, nodesDistanceK)\n        return rightDistance + 1\n    }\n\n    return -1\n}\n\nfun addSubtreeNodesAtDistanceK(node: BinaryTree?, distance: Int, k: Int, nodesDistanceK: MutableList<Int>) {\n    if (node == null) return\n\n    if (distance == k) {\n        nodesDistanceK.add(node.value)\n    } else {\n        addSubtreeNodesAtDistanceK(node.left, distance + 1, k, nodesDistanceK)\n        addSubtreeNodesAtDistanceK(node.right, distance + 1, k, nodesDistanceK)\n    }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.BinaryTree\nimport com.algoexpert.program.findNodesDistanceK\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val root = BinaryTree(1)\n        root.left = BinaryTree(2)\n        root.right = BinaryTree(3)\n        root.left!!.left = BinaryTree(4)\n        root.left!!.right = BinaryTree(5)\n        root.right!!.right = BinaryTree(6)\n        root.right!!.right!!.left = BinaryTree(7)\n        root.right!!.right!!.right = BinaryTree(8)\n        val target = 3\n        val k = 2\n        val expected = listOf(2, 7, 8)\n        val output = findNodesDistanceK(root, target, k).toMutableList()\n        output.sort()\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.BinaryTree\nimport com.algoexpert.program.findNodesDistanceK\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val root = BinaryTree(1)\n        root.left = BinaryTree(2)\n        root.right = BinaryTree(3)\n        root.left!!.left = BinaryTree(4)\n        root.left!!.right = BinaryTree(5)\n        root.right!!.right = BinaryTree(6)\n        root.right!!.right!!.left = BinaryTree(7)\n        root.right!!.right!!.right = BinaryTree(8)\n        val target = 3\n        val k = 2\n        val expected = listOf(2, 7, 8)\n        val output = findNodesDistanceK(root, target, k).toMutableList()\n        output.sort()\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "# This is an input class. Do not edit.\nclass BinaryTree:\n    def __init__(self, value, left=None, right=None):\n        self.value = value\n        self.left = left\n        self.right = right\n\n\ndef findNodesDistanceK(tree, target, k):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# This is an input class. Do not edit.\nclass BinaryTree:\n    def __init__(self, value, left=None, right=None):\n        self.value = value\n        self.left = left\n        self.right = right\n\n\n# O(n) time | O(n) space - where n is the number of nodes in the tree\ndef findNodesDistanceK(tree, target, k):\n    nodesToParents = {}\n    populateNodesToParents(tree, nodesToParents)\n    targetNode = getNodeFromValue(target, tree, nodesToParents)\n\n    return breadthFirstSearchForNodesDistanceK(targetNode, nodesToParents, k)\n\n\ndef breadthFirstSearchForNodesDistanceK(targetNode, nodesToParents, k):\n    # We could use the `deque` object instead of a standard Python\n    # list if we wanted to optimize our `.pop(0) operations.`\n    queue = [(targetNode, 0)]\n    seen = {targetNode.value}\n    while len(queue) > 0:\n        currentNode, distanceFromTarget = queue.pop(0)\n\n        if distanceFromTarget == k:\n            nodesDistanceK = [node.value for node, _ in queue]\n            nodesDistanceK.append(currentNode.value)\n            return nodesDistanceK\n\n        connectedNodes = [currentNode.left, currentNode.right, nodesToParents[currentNode.value]]\n        for node in connectedNodes:\n            if node is None:\n                continue\n\n            if node.value in seen:\n                continue\n\n            seen.add(node.value)\n            queue.append((node, distanceFromTarget + 1))\n\n    return []\n\n\ndef getNodeFromValue(value, tree, nodesToParents):\n    if tree.value == value:\n        return tree\n\n    nodeParent = nodesToParents[value]\n    if nodeParent.left is not None and nodeParent.left.value == value:\n        return nodeParent.left\n\n    return nodeParent.right\n\n\ndef populateNodesToParents(node, nodesToParents, parent=None):\n    if node is not None:\n        nodesToParents[node.value] = parent\n        populateNodesToParents(node.left, nodesToParents, node)\n        populateNodesToParents(node.right, nodesToParents, node)\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# This is an input class. Do not edit.\nclass BinaryTree:\n    def __init__(self, value, left=None, right=None):\n        self.value = value\n        self.left = left\n        self.right = right\n\n\n# O(n) time | O(n) space - where n is the number of nodes in the tree\ndef findNodesDistanceK(tree, target, k):\n    nodesDistanceK = []\n    findDistanceFromNodeToTarget(tree, target, k, nodesDistanceK)\n    return nodesDistanceK\n\n\ndef findDistanceFromNodeToTarget(node, target, k, nodesDistanceK):\n    if node is None:\n        return -1\n\n    if node.value == target:\n        addSubtreeNodesAtDistanceK(node, 0, k, nodesDistanceK)\n        return 1\n\n    leftDistance = findDistanceFromNodeToTarget(node.left, target, k, nodesDistanceK)\n    rightDistance = findDistanceFromNodeToTarget(node.right, target, k, nodesDistanceK)\n\n    if leftDistance == k or rightDistance == k:\n        nodesDistanceK.append(node.value)\n\n    if leftDistance != -1:\n        addSubtreeNodesAtDistanceK(node.right, leftDistance + 1, k, nodesDistanceK)\n        return leftDistance + 1\n\n    if rightDistance != -1:\n        addSubtreeNodesAtDistanceK(node.left, rightDistance + 1, k, nodesDistanceK)\n        return rightDistance + 1\n\n    return -1\n\n\ndef addSubtreeNodesAtDistanceK(node, distance, k, nodesDistanceK):\n    if node is None:\n        return\n\n    if distance == k:\n        nodesDistanceK.append(node.value)\n    else:\n        addSubtreeNodesAtDistanceK(node.left, distance + 1, k, nodesDistanceK)\n        addSubtreeNodesAtDistanceK(node.right, distance + 1, k, nodesDistanceK)\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        root = program.BinaryTree(1)\n        root.left = program.BinaryTree(2)\n        root.right = program.BinaryTree(3)\n        root.left.left = program.BinaryTree(4)\n        root.left.right = program.BinaryTree(5)\n        root.right.right = program.BinaryTree(6)\n        root.right.right.left = program.BinaryTree(7)\n        root.right.right.right = program.BinaryTree(8)\n        target = 3\n        k = 2\n        expected = [2, 7, 8]\n        actual = program.findNodesDistanceK(root, target, k)\n        actual.sort()\n        self.assertCountEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        root = program.BinaryTree(1)\n        root.left = program.BinaryTree(2)\n        root.right = program.BinaryTree(3)\n        root.left.left = program.BinaryTree(4)\n        root.left.right = program.BinaryTree(5)\n        root.right.right = program.BinaryTree(6)\n        root.right.right.left = program.BinaryTree(7)\n        root.right.right.right = program.BinaryTree(8)\n        target = 3\n        k = 2\n        expected = [2, 7, 8]\n        actual = program.findNodesDistanceK(root, target, k)\n        actual.sort()\n        self.assertCountEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "# This is an input struct. Do not edit.\nclass BinaryTree\n  attr_accessor :value\n  attr_accessor :left\n  attr_accessor :right\n\n  def initialize(value)\n    @value = value\n    @left = nil\n    @right = nil\n  end\nend\n\nclass Program\n  def findNodesDistanceK(tree, target, k)\n    # Write your code here.\n    return []\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# This is an input struct. Do not edit.\nclass BinaryTree\n  attr_accessor :value\n  attr_accessor :left\n  attr_accessor :right\n\n  def initialize(value)\n    @value = value\n    @left = nil\n    @right = nil\n  end\nend\n\nclass Program\n  def findNodesDistanceK(tree, target, k)\n    # Write your code here.\n    return []\n  end\nend\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# This is an input struct. Do not edit.\nclass BinaryTree\n  attr_accessor :value\n  attr_accessor :left\n  attr_accessor :right\n\n  def initialize(value)\n    @value = value\n    @left = nil\n    @right = nil\n  end\nend\n\nclass Program\n  def findNodesDistanceK(tree, target, k)\n    # Write your code here.\n    return []\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.findNodesDistanceK\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.findNodesDistanceK\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  // This is an input class. Do not edit.\n  class BinaryTree {\n    var value: Int\n    var left: BinaryTree?\n    var right: BinaryTree?\n\n    init(value: Int) {\n      self.value = value\n      left = nil\n      right = nil\n    }\n  }\n\n  func findNodesDistanceK(_ tree: BinaryTree, _ target: Int, _ k: Int) -> [Int] {\n    // Write your code here.\n    return [Int]()\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // This is an input class. Do not edit.\n  class BinaryTree {\n    var value: Int\n    var left: BinaryTree?\n    var right: BinaryTree?\n\n    init(value: Int) {\n      self.value = value\n      left = nil\n      right = nil\n    }\n  }\n\n  // O(n) time | O(n) space - where n is the number of nodes in the tree\n  func findNodesDistanceK(_ tree: BinaryTree, _ target: Int, _ k: Int) -> [Int] {\n    var nodesToParents = [Int: BinaryTree?]()\n    populateNodesToParents(tree, &nodesToParents, nil)\n    let targetNode = getNodeFromValue(target, tree, &nodesToParents)\n\n    return breadthFirstSearchForNodesDistanceK(targetNode, nodesToParents, k)\n  }\n\n  func breadthFirstSearchForNodesDistanceK(_ targetNode: BinaryTree, _ nodesToParents: [Int: BinaryTree?], _ k: Int) -> [Int] {\n    // We could use a more legitimate queue structure instead of a standard\n    // list if we wanted to optimize our `.removeAt(0) operations.`\n    var queue: [(BinaryTree, Int)] = [(targetNode, 0)]\n    var seen: Set<Int> = [targetNode.value]\n    while queue.count > 0 {\n      let currentItem = queue[0]\n      queue.remove(at: 0)\n      let currentNode = currentItem.0\n      let distanceFromTarget = currentItem.1\n\n      if distanceFromTarget == k {\n        var nodesDistanceK = [Int]()\n        for item in queue {\n          nodesDistanceK.append(item.0.value)\n        }\n        nodesDistanceK.append(currentNode.value)\n        return nodesDistanceK\n      }\n\n      let connectedNodes = [currentNode.left, currentNode.right, nodesToParents[currentNode.value]!]\n      for node in connectedNodes {\n        if node == nil {\n          continue\n        }\n\n        if seen.contains(node!.value) {\n          continue\n        }\n\n        seen.insert(node!.value)\n        queue.append((node!, distanceFromTarget + 1))\n      }\n    }\n\n    return [Int]()\n  }\n\n  func getNodeFromValue(_ value: Int, _ tree: BinaryTree, _ nodesToParents: inout [Int: BinaryTree?]) -> BinaryTree {\n    if tree.value == value {\n      return tree\n    }\n\n    let nodeParent = nodesToParents[value]!\n    if nodeParent!.left != nil, nodeParent!.left!.value == value {\n      return nodeParent!.left!\n    }\n\n    return nodeParent!.right!\n  }\n\n  func populateNodesToParents(_ node: BinaryTree?, _ nodesToParents: inout [Int: BinaryTree?], _ parent: BinaryTree?) {\n    if node != nil {\n      nodesToParents[node!.value] = parent\n      populateNodesToParents(node!.left, &nodesToParents, node)\n      populateNodesToParents(node!.right, &nodesToParents, node)\n    }\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // This is an input class. Do not edit.\n  class BinaryTree {\n    var value: Int\n    var left: BinaryTree?\n    var right: BinaryTree?\n\n    init(value: Int) {\n      self.value = value\n      left = nil\n      right = nil\n    }\n  }\n\n  // O(n) time | O(n) space - where n is the number of nodes in the tree\n  func findNodesDistanceK(_ tree: BinaryTree, _ target: Int, _ k: Int) -> [Int] {\n    var nodesDistanceK = [Int]()\n    findDistanceFromNodeToTarget(tree, target, k, &nodesDistanceK)\n    return nodesDistanceK\n  }\n\n  func findDistanceFromNodeToTarget(_ node: BinaryTree?, _ target: Int, _ k: Int, _ nodesDistanceK: inout [Int]) -> Int {\n    if node == nil {\n      return -1\n    }\n\n    if node!.value == target {\n      addSubtreeNodesAtDistanceK(node, 0, k, &nodesDistanceK)\n      return 1\n    }\n\n    let leftDistance = findDistanceFromNodeToTarget(node!.left, target, k, &nodesDistanceK)\n    let rightDistance = findDistanceFromNodeToTarget(node!.right, target, k, &nodesDistanceK)\n\n    if leftDistance == k || rightDistance == k {\n      nodesDistanceK.append(node!.value)\n    }\n\n    if leftDistance != -1 {\n      addSubtreeNodesAtDistanceK(node!.right, leftDistance + 1, k, &nodesDistanceK)\n      return leftDistance + 1\n    }\n\n    if rightDistance != -1 {\n      addSubtreeNodesAtDistanceK(node!.left, rightDistance + 1, k, &nodesDistanceK)\n      return rightDistance + 1\n    }\n    return -1\n  }\n\n  func addSubtreeNodesAtDistanceK(_ node: BinaryTree?, _ distance: Int, _ k: Int, _ nodesDistanceK: inout [Int]) {\n    if node == nil {\n      return\n    }\n\n    if distance == k {\n      nodesDistanceK.append(node!.value)\n    } else {\n      addSubtreeNodesAtDistanceK(node!.left, distance + 1, k, &nodesDistanceK)\n      addSubtreeNodesAtDistanceK(node!.right, distance + 1, k, &nodesDistanceK)\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let root = Program.BinaryTree(value: 1)\n      root.left = Program.BinaryTree(value: 2)\n      root.right = Program.BinaryTree(value: 3)\n      root.left!.left = Program.BinaryTree(value: 4)\n      root.left!.right = Program.BinaryTree(value: 5)\n      root.right!.right = Program.BinaryTree(value: 6)\n      root.right!.right!.left = Program.BinaryTree(value: 7)\n      root.right!.right!.right = Program.BinaryTree(value: 8)\n      let target = 3\n      let k = 2\n      let expected = [2, 7, 8]\n      var actual = Program().findNodesDistanceK(root, target, k)\n      actual.sort()\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let root = Program.BinaryTree(value: 1)\n      root.left = Program.BinaryTree(value: 2)\n      root.right = Program.BinaryTree(value: 3)\n      root.left!.left = Program.BinaryTree(value: 4)\n      root.left!.right = Program.BinaryTree(value: 5)\n      root.right!.right = Program.BinaryTree(value: 6)\n      root.right!.right!.left = Program.BinaryTree(value: 7)\n      root.right!.right!.right = Program.BinaryTree(value: 8)\n      let target = 3\n      let k = 2\n      let expected = [2, 7, 8]\n      var actual = Program().findNodesDistanceK(root, target, k)\n      actual.sort()\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "// This is an input class. Do not edit.\nexport class BinaryTree {\n  value: number;\n  left: BinaryTree | null;\n  right: BinaryTree | null;\n\n  constructor(value: number) {\n    this.value = value;\n    this.left = null;\n    this.right = null;\n  }\n}\n\nexport function findNodesDistanceK(tree: BinaryTree, target: number, k: number) {\n  // Write your code here.\n  return [];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// This is an input class. Do not edit.\nexport class BinaryTree {\n  value: number;\n  left: BinaryTree | null;\n  right: BinaryTree | null;\n\n  constructor(value: number) {\n    this.value = value;\n    this.left = null;\n    this.right = null;\n  }\n}\n\ninterface NodesToParents {\n  [node: number]: BinaryTree | null;\n}\n\n// O(n) time | O(n) space - where n is the number of nodes in the tree\nexport function findNodesDistanceK(tree: BinaryTree, target: number, k: number) {\n  const nodesToParents: NodesToParents = {};\n  populateNodesToParents(tree, nodesToParents);\n  const targetNode = getNodeFromValue(target, tree, nodesToParents);\n\n  return breadthFirstSearchForNodesDistanceK(targetNode, nodesToParents, k);\n}\n\nfunction breadthFirstSearchForNodesDistanceK(\n  targetNode: BinaryTree,\n  nodesToParents: NodesToParents,\n  k: number,\n) {\n  // We could use a more legitimate queue structure instead of a standard\n  // array if we wanted to optimize our `.shift() operations.`\n  const queue: Array<[BinaryTree, number]> = [[targetNode, 0]];\n  const seen = new Set([targetNode.value]);\n  while (queue.length > 0) {\n    const [currentNode, distanceFromTarget] = queue.shift()!;\n\n    if (distanceFromTarget === k) {\n      const nodesDistanceK = queue.map(pair => pair[0].value);\n      nodesDistanceK.push(currentNode.value);\n      return nodesDistanceK;\n    }\n\n    const connectedNodes = [currentNode.left, currentNode.right, nodesToParents[currentNode.value]];\n    for (const node of connectedNodes) {\n      if (node === null) continue;\n\n      if (seen.has(node.value)) continue;\n\n      seen.add(node.value);\n      queue.push([node, distanceFromTarget + 1]);\n    }\n  }\n\n  return [];\n}\n\nfunction getNodeFromValue(value: number, tree: BinaryTree, nodesToParents: NodesToParents) {\n  if (tree.value === value) return tree;\n\n  const nodeParent = nodesToParents[value]!;\n  if (nodeParent.left !== null && nodeParent.left.value === value) return nodeParent.left;\n\n  return nodeParent.right!;\n}\n\nfunction populateNodesToParents(\n  node: BinaryTree | null,\n  nodesToParents: NodesToParents,\n  parent: BinaryTree | null = null,\n) {\n  if (node !== null) {\n    nodesToParents[node.value] = parent;\n    populateNodesToParents(node.left, nodesToParents, node);\n    populateNodesToParents(node.right, nodesToParents, node);\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// This is an input class. Do not edit.\nexport class BinaryTree {\n  value: number;\n  left: BinaryTree | null;\n  right: BinaryTree | null;\n\n  constructor(value: number) {\n    this.value = value;\n    this.left = null;\n    this.right = null;\n  }\n}\n\n// O(n) time | O(n) space - where n is the number of nodes in the tree\nexport function findNodesDistanceK(tree: BinaryTree, target: number, k: number) {\n  const nodesDistanceK: number[] = [];\n  findDistanceFromNodeToTarget(tree, target, k, nodesDistanceK);\n  return nodesDistanceK;\n}\n\nfunction findDistanceFromNodeToTarget(\n  node: BinaryTree | null,\n  target: number,\n  k: number,\n  nodesDistanceK: number[],\n): number {\n  if (node === null) return -1;\n\n  if (node.value === target) {\n    addSubtreeNodeAtDistanceK(node, 0, k, nodesDistanceK);\n    return 1;\n  }\n\n  const leftDistance = findDistanceFromNodeToTarget(node.left, target, k, nodesDistanceK);\n  const rightDistance = findDistanceFromNodeToTarget(node.right, target, k, nodesDistanceK);\n\n  if (leftDistance === k || rightDistance === k) nodesDistanceK.push(node.value);\n\n  if (leftDistance !== -1) {\n    addSubtreeNodeAtDistanceK(node.right, leftDistance + 1, k, nodesDistanceK);\n    return leftDistance + 1;\n  }\n\n  if (rightDistance !== -1) {\n    addSubtreeNodeAtDistanceK(node.left, rightDistance + 1, k, nodesDistanceK);\n    return rightDistance + 1;\n  }\n\n  return -1;\n}\n\nfunction addSubtreeNodeAtDistanceK(\n  node: BinaryTree | null,\n  distance: number,\n  k: number,\n  nodesDistanceK: number[],\n) {\n  if (node === null) return;\n\n  if (distance === k) nodesDistanceK.push(node.value);\n  else {\n    addSubtreeNodeAtDistanceK(node.left, distance + 1, k, nodesDistanceK);\n    addSubtreeNodeAtDistanceK(node.right, distance + 1, k, nodesDistanceK);\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const root = new program.BinaryTree(1);\n  root.left = new program.BinaryTree(2);\n  root.right = new program.BinaryTree(3);\n  root.left.left = new program.BinaryTree(4);\n  root.left.right = new program.BinaryTree(5);\n  root.right.right = new program.BinaryTree(6);\n  root.right.right.left = new program.BinaryTree(7);\n  root.right.right.right = new program.BinaryTree(8);\n  const target = 3;\n  const k = 2;\n  const expected = [2, 7, 8];\n  const actual = program.findNodesDistanceK(root, target, k);\n  actual.sort();\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const root = new program.BinaryTree(1);\n  root.left = new program.BinaryTree(2);\n  root.right = new program.BinaryTree(3);\n  root.left.left = new program.BinaryTree(4);\n  root.left.right = new program.BinaryTree(5);\n  root.right.right = new program.BinaryTree(6);\n  root.right.right.left = new program.BinaryTree(7);\n  root.right.right.right = new program.BinaryTree(8);\n  const target = 3;\n  const k = 2;\n  const expected = [2, 7, 8];\n  const actual = program.findNodesDistanceK(root, target, k);\n  actual.sort();\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "tree",
+            "example": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": "5",
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": null,
+                        "right": "6",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": null,
+                        "right": null,
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": "7",
+                        "right": "8",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": null,
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "left": null,
+                        "right": null,
+                        "value": 8
+                    }
+                ],
+                "root": "1"
+            },
+            "schema": {
+                "description": "A Binary Tree is represented by a list of <span>nodes</span> and a <span>root</span> node. Every node has to\nhave a unique string <span>id</span> that will be referenced by other nodes' <span>left</span> and <span>right</span>\npointers and by the <span>root</span>.\n",
+                "properties": {
+                    "nodes": {
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "left": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "right": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "value": {
+                                    "type": "integer"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "value",
+                                "left",
+                                "right"
+                            ],
+                            "type": "object"
+                        },
+                        "type": "array"
+                    },
+                    "root": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "root",
+                    "nodes"
+                ],
+                "type": "object"
+            }
+        },
+        {
+            "name": "target",
+            "example": 3,
+            "schema": {
+                "type": "integer"
+            }
+        },
+        {
+            "name": "k",
+            "example": 2,
+            "schema": {
+                "minimum": 1,
+                "type": "integer"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "k": 2,
+            "target": 3,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": "5",
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": null,
+                        "right": "6",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": null,
+                        "right": null,
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": "7",
+                        "right": "8",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": null,
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "left": null,
+                        "right": null,
+                        "value": 8
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 3,
+            "target": 2,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": null,
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "3",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": "4",
+                        "right": null,
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": "5",
+                        "right": null,
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 6,
+            "target": 8,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": "5",
+                        "right": "6",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": null,
+                        "right": null,
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": null,
+                        "right": "7",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": "8",
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "left": null,
+                        "right": null,
+                        "value": 8
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 1,
+            "target": 3,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": "5",
+                        "right": "6",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": null,
+                        "right": null,
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": null,
+                        "right": "7",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": "8",
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "left": null,
+                        "right": null,
+                        "value": 8
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 2,
+            "target": 1,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": "5",
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": "6",
+                        "right": "7",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": null,
+                        "right": null,
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": null,
+                        "right": null,
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": null,
+                        "value": 7
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 2,
+            "target": 8,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": "5",
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": "6",
+                        "right": "7",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": "8",
+                        "right": "9",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": null,
+                        "right": null,
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": null,
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "left": null,
+                        "right": null,
+                        "value": 8
+                    },
+                    {
+                        "id": "9",
+                        "left": null,
+                        "right": null,
+                        "value": 9
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 6,
+            "target": 6,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": null,
+                        "right": "5",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": "6",
+                        "right": null,
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": "7",
+                        "right": "8",
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": null,
+                        "right": null,
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": null,
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "left": null,
+                        "right": null,
+                        "value": 8
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 1,
+            "target": 1,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": null,
+                        "right": null,
+                        "value": 1
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 17,
+            "target": 6,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": null,
+                        "right": "5",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": "6",
+                        "right": null,
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": "7",
+                        "right": "8",
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": null,
+                        "right": null,
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": null,
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "left": null,
+                        "right": null,
+                        "value": 8
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 2,
+            "target": 2,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": "5",
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": "6",
+                        "right": "7",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": "8",
+                        "right": "9",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": "10",
+                        "right": "11",
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": "12",
+                        "right": "13",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": null,
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "left": null,
+                        "right": null,
+                        "value": 8
+                    },
+                    {
+                        "id": "9",
+                        "left": null,
+                        "right": null,
+                        "value": 9
+                    },
+                    {
+                        "id": "10",
+                        "left": null,
+                        "right": null,
+                        "value": 10
+                    },
+                    {
+                        "id": "11",
+                        "left": null,
+                        "right": null,
+                        "value": 11
+                    },
+                    {
+                        "id": "12",
+                        "left": null,
+                        "right": null,
+                        "value": 12
+                    },
+                    {
+                        "id": "13",
+                        "left": null,
+                        "right": null,
+                        "value": 13
+                    }
+                ],
+                "root": "1"
+            }
+        }
+    ],
+    "jsonTests": [
+        {
+            "k": 2,
+            "target": 3,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": "5",
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": null,
+                        "right": "6",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": null,
+                        "right": null,
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": "7",
+                        "right": "8",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": null,
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "left": null,
+                        "right": null,
+                        "value": 8
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 3,
+            "target": 2,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": null,
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "3",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": "4",
+                        "right": null,
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": "5",
+                        "right": null,
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 6,
+            "target": 8,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": "5",
+                        "right": "6",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": null,
+                        "right": null,
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": null,
+                        "right": "7",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": "8",
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "left": null,
+                        "right": null,
+                        "value": 8
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 1,
+            "target": 3,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": "5",
+                        "right": "6",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": null,
+                        "right": null,
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": null,
+                        "right": "7",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": "8",
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "left": null,
+                        "right": null,
+                        "value": 8
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 2,
+            "target": 1,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": "5",
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": "6",
+                        "right": "7",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": null,
+                        "right": null,
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": null,
+                        "right": null,
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": null,
+                        "value": 7
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 2,
+            "target": 8,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": "5",
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": "6",
+                        "right": "7",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": "8",
+                        "right": "9",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": null,
+                        "right": null,
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": null,
+                        "right": null,
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": null,
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "left": null,
+                        "right": null,
+                        "value": 8
+                    },
+                    {
+                        "id": "9",
+                        "left": null,
+                        "right": null,
+                        "value": 9
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 6,
+            "target": 6,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": null,
+                        "right": "5",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": "6",
+                        "right": null,
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": "7",
+                        "right": "8",
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": null,
+                        "right": null,
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": null,
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "left": null,
+                        "right": null,
+                        "value": 8
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 1,
+            "target": 1,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": null,
+                        "right": null,
+                        "value": 1
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 17,
+            "target": 6,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": null,
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": null,
+                        "right": "5",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": "6",
+                        "right": null,
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": "7",
+                        "right": "8",
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": null,
+                        "right": null,
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": null,
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "left": null,
+                        "right": null,
+                        "value": 8
+                    }
+                ],
+                "root": "1"
+            }
+        },
+        {
+            "k": 2,
+            "target": 2,
+            "tree": {
+                "nodes": [
+                    {
+                        "id": "1",
+                        "left": "2",
+                        "right": "3",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "left": "4",
+                        "right": "5",
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "left": "6",
+                        "right": "7",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "left": "8",
+                        "right": "9",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "left": "10",
+                        "right": "11",
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "left": "12",
+                        "right": "13",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "left": null,
+                        "right": null,
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "left": null,
+                        "right": null,
+                        "value": 8
+                    },
+                    {
+                        "id": "9",
+                        "left": null,
+                        "right": null,
+                        "value": 9
+                    },
+                    {
+                        "id": "10",
+                        "left": null,
+                        "right": null,
+                        "value": 10
+                    },
+                    {
+                        "id": "11",
+                        "left": null,
+                        "right": null,
+                        "value": 11
+                    },
+                    {
+                        "id": "12",
+                        "left": null,
+                        "right": null,
+                        "value": 12
+                    },
+                    {
+                        "id": "13",
+                        "left": null,
+                        "right": null,
+                        "value": 13
+                    }
+                ],
+                "root": "1"
+            }
+        }
+    ],
+    "changelog": []
+}

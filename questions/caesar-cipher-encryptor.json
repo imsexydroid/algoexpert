@@ -1,0 +1,300 @@
+{
+    "uid": "caesar-cipher-encryptor",
+    "testStrategy": "JSON",
+    "name": "Caesar Cipher Encryptor",
+    "version": 0,
+    "releaseDate": "2000-05-04T00:00:00Z",
+    "category": "Strings",
+    "difficulty": 1,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 63336,
+        "failureCount": 20730
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "225759200",
+        "duration": 0,
+        "annotations": [
+            {
+                "title": "Incorrect Formula",
+                "content": "See the notes below video for details.",
+                "start": 768,
+                "end": 774
+            },
+            {
+                "title": "Incorrect Formula",
+                "content": "See the notes below video for details.",
+                "start": 1257,
+                "end": 1263
+            }
+        ],
+        "instructor": "Clement Mihailescu",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 979
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Given a non-empty string of lowercase letters and a non-negative integer\n  representing a key, write a function that returns a new string obtained by\n  shifting every letter in the input string by k positions in the alphabet,\n  where k is the key.\n</p>\n<p>\n  Note that letters should \"wrap\" around the alphabet; in other words, the\n  letter <span>z</span> shifted by one returns the letter <span>a</span>.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">string</span> = \"xyz\"\n<span class=\"CodeEditor-promptParameter\">key</span> = 2\n</pre>\n<h3>Sample Output</h3>\n<pre>\n\"zab\"\n</pre>\n</div>",
+    "hints": [
+        "<p>\nMost languages have built-in functions that give you the Unicode value of a character as well as the character corresponding to a Unicode value. Consider using such functions to determine which letters the input string's letters should be mapped to.\n</p>\n",
+        "\n<p>\nTry creating your own mapping of letters to codes. In other words, try associating each letter in the alphabet with a specific number - its position in the alphabet, for instance - and using that to determine which letters the input string's letters should be mapped to.\n</p>\n",
+        "\n<p>\nHow do you handle cases where a letter gets shifted to a position that requires wrapping around the alphabet? What about cases where the key is very large and causes multiple wrappings around the alphabet? The modulo operator should be your friend here.\n</p>"
+    ],
+    "spaceTime": "O(n) time | O(n) space - where n is the length of the input string",
+    "notes": "<div class=\"html\">\n<p>\n  For <b>Solution 2</b> of this problem, in the video explanation, we update the\n  <span>newLetterCode</span> with the following formula if it's greater than\n  <span>25</span>:\n</p>\n<pre>\n-1 + newLetterCode % 25\n</pre>\n<p>\n  This logic is actually flawed, because if\n  <span>newLetterCode % 25</span> happens to be equal to <span>0</span>, then\n  we'll be accessing a letter in the <span>alphabet</span> at index\n  <span>-1</span>, which will throw an error in a lot of languages or simply\n  return an incorrect answer in other languages.\n</p>\n<p>\n  For example, this edge-case issue will occur with these inputs:\n</p>\n<pre>\n<span class=\"CodeEditor-promptParameter\">string</span> = \"z\"\n<span class=\"CodeEditor-promptParameter\">key</span> = 25\n</pre>\n<p>\n  Instead, we need to use the following formula if the\n  <span>newLetterCode</span> is greater than <span>25</span>:\n</p>\n<pre>\nnewLetterCode % 26\n</pre>\n<p class=\"CodeEditor-notesQuestion\">\n  Why isn't this an issue in <b>Solution 1</b>?\n</p>\n<p>In <b>Solution 1</b>, our formula is:</p>\n<pre>\n96 + newLetterCode % 122\n</pre>\n<p>\n  Since we only actually apply this formula if <span>newLetterCode</span> is\n  greater than 122, and since the key that's used to initially compute\n  <span>newLetterCode</span> is always less than <span>26</span> (because it's\n  modded by <span>26</span> at the beginning of the algorithm), we know that\n  <span>newLetterCode % 122</span> will never be equal to <span>0</span> (<span\n    >newLetterCode</span\n  >\n  will always be between <span>123</span> and <span>147</span>).\n</p>\n<p>\n  Thus, we'll never compute a character from the char code <span>96</span>,\n  which would be equivalent to accessing a letter at index <span>-1</span> in\n  <b>Solution 2</b>.\n</p>\n</div>",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nstring caesarCypherEncryptor(string str, int key) {\n  // Write your code here.\n  return \"\";\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <numeric>\n#include <vector>\nusing namespace std;\n\nchar getNewLetter(char letter, int key);\n\n// O(n) time | O(n) space\nstring caesarCypherEncryptor(string str, int key) {\n  vector<char> newLetters;\n  int newKey = key % 26;\n  for (int i = 0; i < str.length(); i++) {\n    newLetters.push_back(getNewLetter(str[i], newKey));\n  }\n  return string(newLetters.begin(), newLetters.end());\n}\n\nchar getNewLetter(char letter, int key) {\n  int newLetterCode = letter + key;\n  return newLetterCode <= 122 ? newLetterCode : 96 + newLetterCode % 122;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <numeric>\n#include <vector>\nusing namespace std;\n\nchar getNewLetter(char letter, int key, string alphabet);\n\n// O(n) time | O(n) space\nstring caesarCypherEncryptor(string str, int key) {\n  vector<char> newLetters;\n  int newKey = key % 26;\n  string alphabet = \"abcdefghijklmnopqrstuvwxyz\";\n  for (int i = 0; i < str.length(); i++) {\n    newLetters.push_back(getNewLetter(str[i], newKey, alphabet));\n  }\n  return string(newLetters.begin(), newLetters.end());\n}\n\nchar getNewLetter(char letter, int key, string alphabet) {\n  int newLetterCode = alphabet.find(letter) + key;\n  return alphabet[newLetterCode % 26];\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      assert(caesarCypherEncryptor(\"xyz\", 2) == \"zab\");\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      assert(caesarCypherEncryptor(\"xyz\", 2) == \"zab\");\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public static string CaesarCypherEncryptor(string str, int key) {\n    // Write your code here.\n    return \"\";\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npublic class Program {\n  // O(n) time | O(n) space\n  public static string CaesarCypherEncryptor(string str, int key) {\n    char[] newLetters = new char[str.Length];\n    int newKey = key % 26;\n    for (int i = 0; i < str.Length; i++) {\n      newLetters[i] = getNewLetter(str[i], newKey);\n    }\n    return new string(newLetters);\n  }\n\n  public static char getNewLetter(char letter, int key) {\n    int newLetterCode = letter + key;\n    return newLetterCode <= 122 ? (char)newLetterCode\n                                : (char)(96 + newLetterCode % 122);\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npublic class Program {\n  // O(n) time | O(n) space\n  public static string CaesarCypherEncryptor(string str, int key) {\n    char[] newLetters = new char[str.Length];\n    int newKey = key % 26;\n    string alphabet = \"abcdefghijklmnopqrstuvwxyz\";\n    for (int i = 0; i < str.Length; i++) {\n      newLetters[i] = getNewLetter(str[i], newKey, alphabet);\n    }\n    return new string(newLetters);\n  }\n\n  public static char getNewLetter(char letter, int key, string alphabet) {\n    int newLetterCode = alphabet.IndexOf(letter) + key;\n    return alphabet[newLetterCode % 26];\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    Utils.AssertTrue(Program.CaesarCypherEncryptor(\"xyz\", 2).Equals(\"zab\"));\n  }\n}\n",
+            "unitTests": "public class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    Utils.AssertTrue(Program.CaesarCypherEncryptor(\"xyz\", 2).Equals(\"zab\"));\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc CaesarCipherEncryptor(str string, key int) string {\n\t// Write your code here.\n\treturn \"\"\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n) time | O(n) space\nfunc CaesarCipherEncryptor(str string, key int) string {\n\tshift, offset := rune(key%26), rune(26)\n\trunes := []rune(str)\n\tfor i, char := range runes {\n\t\tif char >= 'a' && char+shift <= 'z' {\n\t\t\tchar += shift\n\t\t} else {\n\t\t\tchar += shift - offset\n\t\t}\n\t\trunes[i] = char\n\t}\n\treturn string(runes)\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport (\n\t\"strings\"\n)\n\n// O(n) time | O(n) space\nfunc CaesarCipherEncryptor(str string, key int) string {\n\trunes := []rune(str)\n\talphabet := \"abcdefghijklmnopqrstuvwxyz\"\n\tfor i, char := range runes {\n\t\tindex := strings.Index(alphabet, string(char))\n\t\tif index == -1 {\n\t\t\treturn \"\" // Bad input\n\t\t}\n\t\tnewindex := (index + key) % 26\n\t\trunes[i] = rune(alphabet[newindex])\n\t}\n\treturn string(runes)\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\texpected := \"zab\"\n\toutput := CaesarCipherEncryptor(\"xyz\", 2)\n\trequire.Equal(t, expected, output)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\texpected := \"zab\"\n\toutput := CaesarCipherEncryptor(\"xyz\", 2)\n\trequire.Equal(t, expected, output)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public static String caesarCypherEncryptor(String str, int key) {\n    // Write your code here.\n    return \"\";\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(n) space\n  public static String caesarCypherEncryptor(String str, int key) {\n    char[] newLetters = new char[str.length()];\n    int newKey = key % 26;\n    for (int i = 0; i < str.length(); i++) {\n      newLetters[i] = getNewLetter(str.charAt(i), newKey);\n    }\n    return new String(newLetters);\n  }\n\n  public static char getNewLetter(char letter, int key) {\n    int newLetterCode = letter + key;\n    return newLetterCode <= 122 ? (char) newLetterCode\n                                : (char) (96 + newLetterCode % 122);\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(n) space\n  public static String caesarCypherEncryptor(String str, int key) {\n    char[] newLetters = new char[str.length()];\n    int newKey = key % 26;\n    String alphabet = \"abcdefghijklmnopqrstuvwxyz\";\n    for (int i = 0; i < str.length(); i++) {\n      newLetters[i] = getNewLetter(str.charAt(i), newKey, alphabet);\n    }\n    return new String(newLetters);\n  }\n\n  public static char getNewLetter(char letter, int key, String alphabet) {\n    int newLetterCode = alphabet.indexOf(letter) + key;\n    return alphabet.charAt(newLetterCode % 26);\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    Utils.assertTrue(Program.caesarCypherEncryptor(\"xyz\", 2).equals(\"zab\"));\n  }\n}\n",
+            "unitTests": "class ProgramTest {\n  @Test\n  public void TestCase1() {\n    Utils.assertTrue(Program.caesarCypherEncryptor(\"xyz\", 2).equals(\"zab\"));\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function caesarCipherEncryptor(string, key) {\n  // Write your code here.\n}\n\n// Do not edit the line below.\nexports.caesarCipherEncryptor = caesarCipherEncryptor;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space\nfunction caesarCipherEncryptor(string, key) {\n  const newLetters = [];\n  const newKey = key % 26;\n  for (const letter of string) {\n    newLetters.push(getNewLetter(letter, newKey));\n  }\n  return newLetters.join('');\n}\n\nfunction getNewLetter(letter, key) {\n  const newLetterCode = letter.charCodeAt() + key;\n  return newLetterCode <= 122\n    ? String.fromCharCode(newLetterCode)\n    : String.fromCharCode(96 + (newLetterCode % 122));\n}\n\nexports.caesarCipherEncryptor = caesarCipherEncryptor;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space\nfunction caesarCipherEncryptor(string, key) {\n  const newLetters = [];\n  const newKey = key % 26;\n  const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');\n  for (const letter of string) {\n    newLetters.push(getNewLetter(letter, newKey, alphabet));\n  }\n  return newLetters.join('');\n}\n\nfunction getNewLetter(letter, key, alphabet) {\n  const newLetterCode = alphabet.indexOf(letter) + key;\n  return alphabet[newLetterCode % 26];\n}\n\nexports.caesarCipherEncryptor = caesarCipherEncryptor;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  chai.expect(program.caesarCipherEncryptor('xyz', 2)).to.deep.equal('zab');\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  chai.expect(program.caesarCipherEncryptor('xyz', 2)).to.deep.equal('zab');\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun caesarCipherEncryptor(string: String, key: Int): String {\n    // Write your code here.\n    return \"\"\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n) time | O(n) space\nfun caesarCipherEncryptor(string: String, key: Int): String {\n    val newLetters = mutableListOf<Char>()\n    val newKey = key % 26\n    for (letter in string) {\n        newLetters.add(getNewLetter(letter, newKey))\n    }\n    return newLetters.joinToString(\"\")\n}\n\nfun getNewLetter(letter: Char, key: Int): Char {\n    val newLetterCode = letter.toInt() + key\n    return if (newLetterCode <= 122) newLetterCode.toChar() else (96 + newLetterCode % 122).toChar()\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n) time | O(n) space\nfun caesarCipherEncryptor(string: String, key: Int): String {\n    val newLetters = mutableListOf<Char>()\n    val newKey = key % 26\n    val alphabet = \"abcdefghijklmnopqrstuvwxyz\".toCharArray()\n    for (letter in string) {\n        newLetters.add(getNewLetter(letter, newKey, alphabet))\n    }\n    return newLetters.joinToString(\"\")\n}\n\nfun getNewLetter(letter: Char, key: Int, alphabet: CharArray): Char {\n    val newLetterCode = alphabet.indexOf(letter) + key\n    return alphabet[newLetterCode % 26]\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.caesarCipherEncryptor as caesarCipherEncryptor\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        assert(caesarCipherEncryptor(\"xyz\", 2) == \"zab\")\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.caesarCipherEncryptor as caesarCipherEncryptor\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        assert(caesarCipherEncryptor(\"xyz\", 2) == \"zab\")\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def caesarCipherEncryptor(string, key):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(n) space\ndef caesarCipherEncryptor(string, key):\n    newLetters = []\n    newKey = key % 26\n    for letter in string:\n        newLetters.append(getNewLetter(letter, newKey))\n    return \"\".join(newLetters)\n\n\ndef getNewLetter(letter, key):\n    newLetterCode = ord(letter) + key\n    return chr(newLetterCode) if newLetterCode <= 122 else chr(96 + newLetterCode % 122)\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(n) space\ndef caesarCipherEncryptor(string, key):\n    newLetters = []\n    newKey = key % 26\n    alphabet = list(\"abcdefghijklmnopqrstuvwxyz\")\n    for letter in string:\n        newLetters.append(getNewLetter(letter, newKey, alphabet))\n    return \"\".join(newLetters)\n\n\ndef getNewLetter(letter, key, alphabet):\n    newLetterCode = alphabet.index(letter) + key\n    return alphabet[newLetterCode % 26]\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        self.assertEqual(program.caesarCipherEncryptor(\"xyz\", 2), \"zab\")\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        self.assertEqual(program.caesarCipherEncryptor(\"xyz\", 2), \"zab\")\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  def caesarCipherEncryptor(string, key)\n    # Write your code here.\n    return \"\"\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def caesarCipherEncryptor(string, key)\n    # Write your code here.\n    return \"\"\n  end\nend\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def caesarCipherEncryptor(string, key)\n    # Write your code here.\n    return \"\"\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.caesarCipherEncryptor\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.caesarCipherEncryptor\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func caesarCipherEncryptor(string: String, key: UInt32) -> String {\n    // Write your code here.\n    return \"\"\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(n) space\n  func caesarCipherEncryptor(string: String, key: UInt32) -> String {\n    var newLetters = [Character]()\n    let newKey = key % 26\n\n    for letter in string {\n      newLetters.append(getNewLetter(letter, newKey))\n    }\n\n    return String(newLetters)\n  }\n\n  func getNewLetter(_ letter: Character, _ key: UInt32) -> Character {\n    let newLetterCode = letter.unicodeScalars.first!.value + key\n\n    let code: UnicodeScalar?\n\n    if newLetterCode <= 122 {\n      code = UnicodeScalar(newLetterCode)\n    } else {\n      code = UnicodeScalar(96 + newLetterCode % 122)\n    }\n\n    return Character(code!)\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(n) space\n  func caesarCipherEncryptor(string: String, key: UInt32) -> String {\n    var newLetters = [Character]()\n    let newKey = key % 26\n\n    let alphabet = Array(\"abcdefghijklmnopqrstuvwxyz\")\n\n    for letter in string {\n      newLetters.append(getNewLetter(letter, newKey, alphabet))\n    }\n\n    return String(newLetters)\n  }\n\n  func getNewLetter(_ letter: Character, _ key: UInt32, _ alphabet: [Character]) -> Character {\n    let newLetterCode = alphabet.firstIndex(of: letter)! + Int(key)\n    return alphabet[newLetterCode % 26]\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws -> Void in\n      try assertEqual(\"zab\", program.caesarCipherEncryptor(string: \"xyz\", key: 2))\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws -> Void in\n      try assertEqual(\"zab\", program.caesarCipherEncryptor(string: \"xyz\", key: 2))\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function caesarCipherEncryptor(string: string, key: number) {\n  // Write your code here.\n  return '';\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space\nexport function caesarCipherEncryptor(string: string, key: number) {\n  const newLetters = [];\n  const newKey = key % 26;\n  for (const letter of string) {\n    newLetters.push(getNewLetter(letter, newKey));\n  }\n  return newLetters.join('');\n}\n\nfunction getNewLetter(letter: string, key: number) {\n  const newLetterCode = letter.charCodeAt(0) + key;\n  return newLetterCode <= 122\n    ? String.fromCharCode(newLetterCode)\n    : String.fromCharCode(96 + (newLetterCode % 122));\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space\nexport function caesarCipherEncryptor(string: string, key: number) {\n  const newLetters = [];\n  const newKey = key % 26;\n  const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');\n  for (const letter of string) {\n    newLetters.push(getNewLetter(letter, newKey, alphabet));\n  }\n  return newLetters.join('');\n}\n\nfunction getNewLetter(letter: string, key: number, alphabet: string[]) {\n  const newLetterCode = alphabet.indexOf(letter) + key;\n  return alphabet[newLetterCode % 26];\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  chai.expect(program.caesarCipherEncryptor('xyz', 2)).to.deep.equal('zab');\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  chai.expect(program.caesarCipherEncryptor('xyz', 2)).to.deep.equal('zab');\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "string",
+            "example": "xyz",
+            "schema": {
+                "minLength": 1,
+                "pattern": "^[a-z]+$",
+                "type": "string"
+            }
+        },
+        {
+            "name": "key",
+            "example": 2,
+            "schema": {
+                "minimum": 0,
+                "type": "integer"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "key": 2,
+            "string": "xyz"
+        },
+        {
+            "key": 0,
+            "string": "abc"
+        },
+        {
+            "key": 3,
+            "string": "abc"
+        },
+        {
+            "key": 5,
+            "string": "xyz"
+        },
+        {
+            "key": 26,
+            "string": "abc"
+        },
+        {
+            "key": 52,
+            "string": "abc"
+        },
+        {
+            "key": 57,
+            "string": "abc"
+        },
+        {
+            "key": 25,
+            "string": "xyz"
+        },
+        {
+            "key": 25,
+            "string": "iwufqnkqkqoolxzzlzihqfm"
+        },
+        {
+            "key": 52,
+            "string": "ovmqkwtujqmfkao"
+        },
+        {
+            "key": 7,
+            "string": "mvklahvjcnbwqvtutmfafkwiuagjkzmzwgf"
+        },
+        {
+            "key": 15,
+            "string": "kjwmntauvjjnmsagwgawkagfuaugjhawgnawgjhawjgawbfawghesh"
+        }
+    ],
+    "jsonTests": [
+        {
+            "key": 2,
+            "string": "xyz"
+        },
+        {
+            "key": 0,
+            "string": "abc"
+        },
+        {
+            "key": 3,
+            "string": "abc"
+        },
+        {
+            "key": 5,
+            "string": "xyz"
+        },
+        {
+            "key": 26,
+            "string": "abc"
+        },
+        {
+            "key": 52,
+            "string": "abc"
+        },
+        {
+            "key": 57,
+            "string": "abc"
+        },
+        {
+            "key": 25,
+            "string": "xyz"
+        },
+        {
+            "key": 25,
+            "string": "iwufqnkqkqoolxzzlzihqfm"
+        },
+        {
+            "key": 52,
+            "string": "ovmqkwtujqmfkao"
+        },
+        {
+            "key": 7,
+            "string": "mvklahvjcnbwqvtutmfafkwiuagjkzmzwgf"
+        },
+        {
+            "key": 15,
+            "string": "kjwmntauvjjnmsagwgawkagfuaugjhawgnawgjhawjgawbfawghesh"
+        }
+    ],
+    "changelog": []
+}

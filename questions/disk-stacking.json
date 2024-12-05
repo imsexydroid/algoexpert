@@ -1,0 +1,723 @@
+{
+    "uid": "disk-stacking",
+    "testStrategy": "JSON",
+    "name": "Disk Stacking",
+    "version": 0,
+    "releaseDate": "2000-05-04T00:00:00Z",
+    "category": "Dynamic Programming",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 9964,
+        "failureCount": 3339
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "225712087",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Clement Mihailescu",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1603
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  You're given a non-empty array of arrays where each subarray holds three\n  integers and represents a disk. These integers denote each disk's width,\n  depth, and height, respectively. Your goal is to stack up the disks and to\n  maximize the total height of the stack. A disk must have a strictly smaller\n  width, depth, and height than any other disk below it.\n</p>\n<p>\n  Write a function that returns an array of the disks in the final stack,\n  starting with the top disk and ending with the bottom disk. Note that you\n  can't rotate disks; in other words, the integers in each subarray must\n  represent <span>[width, depth, height]</span> at all times.\n</p>\n<p>\n  You can assume that there will only be one stack with the greatest total\n  height.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">disks</span> = [[2, 1, 2], [3, 2, 3], [2, 2, 8], [2, 3, 4], [1, 3, 1], [4, 4, 5]]\n</pre>\n<h3>Sample Output</h3>\n<pre>\n[[2, 1, 2], [3, 2, 3], [4, 4, 5]]\n<span class=\"CodeEditor-promptComment\">// 10 (2 + 3 + 5) is the tallest height we can get by</span>\n<span class=\"CodeEditor-promptComment\">// stacking disks following the rules laid out above.</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\nTry building an array of the same length as the array of disks. At each index i in this new array, store the height of the tallest tower that can be created with the disk located at index i at the bottom.\n</p>\n",
+        "\n<p>\nConsider sorting the disks by width, depth, or height for a slight optimization.\n</p>\n",
+        "\n<p>\nCan you efficiently keep track of potential towers in another array? Instead of storing entire sequences of disks, try storing the indices of previous disks. For example, at index 3 in this other array, store the index of the before-last disk in the tallest tower whose base is the disk at index 3.\n</p>"
+    ],
+    "spaceTime": "O(n^2) time | O(n) space - where n is the number of disks",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\nusing namespace std;\n\nvector<vector<int>> diskStacking(vector<vector<int>> disks) {\n  // Write your code here.\n  return {};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n#include <climits>\n#include <vector>\nusing namespace std;\n\nbool areValidDimensions(vector<int> o, vector<int> c);\nvector<vector<int>> buildSequence(\n  vector<vector<int>> array, vector<int> sequences, int currentIdx\n);\n\n// O(n^2) time | O(n) space\nvector<vector<int>> diskStacking(vector<vector<int>> disks) {\n  sort(disks.begin(), disks.end(), [](vector<int>& a, vector<int>& b) {\n    return a[2] < b[2];\n  });\n  vector<int> heights;\n  for (int i = 0; i < disks.size(); i++) {\n    heights.push_back(disks[i][2]);\n  }\n  vector<int> sequences;\n  for (int i = 0; i < disks.size(); i++) {\n    sequences.push_back(INT_MIN);\n  }\n  int maxHeightIdx = 0;\n  for (int i = 1; i < disks.size(); i++) {\n    vector<int> currentDisk = disks[i];\n    for (int j = 0; j < i; j++) {\n      vector<int> otherDisk = disks[j];\n      if (areValidDimensions(otherDisk, currentDisk)) {\n        if (heights[i] <= currentDisk[2] + heights[j]) {\n          heights[i] = currentDisk[2] + heights[j];\n          sequences[i] = j;\n        }\n      }\n    }\n    if (heights[i] >= heights[maxHeightIdx]) {\n      maxHeightIdx = i;\n    }\n  }\n  return buildSequence(disks, sequences, maxHeightIdx);\n}\n\nbool areValidDimensions(vector<int> o, vector<int> c) {\n  return o[0] < c[0] && o[1] < c[1] && o[2] < c[2];\n}\n\nvector<vector<int>> buildSequence(\n  vector<vector<int>> array, vector<int> sequences, int currentIdx\n) {\n  vector<vector<int>> sequence;\n  while (currentIdx != INT_MIN) {\n    sequence.insert(sequence.begin(), array[currentIdx]);\n    currentIdx = sequences[currentIdx];\n  }\n  return sequence;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> input{\n        {2, 1, 2}, {3, 2, 3}, {2, 2, 8}, {2, 3, 4}, {2, 2, 1}, {4, 4, 5}};\n      vector<vector<int>> expected{{2, 1, 2}, {3, 2, 3}, {4, 4, 5}};\n      assert(diskStacking(input) == expected);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> input{\n        {2, 1, 2}, {3, 2, 3}, {2, 2, 8}, {2, 3, 4}, {2, 2, 1}, {4, 4, 5}};\n      vector<vector<int>> expected{{2, 1, 2}, {3, 2, 3}, {4, 4, 5}};\n      assert(diskStacking(input) == expected);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\nusing System.Collections.Generic;\n\npublic class Program {\n  public static List<int[]> DiskStacking(List<int[]> disks) {\n    // Write your code here.\n    return new List<int[]>();\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\nusing System.Collections.Generic;\n\npublic class Program {\n  // O(n^2) time | O(n) space\n  public static List<int[]> DiskStacking(List<int[]> disks) {\n    disks.Sort((disk1, disk2) => disk1[2].CompareTo(disk2[2]));\n    int[] heights = new int[disks.Count];\n    for (int i = 0; i < disks.Count; i++) {\n      heights[i] = disks[i][2];\n    }\n    int[] sequences = new int[disks.Count];\n    for (int i = 0; i < disks.Count; i++) {\n      sequences[i] = Int32.MinValue;\n    }\n    int maxHeightIdx = 0;\n    for (int i = 1; i < disks.Count; i++) {\n      int[] currentDisk = disks[i];\n      for (int j = 0; j < i; j++) {\n        int[] otherDisk = disks[j];\n        if (areValidDimensions(otherDisk, currentDisk)) {\n          if (heights[i] <= currentDisk[2] + heights[j]) {\n            heights[i] = currentDisk[2] + heights[j];\n            sequences[i] = j;\n          }\n        }\n      }\n      if (heights[i] >= heights[maxHeightIdx]) {\n        maxHeightIdx = i;\n      }\n    }\n    return buildSequence(disks, sequences, maxHeightIdx);\n  }\n\n  public static bool areValidDimensions(int[] o, int[] c) {\n    return o[0] < c[0] && o[1] < c[1] && o[2] < c[2];\n  }\n\n  public static List<int[]> buildSequence(\n    List<int[]> array, int[] sequences, int currentIdx\n  ) {\n    List<int[]> sequence = new List<int[]>();\n    while (currentIdx != Int32.MinValue) {\n      sequence.Insert(0, array[currentIdx]);\n      currentIdx = sequences[currentIdx];\n    }\n    return sequence;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System.Collections.Generic;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    List<int[]> input = new List<int[]>();\n    input.Add(new int[] { 2, 1, 2 });\n    input.Add(new int[] { 3, 2, 3 });\n    input.Add(new int[] { 2, 2, 8 });\n    input.Add(new int[] { 2, 3, 4 });\n    input.Add(new int[] { 2, 2, 1 });\n    input.Add(new int[] { 4, 4, 5 });\n    List<int[]> expected = new List<int[]>();\n    expected.Add(new int[] { 2, 1, 2 });\n    expected.Add(new int[] { 3, 2, 3 });\n    expected.Add(new int[] { 4, 4, 5 });\n    Utils.AssertTrue(compare(Program.DiskStacking(input), expected));\n  }\n\n  private static bool compare(List<int[]> arr1, List<int[]> arr2) {\n    if (arr1.Count != arr2.Count) {\n      return false;\n    }\n    for (int i = 0; i < arr1.Count; i++) {\n      for (int j = 0; j < arr1[i].Length; j++) {\n        if (!arr1[i][j].Equals(arr2[i][j])) {\n          return false;\n        }\n      }\n    }\n    return true;\n  }\n}\n",
+            "unitTests": "using System.Collections.Generic;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    List<int[]> input = new List<int[]>();\n    input.Add(new int[] { 2, 1, 2 });\n    input.Add(new int[] { 3, 2, 3 });\n    input.Add(new int[] { 2, 2, 8 });\n    input.Add(new int[] { 2, 3, 4 });\n    input.Add(new int[] { 2, 2, 1 });\n    input.Add(new int[] { 4, 4, 5 });\n    List<int[]> expected = new List<int[]>();\n    expected.Add(new int[] { 2, 1, 2 });\n    expected.Add(new int[] { 3, 2, 3 });\n    expected.Add(new int[] { 4, 4, 5 });\n    Utils.AssertTrue(compare(Program.DiskStacking(input), expected));\n  }\n\n  private static bool compare(List<int[]> arr1, List<int[]> arr2) {\n    if (arr1.Count != arr2.Count) {\n      return false;\n    }\n    for (int i = 0; i < arr1.Count; i++) {\n      for (int j = 0; j < arr1[i].Length; j++) {\n        if (!arr1[i][j].Equals(arr2[i][j])) {\n          return false;\n        }\n      }\n    }\n    return true;\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc DiskStacking(disks [][]int) [][]int {\n\t// Write your code here.\n\treturn nil\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport \"sort\"\n\ntype Disk []int\ntype Disks []Disk\n\nfunc (disks Disks) Len() int           { return len(disks) }\nfunc (disks Disks) Swap(i, j int)      { disks[i], disks[j] = disks[j], disks[i] }\nfunc (disks Disks) Less(i, j int) bool { return disks[i][2] < disks[j][2] }\n\n// O(n^2) time | O(n) space\nfunc DiskStacking(input [][]int) [][]int {\n\tdisks := make(Disks, len(input))\n\tfor i, disk := range input {\n\t\tdisks[i] = disk\n\t}\n\tsort.Sort(disks)\n\theights := make([]int, len(disks))\n\tsequences := make([]int, len(disks))\n\tfor i := range disks {\n\t\theights[i] = disks[i][2]\n\t\tsequences[i] = -1\n\t}\n\tfor i := 1; i < len(disks); i++ {\n\t\tdisk := disks[i]\n\t\tfor j := 0; j < i; j++ {\n\t\t\tother := disks[j]\n\t\t\t// If the conditions of disk stacking are met\n\t\t\tif areValidDimensions(other, disk) {\n\t\t\t\t// If it's an increase in size\n\t\t\t\tif heights[i] <= disk[2]+heights[j] {\n\t\t\t\t\theights[i] = disk[2] + heights[j]\n\t\t\t\t\tsequences[i] = j\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\tmaxIndex := 0\n\tfor i, height := range heights {\n\t\tif height >= heights[maxIndex] {\n\t\t\tmaxIndex = i\n\t\t}\n\t}\n\tsequence := buildSequence(disks, sequences, maxIndex)\n\treturn sequence\n}\n\nfunc areValidDimensions(o Disk, c Disk) bool {\n\treturn o[0] < c[0] && o[1] < c[1] && o[2] < c[2]\n}\n\nfunc buildSequence(array []Disk, sequences []int, index int) [][]int {\n\tout := [][]int{}\n\tfor index != -1 {\n\t\tout = append(out, array[index])\n\t\tindex = sequences[index]\n\t}\n\treverse(out)\n\treturn out\n}\n\nfunc reverse(numbers [][]int) {\n\tfor i, j := 0, len(numbers)-1; i < j; i, j = i+1, j-1 {\n\t\tnumbers[i], numbers[j] = numbers[j], numbers[i]\n\t}\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\texpected := [][]int{{2, 1, 2}, {3, 2, 3}, {4, 4, 5}}\n\tinput := [][]int{{2, 1, 2}, {3, 2, 3}, {2, 2, 8}, {2, 3, 4}, {2, 2, 1}, {4, 4, 5}}\n\toutput := DiskStacking(input)\n\trequire.Equal(t, expected, output)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\texpected := [][]int{{2, 1, 2}, {3, 2, 3}, {4, 4, 5}}\n\tinput := [][]int{{2, 1, 2}, {3, 2, 3}, {2, 2, 8}, {2, 3, 4}, {2, 2, 1}, {4, 4, 5}}\n\toutput := DiskStacking(input)\n\trequire.Equal(t, expected, output)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public static List<Integer[]> diskStacking(List<Integer[]> disks) {\n    // Write your code here.\n    return new ArrayList<Integer[]>();\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n^2) time | O(n) space\n  public static List<Integer[]> diskStacking(List<Integer[]> disks) {\n    disks.sort((disk1, disk2) -> disk1[2].compareTo(disk2[2]));\n    int[] heights = new int[disks.size()];\n    for (int i = 0; i < disks.size(); i++) {\n      heights[i] = disks.get(i)[2];\n    }\n    int[] sequences = new int[disks.size()];\n    for (int i = 0; i < disks.size(); i++) {\n      sequences[i] = Integer.MIN_VALUE;\n    }\n    int maxHeightIdx = 0;\n    for (int i = 1; i < disks.size(); i++) {\n      Integer[] currentDisk = disks.get(i);\n      for (int j = 0; j < i; j++) {\n        Integer[] otherDisk = disks.get(j);\n        if (areValidDimensions(otherDisk, currentDisk)) {\n          if (heights[i] <= currentDisk[2] + heights[j]) {\n            heights[i] = currentDisk[2] + heights[j];\n            sequences[i] = j;\n          }\n        }\n      }\n      if (heights[i] >= heights[maxHeightIdx]) {\n        maxHeightIdx = i;\n      }\n    }\n    return buildSequence(disks, sequences, maxHeightIdx);\n  }\n\n  public static boolean areValidDimensions(Integer[] o, Integer[] c) {\n    return o[0] < c[0] && o[1] < c[1] && o[2] < c[2];\n  }\n\n  public static List<Integer[]> buildSequence(\n    List<Integer[]> array, int[] sequences, int currentIdx\n  ) {\n    List<Integer[]> sequence = new ArrayList<Integer[]>();\n    while (currentIdx != Integer.MIN_VALUE) {\n      sequence.add(0, array.get(currentIdx));\n      currentIdx = sequences[currentIdx];\n    }\n    return sequence;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    List<Integer[]> input = new ArrayList<Integer[]>();\n    input.add(new Integer[] {2, 1, 2});\n    input.add(new Integer[] {3, 2, 3});\n    input.add(new Integer[] {2, 2, 8});\n    input.add(new Integer[] {2, 3, 4});\n    input.add(new Integer[] {2, 2, 1});\n    input.add(new Integer[] {4, 4, 5});\n    List<Integer[]> expected = new ArrayList<Integer[]>();\n    expected.add(new Integer[] {2, 1, 2});\n    expected.add(new Integer[] {3, 2, 3});\n    expected.add(new Integer[] {4, 4, 5});\n    Utils.assertTrue(compare(Program.diskStacking(input), expected));\n  }\n\n  private static boolean compare(List<Integer[]> arr1, List<Integer[]> arr2) {\n    if (arr1.size() != arr2.size()) {\n      return false;\n    }\n    for (int i = 0; i < arr1.size(); i++) {\n      for (int j = 0; j < arr1.get(i).length; j++) {\n        if (!arr1.get(i)[j].equals(arr2.get(i)[j])) {\n          return false;\n        }\n      }\n    }\n    return true;\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    List<Integer[]> input = new ArrayList<Integer[]>();\n    input.add(new Integer[] {2, 1, 2});\n    input.add(new Integer[] {3, 2, 3});\n    input.add(new Integer[] {2, 2, 8});\n    input.add(new Integer[] {2, 3, 4});\n    input.add(new Integer[] {2, 2, 1});\n    input.add(new Integer[] {4, 4, 5});\n    List<Integer[]> expected = new ArrayList<Integer[]>();\n    expected.add(new Integer[] {2, 1, 2});\n    expected.add(new Integer[] {3, 2, 3});\n    expected.add(new Integer[] {4, 4, 5});\n    Utils.assertTrue(compare(Program.diskStacking(input), expected));\n  }\n\n  private static boolean compare(List<Integer[]> arr1, List<Integer[]> arr2) {\n    if (arr1.size() != arr2.size()) {\n      return false;\n    }\n    for (int i = 0; i < arr1.size(); i++) {\n      for (int j = 0; j < arr1.get(i).length; j++) {\n        if (!arr1.get(i)[j].equals(arr2.get(i)[j])) {\n          return false;\n        }\n      }\n    }\n    return true;\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function diskStacking(disks) {\n  // Write your code here.\n}\n\n// Do not edit the line below.\nexports.diskStacking = diskStacking;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^2) time | O(n) space\nfunction diskStacking(disks) {\n  disks.sort((a, b) => a[2] - b[2]);\n  const heights = disks.map(disk => disk[2]);\n  const sequences = new Array(disks.length);\n  let maxHeightIdx = 0;\n  for (let i = 1; i < disks.length; i++) {\n    const currentDisk = disks[i];\n    for (let j = 0; j < i; j++) {\n      const otherDisk = disks[j];\n      if (areValidDimensions(otherDisk, currentDisk)) {\n        if (heights[i] <= currentDisk[2] + heights[j]) {\n          heights[i] = currentDisk[2] + heights[j];\n          sequences[i] = j;\n        }\n      }\n    }\n    if (heights[i] >= heights[maxHeightIdx]) maxHeightIdx = i;\n  }\n  return buildSequence(disks, sequences, maxHeightIdx);\n}\n\nfunction areValidDimensions(o, c) {\n  return o[0] < c[0] && o[1] < c[1] && o[2] < c[2];\n}\n\nfunction buildSequence(array, sequences, currentIdx) {\n  const sequence = [];\n  while (currentIdx !== undefined) {\n    sequence.unshift(array[currentIdx]);\n    currentIdx = sequences[currentIdx];\n  }\n  return sequence;\n}\n\nexports.diskStacking = diskStacking;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  chai\n    .expect(\n      program.diskStacking([\n        [2, 1, 2],\n        [3, 2, 3],\n        [2, 2, 8],\n        [2, 3, 4],\n        [2, 2, 1],\n        [4, 4, 5],\n      ]),\n    )\n    .to.deep.equal([\n      [2, 1, 2],\n      [3, 2, 3],\n      [4, 4, 5],\n    ]);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  chai\n    .expect(\n      program.diskStacking([\n        [2, 1, 2],\n        [3, 2, 3],\n        [2, 2, 8],\n        [2, 3, 4],\n        [2, 2, 1],\n        [4, 4, 5],\n      ]),\n    )\n    .to.deep.equal([\n      [2, 1, 2],\n      [3, 2, 3],\n      [4, 4, 5],\n    ]);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun diskStacking(disks: List<List<Int>>): List<List<Int>> {\n    // Write your code here.\n    return listOf()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n^2) time | O(n) space\nfun diskStacking(inputDisks: List<List<Int>>): List<List<Int>> {\n    val disks = inputDisks.toMutableList().sortedWith(\n        Comparator<List<Int>> { a, b -> a[2].compareTo(b[2]) },\n    )\n\n    val heights = MutableList(disks.size) { -1 }\n    for (i in 0 until disks.size) {\n        heights[i] = disks[i][2]\n    }\n\n    val sequences = MutableList(disks.size) { Int.MIN_VALUE }\n    var maxHeightIdx = 0\n    for (i in 1 until disks.size) {\n        val currentDisk = disks[i]\n        for (j in 0 until i) {\n            val otherDisk = disks[j]\n            if (areValidDimensions(otherDisk, currentDisk)) {\n                if (heights[i] <= currentDisk[2] + heights[j]) {\n                    heights[i] = currentDisk[2] + heights[j]\n                    sequences[i] = j\n                }\n            }\n        }\n        if (heights[i] >= heights[maxHeightIdx]) {\n            maxHeightIdx = i\n        }\n    }\n    return buildSequence(disks, sequences, maxHeightIdx)\n}\n\nfun areValidDimensions(o: List<Int>, c: List<Int>): Boolean {\n    return o[0] < c[0] && o[1] < c[1] && o[2] < c[2]\n}\n\nfun buildSequence(array: List<List<Int>>, sequences: List<Int>, startIdx: Int): List<List<Int>> {\n    val sequence = mutableListOf<List<Int>>()\n    var currentIdx = startIdx\n    while (currentIdx != Int.MIN_VALUE) {\n        sequence.add(0, array[currentIdx])\n        currentIdx = sequences[currentIdx]\n    }\n    return sequence\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.diskStacking\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(\n            listOf(2, 1, 2),\n            listOf(3, 2, 3),\n            listOf(2, 2, 8),\n            listOf(2, 3, 4),\n            listOf(2, 2, 1),\n            listOf(4, 4, 5),\n        )\n        val expected = listOf(\n            listOf(2, 1, 2),\n            listOf(3, 2, 3),\n            listOf(4, 4, 5),\n        )\n        val output = diskStacking(input)\n        assert(compare(expected, output))\n    }\n\n    fun compare(arr1: List<List<Int>>, arr2: List<List<Int>>): Boolean {\n        if (arr1.size != arr2.size) return false\n\n        for (i in 0 until arr1.size) {\n            if (!arr1[i].equals(arr2[i])) return false\n        }\n        return true\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.diskStacking\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(\n            listOf(2, 1, 2),\n            listOf(3, 2, 3),\n            listOf(2, 2, 8),\n            listOf(2, 3, 4),\n            listOf(2, 2, 1),\n            listOf(4, 4, 5),\n        )\n        val expected = listOf(\n            listOf(2, 1, 2),\n            listOf(3, 2, 3),\n            listOf(4, 4, 5),\n        )\n        val output = diskStacking(input)\n        assert(compare(expected, output))\n    }\n\n    fun compare(arr1: List<List<Int>>, arr2: List<List<Int>>): Boolean {\n        if (arr1.size != arr2.size) return false\n\n        for (i in 0 until arr1.size) {\n            if (!arr1[i].equals(arr2[i])) return false\n        }\n        return true\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def diskStacking(disks):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n^2) time | O(n) space\ndef diskStacking(disks):\n    disks.sort(key=lambda disk: disk[2])\n    heights = [disk[2] for disk in disks]\n    sequences = [None for disk in disks]\n    maxHeightIdx = 0\n    for i in range(1, len(disks)):\n        currentDisk = disks[i]\n        for j in range(0, i):\n            otherDisk = disks[j]\n            if areValidDimensions(otherDisk, currentDisk):\n                if heights[i] <= currentDisk[2] + heights[j]:\n                    heights[i] = currentDisk[2] + heights[j]\n                    sequences[i] = j\n        if heights[i] >= heights[maxHeightIdx]:\n            maxHeightIdx = i\n    return buildSequence(disks, sequences, maxHeightIdx)\n\n\ndef areValidDimensions(o, c):\n    return o[0] < c[0] and o[1] < c[1] and o[2] < c[2]\n\n\ndef buildSequence(array, sequences, currentIdx):\n    sequence = []\n    while currentIdx is not None:\n        sequence.append(array[currentIdx])\n        currentIdx = sequences[currentIdx]\n    return list(reversed(sequence))\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        self.assertEqual(\n            program.diskStacking(\n                [[2, 1, 2], [3, 2, 3], [2, 2, 8], [2, 3, 4], [2, 2, 1], [4, 4, 5]]\n            ),\n            [[2, 1, 2], [3, 2, 3], [4, 4, 5]],\n        )\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        self.assertEqual(\n            program.diskStacking(\n                [[2, 1, 2], [3, 2, 3], [2, 2, 8], [2, 3, 4], [2, 2, 1], [4, 4, 5]]\n            ),\n            [[2, 1, 2], [3, 2, 3], [4, 4, 5]],\n        )\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  def diskStacking(disks)\n    # Write your code here.\n    return []\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def diskStacking(disks)\n    # Write your code here.\n    return []\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.diskStacking\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.diskStacking\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func diskStacking(disks: inout [[Int]]) -> [[Int]] {\n    // Write your code here.\n    return []\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n^2) time | O(n) space\n  func diskStacking(disks: inout [[Int]]) -> [[Int]] {\n    disks.sort(by: { $0[2] < $1[2] })\n\n    var heights = disks.map { $0[2] }\n    var previousIndices = Array(repeating: -1, count: disks.count)\n    var maximumHeightIndex = 0\n\n    for i in 1 ..< disks.count {\n      let currentDisk = disks[i]\n\n      for j in 0 ..< i {\n        let previousDisk = disks[j]\n\n        if areValidDimensions(previousDisk, currentDisk) {\n          if heights[i] <= heights[j] + currentDisk[2] {\n            heights[i] = heights[j] + currentDisk[2]\n            previousIndices[i] = j\n          }\n        }\n      }\n\n      if heights[i] >= heights[maximumHeightIndex] {\n        maximumHeightIndex = i\n      }\n    }\n\n    return buildSequence(disks, previousIndices, &maximumHeightIndex)\n  }\n\n  func areValidDimensions(_ previousDisk: [Int], _ currentDisk: [Int]) -> Bool {\n    return previousDisk[0] < currentDisk[0] && previousDisk[1] < currentDisk[1] && previousDisk[2] < currentDisk[2]\n  }\n\n  func buildSequence(_ disks: [[Int]], _ previousIndices: [Int], _ currentIndex: inout Int) -> [[Int]] {\n    var sequence = [[Int]]()\n\n    while currentIndex != -1 {\n      sequence.insert(disks[currentIndex], at: 0)\n      currentIndex = previousIndices[currentIndex]\n    }\n\n    return sequence\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var fifthTest = [[2, 1, 2], [3, 2, 3], [2, 2, 8], [2, 3, 4], [2, 2, 1], [4, 4, 5]]\n      let fifthExpectedResults = [[2, 1, 2], [3, 2, 3], [4, 4, 5]]\n      try assertEqual(fifthExpectedResults, program.diskStacking(disks: &fifthTest))\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var fifthTest = [[2, 1, 2], [3, 2, 3], [2, 2, 8], [2, 3, 4], [2, 2, 1], [4, 4, 5]]\n      let fifthExpectedResults = [[2, 1, 2], [3, 2, 3], [4, 4, 5]]\n      try assertEqual(fifthExpectedResults, program.diskStacking(disks: &fifthTest))\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "type Disk = [number, number, number];\n\nexport function diskStacking(disks: Disk[]) {\n  // Write your code here.\n  return [[-1, -1, -1]];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\ntype Disk = [number, number, number];\n\n// O(n^2) time | O(n) space\nexport function diskStacking(disks: Disk[]) {\n  disks.sort((a, b) => a[2] - b[2]);\n  const heights = disks.map(disk => disk[2]);\n  const sequences: number[] = new Array(disks.length);\n  let maxHeightIdx = 0;\n  for (let i = 1; i < disks.length; i++) {\n    const currentDisk = disks[i];\n    for (let j = 0; j < i; j++) {\n      const otherDisk = disks[j];\n      if (areValidDimensions(otherDisk, currentDisk)) {\n        if (heights[i] <= currentDisk[2] + heights[j]) {\n          heights[i] = currentDisk[2] + heights[j];\n          sequences[i] = j;\n        }\n      }\n    }\n    if (heights[i] >= heights[maxHeightIdx]) maxHeightIdx = i;\n  }\n  return buildSequence(disks, sequences, maxHeightIdx);\n}\n\nfunction areValidDimensions(o: Disk, c: Disk) {\n  return o[0] < c[0] && o[1] < c[1] && o[2] < c[2];\n}\n\nfunction buildSequence(array: Disk[], sequences: number[], currentIdx: number) {\n  const sequence: Disk[] = [];\n  while (currentIdx !== undefined) {\n    sequence.unshift(array[currentIdx]);\n    currentIdx = sequences[currentIdx];\n  }\n  return sequence;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  chai\n    .expect(\n      program.diskStacking([\n        [2, 1, 2],\n        [3, 2, 3],\n        [2, 2, 8],\n        [2, 3, 4],\n        [2, 2, 1],\n        [4, 4, 5],\n      ]),\n    )\n    .to.deep.equal([\n      [2, 1, 2],\n      [3, 2, 3],\n      [4, 4, 5],\n    ]);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  chai\n    .expect(\n      program.diskStacking([\n        [2, 1, 2],\n        [3, 2, 3],\n        [2, 2, 8],\n        [2, 3, 4],\n        [2, 2, 1],\n        [4, 4, 5],\n      ]),\n    )\n    .to.deep.equal([\n      [2, 1, 2],\n      [3, 2, 3],\n      [4, 4, 5],\n    ]);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "disks",
+            "example": [
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    3
+                ],
+                [
+                    2,
+                    2,
+                    8
+                ],
+                [
+                    2,
+                    3,
+                    4
+                ],
+                [
+                    1,
+                    3,
+                    1
+                ],
+                [
+                    4,
+                    4,
+                    5
+                ]
+            ],
+            "schema": {
+                "items": {
+                    "items": {
+                        "minimum": 1,
+                        "type": "integer"
+                    },
+                    "maxItems": 3,
+                    "minItems": 3,
+                    "type": "array"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "disks": [
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    3
+                ],
+                [
+                    2,
+                    2,
+                    8
+                ],
+                [
+                    2,
+                    3,
+                    4
+                ],
+                [
+                    1,
+                    3,
+                    1
+                ],
+                [
+                    4,
+                    4,
+                    5
+                ]
+            ]
+        },
+        {
+            "disks": [
+                [
+                    2,
+                    1,
+                    2
+                ]
+            ]
+        },
+        {
+            "disks": [
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    3
+                ]
+            ]
+        },
+        {
+            "disks": [
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    3
+                ],
+                [
+                    2,
+                    2,
+                    8
+                ]
+            ]
+        },
+        {
+            "disks": [
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    3
+                ],
+                [
+                    2,
+                    3,
+                    4
+                ]
+            ]
+        },
+        {
+            "disks": [
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    3
+                ],
+                [
+                    2,
+                    2,
+                    8
+                ],
+                [
+                    2,
+                    3,
+                    4
+                ],
+                [
+                    2,
+                    2,
+                    1
+                ],
+                [
+                    4,
+                    4,
+                    5
+                ]
+            ]
+        },
+        {
+            "disks": [
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    5
+                ],
+                [
+                    2,
+                    2,
+                    8
+                ],
+                [
+                    2,
+                    3,
+                    4
+                ],
+                [
+                    2,
+                    2,
+                    1
+                ],
+                [
+                    4,
+                    4,
+                    5
+                ]
+            ]
+        },
+        {
+            "disks": [
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    3
+                ],
+                [
+                    2,
+                    2,
+                    8
+                ],
+                [
+                    2,
+                    3,
+                    4
+                ],
+                [
+                    1,
+                    2,
+                    1
+                ],
+                [
+                    4,
+                    4,
+                    5
+                ],
+                [
+                    1,
+                    1,
+                    4
+                ]
+            ]
+        },
+        {
+            "disks": [
+                [
+                    3,
+                    3,
+                    4
+                ],
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    3
+                ],
+                [
+                    2,
+                    2,
+                    8
+                ],
+                [
+                    2,
+                    3,
+                    4
+                ],
+                [
+                    5,
+                    5,
+                    6
+                ],
+                [
+                    1,
+                    2,
+                    1
+                ],
+                [
+                    4,
+                    4,
+                    5
+                ],
+                [
+                    1,
+                    1,
+                    4
+                ],
+                [
+                    2,
+                    2,
+                    3
+                ]
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "disks": [
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    3
+                ],
+                [
+                    2,
+                    2,
+                    8
+                ],
+                [
+                    2,
+                    3,
+                    4
+                ],
+                [
+                    1,
+                    3,
+                    1
+                ],
+                [
+                    4,
+                    4,
+                    5
+                ]
+            ]
+        },
+        {
+            "disks": [
+                [
+                    2,
+                    1,
+                    2
+                ]
+            ]
+        },
+        {
+            "disks": [
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    3
+                ]
+            ]
+        },
+        {
+            "disks": [
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    3
+                ],
+                [
+                    2,
+                    2,
+                    8
+                ]
+            ]
+        },
+        {
+            "disks": [
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    3
+                ],
+                [
+                    2,
+                    3,
+                    4
+                ]
+            ]
+        },
+        {
+            "disks": [
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    3
+                ],
+                [
+                    2,
+                    2,
+                    8
+                ],
+                [
+                    2,
+                    3,
+                    4
+                ],
+                [
+                    2,
+                    2,
+                    1
+                ],
+                [
+                    4,
+                    4,
+                    5
+                ]
+            ]
+        },
+        {
+            "disks": [
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    5
+                ],
+                [
+                    2,
+                    2,
+                    8
+                ],
+                [
+                    2,
+                    3,
+                    4
+                ],
+                [
+                    2,
+                    2,
+                    1
+                ],
+                [
+                    4,
+                    4,
+                    5
+                ]
+            ]
+        },
+        {
+            "disks": [
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    3
+                ],
+                [
+                    2,
+                    2,
+                    8
+                ],
+                [
+                    2,
+                    3,
+                    4
+                ],
+                [
+                    1,
+                    2,
+                    1
+                ],
+                [
+                    4,
+                    4,
+                    5
+                ],
+                [
+                    1,
+                    1,
+                    4
+                ]
+            ]
+        },
+        {
+            "disks": [
+                [
+                    3,
+                    3,
+                    4
+                ],
+                [
+                    2,
+                    1,
+                    2
+                ],
+                [
+                    3,
+                    2,
+                    3
+                ],
+                [
+                    2,
+                    2,
+                    8
+                ],
+                [
+                    2,
+                    3,
+                    4
+                ],
+                [
+                    5,
+                    5,
+                    6
+                ],
+                [
+                    1,
+                    2,
+                    1
+                ],
+                [
+                    4,
+                    4,
+                    5
+                ],
+                [
+                    1,
+                    1,
+                    4
+                ],
+                [
+                    2,
+                    2,
+                    3
+                ]
+            ]
+        }
+    ],
+    "changelog": []
+}

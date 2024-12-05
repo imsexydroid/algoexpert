@@ -1,0 +1,562 @@
+{
+    "uid": "colliding-asteroids",
+    "testStrategy": "JSON",
+    "name": "Colliding Asteroids",
+    "version": 0,
+    "releaseDate": "2023-06-02T00:00:00Z",
+    "category": "Stacks",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 2470,
+        "failureCount": 284
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "807751315",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 617
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    You're given an array of integers <span>asteroids</span>,\n    where each integer represents the size of an asteroid.\n    The sign of the integer represents the direction the asteroid \n    is moving (positive = right, negative = left). All asteroids\n    move at the same speed, meaning that two asteroids moving in the same direction can never collide.\n  </p>\n  <p>\n    For example, the integer <span>4</span> represents an asteroid\n    of size 4 moving to the right. Similarly, <span>-7</span> represents\n    an asteroid of size 7 moving to the left.\n  </p>\n  <p>\n    If two asteroids collide, the smaller asteroid (based on absolute value) explodes.\n    If two colliding asteroids are the same size, they both explode.\n  </p>\n  <p>\n    Write a function that takes in this array of asteroids and returns\n    an array of integers representing the asteroids after all collisions occur.\n  </p>\n\n<h3>Sample Input</h3>\n<pre><span class=\"CodeEditor-promptParameter\">asteroids</span> = [-3, 5, -8, 6, 7, -4, -7]\n</pre>\n<h3>Sample Output</h3>\n<pre>[-3, -8, 6] <span class=\"CodeEditor-promptComment\">// The -3 moves left, having no collisions.\n// The 5 moves right, colliding with the -8 and being destroyed by it.\n// The 6 never collides with another asteroid.\n// The 7 first collides with the -4, destroying it.\n// The 7 and the -7 then collide, both being destroyed.\n</span>\n</pre>",
+    "hints": [
+        "<p>\n  Try approaching this problem one step at a time. What happens if there\n  is only 1 asteroid? Then what possible scenarios can occur if a second\n  asteroid is added after it?\n</p>\n",
+        "\n<p>\n  Two asteroids of the same direction will never collide, since all\n  asteroids have the same speed.\n</p>\n",
+        "\n<p>\n  A stack will be a useful data structure for solving this problem. With\n  each added asteroid, pop asteroids off of the top of the stack until\n  the new asteroid is no longer colliding with other asteroids before it.\n</p>"
+    ],
+    "spaceTime": "O(n) time | O(n) space - where n is the number of asteroids",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nvector<int> collidingAsteroids(vector<int> asteroids) {\n  // Write your code here.\n  return {};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <cmath>\n#include <stack>\nusing namespace std;\n\n// O(n) time | O(n) space - where n is the number of asteroids\nvector<int> collidingAsteroids(vector<int> asteroids) {\n  stack<int> resultStack;\n  for (int asteroid : asteroids) {\n    if (resultStack.empty() || asteroid > 0 || resultStack.top() < 0) {\n      resultStack.push(asteroid);\n      continue;\n    }\n\n    while (!resultStack.empty()) {\n      if (resultStack.top() < 0) {\n        resultStack.push(asteroid);\n        break;\n      }\n\n      int asteroidSize = abs(asteroid);\n      if (resultStack.top() > asteroidSize) break;\n\n      if (resultStack.top() == asteroidSize) {\n        resultStack.pop();\n        break;\n      }\n\n      resultStack.pop();\n\n      if (resultStack.empty()) {\n        resultStack.push(asteroid);\n        break;\n      }\n    }\n  }\n\n  vector<int> output(resultStack.size());\n  for (int i = resultStack.size() - 1; i >= 0; i--) {\n    output[i] = resultStack.top();\n    resultStack.pop();\n  }\n\n  return output;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input = {-3, 5, -8, 6, 7, -4, -7};\n      vector<int> expected = {-3, -8, 6};\n      auto actual = collidingAsteroids(input);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input = {-3, 5, -8, 6, 7, -4, -7};\n      vector<int> expected = {-3, -8, 6};\n      auto actual = collidingAsteroids(input);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int[] CollidingAsteroids(int[] asteroids) {\n    // Write your code here.\n    return new int[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n) time | O(n) space - where n is the number of asteroids\n  public int[] CollidingAsteroids(int[] asteroids) {\n    Stack<int> resultStack = new Stack<int>();\n    foreach (var asteroid in asteroids) {\n      if (resultStack.Count == 0 || asteroid > 0 || resultStack.Peek() < 0) {\n        resultStack.Push(asteroid);\n        continue;\n      }\n\n      while (resultStack.Count > 0) {\n        if (resultStack.Peek() < 0) {\n          resultStack.Push(asteroid);\n          break;\n        }\n\n        int asteroidSize = Math.Abs(asteroid);\n        if (resultStack.Peek() > asteroidSize) break;\n\n        if (resultStack.Peek() == asteroidSize) {\n          resultStack.Pop();\n          break;\n        }\n\n        resultStack.Pop();\n\n        if (resultStack.Count == 0) {\n          resultStack.Push(asteroid);\n          break;\n        }\n      }\n    }\n    int[] output = new int[resultStack.Count];\n    for (int i = resultStack.Count - 1; i >= 0; i--) {\n      output[i] = resultStack.Pop();\n    }\n    return output;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] input = new int[] { -3, 5, -8, 6, 7, -4, -7 };\n    int[] expected = new int[] { -3, -8, 6 };\n    int[] actual = new Program().CollidingAsteroids(input);\n    Utils.AssertTrue(expected.Length == actual.Length);\n\n    for (int i = 0; i < expected.Length; i++) {\n      Utils.AssertTrue(expected[i] == actual[i]);\n    }\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] input = new int[] { -3, 5, -8, 6, 7, -4, -7 };\n    int[] expected = new int[] { -3, -8, 6 };\n    int[] actual = new Program().CollidingAsteroids(input);\n    Utils.AssertTrue(expected.Length == actual.Length);\n\n    for (int i = 0; i < expected.Length; i++) {\n      Utils.AssertTrue(expected[i] == actual[i]);\n    }\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc CollidingAsteroids(asteroids []int) []int {\n\t// Write your code here.\n\treturn []int{}\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport \"math\"\n\n// O(n) time | O(n) space - where n is the number of asteroids\nfunc CollidingAsteroids(asteroids []int) []int {\n\tresultStack := []int{}\n\tfor _, asteroid := range asteroids {\n\t\tif asteroid > 0 {\n\t\t\tresultStack = append(resultStack, asteroid)\n\t\t\tcontinue\n\t\t}\n\n\t\tfor {\n\t\t\tlastStackIdx := len(resultStack) - 1\n\t\t\tif len(resultStack) == 0 || resultStack[lastStackIdx] < 0 {\n\t\t\t\tresultStack = append(resultStack, asteroid)\n\t\t\t\tbreak\n\t\t\t}\n\n\t\t\tasteroidSize := int(math.Abs(float64(asteroid)))\n\t\t\tif resultStack[lastStackIdx] > asteroidSize {\n\t\t\t\tbreak\n\t\t\t}\n\n\t\t\tif resultStack[lastStackIdx] == asteroidSize {\n\t\t\t\tresultStack = resultStack[:lastStackIdx]\n\t\t\t\tbreak\n\t\t\t}\n\n\t\t\tresultStack = resultStack[:lastStackIdx]\n\t\t}\n\t}\n\n\treturn resultStack\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []int{-3, 5, -8, 6, 7, -4, -7}\n\texpected := []int{-3, -8, 6}\n\tactual := CollidingAsteroids(input)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []int{-3, 5, -8, 6, 7, -4, -7}\n\texpected := []int{-3, -8, 6}\n\tactual := CollidingAsteroids(input)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int[] collidingAsteroids(int[] asteroids) {\n    // Write your code here.\n    return new int[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n) time | O(n) space - where n is the number of asteroids\n  public int[] collidingAsteroids(int[] asteroids) {\n    Stack<Integer> resultStack = new Stack<Integer>();\n    for (int asteroid : asteroids) {\n      if (resultStack.isEmpty() || asteroid > 0 || resultStack.peek() < 0) {\n        resultStack.push(asteroid);\n        continue;\n      }\n\n      while (!resultStack.isEmpty()) {\n        if (resultStack.peek() < 0) {\n          resultStack.push(asteroid);\n          break;\n        }\n\n        int asteroidSize = Math.abs(asteroid);\n        if (resultStack.peek() > asteroidSize) break;\n\n        if (resultStack.peek() == asteroidSize) {\n          resultStack.pop();\n          break;\n        }\n\n        resultStack.pop();\n\n        if (resultStack.isEmpty()) {\n          resultStack.push(asteroid);\n          break;\n        }\n      }\n    }\n    int[] output = new int[resultStack.size()];\n    for (int i = resultStack.size() - 1; i >= 0; i--) {\n      output[i] = resultStack.pop();\n    }\n    return output;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] input = new int[] {-3, 5, -8, 6, 7, -4, -7};\n    int[] expected = new int[] {-3, -8, 6};\n    int[] actual = new Program().collidingAsteroids(input);\n    Utils.assertTrue(expected.length == actual.length);\n\n    for (int i = 0; i < expected.length; i++) {\n      Utils.assertTrue(expected[i] == actual[i]);\n    }\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] input = new int[] {-3, 5, -8, 6, 7, -4, -7};\n    int[] expected = new int[] {-3, -8, 6};\n    int[] actual = new Program().collidingAsteroids(input);\n    Utils.assertTrue(expected.length == actual.length);\n\n    for (int i = 0; i < expected.length; i++) {\n      Utils.assertTrue(expected[i] == actual[i]);\n    }\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function collidingAsteroids(asteroids) {\n  // Write your code here.\n  return [];\n}\n\n// Do not edit the line below.\nexports.collidingAsteroids = collidingAsteroids;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space - where n is the number of asteroids\nfunction collidingAsteroids(asteroids) {\n  const resultStack = [];\n  for (const asteroid of asteroids) {\n    if (asteroid > 0) {\n      resultStack.push(asteroid);\n      continue;\n    }\n\n    while (true) {\n      const lastStackIdx = resultStack.length - 1;\n      if (resultStack.length === 0 || resultStack[lastStackIdx] < 0) {\n        resultStack.push(asteroid);\n        break;\n      }\n\n      const asteroidSize = Math.abs(asteroid);\n      if (resultStack[lastStackIdx] > asteroidSize) {\n        break;\n      }\n\n      if (resultStack[lastStackIdx] === asteroidSize) {\n        resultStack.pop();\n        break;\n      }\n\n      resultStack.pop();\n    }\n  }\n\n  return resultStack;\n}\n\n// Do not edit the line below.\nexports.collidingAsteroids = collidingAsteroids;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [-3, 5, -8, 6, 7, -4, -7];\n  const expected = [-3, -8, 6];\n  const actual = program.collidingAsteroids(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [-3, 5, -8, 6, 7, -4, -7];\n  const expected = [-3, -8, 6];\n  const actual = program.collidingAsteroids(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun collidingAsteroids(asteroids: MutableList<Int>): MutableList<Int> {\n    // Write your code here.\n    return mutableListOf()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport java.util.Stack\nimport kotlin.math.abs\n\n// O(n) time | O(n) space - where n is the number of asteroids\nfun collidingAsteroids(asteroids: MutableList<Int>): MutableList<Int> {\n    val resultStack = Stack<Int>()\n    for (asteroid in asteroids) {\n        if (asteroid > 0) {\n            resultStack.push(asteroid)\n            continue\n        }\n\n        while (true) {\n            val lastStackIdx = resultStack.size - 1\n            if (resultStack.size == 0 || resultStack[lastStackIdx] < 0) {\n                resultStack.push(asteroid)\n                break\n            }\n\n            val asteroidSize = abs(asteroid)\n            if (resultStack[lastStackIdx] > asteroidSize) {\n                break\n            }\n\n            if (resultStack[lastStackIdx] == asteroidSize) {\n                resultStack.pop()\n                break\n            }\n\n            resultStack.pop()\n        }\n    }\n\n    return resultStack\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.collidingAsteroids\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(-3, 5, -8, 6, 7, -4, -7)\n        val expected = mutableListOf(-3, -8, 6)\n        val output = collidingAsteroids(input)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.collidingAsteroids\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(-3, 5, -8, 6, 7, -4, -7)\n        val expected = mutableListOf(-3, -8, 6)\n        val output = collidingAsteroids(input)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def collidingAsteroids(asteroids):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(n) space - where n is the number of asteroids\ndef collidingAsteroids(asteroids):\n    resultStack = []\n    for asteroid in asteroids:\n        if asteroid > 0:\n            resultStack.append(asteroid)\n            continue\n\n        while True:\n            if len(resultStack) == 0 or resultStack[-1] < 0:\n                resultStack.append(asteroid)\n                break\n\n            asteroidSize = abs(asteroid)\n            if resultStack[-1] > asteroidSize:\n                break\n\n            if resultStack[-1] == asteroidSize:\n                resultStack.pop()\n                break\n\n            resultStack.pop()\n\n    return resultStack\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [-3, 5, -8, 6, 7, -4, -7]\n        expected = [-3, -8, 6]\n        actual = program.collidingAsteroids(input)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [-3, 5, -8, 6, 7, -4, -7]\n        expected = [-3, -8, 6]\n        actual = program.collidingAsteroids(input)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def collidingAsteroids(asteroids)\n        # Write your code here.\n        return []\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def collidingAsteroids(asteroids)\n        # Write your code here.\n        return []\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.collidingAsteroids\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.collidingAsteroids\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func collidingAsteroids(_ asteroids: [Int]) -> [Int] {\n    // Write your code here.\n    return [Int]()\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(n) space - where n is the number of asteroids\n  func collidingAsteroids(_ asteroids: [Int]) -> [Int] {\n    var resultStack: [Int] = []\n\n    for asteroid in asteroids {\n      if asteroid > 0 {\n        resultStack.append(asteroid)\n        continue\n      }\n\n      while true {\n        let lastStackIdx = resultStack.count - 1\n        if resultStack.count == 0 || resultStack[lastStackIdx] < 0 {\n          resultStack.append(asteroid)\n          break\n        }\n\n        let asteroidSize = abs(asteroid)\n        if resultStack[lastStackIdx] > asteroidSize {\n          break\n        }\n\n        if resultStack[lastStackIdx] == asteroidSize {\n          resultStack.remove(at: lastStackIdx)\n          break\n        }\n\n        resultStack.remove(at: lastStackIdx)\n      }\n    }\n\n    return resultStack\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var input = [-3, 5, -8, 6, 7, -4, -7]\n      var expected = [-3, -8, 6]\n      var actual = Program().collidingAsteroids(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var input = [-3, 5, -8, 6, 7, -4, -7]\n      var expected = [-3, -8, 6]\n      var actual = Program().collidingAsteroids(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function collidingAsteroids(asteroids: number[]) {\n  // Write your code here.\n  return [];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space - where n is the number of asteroids\nexport function collidingAsteroids(asteroids: number[]) {\n  const resultStack: number[] = [];\n  for (const asteroid of asteroids) {\n    if (asteroid > 0) {\n      resultStack.push(asteroid);\n      continue;\n    }\n\n    while (true) {\n      const lastStackIdx = resultStack.length - 1;\n      if (resultStack.length === 0 || resultStack[lastStackIdx] < 0) {\n        resultStack.push(asteroid);\n        break;\n      }\n\n      const asteroidSize = Math.abs(asteroid);\n      if (resultStack[lastStackIdx] > asteroidSize) {\n        break;\n      }\n\n      if (resultStack[lastStackIdx] === asteroidSize) {\n        resultStack.pop();\n        break;\n      }\n\n      resultStack.pop();\n    }\n  }\n\n  return resultStack;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [-3, 5, -8, 6, 7, -4, -7];\n  const expected = [-3, -8, 6];\n  const actual = program.collidingAsteroids(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [-3, 5, -8, 6, 7, -4, -7];\n  const expected = [-3, -8, 6];\n  const actual = program.collidingAsteroids(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "asteroids",
+            "example": [
+                5
+            ],
+            "schema": {
+                "items": {
+                    "type": "integer"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "asteroids": [
+                5
+            ]
+        },
+        {
+            "asteroids": [
+                -5
+            ]
+        },
+        {
+            "asteroids": [
+                5,
+                -5
+            ]
+        },
+        {
+            "asteroids": [
+                -5,
+                5
+            ]
+        },
+        {
+            "asteroids": [
+                -5,
+                -5
+            ]
+        },
+        {
+            "asteroids": [
+                5,
+                5
+            ]
+        },
+        {
+            "asteroids": [
+                1,
+                2,
+                3,
+                4,
+                5
+            ]
+        },
+        {
+            "asteroids": [
+                34,
+                2,
+                5,
+                42,
+                100,
+                20
+            ]
+        },
+        {
+            "asteroids": [
+                -6,
+                -2,
+                -10,
+                -100,
+                -30
+            ]
+        },
+        {
+            "asteroids": [
+                1,
+                2,
+                3,
+                -4
+            ]
+        },
+        {
+            "asteroids": [
+                4,
+                -1,
+                -2,
+                -3
+            ]
+        },
+        {
+            "asteroids": [
+                -3,
+                7,
+                -8,
+                6,
+                7,
+                -5,
+                -7
+            ]
+        },
+        {
+            "asteroids": [
+                4,
+                -5,
+                -5,
+                -5
+            ]
+        },
+        {
+            "asteroids": [
+                6,
+                -5,
+                -5,
+                -5
+            ]
+        },
+        {
+            "asteroids": [
+                4,
+                7,
+                -3,
+                -5,
+                6,
+                -10,
+                100,
+                -50,
+                99
+            ]
+        },
+        {
+            "asteroids": [
+                -70,
+                100,
+                23,
+                42,
+                -50,
+                -75,
+                1,
+                -2,
+                -3
+            ]
+        },
+        {
+            "asteroids": [
+                -70,
+                10,
+                23,
+                42,
+                -50,
+                -75,
+                1,
+                -2,
+                -3
+            ]
+        },
+        {
+            "asteroids": [
+                42,
+                30,
+                12,
+                65,
+                -50,
+                32,
+                -15,
+                -25
+            ]
+        },
+        {
+            "asteroids": [
+                5123,
+                -34,
+                654,
+                -3636,
+                2432,
+                4242,
+                1267,
+                1337,
+                -43,
+                -864,
+                38,
+                38,
+                1,
+                -400
+            ]
+        },
+        {
+            "asteroids": [
+                651,
+                13,
+                -1246,
+                754,
+                1252,
+                -300,
+                5468,
+                -5200,
+                22,
+                17,
+                -100,
+                87,
+                100,
+                -250,
+                1
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "asteroids": [
+                5
+            ]
+        },
+        {
+            "asteroids": [
+                -5
+            ]
+        },
+        {
+            "asteroids": [
+                5,
+                -5
+            ]
+        },
+        {
+            "asteroids": [
+                -5,
+                5
+            ]
+        },
+        {
+            "asteroids": [
+                -5,
+                -5
+            ]
+        },
+        {
+            "asteroids": [
+                5,
+                5
+            ]
+        },
+        {
+            "asteroids": [
+                1,
+                2,
+                3,
+                4,
+                5
+            ]
+        },
+        {
+            "asteroids": [
+                34,
+                2,
+                5,
+                42,
+                100,
+                20
+            ]
+        },
+        {
+            "asteroids": [
+                -6,
+                -2,
+                -10,
+                -100,
+                -30
+            ]
+        },
+        {
+            "asteroids": [
+                1,
+                2,
+                3,
+                -4
+            ]
+        },
+        {
+            "asteroids": [
+                4,
+                -1,
+                -2,
+                -3
+            ]
+        },
+        {
+            "asteroids": [
+                -3,
+                7,
+                -8,
+                6,
+                7,
+                -5,
+                -7
+            ]
+        },
+        {
+            "asteroids": [
+                4,
+                -5,
+                -5,
+                -5
+            ]
+        },
+        {
+            "asteroids": [
+                6,
+                -5,
+                -5,
+                -5
+            ]
+        },
+        {
+            "asteroids": [
+                4,
+                7,
+                -3,
+                -5,
+                6,
+                -10,
+                100,
+                -50,
+                99
+            ]
+        },
+        {
+            "asteroids": [
+                -70,
+                100,
+                23,
+                42,
+                -50,
+                -75,
+                1,
+                -2,
+                -3
+            ]
+        },
+        {
+            "asteroids": [
+                -70,
+                10,
+                23,
+                42,
+                -50,
+                -75,
+                1,
+                -2,
+                -3
+            ]
+        },
+        {
+            "asteroids": [
+                42,
+                30,
+                12,
+                65,
+                -50,
+                32,
+                -15,
+                -25
+            ]
+        },
+        {
+            "asteroids": [
+                5123,
+                -34,
+                654,
+                -3636,
+                2432,
+                4242,
+                1267,
+                1337,
+                -43,
+                -864,
+                38,
+                38,
+                1,
+                -400
+            ]
+        },
+        {
+            "asteroids": [
+                651,
+                13,
+                -1246,
+                754,
+                1252,
+                -300,
+                5468,
+                -5200,
+                22,
+                17,
+                -100,
+                87,
+                100,
+                -250,
+                1
+            ]
+        }
+    ],
+    "changelog": []
+}

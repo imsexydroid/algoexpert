@@ -1,0 +1,353 @@
+{
+    "uid": "common-characters",
+    "testStrategy": "JSON",
+    "name": "Common Characters",
+    "version": 0,
+    "releaseDate": "2023-04-08T00:00:00Z",
+    "category": "Strings",
+    "difficulty": 1,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 10394,
+        "failureCount": 1534
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "790565871",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 923
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    Write a function that takes in a non-empty list of non-empty strings and\n    returns a list of characters that are common to all strings in the list,\n    ignoring multiplicity.\n  </p>\n\n  <p>\n    Note that the strings are not guaranteed to only contain alphanumeric characters. The list\n    you return can be in any order.\n  </p>\n\n  <h3>Sample Input</h3>\n  <pre>\n<span class=\"CodeEditor-promptParameter\">strings</span> = [\"abc\", \"bcd\", \"cbaccd\"]\n</pre>\n  <h3>Sample Output</h3>\n  <pre>\n[\"b\", \"c\"] <span class=\"CodeEditor-promptComment\">// The characters could be ordered differently.</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  What data structure could be helpful to remember characters we've seen and\n  how many strings contained those characters?\n</p>\n",
+        "\n<p>\n  We can use a map to keep track of the characters we have seen and how many strings\n  we have seen them in. If a character is seen <span>len(strings)</span> times, then\n  it must be in every string.\n</p>\n",
+        "\n<p>\n  Converting a string to a set can quickly get all of the unique characters from\n  that string, which can be helpful since we are ignoring multiplicity in this\n  problem.\n</p>"
+    ],
+    "spaceTime": "O(n * m) time | O(m) space - where n is the number of strings, and m is the length of the longest string",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nvector<string> commonCharacters(vector<string> strings) {\n  // Write your code here.\n  return {};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <unordered_map>\n#include <unordered_set>\n\nusing namespace std;\n\n// O(n * m) time | O(c) space - where n is the number of strings, m is the\n// length of the longest string, and c is the number of unique characters across\n// all strings\nvector<string> commonCharacters(vector<string> strings) {\n  unordered_map<char, int> characterCounts;\n  for (auto const& str : strings) {\n    unordered_set<char> uniqueStringCharacters;\n    for (int i = 0; i < str.length(); i++) {\n      uniqueStringCharacters.insert(str[i]);\n    }\n    for (auto character : uniqueStringCharacters) {\n      if (!characterCounts.count(character)) {\n        characterCounts[character] = 0;\n      }\n      characterCounts[character]++;\n    }\n  }\n\n  vector<char> finalCharacters;\n  for (auto const& characterCount : characterCounts) {\n    char character = characterCount.first;\n    int count = characterCount.second;\n    if (count == strings.size()) {\n      finalCharacters.push_back(character);\n    }\n  }\n\n  vector<string> finalCharactersArr;\n  for (auto character : finalCharacters) {\n    finalCharactersArr.push_back(string(1, character));\n  }\n  return finalCharactersArr;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <unordered_map>\n#include <unordered_set>\n\nusing namespace std;\n\nstring getSmallestString(const vector<string>& strings);\nvoid removeNonexistentCharacters(\n  const string string, unordered_set<char>& potentialCommonCharacters\n);\n\n// O(n * m) time | O(m) space - where n is the number of strings, and m is the\n// length of the longest string\nvector<string> commonCharacters(vector<string> strings) {\n  string smallestString = getSmallestString(strings);\n  unordered_set<char> potentialCommonCharacters;\n  for (int i = 0; i < smallestString.length(); i++) {\n    potentialCommonCharacters.insert(smallestString[i]);\n  }\n\n  for (auto const& string : strings) {\n    removeNonexistentCharacters(string, potentialCommonCharacters);\n  }\n\n  vector<string> output;\n  for (auto character : potentialCommonCharacters) {\n    output.push_back(string(1, character));\n  }\n\n  return output;\n}\n\nstring getSmallestString(const vector<string>& strings) {\n  string smallestString = strings[0];\n  for (auto const& string : strings) {\n    if (string.length() < smallestString.length()) {\n      smallestString = string;\n    }\n  }\n  return smallestString;\n}\n\nvoid removeNonexistentCharacters(\n  const string string, unordered_set<char>& potentialCommonCharacters\n) {\n  unordered_set<char> uniqueStringCharacters;\n  for (int i = 0; i < string.length(); i++) {\n    uniqueStringCharacters.insert(string[i]);\n  }\n\n  unordered_set<char> charactersToRemove;\n  for (auto character : potentialCommonCharacters) {\n    if (!uniqueStringCharacters.count(character)) {\n      charactersToRemove.insert(character);\n    }\n  }\n  for (auto character : charactersToRemove) {\n    potentialCommonCharacters.erase(character);\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\n#include <algorithm>\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<string> input = {\"abc\", \"bcd\", \"cbad\"};\n      vector<string> expected = {\"b\", \"c\"};\n      auto actual = commonCharacters(input);\n      sort(expected.begin(), expected.end());\n      sort(actual.begin(), actual.end());\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "#include <algorithm>\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<string> input = {\"abc\", \"bcd\", \"cbad\"};\n      vector<string> expected = {\"b\", \"c\"};\n      auto actual = commonCharacters(input);\n      sort(expected.begin(), expected.end());\n      sort(actual.begin(), actual.end());\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public string[] CommonCharacters(string[] strings) {\n    // Write your code here.\n    return new string[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n * m) time | O(c) space - where n is the number of strings, m is the\n  // length of the longest string, and c is the number of unique characters\n  // across all strings\n  public string[] CommonCharacters(string[] strings) {\n    Dictionary<char, int> characterCounts = new Dictionary<char, int>();\n    foreach (var str in strings) {\n      HashSet<char> uniqueStringChars = new HashSet<char>();\n      for (int i = 0; i < str.Length; i++) {\n        uniqueStringChars.Add(str[i]);\n      }\n\n      foreach (var character in uniqueStringChars) {\n        if (!characterCounts.ContainsKey(character)) {\n          characterCounts[character] = 0;\n        }\n        characterCounts[character] = characterCounts[character] + 1;\n      }\n    }\n\n    List<char> finalChars = new List<char>();\n    foreach (var characterCount in characterCounts) {\n      char character = characterCount.Key;\n      int count = characterCount.Value;\n      if (count == strings.Length) {\n        finalChars.Add(character);\n      }\n    }\n\n    string[] finalCharsArr = new string[finalChars.Count];\n    for (int i = 0; i < finalCharsArr.Length; i++) {\n      finalCharsArr[i] = finalChars[i].ToString();\n    }\n    return finalCharsArr;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n * m) time | O(m) space - where n is the number of strings, and m is the\n  // length of the longest string\n  public string[] CommonCharacters(string[] strings) {\n    string smallestString = getSmallestString(strings);\n    HashSet<char> potentialCommonCharacters = new HashSet<char>();\n    for (int i = 0; i < smallestString.Length; i++) {\n      potentialCommonCharacters.Add(smallestString[i]);\n    }\n\n    foreach (var str in strings) {\n      removeNonexistentCharacters(str, potentialCommonCharacters);\n    }\n\n    string[] output = new string[potentialCommonCharacters.Count];\n    int j = 0;\n    foreach (var character in potentialCommonCharacters) {\n      output[j] = character.ToString();\n      j++;\n    }\n\n    return output;\n  }\n\n  private string getSmallestString(string[] strings) {\n    string smallestString = strings[0];\n    foreach (var str in strings) {\n      if (str.Length < smallestString.Length) {\n        smallestString = str;\n      }\n    }\n    return smallestString;\n  }\n\n  private void removeNonexistentCharacters(\n    string str, HashSet<char> potentialCommonCharacters\n  ) {\n    HashSet<char> uniqueStringChars = new HashSet<char>();\n    for (int i = 0; i < str.Length; i++) {\n      uniqueStringChars.Add(str[i]);\n    }\n\n    HashSet<char> charactersToRemove = new HashSet<char>();\n    foreach (var character in potentialCommonCharacters) {\n      if (!uniqueStringChars.Contains(character)) {\n        charactersToRemove.Add(character);\n      }\n    }\n    foreach (var character in charactersToRemove) {\n      potentialCommonCharacters.Remove(character);\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    string[] input = new string[] { \"abc\", \"bcd\", \"cbad\" };\n    string[] expected = new string[] { \"b\", \"c\" };\n    string[] actual = new Program().CommonCharacters(input);\n    Array.Sort(actual);\n    Utils.AssertTrue(expected.Length == actual.Length);\n    for (int i = 0; i < actual.Length; i++) {\n      Utils.AssertTrue(expected[i].Equals(actual[i]));\n    }\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    string[] input = new string[] { \"abc\", \"bcd\", \"cbad\" };\n    string[] expected = new string[] { \"b\", \"c\" };\n    string[] actual = new Program().CommonCharacters(input);\n    Array.Sort(actual);\n    Utils.AssertTrue(expected.Length == actual.Length);\n    for (int i = 0; i < actual.Length; i++) {\n      Utils.AssertTrue(expected[i].Equals(actual[i]));\n    }\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc CommonCharacters(strings []string) []string {\n\t// Write your code here.\n\treturn nil\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n * m) time | O(c) space - where n is the number of strings, m is the\n// length of the longest string, and c is the number of unique characters across\n// all strings\nfunc CommonCharacters(strings []string) []string {\n\tcharacterCounts := map[rune]int{}\n\tfor _, str := range strings {\n\t\tuniqueStringCharacters := map[rune]bool{}\n\t\tfor _, char := range str {\n\t\t\tuniqueStringCharacters[char] = true\n\t\t}\n\n\t\tfor char := range uniqueStringCharacters {\n\t\t\tcharacterCounts[char] += 1\n\t\t}\n\t}\n\n\tfinalCharacters := make([]string, 0)\n\tfor char, count := range characterCounts {\n\t\tif count == len(strings) {\n\t\t\tfinalCharacters = append(finalCharacters, string(char))\n\t\t}\n\t}\n\treturn finalCharacters\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n * m) time | O(m) space - where n is the number of strings, and m is the\n// length of the longest string\nfunc CommonCharacters(strings []string) []string {\n\tsmallestString := getSmallestString(strings)\n\tpotentialCommonCharacters := map[rune]bool{}\n\tfor _, char := range smallestString {\n\t\tpotentialCommonCharacters[char] = true\n\t}\n\n\tfor _, str := range strings {\n\t\tremoveNonexistentCharacters(str, potentialCommonCharacters)\n\t}\n\n\tfinalCharacters := make([]string, 0)\n\tfor char := range potentialCommonCharacters {\n\t\tfinalCharacters = append(finalCharacters, string(char))\n\t}\n\treturn finalCharacters\n}\n\nfunc getSmallestString(strings []string) string {\n\tsmallestString := strings[0]\n\tfor _, str := range strings {\n\t\tif len(str) < len(smallestString) {\n\t\t\tsmallestString = str\n\t\t}\n\t}\n\treturn smallestString\n}\n\nfunc removeNonexistentCharacters(str string, potentialCommonCharacters map[rune]bool) {\n\tuniqueStringCharacters := map[rune]bool{}\n\tfor _, char := range str {\n\t\tuniqueStringCharacters[char] = true\n\t}\n\n\tfor char := range potentialCommonCharacters {\n\t\tif _, found := uniqueStringCharacters[char]; !found {\n\t\t\tdelete(potentialCommonCharacters, char)\n\t\t}\n\t}\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"sort\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []string{\"abc\", \"bcd\", \"cbad\"}\n\texpected := []string{\"b\", \"c\"}\n\tactual := CommonCharacters(input)\n\tsort.Strings(actual)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"sort\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []string{\"abc\", \"bcd\", \"cbad\"}\n\texpected := []string{\"b\", \"c\"}\n\tactual := CommonCharacters(input)\n\tsort.Strings(actual)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public String[] commonCharacters(String[] strings) {\n    // Write your code here.\n    return new String[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n * m) time | O(c) space - where n is the number of strings, m is the\n  // length of the longest string, and c is the number of unique characters\n  // across all strings\n  public String[] commonCharacters(String[] strings) {\n    HashMap<Character, Integer> characterCounts =\n      new HashMap<Character, Integer>();\n    for (String string : strings) {\n      HashSet<Character> uniqueStringCharacters = new HashSet<Character>();\n      for (int i = 0; i < string.length(); i++) {\n        uniqueStringCharacters.add(string.charAt(i));\n      }\n\n      for (char character : uniqueStringCharacters) {\n        if (!characterCounts.containsKey(character)) {\n          characterCounts.put(character, 0);\n        }\n        characterCounts.put(character, characterCounts.get(character) + 1);\n      }\n    }\n\n    ArrayList<Character> finalCharacters = new ArrayList<Character>();\n    for (Map.Entry<Character, Integer> characterCount :\n         characterCounts.entrySet()) {\n      Character character = characterCount.getKey();\n      Integer count = characterCount.getValue();\n      if (count == strings.length) {\n        finalCharacters.add(character);\n      }\n    }\n\n    String[] finalCharactersArr = new String[finalCharacters.size()];\n    for (int i = 0; i < finalCharactersArr.length; i++) {\n      finalCharactersArr[i] = finalCharacters.get(i).toString();\n    }\n    return finalCharactersArr;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n * m) time | O(m) space - where n is the number of strings, and m is the\n  // length of the longest string\n  public String[] commonCharacters(String[] strings) {\n    String smallestString = getSmallestString(strings);\n    HashSet<Character> potentialCommonCharacters = new HashSet<Character>();\n    for (int i = 0; i < smallestString.length(); i++) {\n      potentialCommonCharacters.add(smallestString.charAt(i));\n    }\n\n    for (String string : strings) {\n      removeNonexistentCharacters(string, potentialCommonCharacters);\n    }\n\n    String[] output = new String[potentialCommonCharacters.size()];\n    int i = 0;\n    for (Character character : potentialCommonCharacters) {\n      output[i] = character.toString();\n      i++;\n    }\n\n    return output;\n  }\n\n  private String getSmallestString(String[] strings) {\n    String smallestString = strings[0];\n    for (String string : strings) {\n      if (string.length() < smallestString.length()) {\n        smallestString = string;\n      }\n    }\n    return smallestString;\n  }\n\n  private void removeNonexistentCharacters(\n    String string, HashSet<Character> potentialCommonCharacters\n  ) {\n    HashSet<Character> uniqueStringCharacters = new HashSet<Character>();\n    for (int i = 0; i < string.length(); i++) {\n      uniqueStringCharacters.add(string.charAt(i));\n    }\n\n    HashSet<Character> charactersToRemove = new HashSet<Character>();\n    for (char character : potentialCommonCharacters) {\n      if (!uniqueStringCharacters.contains(character)) {\n        charactersToRemove.add(character);\n      }\n    }\n    for (char character : charactersToRemove) {\n      potentialCommonCharacters.remove(character);\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    String[] input = new String[] {\"abc\", \"bcd\", \"cbad\"};\n    String[] expected = new String[] {\"b\", \"c\"};\n    String[] actual = new Program().commonCharacters(input);\n    Arrays.sort(actual);\n    Utils.assertTrue(expected.length == actual.length);\n    for (int i = 0; i < actual.length; i++) {\n      Utils.assertTrue(expected[i].equals(actual[i]));\n    }\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    String[] input = new String[] {\"abc\", \"bcd\", \"cbad\"};\n    String[] expected = new String[] {\"b\", \"c\"};\n    String[] actual = new Program().commonCharacters(input);\n    Arrays.sort(actual);\n    Utils.assertTrue(expected.length == actual.length);\n    for (int i = 0; i < actual.length; i++) {\n      Utils.assertTrue(expected[i].equals(actual[i]));\n    }\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function commonCharacters(strings) {\n  // Write your code here.\n  return [];\n}\n\n// Do not edit the line below.\nexports.commonCharacters = commonCharacters;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * m) time | O(c) space - where n is the number of strings, m is the\n// length of the longest string, and c is the number of unique characters across\n// all strings\nfunction commonCharacters(strings) {\n  const characterCounts = {};\n  for (const string of strings) {\n    const uniqueStringCharacters = new Set(string);\n    for (const character of uniqueStringCharacters) {\n      if (!(character in characterCounts)) {\n        characterCounts[character] = 0;\n      }\n      characterCounts[character]++;\n    }\n  }\n\n  const finalCharacters = [];\n  for (const [character, count] of Object.entries(characterCounts)) {\n    if (count === strings.length) {\n      finalCharacters.push(character);\n    }\n  }\n\n  return finalCharacters;\n}\n\n// Do not edit the line below.\nexports.commonCharacters = commonCharacters;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * m) time | O(m) space - where n is the number of strings, and m is the\n// length of the longest string\nfunction commonCharacters(strings) {\n  const smallestString = getSmallestString(strings);\n  const potentialCommonCharacters = new Set(smallestString);\n\n  for (const string of strings) {\n    removeNonexistentCharacters(string, potentialCommonCharacters);\n  }\n\n  return Array.from(potentialCommonCharacters);\n}\n\nfunction getSmallestString(strings) {\n  let smallestString = strings[0];\n  for (const string of strings) {\n    if (string.length < smallestString.length) {\n      smallestString = string;\n    }\n  }\n\n  return smallestString;\n}\n\nfunction removeNonexistentCharacters(string, potentialCommonCharacters) {\n  const uniqueStringCharacters = new Set(string);\n\n  for (const character of Array.from(potentialCommonCharacters)) {\n    if (!uniqueStringCharacters.has(character)) {\n      potentialCommonCharacters.delete(character);\n    }\n  }\n}\n\n// Do not edit the line below.\nexports.commonCharacters = commonCharacters;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = ['abc', 'bcd', 'cbad'];\n  const expected = ['b', 'c'];\n  const actual = program.commonCharacters(input);\n  actual.sort();\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = ['abc', 'bcd', 'cbad'];\n  const expected = ['b', 'c'];\n  const actual = program.commonCharacters(input);\n  actual.sort();\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun commonCharacters(strings: MutableList<String>): List<String> {\n    // Write your code here.\n    return mutableListOf()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n * m) time | O(c) space - where n is the number of strings, m is the\n// length of the longest string, and c is the number of unique characters across\n// all strings\nfun commonCharacters(strings: MutableList<String>): List<String> {\n    val characterCounts = mutableMapOf<Char, Int>()\n    for (string in strings) {\n        val uniqueStringCharacters = string.toSet()\n        for (character in uniqueStringCharacters) {\n            if (!(character in characterCounts)) {\n                characterCounts[character] = 0\n            }\n            characterCounts[character] = characterCounts[character]!! + 1\n        }\n    }\n\n    val finalCharacters = mutableListOf<String>()\n    for ((character, count) in characterCounts) {\n        if (count == strings.size) {\n            finalCharacters.add(character.toString())\n        }\n    }\n\n    return finalCharacters\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n * m) time | O(m) space - where n is the number of strings, and m is the\n// length of the longest string\nfun commonCharacters(strings: MutableList<String>): List<String> {\n    val smallestString = getSmallestString(strings)\n    val potentialCommonCharacters = smallestString.toSet().toMutableSet()\n\n    for (string in strings) {\n        removeNonexistentCharacters(string, potentialCommonCharacters)\n    }\n\n    return potentialCommonCharacters.toList().map() { it -> it.toString() }\n}\n\nfun getSmallestString(strings: List<String>): String {\n    var smallestString = strings[0]\n    for (string in strings) {\n        if (string.length < smallestString.length) {\n            smallestString = string\n        }\n    }\n\n    return smallestString\n}\n\nfun removeNonexistentCharacters(string: String, potentialCommonCharacters: MutableSet<Char>) {\n    val uniqueStringCharacters = string.toSet()\n\n    for (character in potentialCommonCharacters.toList()) {\n        if (!uniqueStringCharacters.contains(character)) {\n            potentialCommonCharacters.remove(character)\n        }\n    }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.commonCharacters\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(\"abc\", \"bcd\", \"cbad\")\n        val expected = mutableListOf(\"b\", \"c\")\n        val output = commonCharacters(input).toMutableList()\n        output.sort()\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.commonCharacters\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(\"abc\", \"bcd\", \"cbad\")\n        val expected = mutableListOf(\"b\", \"c\")\n        val output = commonCharacters(input).toMutableList()\n        output.sort()\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def commonCharacters(strings):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n * m) time | O(c) space - where n is the number of strings, m is the\n# length of the longest string, and c is the number of unique characters across\n# all strings\ndef commonCharacters(strings):\n    characterCounts = {}\n    for string in strings:\n        uniqueStringCharacters = set(string)\n        for character in uniqueStringCharacters:\n            if character not in characterCounts:\n                characterCounts[character] = 0\n            characterCounts[character] += 1\n\n    finalCharacters = []\n    for character, count in characterCounts.items():\n        if count == len(strings):\n            finalCharacters.append(character)\n\n    return finalCharacters\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n * m) time | O(m) space - where n is the number of strings, and m is the\n# length of the longest string\ndef commonCharacters(strings):\n    smallestString = getSmallestString(strings)\n    potentialCommonCharacters = set(smallestString)\n\n    for string in strings:\n        removeNonexistentCharacters(string, potentialCommonCharacters)\n\n    return list(potentialCommonCharacters)\n\n\ndef getSmallestString(strings):\n    smallestString = strings[0]\n    for string in strings:\n        if len(string) < len(smallestString):\n            smallestString = string\n\n    return smallestString\n\n\ndef removeNonexistentCharacters(string, potentialCommonCharacters):\n    uniqueStringCharacters = set(string)\n\n    for character in list(potentialCommonCharacters):\n        if character not in uniqueStringCharacters:\n            potentialCommonCharacters.remove(character)\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [\"abc\", \"bcd\", \"cbad\"]\n        expected = [\"b\", \"c\"]\n        actual = program.commonCharacters(input)\n        actual.sort()\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [\"abc\", \"bcd\", \"cbad\"]\n        expected = [\"b\", \"c\"]\n        actual = program.commonCharacters(input)\n        actual.sort()\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "class Program\n  def commonCharacters(strings)\n    # Write your code here.\n    return []\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def commonCharacters(strings)\n    # Write your code here.\n    return []\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.commonCharacters\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.commonCharacters\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func commonCharacters(_ strings: [String]) -> [String] {\n    // Write your code here.\n    return [String]()\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n * m) time | O(c) space - where n is the number of strings, m is the\n  // length of the longest string, and c is the number of unique characters across\n  // all strings\n  func commonCharacters(_ strings: [String]) -> [String] {\n    var characterCounts = [Character: Int]()\n    for string in strings {\n      var uniqueStringCharacters = Set<Character>()\n      for character in string {\n        uniqueStringCharacters.insert(character)\n      }\n\n      for character in uniqueStringCharacters {\n        if !characterCounts.keys.contains(character) {\n          characterCounts[character] = 0\n        }\n        characterCounts[character]! += 1\n      }\n    }\n\n    var finalCharacters = [String]()\n    for (character, count) in characterCounts {\n      if count == strings.count {\n        finalCharacters.append(String(character))\n      }\n    }\n    return finalCharacters\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n * m) time | O(m) space - where n is the number of strings, and m is the\n  // length of the longest string\n  func commonCharacters(_ strings: [String]) -> [String] {\n    let smallestString = getSmallestString(strings)\n    var potentialCommonCharacters = Set<Character>()\n    for character in smallestString {\n      potentialCommonCharacters.insert(character)\n    }\n\n    for string in strings {\n      removeNonexistentCharacters(string, &potentialCommonCharacters)\n    }\n\n    var finalCharacters = [String]()\n    for character in potentialCommonCharacters {\n      finalCharacters.append(String(character))\n    }\n    return finalCharacters\n  }\n\n  func getSmallestString(_ strings: [String]) -> String {\n    var smallestString = strings[0]\n    for string in strings {\n      if string.count < smallestString.count {\n        smallestString = string\n      }\n    }\n    return smallestString\n  }\n\n  func removeNonexistentCharacters(_ string: String, _ potentialCommonCharacters: inout Set<Character>) {\n    var uniqueStringCharacters = Set<Character>()\n    for character in string {\n      uniqueStringCharacters.insert(character)\n    }\n\n    for character in potentialCommonCharacters {\n      if !uniqueStringCharacters.contains(character) {\n        potentialCommonCharacters.remove(character)\n      }\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      let input = [\"abc\", \"bcd\", \"cbad\"]\n      let expected = [\"b\", \"c\"]\n      var actual = Program().commonCharacters(input)\n      actual.sort()\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      let input = [\"abc\", \"bcd\", \"cbad\"]\n      let expected = [\"b\", \"c\"]\n      var actual = Program().commonCharacters(input)\n      actual.sort()\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function commonCharacters(strings: string[]) {\n  // Write your code here.\n  return [];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * m) time | O(c) space - where n is the number of strings, m is the\n// length of the longest string, and c is the number of unique characters across\n// all strings\nexport function commonCharacters(strings: string[]) {\n  const characterCounts: {[character: string]: number} = {};\n  for (const string of strings) {\n    const uniqueStringCharacters = new Set(string);\n    for (const character of uniqueStringCharacters) {\n      if (!(character in characterCounts)) {\n        characterCounts[character] = 0;\n      }\n      characterCounts[character]++;\n    }\n  }\n\n  const finalCharacters: string[] = [];\n  for (const [character, count] of Object.entries(characterCounts)) {\n    if (count === strings.length) {\n      finalCharacters.push(character);\n    }\n  }\n\n  return finalCharacters;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * m) time | O(m) space - where n is the number of strings, and m is the\n// length of the longest string\nexport function commonCharacters(strings: string[]) {\n  const smallestString = getSmallestString(strings);\n  const potentialCommonCharacters = new Set(smallestString);\n\n  for (const string of strings) {\n    removeNonexistentCharacters(string, potentialCommonCharacters);\n  }\n\n  return Array.from(potentialCommonCharacters);\n}\n\nfunction getSmallestString(strings: string[]) {\n  let smallestString = strings[0];\n  for (const string of strings) {\n    if (string.length < smallestString.length) {\n      smallestString = string;\n    }\n  }\n\n  return smallestString;\n}\n\nfunction removeNonexistentCharacters(string: string, potentialCommonCharacters: Set<string>) {\n  const uniqueStringCharacters = new Set(string);\n\n  for (const character of Array.from(potentialCommonCharacters)) {\n    if (!uniqueStringCharacters.has(character)) {\n      potentialCommonCharacters.delete(character);\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = ['abc', 'bcd', 'cbad'];\n  const expected = ['b', 'c'];\n  const actual = program.commonCharacters(input);\n  actual.sort();\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = ['abc', 'bcd', 'cbad'];\n  const expected = ['b', 'c'];\n  const actual = program.commonCharacters(input);\n  actual.sort();\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "strings",
+            "example": [
+                "abc",
+                "bcd",
+                "cbad"
+            ],
+            "schema": {
+                "items": {
+                    "minLength": 1,
+                    "type": "string"
+                },
+                "minItems": 1,
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "strings": [
+                "abc",
+                "bcd",
+                "cbad"
+            ]
+        },
+        {
+            "strings": [
+                "a"
+            ]
+        },
+        {
+            "strings": [
+                "a",
+                "b",
+                "c"
+            ]
+        },
+        {
+            "strings": [
+                "aa",
+                "aa"
+            ]
+        },
+        {
+            "strings": [
+                "aaaa",
+                "a"
+            ]
+        },
+        {
+            "strings": [
+                "abcde",
+                "aa",
+                "foobar",
+                "foobaz",
+                "and this is a string",
+                "aaaaaaaa",
+                "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeea"
+            ]
+        },
+        {
+            "strings": [
+                "abcdef",
+                "fedcba",
+                "abcefd",
+                "aefbcd",
+                "efadbc",
+                "effffffffffffbcda",
+                "eeeeeffffffbbbbbaaaaaccccdddd",
+                "**************abdcef************"
+            ]
+        },
+        {
+            "strings": [
+                "ab&cdef!",
+                "f!ed&cba",
+                "a&bce!d",
+                "ae&fb!cd",
+                "efa&!dbc",
+                "eff!&fff&fffffffbcda",
+                "eeee!efff&fffbbbbbaaaaaccccdddd",
+                "*******!***&****abdcef************",
+                "*******!***&****a***********f*",
+                "*******!***&****b***********c*"
+            ]
+        },
+        {
+            "strings": [
+                "*abcd",
+                "def*",
+                "******d*****"
+            ]
+        },
+        {
+            "strings": [
+                "*abc!d",
+                "de!f*",
+                "**!!!****d*****"
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "strings": [
+                "abc",
+                "bcd",
+                "cbad"
+            ]
+        },
+        {
+            "strings": [
+                "a"
+            ]
+        },
+        {
+            "strings": [
+                "a",
+                "b",
+                "c"
+            ]
+        },
+        {
+            "strings": [
+                "aa",
+                "aa"
+            ]
+        },
+        {
+            "strings": [
+                "aaaa",
+                "a"
+            ]
+        },
+        {
+            "strings": [
+                "abcde",
+                "aa",
+                "foobar",
+                "foobaz",
+                "and this is a string",
+                "aaaaaaaa",
+                "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeea"
+            ]
+        },
+        {
+            "strings": [
+                "abcdef",
+                "fedcba",
+                "abcefd",
+                "aefbcd",
+                "efadbc",
+                "effffffffffffbcda",
+                "eeeeeffffffbbbbbaaaaaccccdddd",
+                "**************abdcef************"
+            ]
+        },
+        {
+            "strings": [
+                "ab&cdef!",
+                "f!ed&cba",
+                "a&bce!d",
+                "ae&fb!cd",
+                "efa&!dbc",
+                "eff!&fff&fffffffbcda",
+                "eeee!efff&fffbbbbbaaaaaccccdddd",
+                "*******!***&****abdcef************",
+                "*******!***&****a***********f*",
+                "*******!***&****b***********c*"
+            ]
+        },
+        {
+            "strings": [
+                "*abcd",
+                "def*",
+                "******d*****"
+            ]
+        },
+        {
+            "strings": [
+                "*abc!d",
+                "de!f*",
+                "**!!!****d*****"
+            ]
+        }
+    ],
+    "changelog": []
+}

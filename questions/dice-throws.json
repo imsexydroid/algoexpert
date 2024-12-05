@@ -1,0 +1,336 @@
+{
+    "uid": "dice-throws",
+    "testStrategy": "JSON",
+    "name": "Dice Throws",
+    "version": 0,
+    "releaseDate": "2023-07-10T00:00:00Z",
+    "category": "Dynamic Programming",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 827,
+        "failureCount": 75
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "835284742",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1762
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    You're given a set of <span>numDice</span> dice, each with\n    <span>numSides</span> sides, and a <span>target</span> integer, which\n    represents a target sum to obtain when rolling all of the dice and summing\n    their values. Write a function that returns the total number of dice-roll\n    permutations that sum up to exactly that target value.\n  </p>\n  <p>\n    All three input values will always be positive integers. Each of the dice\n    has an equal probability of landing on any number from 1 to\n    <span>numSides</span>. Identical total dice rolls obtained from different\n    individual dice rolls (for example, <span>[2, 3]</span> vs.\n    <span>[3, 2]</span>) count as different dice-roll permutations. If there's\n    no possible dice-roll combination that sums up to the\n    <span>target</span> given the input dice, your function should return 0.\n  </p>\n\n  <h3>Sample Input</h3>\n  <pre><span class=\"CodeEditor-promptParameter\">numDice</span> = 2\n<span class=\"CodeEditor-promptParameter\">numSides</span> = 6\n<span class=\"CodeEditor-promptParameter\">target</span> = 7</pre>\n  <h3>Sample Output</h3>\n  <pre>\n6 <span class=\"CodeEditor-promptComment\">// [1, 6], [2, 5], [3, 4], [4, 3], [5, 2], [6, 1]\n</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  It can be helpful to start by thinking about simple cases. When do you know the\n  answer will be 0 or -1?\n</p>\n",
+        "\n<p>\n  If you had the solution of all simpler inputs, how would you find the solution\n  for the given input?\n</p>\n",
+        "\n<p>\n  The solution to <span>diceThrows(numThrows, numSides, target)</span> can be\n  thought of as the sum of\n  <span>diceThrows(numThrows - 1, numSides, target)</span> for all possible\n  target values between <span>target - numSides</span> and <span>target</span>.\n</p>"
+    ],
+    "spaceTime": "O(d * s * t) time | O(t) space - where d is the number of throws, s is the number of sides, and t is the target.",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nint diceThrows(int numDice, int numSides, int target) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n\nusing namespace std;\n\nint diceThrowsHelper(\n  int numDice, int numSides, int target, vector<vector<int>>& storedResults\n);\n\n// O(d * s * t) time | O(d * t) space - where d is the number of dice, s is the\n// number of sides, and t is the target.\nint diceThrows(int numDice, int numSides, int target) {\n  vector<vector<int>> storedResults(numDice + 1, vector<int>(target + 1, -1));\n  return diceThrowsHelper(numDice, numSides, target, storedResults);\n}\n\nint diceThrowsHelper(\n  int numDice, int numSides, int target, vector<vector<int>>& storedResults\n) {\n  if (numDice == 0) {\n    return target == 0 ? 1 : 0;\n  }\n\n  if (storedResults[numDice][target] != -1) {\n    return storedResults[numDice][target];\n  }\n\n  int numWaysToReachTarget = 0;\n  for (int currentTarget = max(0, target - numSides); currentTarget < target;\n       currentTarget++) {\n    numWaysToReachTarget +=\n      diceThrowsHelper(numDice - 1, numSides, currentTarget, storedResults);\n  }\n  storedResults[numDice][target] = numWaysToReachTarget;\n\n  return numWaysToReachTarget;\n}",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n\nusing namespace std;\n\nint diceThrowsHelper(\n  int numDice, int numSides, int target, vector<vector<int>>& storedResults\n);\n\n// O(d * s * t) time | O(d * t) space - where d is the number of dice, s is the\n// number of sides, and t is the target.\nint diceThrows(int numDice, int numSides, int target) {\n  vector<vector<int>> storedResults(numDice + 1, vector<int>(target + 1, 0));\n  storedResults[0][0] = 1;\n\n  for (int currentNumDice = 1; currentNumDice <= numDice; currentNumDice++) {\n    for (int currentTarget = 0; currentTarget <= target; currentTarget++) {\n      int numWaysToReachTarget = 0;\n      for (int currentNumSides = 1;\n           currentNumSides <= min(currentTarget, numSides);\n           currentNumSides++) {\n        numWaysToReachTarget +=\n          storedResults[currentNumDice - 1][currentTarget - currentNumSides];\n      }\n      storedResults[currentNumDice][currentTarget] = numWaysToReachTarget;\n    }\n  }\n\n  return storedResults[numDice][target];\n}",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n\nusing namespace std;\n\nint diceThrowsHelper(\n  int numDice, int numSides, int target, vector<vector<int>>& storedResults\n);\n\n// O(d * s * t) time | O(d * t) space - where d is the number of dice, s is the\n// number of sides, and t is the target.\nint diceThrows(int numDice, int numSides, int target) {\n  vector<vector<int>> storedResults(2, vector<int>(target + 1, 0));\n  storedResults[0][0] = 1;\n\n  int previousNumDiceIndex = 0;\n  int newNumDiceIndex = 1;\n  for (int currentNumDice = 0; currentNumDice < numDice; currentNumDice++) {\n    for (int currentTarget = 0; currentTarget <= target; currentTarget++) {\n      int numWaysToReachTarget = 0;\n      for (int currentNumSides = 1;\n           currentNumSides <= min(currentTarget, numSides);\n           currentNumSides++) {\n        numWaysToReachTarget +=\n          storedResults[previousNumDiceIndex][currentTarget - currentNumSides];\n      }\n      storedResults[newNumDiceIndex][currentTarget] = numWaysToReachTarget;\n    }\n    swap(previousNumDiceIndex, newNumDiceIndex);\n  }\n\n  return storedResults[previousNumDiceIndex][target];\n}"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      auto numDice = 2;\n      auto numSides = 6;\n      auto target = 7;\n      auto expected = 6;\n      auto actual = diceThrows(numDice, numSides, target);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      auto numDice = 2;\n      auto numSides = 6;\n      auto target = 7;\n      auto expected = 6;\n      auto actual = diceThrows(numDice, numSides, target);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int DiceThrows(int numDice, int numSides, int target) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(d * s * t) time | O(d * t) space - where d is the number of dice, s is\n  // the number of sides, and t is the target.\n  public int DiceThrows(int numDice, int numSides, int target) {\n    int[,] storedResults = new int[numDice + 1, target + 1];\n    for (var i = 0; i < storedResults.GetLength(0); i++) {\n      for (var j = 0; j < storedResults.GetLength(1); j++) {\n        storedResults[i, j] = -1;\n      }\n    }\n    return DiceThrowsHelper(numDice, numSides, target, storedResults);\n  }\n\n  private int DiceThrowsHelper(\n    int numDice, int numSides, int target, int[,] storedResults\n  ) {\n    if (numDice == 0) {\n      return target == 0 ? 1 : 0;\n    }\n\n    if (storedResults[numDice, target] != -1) {\n      return storedResults[numDice, target];\n    }\n\n    int numWaysToReachTarget = 0;\n    for (int currentTarget = Math.Max(0, target - numSides);\n         currentTarget < target;\n         currentTarget++) {\n      numWaysToReachTarget +=\n        DiceThrowsHelper(numDice - 1, numSides, currentTarget, storedResults);\n    }\n    storedResults[numDice, target] = numWaysToReachTarget;\n\n    return numWaysToReachTarget;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(d * s * t) time | O(d * t) space - where d is the number of dice, s is\n  // the number of sides, and t is the target.\n  public int DiceThrows(int numDice, int numSides, int target) {\n    int[,] storedResults = new int[numDice + 1, target + 1];\n    storedResults[0, 0] = 1;\n\n    for (int currentNumDice = 1; currentNumDice <= numDice; currentNumDice++) {\n      for (int currentTarget = 0; currentTarget <= target; currentTarget++) {\n        int numWaysToReachTarget = 0;\n        for (int currentNumSides = 1;\n             currentNumSides <= Math.Min(currentTarget, numSides);\n             currentNumSides++) {\n          numWaysToReachTarget +=\n            storedResults[currentNumDice - 1, currentTarget - currentNumSides];\n        }\n        storedResults[currentNumDice, currentTarget] = numWaysToReachTarget;\n      }\n    }\n\n    return storedResults[numDice, target];\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(d * s * t) time | O(d * t) space - where d is the number of dice, s is\n  // the number of sides, and t is the target.\n  public int DiceThrows(int numDice, int numSides, int target) {\n    int[,] storedResults = new int[2, target + 1];\n    storedResults[0, 0] = 1;\n\n    int previousNumDiceIndex = 0;\n    int newNumDiceIndex = 1;\n    for (int currentNumDice = 0; currentNumDice < numDice; currentNumDice++) {\n      for (int currentTarget = 0; currentTarget <= target; currentTarget++) {\n        int numWaysToReachTarget = 0;\n        for (int currentNumSides = 1;\n             currentNumSides <= Math.Min(currentTarget, numSides);\n             currentNumSides++) {\n          numWaysToReachTarget += storedResults\n          [previousNumDiceIndex, currentTarget - currentNumSides];\n        }\n        storedResults[newNumDiceIndex, currentTarget] = numWaysToReachTarget;\n      }\n      int tempPreviousNumDiceIndex = previousNumDiceIndex;\n      previousNumDiceIndex = newNumDiceIndex;\n      newNumDiceIndex = tempPreviousNumDiceIndex;\n    }\n\n    return storedResults[previousNumDiceIndex, target];\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    var numDice = 2;\n    var numSides = 6;\n    var target = 7;\n    var expected = 6;\n    var actual = new Program().DiceThrows(numDice, numSides, target);\n    Utils.AssertTrue(expected == actual);\n  }\n}",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    var numDice = 2;\n    var numSides = 6;\n    var target = 7;\n    var expected = 6;\n    var actual = new Program().DiceThrows(numDice, numSides, target);\n    Utils.AssertTrue(expected == actual);\n  }\n}"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc DiceThrows(numDice int, numSides int, target int) int {\n\t// Write your code here.\n\treturn -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(d * s * t) time | O(d * t) space - where d is the number of dice, s is the\n// number of sides, and t is the target.\nfunc DiceThrows(numDice int, numSides int, target int) int {\n\tstoredResults := make([][]int, numDice+1)\n\tfor i := range storedResults {\n\t\tstoredResults[i] = make([]int, target+1)\n\t\tfor j := range storedResults[i] {\n\t\t\tstoredResults[i][j] = -1\n\t\t}\n\t}\n\n\treturn diceThrowsHelper(numDice, numSides, target, storedResults)\n}\n\nfunc diceThrowsHelper(numDice, numSides, target int, storedResults [][]int) int {\n\tif numDice == 0 {\n\t\tif target == 0 {\n\t\t\treturn 1\n\t\t}\n\t\treturn 0\n\t}\n\n\tif storedResults[numDice][target] > -1 {\n\t\treturn storedResults[numDice][target]\n\t}\n\n\tnumWaysToReachTarget := 0\n\tfor currentTarget := max(0, target-numSides); currentTarget < target; currentTarget++ {\n\t\tnumWaysToReachTarget += diceThrowsHelper(numDice-1, numSides, currentTarget, storedResults)\n\t}\n\tstoredResults[numDice][target] = numWaysToReachTarget\n\n\treturn numWaysToReachTarget\n}\n\nfunc max(a, b int) int {\n\tif a > b {\n\t\treturn a\n\t}\n\treturn b\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(d * s * t) time | O(d * t) space - where d is the number of dice, s is the\n// number of sides, and t is the target.\nfunc DiceThrows(numDice int, numSides int, target int) int {\n\tstoredResults := make([][]int, numDice+1)\n\tfor i := range storedResults {\n\t\tstoredResults[i] = make([]int, target+1)\n\t}\n\n\tstoredResults[0][0] = 1\n\n\tfor currentNumDice := 1; currentNumDice < numDice+1; currentNumDice++ {\n\t\tfor currentTarget := 0; currentTarget < target+1; currentTarget++ {\n\t\t\tnumWaysToReachTarget := 0\n\t\t\tfor currentNumSides := 1; currentNumSides < min(currentTarget, numSides)+1; currentNumSides++ {\n\t\t\t\tnumWaysToReachTarget += storedResults[currentNumDice-1][currentTarget-currentNumSides]\n\t\t\t}\n\t\t\tstoredResults[currentNumDice][currentTarget] = numWaysToReachTarget\n\t\t}\n\t}\n\n\treturn storedResults[numDice][target]\n}\n\nfunc min(a, b int) int {\n\tif a < b {\n\t\treturn a\n\t}\n\treturn b\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(d * s * t) time | O(t) space - where d is the number of dice, s is the\n// number of sides, and t is the target.\nfunc DiceThrows(numDice int, numSides int, target int) int {\n\tstoredResults := [2][]int{make([]int, target+1), make([]int, target+1)}\n\tstoredResults[0][0] = 1\n\n\tpreviousNumDiceIndex := 0\n\tnewNumDiceIndex := 1\n\tfor i := 0; i < numDice; i++ {\n\t\tfor currentTarget := 0; currentTarget < target+1; currentTarget++ {\n\t\t\tnumWaysToReachTarget := 0\n\t\t\tfor currentNumSides := 1; currentNumSides < min(currentTarget, numSides)+1; currentNumSides++ {\n\t\t\t\tnumWaysToReachTarget += storedResults[previousNumDiceIndex][currentTarget-currentNumSides]\n\t\t\t}\n\t\t\tstoredResults[newNumDiceIndex][currentTarget] = numWaysToReachTarget\n\t\t}\n\t\tpreviousNumDiceIndex, newNumDiceIndex = newNumDiceIndex, previousNumDiceIndex\n\t}\n\n\treturn storedResults[previousNumDiceIndex][target]\n}\n\nfunc min(a, b int) int {\n\tif a < b {\n\t\treturn a\n\t}\n\treturn b\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tnumDice := 2\n\tnumSides := 6\n\ttarget := 7\n\texpected := 6\n\tactual := DiceThrows(numDice, numSides, target)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tnumDice := 2\n\tnumSides := 6\n\ttarget := 7\n\texpected := 6\n\tactual := DiceThrows(numDice, numSides, target)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int diceThrows(int numDice, int numSides, int target) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(d * s * t) time | O(d * t) space - where d is the number of dice, s is\n  // the number of sides, and t is the target.\n  public int diceThrows(int numDice, int numSides, int target) {\n    Integer[][] storedResults = new Integer[numDice + 1][target + 1];\n    return diceThrowsHelper(numDice, numSides, target, storedResults);\n  }\n\n  private int diceThrowsHelper(\n    int numDice, int numSides, int target, Integer[][] storedResults\n  ) {\n    if (numDice == 0) {\n      return target == 0 ? 1 : 0;\n    }\n\n    if (storedResults[numDice][target] != null) {\n      return storedResults[numDice][target];\n    }\n\n    int numWaysToReachTarget = 0;\n    for (int currentTarget = Math.max(0, target - numSides);\n         currentTarget < target;\n         currentTarget++) {\n      numWaysToReachTarget +=\n        diceThrowsHelper(numDice - 1, numSides, currentTarget, storedResults);\n    }\n    storedResults[numDice][target] = numWaysToReachTarget;\n\n    return numWaysToReachTarget;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(d * s * t) time | O(d * t) space - where d is the number of dice, s is\n  // the number of sides, and t is the target.\n  public int diceThrows(int numDice, int numSides, int target) {\n    int[][] storedResults = new int[numDice + 1][target + 1];\n    storedResults[0][0] = 1;\n\n    for (int currentNumDice = 1; currentNumDice <= numDice; currentNumDice++) {\n      for (int currentTarget = 0; currentTarget <= target; currentTarget++) {\n        int numWaysToReachTarget = 0;\n        for (int currentNumSides = 1;\n             currentNumSides <= Math.min(currentTarget, numSides);\n             currentNumSides++) {\n          numWaysToReachTarget +=\n            storedResults[currentNumDice - 1][currentTarget - currentNumSides];\n        }\n        storedResults[currentNumDice][currentTarget] = numWaysToReachTarget;\n      }\n    }\n\n    return storedResults[numDice][target];\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(d * s * t) time | O(d * t) space - where d is the number of dice, s is\n  // the number of sides, and t is the target.\n  public int diceThrows(int numDice, int numSides, int target) {\n    int[][] storedResults = new int[2][target + 1];\n    storedResults[0][0] = 1;\n\n    int previousNumDiceIndex = 0;\n    int newNumDiceIndex = 1;\n    for (int currentNumDice = 0; currentNumDice < numDice; currentNumDice++) {\n      for (int currentTarget = 0; currentTarget <= target; currentTarget++) {\n        int numWaysToReachTarget = 0;\n        for (int currentNumSides = 1;\n             currentNumSides <= Math.min(currentTarget, numSides);\n             currentNumSides++) {\n          numWaysToReachTarget +=\n            storedResults[previousNumDiceIndex]\n                         [currentTarget - currentNumSides];\n        }\n        storedResults[newNumDiceIndex][currentTarget] = numWaysToReachTarget;\n      }\n      int tempPreviousNumDiceIndex = previousNumDiceIndex;\n      previousNumDiceIndex = newNumDiceIndex;\n      newNumDiceIndex = tempPreviousNumDiceIndex;\n    }\n\n    return storedResults[previousNumDiceIndex][target];\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var numDice = 2;\n    var numSides = 6;\n    var target = 7;\n    var expected = 6;\n    var actual = new Program().diceThrows(numDice, numSides, target);\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var numDice = 2;\n    var numSides = 6;\n    var target = 7;\n    var expected = 6;\n    var actual = new Program().diceThrows(numDice, numSides, target);\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function diceThrows(numDice, numSides, target) {\n  // Write your code here.\n  return -1;\n}\n\n// Do not edit the line below.\nexports.diceThrows = diceThrows;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(d * s * t) time | O(d * t) space - where d is the number of dice, s is the\n// number of sides, and t is the target.\nfunction diceThrows(numDice, numSides, target) {\n  const storedResults = new Array(numDice + 1)\n    .fill(undefined)\n    .map(_ => new Array(target + 1).fill(-1));\n  return diceThrowsHelper(numDice, numSides, target, storedResults);\n}\n\nfunction diceThrowsHelper(numDice, numSides, target, storedResults) {\n  if (numDice === 0) return target === 0 ? 1 : 0;\n\n  if (storedResults[numDice][target] > -1) return storedResults[numDice][target];\n\n  let numWaysToReachTarget = 0;\n  for (\n    let currentTarget = Math.max(0, target - numSides);\n    currentTarget < target;\n    currentTarget++\n  ) {\n    numWaysToReachTarget += diceThrowsHelper(numDice - 1, numSides, currentTarget, storedResults);\n  }\n  storedResults[numDice][target] = numWaysToReachTarget;\n\n  return numWaysToReachTarget;\n}\n\n// Do not edit the line below.\nexports.diceThrows = diceThrows;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(d * s * t) time | O(d * t) space - where d is the number of dice, s is the\n// number of sides, and t is the target.\nfunction diceThrows(numDice, numSides, target) {\n  const storedResults = new Array(numDice + 1)\n    .fill(undefined)\n    .map(_ => new Array(target + 1).fill(0));\n  storedResults[0][0] = 1;\n\n  for (let currentNumDice = 1; currentNumDice < numDice + 1; currentNumDice++) {\n    for (let currentTarget = 0; currentTarget < target + 1; currentTarget++) {\n      let numWaysToReachTarget = 0;\n      for (\n        let currentNumSides = 1;\n        currentNumSides < Math.min(currentTarget, numSides) + 1;\n        currentNumSides++\n      ) {\n        numWaysToReachTarget += storedResults[currentNumDice - 1][currentTarget - currentNumSides];\n      }\n      storedResults[currentNumDice][currentTarget] = numWaysToReachTarget;\n    }\n  }\n\n  return storedResults[numDice][target];\n}\n\n// Do not edit the line below.\nexports.diceThrows = diceThrows;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(d * s * t) time | O(t) space - where d is the number of dice, s is the\n// number of sides, and t is the target.\nfunction diceThrows(numDice, numSides, target) {\n  const storedResults = [new Array(target + 1).fill(0), new Array(target + 1).fill(0)];\n  storedResults[0][0] = 1;\n\n  let previousNumDiceIndex = 0;\n  let newNumDiceIndex = 1;\n  for (let i = 0; i < numDice; i++) {\n    for (let currentTarget = 0; currentTarget < target + 1; currentTarget++) {\n      let numWaysToReachTarget = 0;\n      for (\n        let currentNumSides = 1;\n        currentNumSides < Math.min(currentTarget, numSides) + 1;\n        currentNumSides++\n      ) {\n        numWaysToReachTarget +=\n          storedResults[previousNumDiceIndex][currentTarget - currentNumSides];\n      }\n      storedResults[newNumDiceIndex][currentTarget] = numWaysToReachTarget;\n    }\n    const temp = previousNumDiceIndex;\n    previousNumDiceIndex = newNumDiceIndex;\n    newNumDiceIndex = temp;\n  }\n\n  return storedResults[previousNumDiceIndex][target];\n}\n\n// Do not edit the line below.\nexports.diceThrows = diceThrows;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const numDice = 2;\n  const numSides = 6;\n  const target = 7;\n  const expected = 6;\n  const actual = program.diceThrows(numDice, numSides, target);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const numDice = 2;\n  const numSides = 6;\n  const target = 7;\n  const expected = 6;\n  const actual = program.diceThrows(numDice, numSides, target);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun diceThrows(numDice: Int, numSides: Int, target: Int): Int {\n    // Write your code here.\n    return -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.max\n\n// O(d * s * t) time | O(d * t) space - where d is the number of dice, s is the\n// number of sides, and t is the target.\nfun diceThrows(numDice: Int, numSides: Int, target: Int): Int {\n    val storedResults = List(numDice + 1) { MutableList(target + 1) { -1 } }\n    return diceThrowsHelper(numDice, numSides, target, storedResults)\n}\n\nfun diceThrowsHelper(numDice: Int, numSides: Int, target: Int, storedResults: List<MutableList<Int>>): Int {\n    if (numDice == 0) return if (target == 0) 1 else 0\n\n    if (storedResults[numDice][target] > -1) return storedResults[numDice][target]\n\n    var numWaysToReachTarget = 0\n    for (currentTarget in max(0, target - numSides) until target) {\n        numWaysToReachTarget += diceThrowsHelper(numDice - 1, numSides, currentTarget, storedResults)\n    }\n    storedResults[numDice][target] = numWaysToReachTarget\n\n    return numWaysToReachTarget\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.min\n\n// O(d * s * t) time | O(d * t) space - where d is the number of dice, s is the\n// number of sides, and t is the target.\nfun diceThrows(numDice: Int, numSides: Int, target: Int): Int {\n    val storedResults = List(numDice + 1) { MutableList(target + 1) { 0 } }\n    storedResults[0][0] = 1\n\n    for (currentNumDice in 1 until numDice + 1) {\n        for (currentTarget in 0 until target + 1) {\n            var numWaysToReachTarget = 0\n            for (currentNumSides in 1 until min(currentTarget, numSides) + 1) {\n                numWaysToReachTarget += storedResults[currentNumDice - 1][currentTarget - currentNumSides]\n            }\n            storedResults[currentNumDice][currentTarget] = numWaysToReachTarget\n        }\n    }\n\n    return storedResults[numDice][target]\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.min\n\n// O(d * s * t) time | O(t) space - where d is the number of dice, s is the\n// number of sides, and t is the target.\nfun diceThrows(numDice: Int, numSides: Int, target: Int): Int {\n    val storedResults = listOf(MutableList(target + 1) { 0 }, MutableList(target + 1) { 0 })\n    storedResults[0][0] = 1\n\n    var previousNumDiceIndex = 0\n    var newNumDiceIndex = 1\n    for (i in 0 until numDice) {\n        for (currentTarget in 0 until target + 1) {\n            var numWaysToReachTarget = 0\n            for (currentNumSides in 1 until min(currentTarget, numSides) + 1) {\n                numWaysToReachTarget += storedResults[previousNumDiceIndex][currentTarget - currentNumSides]\n            }\n            storedResults[newNumDiceIndex][currentTarget] = numWaysToReachTarget\n        }\n        val temp = previousNumDiceIndex\n        previousNumDiceIndex = newNumDiceIndex\n        newNumDiceIndex = temp\n    }\n\n    return storedResults[previousNumDiceIndex][target]\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.diceThrows\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val numDice = 2\n        val numSides = 6\n        val target = 7\n        val expected = 6\n        val output = diceThrows(numDice, numSides, target)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.diceThrows\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val numDice = 2\n        val numSides = 6\n        val target = 7\n        val expected = 6\n        val output = diceThrows(numDice, numSides, target)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def diceThrows(numDice, numSides, target):\n    # Write your code here.\n    return -1\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(d * s * t) time | O(d * t) space - where d is the number of dice, s is the\n# number of sides, and t is the target.\ndef diceThrows(numDice, numSides, target):\n    storedResults = [[-1] * (target + 1) for _ in range(numDice + 1)]\n    return diceThrowsHelper(numDice, numSides, target, storedResults)\n\n\ndef diceThrowsHelper(numDice, numSides, target, storedResults):\n    if numDice == 0:\n        return 1 if target == 0 else 0\n\n    if storedResults[numDice][target] > -1:\n        return storedResults[numDice][target]\n\n    numWaysToReachTarget = 0\n    for currentTarget in range(max(0, target - numSides), target):\n        numWaysToReachTarget += diceThrowsHelper(\n            numDice - 1, numSides, currentTarget, storedResults\n        )\n    storedResults[numDice][target] = numWaysToReachTarget\n\n    return numWaysToReachTarget\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(d * s * t) time | O(d * t) space - where d is the number of dice, s is the\n# number of sides, and t is the target.\ndef diceThrows(numDice, numSides, target):\n    storedResults = [[0] * (target + 1) for _ in range(numDice + 1)]\n    storedResults[0][0] = 1\n\n    for currentNumDice in range(1, numDice + 1):\n        for currentTarget in range(target + 1):\n            numWaysToReachTarget = 0\n            for currentNumSides in range(1, min(currentTarget, numSides) + 1):\n                numWaysToReachTarget += storedResults[currentNumDice - 1][\n                    currentTarget - currentNumSides\n                ]\n            storedResults[currentNumDice][currentTarget] = numWaysToReachTarget\n\n    return storedResults[numDice][target]\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(d * s * t) time | O(t) space - where d is the number of dice, s is the\n# number of sides, and t is the target.\ndef diceThrows(numDice, numSides, target):\n    storedResults = [[0] * (target + 1), [0] * (target + 1)]\n    storedResults[0][0] = 1\n\n    previousNumDiceIndex = 0\n    newNumDiceIndex = 1\n    for _ in range(numDice):\n        for currentTarget in range(target + 1):\n            numWaysToReachTarget = 0\n            for currentNumSides in range(1, min(currentTarget, numSides) + 1):\n                numWaysToReachTarget += storedResults[previousNumDiceIndex][\n                    currentTarget - currentNumSides\n                ]\n            storedResults[newNumDiceIndex][currentTarget] = numWaysToReachTarget\n        previousNumDiceIndex, newNumDiceIndex = newNumDiceIndex, previousNumDiceIndex\n\n    return storedResults[previousNumDiceIndex][target]\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        numDice = 2\n        numSides = 6\n        target = 7\n        expected = 6\n        actual = program.diceThrows(numDice, numSides, target)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        numDice = 2\n        numSides = 6\n        target = 7\n        expected = 6\n        actual = program.diceThrows(numDice, numSides, target)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def diceThrows(numDice, numSides, target)\n        # Write your code here.\n        return -1\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def diceThrows(numDice, numSides, target)\n        # Write your code here.\n        return -1\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.diceThrows\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.diceThrows\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func diceThrows(_ numDice: Int, _ numSides: Int, _ target: Int) -> Int {\n    // Write your code here.\n    return -1\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(d * s * t) time | O(d * t) space - where d is the number of dice, s is the\n  // number of sides, and t is the target.\n  func diceThrows(_ numDice: Int, _ numSides: Int, _ target: Int) -> Int {\n    var storedResults = Array(repeating: Array(repeating: -1, count: target + 1), count: numDice + 1)\n\n    return diceThrowsHelper(numDice, numSides, target, &storedResults)\n  }\n\n  func diceThrowsHelper(_ numDice: Int, _ numSides: Int, _ target: Int, _ storedResults: inout [[Int]]) -> Int {\n    if numDice == 0 {\n      return target == 0 ? 1 : 0\n    }\n\n    if storedResults[numDice][target] > -1 {\n      return storedResults[numDice][target]\n    }\n\n    var numWaysToReachTarget = 0\n    for currentTarget in max(0, target - numSides) ..< target {\n      numWaysToReachTarget += diceThrowsHelper(numDice - 1, numSides, currentTarget, &storedResults)\n    }\n    storedResults[numDice][target] = numWaysToReachTarget\n\n    return numWaysToReachTarget\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(d * s * t) time | O(d * t) space - where d is the number of dice, s is the\n  // number of sides, and t is the target.\n  func diceThrows(_ numDice: Int, _ numSides: Int, _ target: Int) -> Int {\n    var storedResults = Array(repeating: Array(repeating: 0, count: target + 1), count: numDice + 1)\n    storedResults[0][0] = 1\n\n    for currentNumDice in 1 ..< numDice + 1 {\n      for currentTarget in 0 ..< target + 1 {\n        var numWaysToReachTarget = 0\n        for currentNumSides in 1 ..< min(currentTarget, numSides) + 1 {\n          numWaysToReachTarget += storedResults[currentNumDice - 1][currentTarget - currentNumSides]\n        }\n        storedResults[currentNumDice][currentTarget] = numWaysToReachTarget\n      }\n    }\n\n    return storedResults[numDice][target]\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(d * s * t) time | O(t) space - where d is the number of dice, s is the\n  // number of sides, and t is the target.\n  func diceThrows(_ numDice: Int, _ numSides: Int, _ target: Int) -> Int {\n    var storedResults: [[Int]] = [Array(repeating: 0, count: target + 1), Array(repeating: 0, count: target + 1)]\n    storedResults[0][0] = 1\n\n    var previousNumDiceIndex = 0\n    var newNumDiceIndex = 1\n    for _ in 0 ..< numDice {\n      for currentTarget in 0 ..< target + 1 {\n        var numWaysToReachTarget = 0\n        for currentNumSides in 1 ..< min(currentTarget, numSides) + 1 {\n          numWaysToReachTarget += storedResults[previousNumDiceIndex][currentTarget - currentNumSides]\n        }\n        storedResults[newNumDiceIndex][currentTarget] = numWaysToReachTarget\n      }\n      (previousNumDiceIndex, newNumDiceIndex) = (newNumDiceIndex, previousNumDiceIndex)\n    }\n\n    return storedResults[previousNumDiceIndex][target]\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      let numDice = 2\n      let numSides = 6\n      let target = 7\n      let expected = 6\n      var actual = Program().diceThrows(numDice, numSides, target)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      let numDice = 2\n      let numSides = 6\n      let target = 7\n      let expected = 6\n      var actual = Program().diceThrows(numDice, numSides, target)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function diceThrows(numDice: number, numSides: number, target: number) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(d * s * t) time | O(d * t) space - where d is the number of dice, s is the\n// number of sides, and t is the target.\nexport function diceThrows(numDice: number, numSides: number, target: number) {\n  const storedResults = new Array(numDice + 1)\n    .fill(undefined)\n    .map(_ => new Array(target + 1).fill(-1));\n  return diceThrowsHelper(numDice, numSides, target, storedResults);\n}\n\nfunction diceThrowsHelper(\n  numDice: number,\n  numSides: number,\n  target: number,\n  storedResults: number[][],\n) {\n  if (numDice === 0) return target === 0 ? 1 : 0;\n\n  if (storedResults[numDice][target] > -1) return storedResults[numDice][target];\n\n  let numWaysToReachTarget = 0;\n  for (\n    let currentTarget = Math.max(0, target - numSides);\n    currentTarget < target;\n    currentTarget++\n  ) {\n    numWaysToReachTarget += diceThrowsHelper(numDice - 1, numSides, currentTarget, storedResults);\n  }\n  storedResults[numDice][target] = numWaysToReachTarget;\n\n  return numWaysToReachTarget;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(d * s * t) time | O(d * t) space - where d is the number of dice, s is the\n// number of sides, and t is the target.\nexport function diceThrows(numDice: number, numSides: number, target: number) {\n  const storedResults = new Array(numDice + 1)\n    .fill(undefined)\n    .map(_ => new Array(target + 1).fill(0));\n  storedResults[0][0] = 1;\n\n  for (let currentNumDice = 1; currentNumDice < numDice + 1; currentNumDice++) {\n    for (let currentTarget = 0; currentTarget < target + 1; currentTarget++) {\n      let numWaysToReachTarget = 0;\n      for (\n        let currentNumSides = 1;\n        currentNumSides < Math.min(currentTarget, numSides) + 1;\n        currentNumSides++\n      ) {\n        numWaysToReachTarget += storedResults[currentNumDice - 1][currentTarget - currentNumSides];\n      }\n      storedResults[currentNumDice][currentTarget] = numWaysToReachTarget;\n    }\n  }\n\n  return storedResults[numDice][target];\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(d * s * t) time | O(t) space - where d is the number of dice, s is the\n// number of sides, and t is the target.\nexport function diceThrows(numDice: number, numSides: number, target: number) {\n  const storedResults = [new Array(target + 1).fill(0), new Array(target + 1).fill(0)];\n  storedResults[0][0] = 1;\n\n  let previousNumDiceIndex = 0;\n  let newNumDiceIndex = 1;\n  for (let i = 0; i < numDice; i++) {\n    for (let currentTarget = 0; currentTarget < target + 1; currentTarget++) {\n      let numWaysToReachTarget = 0;\n      for (\n        let currentNumSides = 1;\n        currentNumSides < Math.min(currentTarget, numSides) + 1;\n        currentNumSides++\n      ) {\n        numWaysToReachTarget +=\n          storedResults[previousNumDiceIndex][currentTarget - currentNumSides];\n      }\n      storedResults[newNumDiceIndex][currentTarget] = numWaysToReachTarget;\n    }\n    const temp = previousNumDiceIndex;\n    previousNumDiceIndex = newNumDiceIndex;\n    newNumDiceIndex = temp;\n  }\n\n  return storedResults[previousNumDiceIndex][target];\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const numDice = 2;\n  const numSides = 6;\n  const target = 7;\n  const expected = 6;\n  const actual = program.diceThrows(numDice, numSides, target);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const numDice = 2;\n  const numSides = 6;\n  const target = 7;\n  const expected = 6;\n  const actual = program.diceThrows(numDice, numSides, target);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "numDice",
+            "example": 1,
+            "schema": {
+                "minimum": 0,
+                "type": "integer"
+            }
+        },
+        {
+            "name": "numSides",
+            "example": 6,
+            "schema": {
+                "minimum": 1,
+                "type": "integer"
+            }
+        },
+        {
+            "name": "target",
+            "example": 7,
+            "schema": {
+                "minimum": 0,
+                "type": "integer"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "numDice": 1,
+            "numSides": 6,
+            "target": 7
+        },
+        {
+            "numDice": 2,
+            "numSides": 1,
+            "target": 3
+        },
+        {
+            "numDice": 1,
+            "numSides": 6,
+            "target": 5
+        },
+        {
+            "numDice": 2,
+            "numSides": 6,
+            "target": 12
+        },
+        {
+            "numDice": 2,
+            "numSides": 6,
+            "target": 7
+        },
+        {
+            "numDice": 3,
+            "numSides": 10,
+            "target": 12
+        },
+        {
+            "numDice": 12,
+            "numSides": 9,
+            "target": 108
+        },
+        {
+            "numDice": 12,
+            "numSides": 9,
+            "target": 12
+        },
+        {
+            "numDice": 7,
+            "numSides": 5,
+            "target": 22
+        },
+        {
+            "numDice": 4,
+            "numSides": 6,
+            "target": 15
+        },
+        {
+            "numDice": 3,
+            "numSides": 9,
+            "target": 11
+        },
+        {
+            "numDice": 6,
+            "numSides": 6,
+            "target": 20
+        },
+        {
+            "numDice": 11,
+            "numSides": 9,
+            "target": 32
+        }
+    ],
+    "jsonTests": [
+        {
+            "numDice": 1,
+            "numSides": 6,
+            "target": 7
+        },
+        {
+            "numDice": 2,
+            "numSides": 1,
+            "target": 3
+        },
+        {
+            "numDice": 1,
+            "numSides": 6,
+            "target": 5
+        },
+        {
+            "numDice": 2,
+            "numSides": 6,
+            "target": 12
+        },
+        {
+            "numDice": 2,
+            "numSides": 6,
+            "target": 7
+        },
+        {
+            "numDice": 3,
+            "numSides": 10,
+            "target": 12
+        },
+        {
+            "numDice": 12,
+            "numSides": 9,
+            "target": 108
+        },
+        {
+            "numDice": 12,
+            "numSides": 9,
+            "target": 12
+        },
+        {
+            "numDice": 7,
+            "numSides": 5,
+            "target": 22
+        },
+        {
+            "numDice": 4,
+            "numSides": 6,
+            "target": 15
+        },
+        {
+            "numDice": 3,
+            "numSides": 9,
+            "target": 11
+        },
+        {
+            "numDice": 6,
+            "numSides": 6,
+            "target": 20
+        },
+        {
+            "numDice": 11,
+            "numSides": 9,
+            "target": 32
+        }
+    ],
+    "changelog": []
+}

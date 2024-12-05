@@ -1,0 +1,1575 @@
+{
+    "uid": "continuous-median",
+    "testStrategy": "JSON",
+    "name": "Continuous Median",
+    "version": 0,
+    "releaseDate": "2000-05-04T00:00:00Z",
+    "category": "Heaps",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 9923,
+        "failureCount": 3297
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "228357563",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Clement Mihailescu",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1440
+    },
+    "prompt": "<div class=\"html\">\n<p>Write a <span>ContinuousMedianHandler</span> class that supports:</p>\n<ul>\n  <li>\n    The continuous insertion of numbers with the <span>insert</span> method.\n  </li>\n  <li>\n    The instant (O(1) time) retrieval of the median of the numbers that have\n    been inserted thus far with the <span>getMedian</span> method.\n  </li>\n</ul>\n<p>\n  The <span>getMedian</span> method has already been written for you. You simply\n  have to write the <span>insert</span> method.\n</p>\n<p>\n  The median of a set of numbers is the \"middle\" number when the numbers are\n  ordered from smallest to greatest. If there's an odd number of numbers in the\n  set, as in <span>{1, 3, 7}</span>, the median is the number in the middle\n  (<span>3</span> in this case); if there's an even number of numbers in the\n  set, as in <span>{1, 3, 7, 8}</span>, the median is the average of the two\n  middle numbers (<span>(3 + 7) / 2 == 5</span> in this case).\n</p>\n<h3>Sample Usage</h3>\n<pre>\n<span class=\"CodeEditor-promptComment\">// All operations below are performed sequentially.</span>\n<span class=\"CodeEditor-promptParameter\">ContinuousMedianHandler</span>(): - <span class=\"CodeEditor-promptComment\">// instantiate a ContinuousMedianHandler</span>\n<span class=\"CodeEditor-promptParameter\">insert</span>(5): -\n<span class=\"CodeEditor-promptParameter\">insert</span>(10): -\n<span class=\"CodeEditor-promptParameter\">getMedian</span>(): 7.5\n<span class=\"CodeEditor-promptParameter\">insert</span>(100): -\n<span class=\"CodeEditor-promptParameter\">getMedian</span>(): 10\n</pre>\n</div>",
+    "hints": [
+        "<p>\nThe median of a set of numbers is often, by definition, one of the numbers in the set. Thus, you likely have to store all of the inserted numbers somewhere to be able to continuously compute their median.\n</p>\n",
+        "\n<p>\nThe median of a set of numbers is either the middle number of that set (if the set has an odd amount of numbers) or the average of the middle numbers (if the set has an even amount of numbers). This means that if you could somehow keep track of the middle number(s) of the set of inserted numbers, you could easily compute the median by finding the indices of the middle numbers and doing some simple calculations. Perhaps storing all of the numbers in a sorted array could work, but what would be the runtime implication of inserting each new number into a sorted array?\n</p>\n",
+        "\n<p>\nRealizing that you only need to keep track of the middle numbers in the set of inserted numbers to compute the median, try keeping track of two subsets of the numbers: a max-heap of the lower half of the numbers and a min-heap of the greater half of the numbers. Any time you insert a number, pick the heap to place it in by comparing it to the max / min values of the heaps. Then, re-balance the heaps in an effort to keep their sizes apart by at most one. Doing so will allow you to access the middle number(s) of the set of inserted numbers very easily, which will make calculating the median a trivial computation. Re-balancing the heaps can be accomplished by simply removing a value from the larger heap and inserting it in the smaller one. What are the runtime implications of all these operations?\n</p>"
+    ],
+    "spaceTime": "Insert: O(log(n)) time | O(n) space - where n is the number of inserted numbers",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\n// Do not edit the class below except for\n// the insert method. Feel free to add new\n// properties and methods to the class.\nclass ContinuousMedianHandler {\n public:\n  double median;\n\n  void insert(int number) {\n    // Write your code here.\n  }\n\n  double getMedian() { return median; }\n};\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <functional>\n#include <vector>\nusing namespace std;\n\nbool MAX_HEAP_FUNC(int a, int b);\nbool MIN_HEAP_FUNC(int a, int b);\n\nclass Heap {\n public:\n  vector<int> heap;\n  function<bool(int, int)> comparisonFunc;\n  int length;\n\n  Heap(function<bool(int, int)> func, vector<int> vector) {\n    comparisonFunc = func;\n    heap = buildHeap(&vector);\n    length = heap.size();\n  }\n\n  vector<int> buildHeap(vector<int>* vector) {\n    int firstParentIdx = (vector->size() - 2) / 2;\n    for (int currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {\n      siftDown(currentIdx, vector->size() - 1, vector);\n    }\n    return *vector;\n  }\n\n  void siftDown(int currentIdx, int endIdx, vector<int>* heap) {\n    int childOneIdx = currentIdx * 2 + 1;\n    while (childOneIdx <= endIdx) {\n      int childTwoIdx = currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;\n      int idxToSwap;\n      if (childTwoIdx != -1) {\n        if (comparisonFunc(heap->at(childTwoIdx), heap->at(childOneIdx))) {\n          idxToSwap = childTwoIdx;\n        } else {\n          idxToSwap = childOneIdx;\n        }\n      } else {\n        idxToSwap = childOneIdx;\n      }\n      if (comparisonFunc(heap->at(idxToSwap), heap->at(currentIdx))) {\n        swap(currentIdx, idxToSwap, heap);\n        currentIdx = idxToSwap;\n        childOneIdx = currentIdx * 2 + 1;\n      } else {\n        return;\n      }\n    }\n  }\n\n  void siftUp(int currentIdx, vector<int>* heap) {\n    int parentIdx = (currentIdx - 1) / 2;\n    while (currentIdx > 0) {\n      if (comparisonFunc(heap->at(currentIdx), heap->at(parentIdx))) {\n        swap(currentIdx, parentIdx, heap);\n        currentIdx = parentIdx;\n        parentIdx = (currentIdx - 1) / 2;\n      } else {\n        return;\n      }\n    }\n  }\n\n  int peek() { return heap[0]; }\n\n  int remove() {\n    swap(0, heap.size() - 1, &heap);\n    int valueToRemove = heap.back();\n    heap.pop_back();\n    length--;\n    siftDown(0, heap.size() - 1, &heap);\n    return valueToRemove;\n  }\n\n  void insert(int value) {\n    heap.push_back(value);\n    length++;\n    siftUp(heap.size() - 1, &heap);\n  }\n\n  void swap(int i, int j, vector<int>* heap) {\n    int temp = heap->at(j);\n    heap->at(j) = heap->at(i);\n    heap->at(i) = temp;\n  }\n};\n\nclass ContinuousMedianHandler {\n public:\n  Heap lowers;\n  Heap greaters;\n  double median;\n\n  ContinuousMedianHandler()\n      : lowers(MAX_HEAP_FUNC, {}), greaters(MIN_HEAP_FUNC, {}) {\n    median = 0;\n  }\n\n  // O(log(n)) time | O(n) space\n  void insert(int number) {\n    if (!lowers.length || number < lowers.peek()) {\n      lowers.insert(number);\n    } else {\n      greaters.insert(number);\n    }\n    rebalanceHeaps();\n    updateMedian();\n  }\n\n  void rebalanceHeaps() {\n    if (lowers.length - greaters.length == 2) {\n      greaters.insert(lowers.remove());\n    } else if (greaters.length - lowers.length == 2) {\n      lowers.insert(greaters.remove());\n    }\n  }\n\n  void updateMedian() {\n    if (lowers.length == greaters.length) {\n      median = ((double)lowers.peek() + (double)greaters.peek()) / 2;\n    } else if (lowers.length > greaters.length) {\n      median = lowers.peek();\n    } else {\n      median = greaters.peek();\n    }\n  }\n\n  double getMedian() { return median; }\n};\n\nbool MAX_HEAP_FUNC(int a, int b) { return a > b; }\n\nbool MIN_HEAP_FUNC(int a, int b) { return a < b; }\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      ContinuousMedianHandler handler;\n      handler.insert(5);\n      handler.insert(10);\n      assert(handler.getMedian() == 7.5);\n      handler.insert(100);\n      assert(handler.getMedian() == 10);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      ContinuousMedianHandler handler;\n      handler.insert(5);\n      handler.insert(10);\n      assert(handler.getMedian() == 7.5);\n      handler.insert(100);\n      assert(handler.getMedian() == 10);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n// Do not edit the class below except for\n// the Insert method. Feel free to add new\n// properties and methods to the class.\npublic class Program {\n  public class ContinuousMedianHandler {\n    public double median = 0;\n\n    public void Insert(int number) {\n      // Write your code here.\n    }\n\n    public double GetMedian() {\n      return median;\n    }\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\nusing System.Collections.Generic;\n\npublic class Program {\n  public class ContinuousMedianHandler {\n    public Heap lowers;\n    public Heap greaters;\n    public double median = 0;\n\n    public ContinuousMedianHandler() {\n      this.lowers = new Heap(Heap.MAX_HEAP_FUNC, new List<int>());\n      this.greaters = new Heap(Heap.MIN_HEAP_FUNC, new List<int>());\n      this.median = 0;\n    }\n\n    // O(log(n)) time | O(n) space\n    public void Insert(int number) {\n      if (lowers.length == 0 || number < lowers.peek()) {\n        this.lowers.Insert(number);\n      } else {\n        this.greaters.Insert(number);\n      }\n      this.rebalanceHeaps();\n      this.updateMedian();\n    }\n\n    public void rebalanceHeaps() {\n      if (lowers.length - greaters.length == 2) {\n        this.greaters.Insert(this.lowers.remove());\n      } else if (greaters.length - lowers.length == 2) {\n        this.lowers.Insert(this.greaters.remove());\n      }\n    }\n\n    public void updateMedian() {\n      if (lowers.length == greaters.length) {\n        median = ((double)lowers.peek() + (double)greaters.peek()) / 2;\n      } else if (lowers.length > greaters.length) {\n        median = lowers.peek();\n      } else {\n        median = greaters.peek();\n      }\n    }\n\n    public double GetMedian() {\n      return median;\n    }\n  }\n\n  public class Heap {\n    public List<int> heap = new List<int>();\n    public Func<int, int, bool> comparisonFunc;\n    public int length;\n\n    public Heap(Func<int, int, bool> func, List<int> array) {\n      this.comparisonFunc = func;\n      this.heap = buildHeap(array);\n      this.length = heap.Count;\n    }\n\n    public int peek() {\n      return heap[0];\n    }\n\n    public int remove() {\n      this.swap(0, heap.Count - 1);\n      int valueToRemove = heap[heap.Count - 1];\n      this.heap.RemoveAt(heap.Count - 1);\n      this.length -= 1;\n      this.siftDown(0, heap.Count - 1, heap);\n      return valueToRemove;\n    }\n\n    public void Insert(int value) {\n      this.heap.Add(value);\n      this.length += 1;\n      this.siftUp(heap.Count - 1, heap);\n    }\n\n    public List<int> buildHeap(List<int> array) {\n      int firstParentIdx = (array.Count - 2) / 2;\n      for (int currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {\n        this.siftDown(currentIdx, array.Count - 1, array);\n      }\n      return array;\n    }\n\n    public void siftDown(int currentIdx, int endIdx, List<int> heap) {\n      int childOneIdx = currentIdx * 2 + 1;\n      while (childOneIdx <= endIdx) {\n        int childTwoIdx =\n          currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;\n        int idxToSwap;\n        if (childTwoIdx != -1) {\n          if (comparisonFunc(heap[childTwoIdx], heap[childOneIdx])) {\n            idxToSwap = childTwoIdx;\n          } else {\n            idxToSwap = childOneIdx;\n          }\n        } else {\n          idxToSwap = childOneIdx;\n        }\n        if (comparisonFunc(heap[idxToSwap], heap[currentIdx])) {\n          swap(currentIdx, idxToSwap);\n          currentIdx = idxToSwap;\n          childOneIdx = currentIdx * 2 + 1;\n        } else {\n          return;\n        }\n      }\n    }\n\n    public void siftUp(int currentIdx, List<int> heap) {\n      int parentIdx = (currentIdx - 1) / 2;\n      while (currentIdx > 0) {\n        if (comparisonFunc(heap[currentIdx], heap[parentIdx])) {\n          swap(currentIdx, parentIdx);\n          currentIdx = parentIdx;\n          parentIdx = (currentIdx - 1) / 2;\n        } else {\n          return;\n        }\n      }\n    }\n\n    public void swap(int i, int j) {\n      int temp = this.heap[j];\n      this.heap[j] = this.heap[i];\n      this.heap[i] = temp;\n    }\n\n    public static bool MAX_HEAP_FUNC(int a, int b) {\n      return a > b;\n    }\n\n    public static bool MIN_HEAP_FUNC(int a, int b) {\n      return a < b;\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System.Collections.Generic;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    Program.ContinuousMedianHandler handler =\n      new Program.ContinuousMedianHandler();\n    handler.Insert(5);\n    handler.Insert(10);\n    Utils.AssertTrue(handler.GetMedian() == 7.5);\n    handler.Insert(100);\n    Utils.AssertTrue(handler.GetMedian() == 10);\n  }\n}\n",
+            "unitTests": "using System.Collections.Generic;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    Program.ContinuousMedianHandler handler =\n      new Program.ContinuousMedianHandler();\n    handler.Insert(5);\n    handler.Insert(10);\n    Utils.AssertTrue(handler.GetMedian() == 7.5);\n    handler.Insert(100);\n    Utils.AssertTrue(handler.GetMedian() == 10);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\n// Do not edit the class below except for\n// the insert method. Feel free to add new\n// properties and methods to the class.\ntype ContinuousMedianHandler struct {\n\tMedian float64\n}\n\nfunc NewContinuousMedianHandler() *ContinuousMedianHandler {\n\t// Write your code here.\n\treturn nil\n}\n\nfunc (handler *ContinuousMedianHandler) Insert(number int) {\n\t// Write your code here.\n}\n\nfunc (handler *ContinuousMedianHandler) GetMedian() float64 {\n\treturn handler.Median\n}\n\n// Implement other methods and classes as needed\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\ntype ContinuousMedianHandler struct {\n\tMedian float64\n\n\tlowers   *Heap\n\tgreaters *Heap\n}\n\nfunc NewContinuousMedianHandler() *ContinuousMedianHandler {\n\treturn &ContinuousMedianHandler{\n\t\tMedian:   0,\n\t\tlowers:   NewHeap(MaxHeapFunc),\n\t\tgreaters: NewHeap(MinHeapFunc),\n\t}\n}\n\nfunc (handler *ContinuousMedianHandler) GetMedian() float64 {\n\treturn handler.Median\n}\n\n// O(log(n)) time | O(n) space\nfunc (handler *ContinuousMedianHandler) Insert(number int) {\n\tif handler.lowers.Length() == 0 || number < handler.lowers.Peek() {\n\t\thandler.lowers.Insert(number)\n\t} else {\n\t\thandler.greaters.Insert(number)\n\t}\n\thandler.rebalanceHeaps()\n\thandler.updateMedian()\n}\n\nfunc (handler *ContinuousMedianHandler) rebalanceHeaps() {\n\tif handler.lowers.Length()-handler.greaters.Length() == 2 {\n\t\thandler.greaters.Insert(handler.lowers.Remove())\n\t} else if handler.greaters.Length()-handler.lowers.Length() == 2 {\n\t\thandler.lowers.Insert(handler.greaters.Remove())\n\t}\n}\n\nfunc (handler *ContinuousMedianHandler) updateMedian() {\n\tif handler.lowers.Length() == handler.greaters.Length() {\n\t\tsum := (handler.lowers.Peek() + handler.greaters.Peek())\n\t\thandler.Median = float64(sum) / 2\n\t} else if handler.lowers.Length() > handler.greaters.Length() {\n\t\thandler.Median = float64(handler.lowers.Peek())\n\t} else {\n\t\thandler.Median = float64(handler.greaters.Peek())\n\t}\n}\n\ntype Heap struct {\n\tcomp   HeapFunc\n\tvalues []int\n}\n\ntype HeapFunc func(int, int) bool\n\nvar MinHeapFunc = func(a, b int) bool { return a < b }\nvar MaxHeapFunc = func(a, b int) bool { return a > b }\n\nfunc NewHeap(fn HeapFunc) *Heap {\n\treturn &Heap{\n\t\tcomp:   fn,\n\t\tvalues: []int{},\n\t}\n}\n\nfunc (h *Heap) Length() int {\n\treturn len(h.values)\n}\n\nfunc (h *Heap) Peek() int {\n\tif len(h.values) == 0 {\n\t\treturn -1\n\t}\n\treturn h.values[0]\n}\n\nfunc (h *Heap) Insert(value int) {\n\th.values = append(h.values, value)\n\th.siftUp()\n}\n\nfunc (h *Heap) Remove() int {\n\tl := h.Length()\n\th.swap(0, l-1)\n\tpeeked := h.values[l-1]\n\th.values = h.values[0 : l-1]\n\th.siftDown()\n\treturn peeked\n}\n\nfunc (h *Heap) siftUp() {\n\tcurrentIndex := h.Length() - 1\n\tparentIndex := (currentIndex - 1) / 2\n\tfor currentIndex > 0 {\n\t\tcurrent, parent := h.values[currentIndex], h.values[parentIndex]\n\t\tif h.comp(current, parent) {\n\t\t\th.swap(currentIndex, parentIndex)\n\t\t\tcurrentIndex = parentIndex\n\t\t\tparentIndex = (currentIndex - 1) / 2\n\t\t} else {\n\t\t\treturn\n\t\t}\n\t}\n}\n\nfunc (h *Heap) siftDown() {\n\tcurrentIndex := 0\n\tendIndex := h.Length() - 1\n\tchildOneIdx := currentIndex*2 + 1\n\tfor childOneIdx <= endIndex {\n\t\tchildTwoIdx := -1\n\t\tif currentIndex*2+2 <= endIndex {\n\t\t\tchildTwoIdx = currentIndex*2 + 2\n\t\t}\n\t\tindexToSwap := childOneIdx\n\t\tif childTwoIdx > -1 && h.comp(h.values[childTwoIdx], h.values[childOneIdx]) {\n\t\t\tindexToSwap = childTwoIdx\n\t\t}\n\t\tif h.comp(h.values[indexToSwap], h.values[currentIndex]) {\n\t\t\th.swap(currentIndex, indexToSwap)\n\t\t\tcurrentIndex = indexToSwap\n\t\t\tchildOneIdx = currentIndex*2 + 1\n\t\t} else {\n\t\t\treturn\n\t\t}\n\t}\n}\n\nfunc (h *Heap) swap(i, j int) {\n\th.values[i], h.values[j] = h.values[j], h.values[i]\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tvar handler = NewContinuousMedianHandler()\n\thandler.Insert(5)\n\thandler.Insert(10)\n\trequire.Equal(t, 7.5, handler.GetMedian())\n\thandler.Insert(100)\n\trequire.Equal(t, 10.0, handler.GetMedian())\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tvar handler = NewContinuousMedianHandler()\n\thandler.Insert(5)\n\thandler.Insert(10)\n\trequire.Equal(t, 7.5, handler.GetMedian())\n\thandler.Insert(100)\n\trequire.Equal(t, 10.0, handler.GetMedian())\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\n// Do not edit the class below except for\n// the insert method. Feel free to add new\n// properties and methods to the class.\nclass Program {\n  static class ContinuousMedianHandler {\n    double median = 0;\n\n    public void insert(int number) {\n      // Write your code here.\n    }\n\n    public double getMedian() {\n      return median;\n    }\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\nimport java.util.function.BiFunction;\n\nclass Program {\n  static class ContinuousMedianHandler {\n    Heap lowers = new Heap(Heap::MAX_HEAP_FUNC, new ArrayList<Integer>());\n    Heap greaters = new Heap(Heap::MIN_HEAP_FUNC, new ArrayList<Integer>());\n    double median = 0;\n\n    // O(log(n)) time | O(n) space\n    public void insert(int number) {\n      if (lowers.length == 0 || number < lowers.peek()) {\n        lowers.insert(number);\n      } else {\n        greaters.insert(number);\n      }\n      rebalanceHeaps();\n      updateMedian();\n    }\n\n    public void rebalanceHeaps() {\n      if (lowers.length - greaters.length == 2) {\n        greaters.insert(lowers.remove());\n      } else if (greaters.length - lowers.length == 2) {\n        lowers.insert(greaters.remove());\n      }\n    }\n\n    public void updateMedian() {\n      if (lowers.length == greaters.length) {\n        median = ((double) lowers.peek() + (double) greaters.peek()) / 2;\n      } else if (lowers.length > greaters.length) {\n        median = lowers.peek();\n      } else {\n        median = greaters.peek();\n      }\n    }\n\n    public double getMedian() {\n      return median;\n    }\n  }\n\n  static class Heap {\n    List<Integer> heap = new ArrayList<Integer>();\n    BiFunction<Integer, Integer, Boolean> comparisonFunc;\n    int length;\n\n    public Heap(\n      BiFunction<Integer, Integer, Boolean> func, List<Integer> array\n    ) {\n      comparisonFunc = func;\n      heap = buildHeap(array);\n      length = heap.size();\n    }\n\n    public List<Integer> buildHeap(List<Integer> array) {\n      int firstParentIdx = (array.size() - 2) / 2;\n      for (int currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {\n        siftDown(currentIdx, array.size() - 1, array);\n      }\n      return array;\n    }\n\n    public void siftDown(int currentIdx, int endIdx, List<Integer> heap) {\n      int childOneIdx = currentIdx * 2 + 1;\n      while (childOneIdx <= endIdx) {\n        int childTwoIdx =\n          currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;\n        int idxToSwap;\n        if (childTwoIdx != -1) {\n          if (comparisonFunc.apply(\n                heap.get(childTwoIdx), heap.get(childOneIdx)\n              )) {\n            idxToSwap = childTwoIdx;\n          } else {\n            idxToSwap = childOneIdx;\n          }\n        } else {\n          idxToSwap = childOneIdx;\n        }\n        if (comparisonFunc.apply(heap.get(idxToSwap), heap.get(currentIdx))) {\n          swap(currentIdx, idxToSwap, heap);\n          currentIdx = idxToSwap;\n          childOneIdx = currentIdx * 2 + 1;\n        } else {\n          return;\n        }\n      }\n    }\n\n    public void siftUp(int currentIdx, List<Integer> heap) {\n      int parentIdx = (currentIdx - 1) / 2;\n      while (currentIdx > 0) {\n        if (comparisonFunc.apply(heap.get(currentIdx), heap.get(parentIdx))) {\n          swap(currentIdx, parentIdx, heap);\n          currentIdx = parentIdx;\n          parentIdx = (currentIdx - 1) / 2;\n        } else {\n          return;\n        }\n      }\n    }\n\n    public int peek() {\n      return heap.get(0);\n    }\n\n    public int remove() {\n      swap(0, heap.size() - 1, heap);\n      int valueToRemove = heap.get(heap.size() - 1);\n      heap.remove(heap.size() - 1);\n      length--;\n      siftDown(0, heap.size() - 1, heap);\n      return valueToRemove;\n    }\n\n    public void insert(int value) {\n      heap.add(value);\n      length++;\n      siftUp(heap.size() - 1, heap);\n    }\n\n    public void swap(int i, int j, List<Integer> heap) {\n      Integer temp = heap.get(j);\n      heap.set(j, heap.get(i));\n      heap.set(i, temp);\n    }\n\n    public static Boolean MAX_HEAP_FUNC(Integer a, Integer b) {\n      return a > b;\n    }\n\n    public static Boolean MIN_HEAP_FUNC(Integer a, Integer b) {\n      return a < b;\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    Program.ContinuousMedianHandler handler =\n      new Program.ContinuousMedianHandler();\n    handler.insert(5);\n    handler.insert(10);\n    Utils.assertTrue(handler.getMedian() == 7.5);\n    handler.insert(100);\n    Utils.assertTrue(handler.getMedian() == 10);\n  }\n}\n",
+            "unitTests": "class ProgramTest {\n  @Test\n  public void TestCase1() {\n    Program.ContinuousMedianHandler handler =\n      new Program.ContinuousMedianHandler();\n    handler.insert(5);\n    handler.insert(10);\n    Utils.assertTrue(handler.getMedian() == 7.5);\n    handler.insert(100);\n    Utils.assertTrue(handler.getMedian() == 10);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "// Do not edit the class below except for\n// the insert method. Feel free to add new\n// properties and methods to the class.\nclass ContinuousMedianHandler {\n  constructor() {\n    // Write your code here.\n    this.median = null;\n  }\n\n  insert(number) {\n    // Write your code here.\n  }\n\n  getMedian() {\n    return this.median;\n  }\n}\n\n// Do not edit the line below.\nexports.ContinuousMedianHandler = ContinuousMedianHandler;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass ContinuousMedianHandler {\n  constructor() {\n    this.lowers = new Heap(MAX_HEAP_FUNC, []);\n    this.greaters = new Heap(MIN_HEAP_FUNC, []);\n    this.median = null;\n  }\n\n  // O(log(n)) time | O(n) space\n  insert(number) {\n    if (!this.lowers.length || number < this.lowers.peek()) {\n      this.lowers.insert(number);\n    } else {\n      this.greaters.insert(number);\n    }\n    this.rebalanceHeaps();\n    this.updateMedian();\n  }\n\n  rebalanceHeaps() {\n    if (this.lowers.length - this.greaters.length === 2) {\n      this.greaters.insert(this.lowers.remove());\n    } else if (this.greaters.length - this.lowers.length === 2) {\n      this.lowers.insert(this.greaters.remove());\n    }\n  }\n\n  updateMedian() {\n    if (this.lowers.length === this.greaters.length) {\n      this.median = (this.lowers.peek() + this.greaters.peek()) / 2;\n    } else if (this.lowers.length > this.greaters.length) {\n      this.median = this.lowers.peek();\n    } else {\n      this.median = this.greaters.peek();\n    }\n  }\n\n  getMedian() {\n    return this.median;\n  }\n}\n\nclass Heap {\n  constructor(comparisonFunc, array) {\n    this.comparisonFunc = comparisonFunc;\n    this.heap = this.buildHeap(array);\n    this.length = this.heap.length;\n  }\n\n  buildHeap(array) {\n    const firstParentIdx = Math.floor((array.length - 2) / 2);\n    for (let currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {\n      this.siftDown(currentIdx, array.length - 1, array);\n    }\n    return array;\n  }\n\n  siftDown(currentIdx, endIdx, heap) {\n    let childOneIdx = currentIdx * 2 + 1;\n    while (childOneIdx <= endIdx) {\n      const childTwoIdx = currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;\n      let idxToSwap;\n      if (childTwoIdx !== -1) {\n        if (this.comparisonFunc(heap[childTwoIdx], heap[childOneIdx])) {\n          idxToSwap = childTwoIdx;\n        } else {\n          idxToSwap = childOneIdx;\n        }\n      } else {\n        idxToSwap = childOneIdx;\n      }\n      if (this.comparisonFunc(heap[idxToSwap], heap[currentIdx])) {\n        this.swap(currentIdx, idxToSwap, heap);\n        currentIdx = idxToSwap;\n        childOneIdx = currentIdx * 2 + 1;\n      } else {\n        return;\n      }\n    }\n  }\n\n  siftUp(currentIdx, heap) {\n    let parentIdx = Math.floor((currentIdx - 1) / 2);\n    while (currentIdx > 0) {\n      if (this.comparisonFunc(heap[currentIdx], heap[parentIdx])) {\n        this.swap(currentIdx, parentIdx, heap);\n        currentIdx = parentIdx;\n        parentIdx = Math.floor((currentIdx - 1) / 2);\n      } else {\n        return;\n      }\n    }\n  }\n\n  peek() {\n    return this.heap[0];\n  }\n\n  remove() {\n    this.swap(0, this.length - 1, this.heap);\n    const valueToRemove = this.heap.pop();\n    this.length--;\n    this.siftDown(0, this.length - 1, this.heap);\n    return valueToRemove;\n  }\n\n  insert(value) {\n    this.heap.push(value);\n    this.length++;\n    this.siftUp(this.length - 1, this.heap);\n  }\n\n  swap(i, j, heap) {\n    const temp = heap[j];\n    heap[j] = heap[i];\n    heap[i] = temp;\n  }\n}\n\nfunction MAX_HEAP_FUNC(a, b) {\n  return a > b;\n}\n\nfunction MIN_HEAP_FUNC(a, b) {\n  return a < b;\n}\n\nexports.ContinuousMedianHandler = ContinuousMedianHandler;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const handler = new program.ContinuousMedianHandler();\n  handler.insert(5);\n  handler.insert(10);\n  chai.expect(handler.getMedian()).to.deep.equal(7.5);\n  handler.insert(100);\n  chai.expect(handler.getMedian()).to.deep.equal(10);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const handler = new program.ContinuousMedianHandler();\n  handler.insert(5);\n  handler.insert(10);\n  chai.expect(handler.getMedian()).to.deep.equal(7.5);\n  handler.insert(100);\n  chai.expect(handler.getMedian()).to.deep.equal(10);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\n// Do not edit the class below except for\n// the insert method. Feel free to add new\n// properties and methods to the class.\nopen class ContinuousMedianHandler() {\n    // Write your code here.\n    private var median: Double? = null\n\n    fun insert(number: Int) {\n        // Write your code here.\n    }\n\n    fun getMedian(): Double? {\n        return this.median\n    }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nopen class ContinuousMedianHandler() {\n    val lowers = Heap(::MAX_HEAP_FUNC, mutableListOf<Int>())\n    val greaters = Heap(::MIN_HEAP_FUNC, mutableListOf<Int>())\n    private var median: Double? = null\n\n    // O(log(n)) time | O(n) space\n    fun insert(number: Int) {\n        if (this.lowers.length == 0 || number < this.lowers.peek()!!) {\n            this.lowers.insert(number)\n        } else {\n            this.greaters.insert(number)\n        }\n        this.rebalanceHeaps()\n        this.updateMedian()\n    }\n\n    fun rebalanceHeaps() {\n        if (this.lowers.length - this.greaters.length == 2) {\n            this.greaters.insert(this.lowers.remove()!!)\n        } else if (this.greaters.length - this.lowers.length == 2) {\n            this.lowers.insert(this.greaters.remove()!!)\n        }\n    }\n\n    fun updateMedian() {\n        if (this.lowers.length == this.greaters.length) {\n            this.median = (this.lowers.peek()!! + this.greaters.peek()!!).toDouble() / 2\n        } else if (this.lowers.length > this.greaters.length) {\n            this.median = this.lowers.peek()!!.toDouble()\n        } else {\n            this.median = this.greaters.peek()!!.toDouble()\n        }\n    }\n\n    fun getMedian(): Double? {\n        return this.median\n    }\n}\n\nopen class Heap(comparisonFunc: (a: Int, b: Int) -> Boolean, array: MutableList<Int>) {\n    val comparisonFunc = comparisonFunc\n    val heap = this.buildHeap(array)\n    var length = this.heap.size\n\n    fun buildHeap(array: MutableList<Int>): MutableList<Int> {\n        val firstParentIdx = (array.size - 2) / 2\n        for (currentIdx in firstParentIdx downTo 0) {\n            this.siftDown(currentIdx, array.size - 1, array)\n        }\n        return array\n    }\n\n    fun siftDown(currentIdx: Int, endIdx: Int, heap: MutableList<Int>) {\n        var newCurrentIdx = currentIdx\n        var childOneIdx = currentIdx * 2 + 1\n        while (childOneIdx <= endIdx) {\n            var childTwoIdx = if (newCurrentIdx * 2 + 2 <= endIdx) newCurrentIdx * 2 + 2 else -1\n            var idxToSwap: Int\n            if (childTwoIdx != -1 && this.comparisonFunc(heap[childTwoIdx], heap[childOneIdx])) {\n                idxToSwap = childTwoIdx\n            } else {\n                idxToSwap = childOneIdx\n            }\n            if (this.comparisonFunc(heap[idxToSwap], heap[newCurrentIdx])) {\n                this.swap(newCurrentIdx, idxToSwap, heap)\n                newCurrentIdx = idxToSwap\n                childOneIdx = newCurrentIdx * 2 + 1\n            } else {\n                return\n            }\n        }\n    }\n\n    fun siftUp(currentIdx: Int, heap: MutableList<Int>) {\n        var newCurrentIdx = currentIdx\n        var parentIdx = (currentIdx - 1) / 2\n        while (newCurrentIdx > 0 && this.comparisonFunc(heap[newCurrentIdx], heap[parentIdx])) {\n            this.swap(newCurrentIdx, parentIdx, heap)\n            newCurrentIdx = parentIdx\n            parentIdx = (newCurrentIdx - 1) / 2\n        }\n    }\n\n    fun peek(): Int? {\n        return this.heap[0]\n    }\n\n    fun remove(): Int? {\n        this.swap(0, this.heap.size - 1, this.heap)\n        val valueToRemove = this.heap.removeAt(this.heap.size - 1)\n        this.length--\n        this.siftDown(0, this.heap.size - 1, this.heap)\n        return valueToRemove\n    }\n\n    fun insert(value: Int) {\n        this.heap.add(value)\n        this.length++\n        this.siftUp(this.heap.size - 1, this.heap)\n    }\n\n    fun swap(i: Int, j: Int, heap: MutableList<Int>) {\n        val temp = heap[j]\n        heap[j] = heap[i]\n        heap[i] = temp\n    }\n}\n\nfun MAX_HEAP_FUNC(a: Int, b: Int): Boolean {\n    return a > b\n}\n\nfun MIN_HEAP_FUNC(a: Int, b: Int): Boolean {\n    return a < b\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.ContinuousMedianHandler as ContinuousMedianHandler\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val handler = ContinuousMedianHandler()\n        handler.insert(5)\n        handler.insert(10)\n        assert(handler.getMedian() == 7.5)\n        handler.insert(100)\n        assert(handler.getMedian() == 10.toDouble())\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.ContinuousMedianHandler as ContinuousMedianHandler\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val handler = ContinuousMedianHandler()\n        handler.insert(5)\n        handler.insert(10)\n        assert(handler.getMedian() == 7.5)\n        handler.insert(100)\n        assert(handler.getMedian() == 10.toDouble())\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "# Do not edit the class below except for\n# the insert method. Feel free to add new\n# properties and methods to the class.\nclass ContinuousMedianHandler:\n    def __init__(self):\n        # Write your code here.\n        self.median = None\n\n    def insert(self, number):\n        # Write your code here.\n        pass\n\n    def getMedian(self):\n        return self.median\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass ContinuousMedianHandler:\n    def __init__(self):\n        self.lowers = Heap(MAX_HEAP_FUNC, [])\n        self.greaters = Heap(MIN_HEAP_FUNC, [])\n        self.median = None\n\n    # O(log(n)) time | O(n) space\n    def insert(self, number):\n        if not self.lowers.length or number < self.lowers.peek():\n            self.lowers.insert(number)\n        else:\n            self.greaters.insert(number)\n        self.rebalanceHeaps()\n        self.updateMedian()\n\n    def rebalanceHeaps(self):\n        if self.lowers.length - self.greaters.length == 2:\n            self.greaters.insert(self.lowers.remove())\n        elif self.greaters.length - self.lowers.length == 2:\n            self.lowers.insert(self.greaters.remove())\n\n    def updateMedian(self):\n        if self.lowers.length == self.greaters.length:\n            self.median = (self.lowers.peek() + self.greaters.peek()) / 2\n        elif self.lowers.length > self.greaters.length:\n            self.median = self.lowers.peek()\n        else:\n            self.median = self.greaters.peek()\n\n    def getMedian(self):\n        return self.median\n\n\nclass Heap:\n    def __init__(self, comparisonFunc, array):\n        self.comparisonFunc = comparisonFunc\n        self.heap = self.buildHeap(array)\n        self.length = len(self.heap)\n\n    def buildHeap(self, array):\n        firstParentIdx = (len(array) - 2) // 2\n        for currentIdx in reversed(range(firstParentIdx + 1)):\n            self.siftDown(currentIdx, len(array) - 1, array)\n        return array\n\n    def siftDown(self, currentIdx, endIdx, heap):\n        childOneIdx = currentIdx * 2 + 1\n        while childOneIdx <= endIdx:\n            childTwoIdx = currentIdx * 2 + 2 if currentIdx * 2 + 2 <= endIdx else -1\n            if childTwoIdx != -1:\n                if self.comparisonFunc(heap[childTwoIdx], heap[childOneIdx]):\n                    idxToSwap = childTwoIdx\n                else:\n                    idxToSwap = childOneIdx\n            else:\n                idxToSwap = childOneIdx\n            if self.comparisonFunc(heap[idxToSwap], heap[currentIdx]):\n                self.swap(currentIdx, idxToSwap, heap)\n                currentIdx = idxToSwap\n                childOneIdx = currentIdx * 2 + 1\n            else:\n                return\n\n    def siftUp(self, currentIdx, heap):\n        parentIdx = (currentIdx - 1) // 2\n        while currentIdx > 0:\n            if self.comparisonFunc(heap[currentIdx], heap[parentIdx]):\n                self.swap(currentIdx, parentIdx, heap)\n                currentIdx = parentIdx\n                parentIdx = (currentIdx - 1) // 2\n            else:\n                return\n\n    def peek(self):\n        return self.heap[0]\n\n    def remove(self):\n        self.swap(0, self.length - 1, self.heap)\n        valueToRemove = self.heap.pop()\n        self.length -= 1\n        self.siftDown(0, self.length - 1, self.heap)\n        return valueToRemove\n\n    def insert(self, value):\n        self.heap.append(value)\n        self.length += 1\n        self.siftUp(self.length - 1, self.heap)\n\n    def swap(self, i, j, array):\n        array[i], array[j] = array[j], array[i]\n\n\ndef MAX_HEAP_FUNC(a, b):\n    return a > b\n\n\ndef MIN_HEAP_FUNC(a, b):\n    return a < b\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        handler = program.ContinuousMedianHandler()\n        handler.insert(5)\n        handler.insert(10)\n        self.assertEqual(handler.getMedian(), 7.5)\n        handler.insert(100)\n        self.assertEqual(handler.getMedian(), 10)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        handler = program.ContinuousMedianHandler()\n        handler.insert(5)\n        handler.insert(10)\n        self.assertEqual(handler.getMedian(), 7.5)\n        handler.insert(100)\n        self.assertEqual(handler.getMedian(), 10)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  # Do not edit the class below except for\n  # the insert method. Feel free to add new\n  # properties and methods to the class.\n  class ContinuousMedianHandler\n    def initialize\n      @median = nil\n    end\n\n    def insert(number)\n        # Write your code here.\n    end\n\n    def getMedian\n        return self.median\n    end\n  end\nend",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  # Do not edit the class below except for\n  # the insert method. Feel free to add new\n  # properties and methods to the class.\n  class ContinuousMedianHandler\n    def initialize\n      @median = nil\n    end\n\n    def insert(number)\n        # Write your code here.\n    end\n\n    def getMedian\n        return self.median\n    end\n  end\nend"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.getNthFib\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.getNthFib\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  class ContinuousMedianHandler {\n    var median: Double\n    // Feel free to add fields and methods.\n\n    init() {\n      median = 0.0\n      // Write your code here\n    }\n\n    func getMedian() -> Double {\n      return median\n    }\n\n    func insert(number: Int) {\n      // Write your code here.\n    }\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  class ContinuousMedianHandler {\n    var median: Double\n    var lowers: Heap\n    var greaters: Heap\n\n    init() {\n      median = 0.0\n\n      lowers = Heap(array: [], comparisonFunction: maxHeapFunc(_:_:))\n      greaters = Heap(array: [], comparisonFunction: minHeapFunc(_:_:))\n    }\n\n    func getMedian() -> Double {\n      return median\n    }\n\n    // O(log(n)) time | O(n) space\n    func insert(number: Int) {\n      if lowers.length == 0 || number < Int(lowers.peek()) {\n        lowers.insert(value: number)\n      } else {\n        greaters.insert(value: number)\n      }\n\n      rebalanceHeaps()\n      updateMedian()\n    }\n\n    func rebalanceHeaps() {\n      if lowers.length - greaters.length == 2 {\n        greaters.insert(value: lowers.remove())\n      } else if greaters.length - lowers.length == 2 {\n        lowers.insert(value: greaters.remove())\n      }\n    }\n\n    func updateMedian() {\n      if lowers.length == greaters.length {\n        median = Double((lowers.peek() + greaters.peek()) / 2)\n      } else if lowers.length > greaters.length {\n        median = Double(lowers.peek())\n      } else {\n        median = Double(greaters.peek())\n      }\n    }\n  }\n\n  class Heap {\n    var length = 0\n    var heap = [Int]()\n    var comparisonFunction: (Int, Int) -> Bool\n    typealias comparisonFuncTypeAlias = (Int, Int) -> Bool\n\n    init(array: [Int], comparisonFunction: @escaping comparisonFuncTypeAlias) {\n      self.comparisonFunction = comparisonFunction\n      heap = buildHeap(array: array)\n      length = heap.count\n    }\n\n    func buildHeap(array: [Int]) -> [Int] {\n      var heapToReturn = array\n\n      var firstParentIndex = Double((array.count - 2) / 2)\n      firstParentIndex = firstParentIndex.rounded(.down)\n\n      if array.count > 0 {\n        for var currentIndex in (0 ... Int(firstParentIndex)).reversed() {\n          var endIndex = array.count - 1\n\n          siftDown(currentIndex: &currentIndex, endIndex: &endIndex, heap: &heapToReturn)\n        }\n      }\n\n      return heapToReturn\n    }\n\n    func siftDown(currentIndex: inout Int, endIndex: inout Int, heap: inout [Int]) {\n      var firstChildIndex = (2 * currentIndex) + 1\n\n      while firstChildIndex <= endIndex {\n        var secondChildIndex = -1\n\n        let potentialSecondChild = (2 * currentIndex) + 2\n\n        if potentialSecondChild <= endIndex {\n          secondChildIndex = potentialSecondChild\n        }\n\n        var indexToSwap = -1\n\n        if secondChildIndex != -1, comparisonFunction(heap[secondChildIndex], heap[firstChildIndex]) {\n          indexToSwap = secondChildIndex\n        } else {\n          indexToSwap = firstChildIndex\n        }\n\n        if comparisonFunction(heap[indexToSwap], heap[currentIndex]) {\n          swap(firstIndex: currentIndex, secondIndex: indexToSwap, heap: &heap)\n\n          currentIndex = indexToSwap\n\n          firstChildIndex = (2 * currentIndex) + 1\n        } else {\n          return\n        }\n      }\n    }\n\n    func siftUp(currentIndex: inout Int, heap: inout [Int]) {\n      var parentIndex = Double((currentIndex - 1) / 2)\n      parentIndex = parentIndex.rounded(.down)\n\n      while currentIndex > 0 {\n        if comparisonFunction(heap[currentIndex], heap[Int(parentIndex)]) {\n          swap(firstIndex: currentIndex, secondIndex: Int(parentIndex), heap: &heap)\n\n          currentIndex = Int(parentIndex)\n\n          parentIndex = Double((currentIndex - 1) / 2)\n        } else {\n          return\n        }\n      }\n    }\n\n    func peek() -> Double {\n      return Double(heap[0])\n    }\n\n    func remove() -> Int {\n      swap(firstIndex: 0, secondIndex: heap.count - 1, heap: &heap)\n\n      if let valuetoRemove = heap.popLast() {\n        var currentIndex = 0\n        var endIndex = heap.count - 1\n\n        length -= 1\n        siftDown(currentIndex: &currentIndex, endIndex: &endIndex, heap: &heap)\n\n        return valuetoRemove\n      }\n\n      return -1\n    }\n\n    func insert(value: Int) {\n      heap.append(value)\n      length += 1\n\n      var currentIndex = heap.count - 1\n      siftUp(currentIndex: &currentIndex, heap: &heap)\n    }\n\n    func swap(firstIndex: Int, secondIndex: Int, heap: inout [Int]) {\n      let temp = heap[firstIndex]\n\n      heap[firstIndex] = heap[secondIndex]\n      heap[secondIndex] = temp\n    }\n  }\n\n  static func minHeapFunc(_ a: Int, _ b: Int) -> Bool {\n    return a < b\n  }\n\n  static func maxHeapFunc(_ a: Int, _ b: Int) -> Bool {\n    return a > b\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws in\n      var handler = Program.ContinuousMedianHandler()\n      handler.insert(number: 5)\n      handler.insert(number: 10)\n      try assertEqual(7.5, handler.getMedian())\n      handler.insert(number: 100)\n      try assertEqual(10, handler.getMedian())\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws in\n      var handler = Program.ContinuousMedianHandler()\n      handler.insert(number: 5)\n      handler.insert(number: 10)\n      try assertEqual(7.5, handler.getMedian())\n      handler.insert(number: 100)\n      try assertEqual(10, handler.getMedian())\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "// Do not edit the class below except for\n// the insert method. Feel free to add new\n// properties and methods to the class.\nexport class ContinuousMedianHandler {\n  median: number | null;\n\n  constructor() {\n    // Write your code here.\n    this.median = null;\n  }\n\n  insert(number: number) {\n    // Write your code here.\n  }\n\n  getMedian() {\n    return this.median;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nexport class ContinuousMedianHandler {\n  lowers: Heap;\n  greaters: Heap;\n  median: number | null;\n\n  constructor() {\n    this.lowers = new Heap(MAX_HEAP_FUNC, []);\n    this.greaters = new Heap(MIN_HEAP_FUNC, []);\n    this.median = null;\n  }\n\n  // O(log(n)) time | O(n) space\n  insert(number: number) {\n    if (!this.lowers.length || number < this.lowers.peek()) {\n      this.lowers.insert(number);\n    } else {\n      this.greaters.insert(number);\n    }\n    this.rebalanceHeaps();\n    this.updateMedian();\n  }\n\n  rebalanceHeaps() {\n    if (this.lowers.length - this.greaters.length === 2) {\n      this.greaters.insert(this.lowers.remove()!);\n    } else if (this.greaters.length - this.lowers.length === 2) {\n      this.lowers.insert(this.greaters.remove()!);\n    }\n  }\n\n  updateMedian() {\n    if (this.lowers.length === this.greaters.length) {\n      this.median = (this.lowers.peek() + this.greaters.peek()) / 2;\n    } else if (this.lowers.length > this.greaters.length) {\n      this.median = this.lowers.peek();\n    } else {\n      this.median = this.greaters.peek();\n    }\n  }\n\n  getMedian() {\n    return this.median;\n  }\n}\n\nclass Heap {\n  heap: number[];\n  comparisonFunc: (a: number, b: number) => boolean;\n  length: number;\n\n  constructor(comparisonFunc: (a: number, b: number) => boolean, array: number[]) {\n    this.comparisonFunc = comparisonFunc;\n    this.heap = this.buildHeap(array);\n    this.length = this.heap.length;\n  }\n\n  buildHeap(array: number[]) {\n    const firstParentIdx = Math.floor((array.length - 2) / 2);\n    for (let currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {\n      this.siftDown(currentIdx, array.length - 1, array);\n    }\n    return array;\n  }\n\n  siftDown(currentIdx: number, endIdx: number, heap: number[]) {\n    let childOneIdx = currentIdx * 2 + 1;\n    while (childOneIdx <= endIdx) {\n      const childTwoIdx = currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;\n      let idxToSwap;\n      if (childTwoIdx !== -1) {\n        if (this.comparisonFunc(heap[childTwoIdx], heap[childOneIdx])) {\n          idxToSwap = childTwoIdx;\n        } else {\n          idxToSwap = childOneIdx;\n        }\n      } else {\n        idxToSwap = childOneIdx;\n      }\n      if (this.comparisonFunc(heap[idxToSwap], heap[currentIdx])) {\n        this.swap(currentIdx, idxToSwap, heap);\n        currentIdx = idxToSwap;\n        childOneIdx = currentIdx * 2 + 1;\n      } else {\n        return;\n      }\n    }\n  }\n\n  siftUp(currentIdx: number, heap: number[]) {\n    let parentIdx = Math.floor((currentIdx - 1) / 2);\n    while (currentIdx > 0) {\n      if (this.comparisonFunc(heap[currentIdx], heap[parentIdx])) {\n        this.swap(currentIdx, parentIdx, heap);\n        currentIdx = parentIdx;\n        parentIdx = Math.floor((currentIdx - 1) / 2);\n      } else {\n        return;\n      }\n    }\n  }\n\n  peek() {\n    return this.heap[0];\n  }\n\n  remove() {\n    this.swap(0, this.length - 1, this.heap);\n    const valueToRemove = this.heap.pop();\n    this.length--;\n    this.siftDown(0, this.length - 1, this.heap);\n    return valueToRemove;\n  }\n\n  insert(value: number) {\n    this.heap.push(value);\n    this.length++;\n    this.siftUp(this.length - 1, this.heap);\n  }\n\n  swap(i: number, j: number, heap: number[]) {\n    const temp = heap[j];\n    heap[j] = heap[i];\n    heap[i] = temp;\n  }\n}\n\nfunction MAX_HEAP_FUNC(a: number, b: number) {\n  return a > b;\n}\n\nfunction MIN_HEAP_FUNC(a: number, b: number) {\n  return a < b;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const handler = new program.ContinuousMedianHandler();\n  handler.insert(5);\n  handler.insert(10);\n  chai.expect(handler.getMedian()).to.deep.equal(7.5);\n  handler.insert(100);\n  chai.expect(handler.getMedian()).to.deep.equal(10);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const handler = new program.ContinuousMedianHandler();\n  handler.insert(5);\n  handler.insert(10);\n  chai.expect(handler.getMedian()).to.deep.equal(7.5);\n  handler.insert(100);\n  chai.expect(handler.getMedian()).to.deep.equal(10);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "classMethodsToCall",
+            "example": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ],
+            "schema": {
+                "description": "These methods will be called in the order that they appear in below\non a <span>ContinuousMedianHandler</span> and with their respective arguments.\n",
+                "items": {
+                    "properties": {
+                        "arguments": {
+                            "maxItems": 1,
+                            "type": "array"
+                        },
+                        "method": {
+                            "enum": [
+                                "getMedian",
+                                "insert"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "method",
+                        "arguments"
+                    ],
+                    "type": "object"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        200
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        200
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        6
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        13
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        200
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        6
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        13
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        14
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        50
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        200
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        6
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        13
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        14
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        50
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        51
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        52
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        200
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        6
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        13
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        14
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        50
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        51
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        52
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        1000
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        10000
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        200
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        6
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        13
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        14
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        50
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        51
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        52
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        1000
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10000
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10001
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        10002
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        200
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        6
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        13
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        14
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        50
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        51
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        52
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        1000
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10000
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10001
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10002
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10003
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        10004
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        200
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        6
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        13
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        14
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        50
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        51
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        52
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        1000
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10000
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10001
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10002
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10003
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10004
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        75
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        80
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        200
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        200
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        6
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        13
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        200
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        6
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        13
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        14
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        50
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        200
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        6
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        13
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        14
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        50
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        51
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        52
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        200
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        6
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        13
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        14
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        50
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        51
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        52
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        1000
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        10000
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        200
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        6
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        13
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        14
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        50
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        51
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        52
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        1000
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10000
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10001
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        10002
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        200
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        6
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        13
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        14
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        50
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        51
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        52
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        1000
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10000
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10001
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10002
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10003
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        10004
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        5
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        100
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        200
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        6
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        13
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        14
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        50
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        51
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        52
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        1000
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10000
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10001
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10002
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10003
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        10004
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [
+                        75
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                },
+                {
+                    "arguments": [
+                        80
+                    ],
+                    "method": "insert"
+                },
+                {
+                    "arguments": [],
+                    "method": "getMedian"
+                }
+            ]
+        }
+    ],
+    "changelog": []
+}

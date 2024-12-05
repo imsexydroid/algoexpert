@@ -1,0 +1,726 @@
+{
+    "uid": "detect-arbitrage",
+    "testStrategy": "JSON",
+    "name": "Detect Arbitrage",
+    "version": 0,
+    "releaseDate": "2021-04-01T00:00:00Z",
+    "category": "Graphs",
+    "difficulty": 4,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 2034,
+        "failureCount": 394
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "524116748",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Tim Ruscica",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 2322
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  You're given a two-dimensional array (a matrix) of equal height and width that\n  represents the exchange rates of arbitrary currencies. The length of the array\n  is the number of currencies, and every currency can be converted to every\n  other currency. Each currency is represented by a row in the array, where\n  values in that row are the floating-point exchange rates between the row's\n  currency and all other currencies, as in the example below.\n</p>\n<pre>\n       0:USD 1:CAD  2:GBP \n0:USD [  1.0, 1.27, 0.718] \n1:CAD [ 0.74,  1.0,  0.56] \n2:GBP [ 1.39, 1.77,   1.0]\n</pre>\n<p>\n  In the matrix above, you can see that row <span>0</span> represents USD, which\n  means that row <span>0</span> contains the exchange rates for\n  <span>1</span> USD to all other currencies. Since row\n  <span>1</span> represents CAD, index <span>1</span> in the USD row contains\n  the exchange for <span>1</span> USD to CAD. The currency labels are listed\n  above to help you visualize the problem, but they won't actually be included\n  in any inputs and aren't relevant to solving this problem.\n</p>\n<p>\n  Write a function that returns a boolean representing whether an arbitrage\n  opportunity exists with the given exchange rates. An arbitrage occurs if you\n  can start with <span>C</span> units of one currency and execute a series of\n  exchanges that lead you to having more than <span>C</span> units of the same\n  currency you started with.\n</p>\n<p>\n  Note: currency exchange rates won't represent real-world exchange rates, and\n  there might be multiple ways to generate an arbitrage.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">exchangeRates</span> = [\n  [   1.0, 0.8631, 0.5903],\n  [1.1586,    1.0, 0.6849],\n  [1.6939,   1.46,    1.0],\n]\n</pre>\n<h3>Sample Output</h3>\n<pre>\ntrue \n</pre>\n</div>",
+    "hints": [
+        "<p>\n  Try treating this problem like a graph problem, where the currencies are the\n  vertices and the exchange rates are the edges. Think about what properties of\n  this graph would determine if there's an arbitrage opportunity.\n</p>\n",
+        "\n<p>\n  If you're able to find a cycle in the graph whose edges multiply to more than\n  <span>1</span>, then you've found an arbitrage. If a cycle that fits this\n  criteria exists, there must be an arbitrage, because it means that you can\n  start at a certain currency in the cycle and return back to that original\n  currency with more units than you started with.\n</p>\n",
+        "\n<p>\n  Finding a cycle whose edges multiply to more than <span>1</span> isn't a very\n  common problem in Computer Science. However, finding a cycle whose edges add\n  up to a negative value (a negative weight cycle) is much more common. Is there\n  a way that you can mutate the edge weights in your graph such that finding a\n  negative weight cycle in this mutated graph indicates an arbitrage? Hint:\n  think about logarithms and how <span>log(a * b) = log(a) + log(b)</span>.\n</p>\n",
+        "\n<p>\n  Change all of the edge weights in the graph to be their negative logarithm. In\n  other words, create a new matrix of exchange rates, where every value is the\n  negative logarithm of the original exchange rate. Once this is done, you can\n  use the Bellman-Ford algorithm to detect the presence of a negative weight\n  cycle in the graph. If you detect a negative weight cycle, then an arbitrage\n  exists. See the Conceptual Overview section of this question's video\n  explanation for a more in-depth explanation.\n</p>"
+    ],
+    "spaceTime": "O(n^3) time | O(n^2) space - where n is the number of currencies",
+    "notes": "<div class=\"html\">\n<p class=\"CodeEditor-notesQuestion\">\n  The optimal solution to this problem seems very difficult. Would I be expected\n  to come up with this in a 45-minute interview?\n</p>\n<p>\n  Realistically, no. Since the optimal solution to this problem is admittedly\n  very hard (harder than most other solutions on AlgoExpert), in a real coding\n  interview, you would likely be given a lot of guidance and hints by your\n  interviewer.\n</p>\n<p>\n  For example, it's possible that they would first see you struggle with the\n  problem for about 5 minutes and then point you in the direction of using\n  negative logarithms, telling you why exactly that would be useful.\n</p>\n</div>",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\nusing namespace std;\n\nbool detectArbitrage(vector<vector<double>> exchangeRates) {\n  // Write your code here.\n  return false;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <cmath>\n#include <limits>\n#include <vector>\nusing namespace std;\n\nbool foundNegativeWeightCycle(vector<vector<double>> graph, int start);\nbool relaxEdgesAndUpdateDistances(\n  vector<vector<double>>& graph, vector<double>& distances\n);\nvector<vector<double>> convertToLogMatrix(vector<vector<double>> matrix);\n\n// O(n^3) time | O(n^2) space - where n is the number of currencies\nbool detectArbitrage(vector<vector<double>> exchangeRates) {\n  // To use exchange rates as edge weights, we must be able to add them.\n  // Since log(a*b) = log(a) + log(b), we can convert all rates to\n  // -log10(rate) to use them as edge weights.\n  vector<vector<double>> logExchangeRates = convertToLogMatrix(exchangeRates);\n\n  // A negative weight cycle indicates an arbitrage.\n  return foundNegativeWeightCycle(logExchangeRates, 0);\n}\n\n// Runs the Bellman\u2013Ford Algorithm to detect any negative-weight cycles.\nbool foundNegativeWeightCycle(vector<vector<double>> graph, int start) {\n  vector<double> distancesFromStart(\n    graph.size(), numeric_limits<double>::max()\n  );\n  distancesFromStart[start] = 0;\n\n  for (int unused = 0; unused < graph.size(); unused++) {\n    // If no update occurs, that means there's no negative cycle.\n    if (!relaxEdgesAndUpdateDistances(graph, distancesFromStart)) {\n      return false;\n    }\n  }\n\n  return relaxEdgesAndUpdateDistances(graph, distancesFromStart);\n}\n\n// Returns `true` if any distance was updated\nbool relaxEdgesAndUpdateDistances(\n  vector<vector<double>>& graph, vector<double>& distances\n) {\n  bool updated = false;\n\n  for (int sourceIdx = 0; sourceIdx < graph.size(); sourceIdx++) {\n    vector<double> edges = graph[sourceIdx];\n    for (int destinationIdx = 0; destinationIdx < edges.size();\n         destinationIdx++) {\n      double edgeWeight = edges[destinationIdx];\n      double newDistanceToDestination = distances[sourceIdx] + edgeWeight;\n      if (newDistanceToDestination < distances[destinationIdx]) {\n        updated = true;\n        distances[destinationIdx] = newDistanceToDestination;\n      }\n    }\n  }\n\n  return updated;\n}\n\nvector<vector<double>> convertToLogMatrix(vector<vector<double>> matrix) {\n  vector<vector<double>> newMatrix;\n\n  for (int row = 0; row < matrix.size(); row++) {\n    vector<double> rates = matrix[row];\n    newMatrix.push_back(vector<double>{});\n    for (auto rate : rates) {\n      newMatrix[row].push_back(-log10(rate));\n    }\n  }\n\n  return newMatrix;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<double>> input = {\n        {1.0, 0.8631, 0.5903},\n        {1.1586, 1.0, 0.6849},\n        {1.6939, 1.46, 1.0},\n      };\n      auto expected = true;\n      auto actual = detectArbitrage(input);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<double>> input = {\n        {1.0, 0.8631, 0.5903},\n        {1.1586, 1.0, 0.6849},\n        {1.6939, 1.46, 1.0},\n      };\n      auto expected = true;\n      auto actual = detectArbitrage(input);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System.Collections.Generic;\nusing System;\n\npublic class Program {\n  public bool DetectArbitrage(List<List<Double> > exchangeRates) {\n    // Write your code here.\n    return false;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System.Linq;\nusing System;\n\npublic class Program {\n  // O(n^3) time | O(n^2) space - where n is the number of currencies\n  public bool DetectArbitrage(List<List<Double> > exchangeRates) {\n    // To use exchange rates as edge weights, we must be able to add them.\n    // Since log(a*b) = log(a) + log(b), we can convert all rates to\n    // -log10(rate) to use them as edge weights.\n    List<List<Double> > logExchangeRates = convertToLogMatrix(exchangeRates);\n\n    // A negative weight cycle indicates an arbitrage.\n    return foundNegativeWeightCycle(logExchangeRates, 0);\n  }\n\n  // Runs the Bellman\u2013Ford Algorithm to detect any negative-weight cycles.\n  public bool foundNegativeWeightCycle(List<List<Double> > graph, int start) {\n    double[] distancesFromStart = new double[graph.Count];\n    Array.Fill(distancesFromStart, Double.MaxValue);\n    distancesFromStart[start] = 0;\n\n    for (int unused = 0; unused < graph.Count; unused++) {\n      // If no update occurs, that means there's no negative cycle.\n      if (!relaxEdgesAndUpdateDistances(graph, distancesFromStart)) {\n        return false;\n      }\n    }\n\n    return relaxEdgesAndUpdateDistances(graph, distancesFromStart);\n  }\n\n  // Returns `true` if any distance was updated\n  public bool relaxEdgesAndUpdateDistances(\n    List<List<Double> > graph, double[] distances\n  ) {\n    bool updated = false;\n\n    for (int sourceIdx = 0; sourceIdx < graph.Count; sourceIdx++) {\n      List<Double> edges = graph[sourceIdx];\n      for (int destinationIdx = 0; destinationIdx < edges.Count;\n           destinationIdx++) {\n        double edgeWeight = edges[destinationIdx];\n        double newDistanceToDestination = distances[sourceIdx] + edgeWeight;\n        if (newDistanceToDestination < distances[destinationIdx]) {\n          updated = true;\n          distances[destinationIdx] = newDistanceToDestination;\n        }\n      }\n    }\n\n    return updated;\n  }\n\n  public List<List<Double> > convertToLogMatrix(List<List<Double> > matrix) {\n    List<List<Double> > newMatrix = new List<List<Double> >();\n\n    for (int row = 0; row < matrix.Count; row++) {\n      List<Double> rates = matrix[row];\n      newMatrix.Add(new List<Double>());\n      foreach (var rate in rates) {\n        newMatrix[row].Add(-Math.Log10(rate));\n      }\n    }\n\n    return newMatrix;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System.Collections.Generic;\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    List<List<Double> > input = new List<List<Double> >();\n    input.Add(new List<double> { 1.0, 0.8631, 0.5903 });\n    input.Add(new List<double> { 1.1586, 1.0, 0.6849 });\n    input.Add(new List<double> { 1.6939, 1.46, 1.0 });\n    bool expected = true;\n    var actual = new Program().DetectArbitrage(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "using System.Collections.Generic;\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    List<List<Double> > input = new List<List<Double> >();\n    input.Add(new List<double> { 1.0, 0.8631, 0.5903 });\n    input.Add(new List<double> { 1.1586, 1.0, 0.6849 });\n    input.Add(new List<double> { 1.6939, 1.46, 1.0 });\n    bool expected = true;\n    var actual = new Program().DetectArbitrage(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc DetectArbitrage(exchangeRates [][]float64) bool {\n\t// Write your code here.\n\treturn false\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport (\n\t\"math\"\n)\n\n// O(n^3) time | O(n^2) space - where n is the number of currencies\nfunc DetectArbitrage(exchangeRates [][]float64) bool {\n\t// To use exchange rates as edge weights, we must be able to add them.\n\t// Since log(a*b) = log(a) + log(b), we can convert all rates to\n\t// -log10(rate) to use them as edge weights.\n\tlogExchangeRates := convertToLogMatrix(exchangeRates)\n\n\t// A negative weight cycle indicates an arbitrage.\n\treturn foundNegativeWeightCycle(logExchangeRates, 0)\n}\n\n// Runs the Bellman\u2013Ford Algorithm to detect any negative-weight cycles.\nfunc foundNegativeWeightCycle(graph [][]float64, start int) bool {\n\tdistancesFromStart := make([]float64, len(graph))\n\tfor i := range distancesFromStart {\n\t\tdistancesFromStart[i] = math.MaxFloat64\n\t}\n\tdistancesFromStart[start] = 0.0\n\n\tfor unused := 0; unused < len(graph)-1; unused++ {\n\t\t// If no update occurs, that means there's no negative cycle.\n\t\tif !relaxEdgesAndUpdateDistances(graph, distancesFromStart) {\n\t\t\treturn false\n\t\t}\n\t}\n\n\treturn relaxEdgesAndUpdateDistances(graph, distancesFromStart)\n}\n\n// Returns `true` if any distance was updated.\nfunc relaxEdgesAndUpdateDistances(graph [][]float64, distances []float64) bool {\n\tvar updated = false\n\tfor sourceIdx := range graph {\n\t\tedges := graph[sourceIdx]\n\t\tfor destinationIdx := range edges {\n\t\t\tedgeWeight := edges[destinationIdx]\n\t\t\tnewDistanceToDestination := distances[sourceIdx] + edgeWeight\n\t\t\tif newDistanceToDestination < distances[destinationIdx] {\n\t\t\t\tupdated = true\n\t\t\t\tdistances[destinationIdx] = newDistanceToDestination\n\t\t\t}\n\t\t}\n\n\t}\n\n\treturn updated\n}\n\nfunc convertToLogMatrix(matrix [][]float64) [][]float64 {\n\tnewMatrix := make([][]float64, len(matrix))\n\tfor row, rates := range matrix {\n\t\tfor _, rate := range rates {\n\t\t\tnewMatrix[row] = append(newMatrix[row], -math.Log10(rate))\n\t\t}\n\t}\n\n\treturn newMatrix\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := [][]float64{\n\t\t{1.0, 0.8631, 0.5903},\n\t\t{1.1586, 1.0, 0.6849},\n\t\t{1.6939, 1.46, 1.0},\n\t}\n\texpected := true\n\tactual := DetectArbitrage(input)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := [][]float64{\n\t\t{1.0, 0.8631, 0.5903},\n\t\t{1.1586, 1.0, 0.6849},\n\t\t{1.6939, 1.46, 1.0},\n\t}\n\texpected := true\n\tactual := DetectArbitrage(input)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public boolean detectArbitrage(ArrayList<ArrayList<Double>> exchangeRates) {\n    // Write your code here.\n    return false;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n^3) time | O(n^2) space - where n is the number of currencies\n  public boolean detectArbitrage(ArrayList<ArrayList<Double>> exchangeRates) {\n    // To use exchange rates as edge weights, we must be able to add them.\n    // Since log(a*b) = log(a) + log(b), we can convert all rates to\n    // -log10(rate) to use them as edge weights.\n    ArrayList<ArrayList<Double>> logExchangeRates =\n      convertToLogMatrix(exchangeRates);\n\n    // A negative weight cycle indicates an arbitrage.\n    return foundNegativeWeightCycle(logExchangeRates, 0);\n  }\n\n  // Runs the Bellman\u2013Ford Algorithm to detect any negative-weight cycles.\n  public boolean foundNegativeWeightCycle(\n    ArrayList<ArrayList<Double>> graph, int start\n  ) {\n    double[] distancesFromStart = new double[graph.size()];\n    Arrays.fill(distancesFromStart, Double.MAX_VALUE);\n    distancesFromStart[start] = 0;\n\n    for (int unused = 0; unused < graph.size(); unused++) {\n      // If no update occurs, that means there's no negative cycle.\n      if (!relaxEdgesAndUpdateDistances(graph, distancesFromStart)) {\n        return false;\n      }\n    }\n\n    return relaxEdgesAndUpdateDistances(graph, distancesFromStart);\n  }\n\n  // Returns `true` if any distance was updated\n  public boolean relaxEdgesAndUpdateDistances(\n    ArrayList<ArrayList<Double>> graph, double[] distances\n  ) {\n    boolean updated = false;\n\n    for (int sourceIdx = 0; sourceIdx < graph.size(); sourceIdx++) {\n      ArrayList<Double> edges = graph.get(sourceIdx);\n      for (int destinationIdx = 0; destinationIdx < edges.size();\n           destinationIdx++) {\n        double edgeWeight = edges.get(destinationIdx);\n        double newDistanceToDestination = distances[sourceIdx] + edgeWeight;\n        if (newDistanceToDestination < distances[destinationIdx]) {\n          updated = true;\n          distances[destinationIdx] = newDistanceToDestination;\n        }\n      }\n    }\n\n    return updated;\n  }\n\n  public ArrayList<ArrayList<Double>> convertToLogMatrix(\n    ArrayList<ArrayList<Double>> matrix\n  ) {\n    ArrayList<ArrayList<Double>> newMatrix = new ArrayList<ArrayList<Double>>();\n\n    for (int row = 0; row < matrix.size(); row++) {\n      ArrayList<Double> rates = matrix.get(row);\n      newMatrix.add(new ArrayList<Double>());\n      for (Double rate : rates) {\n        newMatrix.get(row).add(-Math.log10(rate));\n      }\n    }\n\n    return newMatrix;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    ArrayList<ArrayList<Double>> input = new ArrayList<ArrayList<Double>>();\n    input.add(new ArrayList<Double>(Arrays.asList(1.0, 0.8631, 0.5903)));\n    input.add(new ArrayList<Double>(Arrays.asList(1.1586, 1.0, 0.6849)));\n    input.add(new ArrayList<Double>(Arrays.asList(1.6939, 1.46, 1.0)));\n    boolean expected = true;\n    var actual = new Program().detectArbitrage(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    ArrayList<ArrayList<Double>> input = new ArrayList<ArrayList<Double>>();\n    input.add(new ArrayList<Double>(Arrays.asList(1.0, 0.8631, 0.5903)));\n    input.add(new ArrayList<Double>(Arrays.asList(1.1586, 1.0, 0.6849)));\n    input.add(new ArrayList<Double>(Arrays.asList(1.6939, 1.46, 1.0)));\n    boolean expected = true;\n    var actual = new Program().detectArbitrage(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function detectArbitrage(exchangeRates) {\n  // Write your code here.\n  return false;\n}\n\n// Do not edit the line below.\nexports.detectArbitrage = detectArbitrage;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^3) time | O(n^2) space - where n is the number of currencies\nfunction detectArbitrage(exchangeRates) {\n  // To use exchange rates as edge weights, we must be able to add them.\n  // Since log(a*b) = log(a) + log(b), we can convert all rates to\n  // -log10(rate) to use them as edge weights.\n  const logExchangeRates = convertToLogMatrix(exchangeRates);\n\n  // A negative weight cycle indicates an arbitrage.\n  return foundNegativeWeightCycle(logExchangeRates, 0);\n}\n\n// Runs the Bellman\u2013Ford Algorithm to detect any negative-weight cycles.\nfunction foundNegativeWeightCycle(graph, start) {\n  const distancesFromStart = new Array(graph.length).fill(Infinity);\n  distancesFromStart[start] = 0;\n\n  for (let idx = 0; idx < graph.length - 1; idx++) {\n    // If no update occurs, that means there's no negative cycle.\n    if (!relaxEdgesAndUpdateDistances(graph, distancesFromStart)) return false;\n  }\n\n  return relaxEdgesAndUpdateDistances(graph, distancesFromStart);\n}\n\n// Returns `true` if any distance was updated\nfunction relaxEdgesAndUpdateDistances(graph, distances) {\n  let updated = false;\n  for (let sourceIdx = 0; sourceIdx < graph.length; sourceIdx++) {\n    const edges = graph[sourceIdx];\n    for (let destinationIdx = 0; destinationIdx < edges.length; destinationIdx++) {\n      const edgeWeight = edges[destinationIdx];\n      const newDistanceToDestination = distances[sourceIdx] + edgeWeight;\n      if (newDistanceToDestination < distances[destinationIdx]) {\n        updated = true;\n        distances[destinationIdx] = newDistanceToDestination;\n      }\n    }\n  }\n\n  return updated;\n}\n\nfunction convertToLogMatrix(matrix) {\n  const newMatrix = [];\n  for (let row = 0; row < matrix.length; row++) {\n    const rates = matrix[row];\n    newMatrix.push([]);\n    for (const rate of rates) {\n      newMatrix[row].push(-Math.log10(rate));\n    }\n  }\n  return newMatrix;\n}\n\n// Do not edit the line below.\nexports.detectArbitrage = detectArbitrage;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [\n    [1.0, 0.8631, 0.5903],\n    [1.1586, 1.0, 0.6849],\n    [1.6939, 1.46, 1.0],\n  ];\n  const expected = true;\n  const actual = program.detectArbitrage(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [\n    [1.0, 0.8631, 0.5903],\n    [1.1586, 1.0, 0.6849],\n    [1.6939, 1.46, 1.0],\n  ];\n  const expected = true;\n  const actual = program.detectArbitrage(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun detectArbitrage(exchangeRates: List<List<Double>>): Boolean {\n    // Write your code here.\n    return false\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.log10\n\n// O(n^3) time | O(n^2) space - where n is the number of currencies\nfun detectArbitrage(exchangeRates: List<List<Double>>): Boolean {\n    // To use exchange rates as edge weights, we must be able to add them.\n    // Since log(a*b) = log(a) + log(b), we can convert all rates to\n    // -log10(rate) to use them as edge weights.\n    val logExchangeRates = convertToLogMatrix(exchangeRates)\n\n    // A negative weight cycle indicates an arbitrage.\n    return foundNegativeWeightCycle(logExchangeRates, 0)\n}\n\n// Runs the Bellman\u2013Ford Algorithm to detect any negative-weight cycles.\nfun foundNegativeWeightCycle(graph: List<List<Double>>, start: Int): Boolean {\n    val distancesFromStart = MutableList(graph.size) { Double.MAX_VALUE }\n    distancesFromStart[start] = 0.0\n\n    for (unused in 0 until graph.size - 1) {\n        // If no update occurs, that means there's no negative cycle.\n        if (!relaxEdgesAndUpdateDistances(graph, distancesFromStart)) return false\n    }\n\n    return relaxEdgesAndUpdateDistances(graph, distancesFromStart)\n}\n\n// Returns `true` if any distance was updated.\nfun relaxEdgesAndUpdateDistances(\n    graph: List<List<Double>>,\n    distances: MutableList<Double>,\n): Boolean {\n    var updated = false\n    for (sourceIdx in 0 until graph.size) {\n        val edges = graph[sourceIdx]\n        for (destinationIdx in 0 until edges.size) {\n            val edgeWeight = edges[destinationIdx]\n            val newDistanceToDestination = distances[sourceIdx] + edgeWeight\n            if (newDistanceToDestination < distances[destinationIdx]) {\n                updated = true\n                distances[destinationIdx] = newDistanceToDestination\n            }\n        }\n    }\n\n    return updated\n}\n\nfun convertToLogMatrix(matrix: List<List<Double>>): List<List<Double>> {\n    val newMatrix = mutableListOf<MutableList<Double>>()\n    for (row in 0 until matrix.size) {\n        val rates = matrix[row]\n        newMatrix.add(mutableListOf<Double>())\n        for (rate in rates) {\n            newMatrix[row].add(-log10(rate))\n        }\n    }\n\n    return newMatrix\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.detectArbitrage\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(\n            listOf(1.0, 0.8631, 0.5903),\n            listOf(1.1586, 1.0, 0.6849),\n            listOf(1.6939, 1.46, 1.0),\n        )\n        val expected = true\n        val output = detectArbitrage(input)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.detectArbitrage\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(\n            listOf(1.0, 0.8631, 0.5903),\n            listOf(1.1586, 1.0, 0.6849),\n            listOf(1.6939, 1.46, 1.0),\n        )\n        val expected = true\n        val output = detectArbitrage(input)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def detectArbitrage(exchangeRates):\n    # Write your code here.\n    return False\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport math\n\n\n# O(n^3) time | O(n^2) space - where n is the number of currencies\ndef detectArbitrage(exchangeRates):\n    # To use exchange rates as edge weights, we must be able to add them.\n    # Since log(a*b) = log(a) + log(b), we can convert all rates to\n    # -log10(rate) to use them as edge weights.\n    logExchangeRates = convertToLogMatrix(exchangeRates)\n\n    # A negative weight cycle indicates an arbitrage.\n    return foundNegativeWeightCycle(logExchangeRates, 0)\n\n\n# Runs the Bellman\u2013Ford Algorithm to detect any negative-weight cycles.\ndef foundNegativeWeightCycle(graph, start):\n    distancesFromStart = [float(\"inf\") for _ in range(len(graph))]\n    distancesFromStart[start] = 0\n\n    for _ in range(len(graph) - 1):\n        # If no update occurs, that means there's no negative cycle.\n        if not relaxEdgesAndUpdateDistances(graph, distancesFromStart):\n            return False\n\n    return relaxEdgesAndUpdateDistances(graph, distancesFromStart)\n\n\n# Returns `True` if any distance was updated\ndef relaxEdgesAndUpdateDistances(graph, distances):\n    updated = False\n    for sourceIdx, edges in enumerate(graph):\n        for destinationIdx, edgeWeight in enumerate(edges):\n            newDistanceToDestination = distances[sourceIdx] + edgeWeight\n            if newDistanceToDestination < distances[destinationIdx]:\n                updated = True\n                distances[destinationIdx] = newDistanceToDestination\n\n    return updated\n\n\ndef convertToLogMatrix(matrix):\n    newMatrix = []\n    for row, rates in enumerate(matrix):\n        newMatrix.append([])\n        for rate in rates:\n            newMatrix[row].append(-math.log10(rate))\n\n    return newMatrix\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [[1.0, 0.8631, 0.5903], [1.1586, 1.0, 0.6849], [1.6939, 1.46, 1.0]]\n        expected = True\n        actual = program.detectArbitrage(input)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [[1.0, 0.8631, 0.5903], [1.1586, 1.0, 0.6849], [1.6939, 1.46, 1.0]]\n        expected = True\n        actual = program.detectArbitrage(input)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "class Program\n  def detectArbitrage(exchangeRates)\n    # Write your code here.\n    return false\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def detectArbitrage(exchangeRates)\n    # Write your code here.\n    return false\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.detectArbitrage\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.detectArbitrage\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func detectArbitrage(_ exchangeRates: [[Double]]) -> Bool {\n    // Write your code here.\n    return false\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport Foundation\n\nclass Program {\n  // O(n^3) time | O(n^2) space - where n is the number of currencies\n  func detectArbitrage(_ exchangeRates: [[Double]]) -> Bool {\n    // To use exchange rates as edge weights, we must be able to add them.\n    // Since log(a*b) = log(a) + log(b), we can convert all rates to\n    // -log10(rate) to use them as edge weights.\n    let logExchangeRates = convertToLogMatrix(exchangeRates)\n\n    // A negative weight cycle indicates an arbitrage.\n    return foundNegativeWeightCycle(logExchangeRates, 0)\n  }\n\n  // Runs the Bellman\u2013Ford Algorithm to detect any negative-weight cycles.\n  func foundNegativeWeightCycle(_ graph: [[Double]], _ start: Int) -> Bool {\n    var distancesFromStart = Array(repeating: Double.greatestFiniteMagnitude, count: graph.count)\n    distancesFromStart[start] = 0.0\n\n    for unused in stride(from: 0, to: graph.count - 1, by: 1) {\n      // If no update occurs, that means there's no negative cycle.\n      if !relaxEdgesAndUpdateDistances(graph, &distancesFromStart) {\n        return false\n      }\n    }\n\n    return relaxEdgesAndUpdateDistances(graph, &distancesFromStart)\n  }\n\n  // Returns `true` if any distance was updated.\n  func relaxEdgesAndUpdateDistances(_ graph: [[Double]], _ distances: inout [Double]) -> Bool {\n    var updated = false\n    for sourceIdx in stride(from: 0, to: graph.count, by: 1) {\n      let edges = graph[sourceIdx]\n      for destinationIdx in stride(from: 0, to: edges.count, by: 1) {\n        let edgeWeight = edges[destinationIdx]\n        let newDistanceToDestination = distances[sourceIdx] + edgeWeight\n        if newDistanceToDestination < distances[destinationIdx] {\n          updated = true\n          distances[destinationIdx] = newDistanceToDestination\n        }\n      }\n    }\n\n    return updated\n  }\n\n  func convertToLogMatrix(_ matrix: [[Double]]) -> [[Double]] {\n    var newMatrix = [[Double]]()\n    for rates in matrix {\n      var newRow = [Double]()\n      for rate in rates {\n        newRow.append(-log10(rate))\n      }\n      newMatrix.append(newRow)\n    }\n\n    return newMatrix\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let input = [\n        [1.0, 0.8631, 0.5903],\n        [1.1586, 1.0, 0.6849],\n        [1.6939, 1.46, 1.0],\n      ]\n      let expected = true\n      var actual = Program().detectArbitrage(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let input = [\n        [1.0, 0.8631, 0.5903],\n        [1.1586, 1.0, 0.6849],\n        [1.6939, 1.46, 1.0],\n      ]\n      let expected = true\n      var actual = Program().detectArbitrage(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function detectArbitrage(exchangeRates: number[][]) {\n  // Write your code here.\n  return false;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^3) time | O(n^2) space - where n is the number of currencies\nexport function detectArbitrage(exchangeRates: number[][]) {\n  // To use exchange rates as edge weights, we must be able to add them.\n  // Since log(a*b) = log(a) + log(b), we can convert all rates to\n  // -log10(rate) to use them as edge weights.\n  const logExchangeRates = convertToLogMatrix(exchangeRates);\n\n  // A negative weight cycle indicates an arbitrage.\n  return foundNegativeWeightCycle(logExchangeRates, 0);\n}\n\n// Runs the Bellman\u2013Ford Algorithm to detect any negative-weight cycles.\nfunction foundNegativeWeightCycle(graph: number[][], start: number) {\n  const distancesFromStart = new Array(graph.length).fill(Infinity);\n  distancesFromStart[start] = 0;\n\n  for (let idx = 0; idx < graph.length - 1; idx++) {\n    // If no update occurs, that means there's no negative cycle.\n    if (!relaxEdgesAndUpdateDistances(graph, distancesFromStart)) return false;\n  }\n\n  return relaxEdgesAndUpdateDistances(graph, distancesFromStart);\n}\n\n// Returns `true` if any distance was updated\nfunction relaxEdgesAndUpdateDistances(graph: number[][], distances: number[]) {\n  let updated = false;\n  for (let sourceIdx = 0; sourceIdx < graph.length; sourceIdx++) {\n    const edges = graph[sourceIdx];\n    for (let destinationIdx = 0; destinationIdx < edges.length; destinationIdx++) {\n      const edgeWeight = edges[destinationIdx];\n      const newDistanceToDestination = distances[sourceIdx] + edgeWeight;\n      if (newDistanceToDestination < distances[destinationIdx]) {\n        updated = true;\n        distances[destinationIdx] = newDistanceToDestination;\n      }\n    }\n  }\n\n  return updated;\n}\n\nfunction convertToLogMatrix(matrix: number[][]) {\n  const newMatrix: number[][] = [];\n  for (let row = 0; row < matrix.length; row++) {\n    const rates = matrix[row];\n    newMatrix.push([]);\n    for (const rate of rates) {\n      newMatrix[row].push(-Math.log10(rate));\n    }\n  }\n  return newMatrix;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [\n    [1.0, 0.8631, 0.5903],\n    [1.1586, 1.0, 0.6849],\n    [1.6939, 1.46, 1.0],\n  ];\n  const expected = true;\n  const actual = program.detectArbitrage(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [\n    [1.0, 0.8631, 0.5903],\n    [1.1586, 1.0, 0.6849],\n    [1.6939, 1.46, 1.0],\n  ];\n  const expected = true;\n  const actual = program.detectArbitrage(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "exchangeRates",
+            "example": [
+                [
+                    1,
+                    0.8631,
+                    0.5903
+                ],
+                [
+                    1.1586,
+                    1,
+                    0.6849
+                ],
+                [
+                    1.6939,
+                    1.46,
+                    1
+                ]
+            ],
+            "schema": {
+                "items": {
+                    "items": {
+                        "type": "number"
+                    },
+                    "type": "array"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    0.8631,
+                    0.5903
+                ],
+                [
+                    1.1586,
+                    1,
+                    0.6849
+                ],
+                [
+                    1.6939,
+                    1.46,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    106.6,
+                    0.83
+                ],
+                [
+                    0.0093,
+                    1,
+                    0.0078
+                ],
+                [
+                    1.21,
+                    128.69,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    0.5,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    0.6,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    0.4,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    0.5,
+                    0.25
+                ],
+                [
+                    2,
+                    1,
+                    0.5
+                ],
+                [
+                    4,
+                    2,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    0.5,
+                    0.25,
+                    2
+                ],
+                [
+                    2,
+                    1,
+                    0.5,
+                    4
+                ],
+                [
+                    4,
+                    2,
+                    1,
+                    8
+                ],
+                [
+                    0.5,
+                    0.25,
+                    0.0125,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    0.52,
+                    0.25,
+                    2
+                ],
+                [
+                    2,
+                    1,
+                    0.5,
+                    4
+                ],
+                [
+                    4,
+                    2,
+                    1,
+                    8
+                ],
+                [
+                    0.5,
+                    0.24,
+                    0.0125,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    0.5,
+                    0.25,
+                    2,
+                    4
+                ],
+                [
+                    2,
+                    1,
+                    0.5,
+                    4,
+                    8
+                ],
+                [
+                    4,
+                    2,
+                    1,
+                    8,
+                    16
+                ],
+                [
+                    0.5,
+                    0.25,
+                    0.0125,
+                    1,
+                    2
+                ],
+                [
+                    0.25,
+                    0.0125,
+                    0.00625,
+                    0.5,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    0.523,
+                    0.25,
+                    2,
+                    4
+                ],
+                [
+                    2,
+                    1.023,
+                    0.512,
+                    4,
+                    8
+                ],
+                [
+                    4.1,
+                    2,
+                    1,
+                    8.02,
+                    16
+                ],
+                [
+                    0.5,
+                    0.215,
+                    0.01235,
+                    1,
+                    2
+                ],
+                [
+                    0.25,
+                    0.01251,
+                    0.00625,
+                    0.5,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    0.5,
+                    0.25,
+                    2,
+                    4
+                ],
+                [
+                    2,
+                    1,
+                    0.5,
+                    4,
+                    8
+                ],
+                [
+                    4,
+                    2,
+                    1,
+                    8,
+                    16
+                ],
+                [
+                    0.5,
+                    0.25,
+                    0.0125,
+                    1,
+                    2
+                ],
+                [
+                    0.25,
+                    0.0125,
+                    0.00625,
+                    0.5,
+                    1
+                ]
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    0.8631,
+                    0.5903
+                ],
+                [
+                    1.1586,
+                    1,
+                    0.6849
+                ],
+                [
+                    1.6939,
+                    1.46,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    106.6,
+                    0.83
+                ],
+                [
+                    0.0093,
+                    1,
+                    0.0078
+                ],
+                [
+                    1.21,
+                    128.69,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    0.5,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    0.6,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    0.4,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    0.5,
+                    0.25
+                ],
+                [
+                    2,
+                    1,
+                    0.5
+                ],
+                [
+                    4,
+                    2,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    0.5,
+                    0.25,
+                    2
+                ],
+                [
+                    2,
+                    1,
+                    0.5,
+                    4
+                ],
+                [
+                    4,
+                    2,
+                    1,
+                    8
+                ],
+                [
+                    0.5,
+                    0.25,
+                    0.0125,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    0.52,
+                    0.25,
+                    2
+                ],
+                [
+                    2,
+                    1,
+                    0.5,
+                    4
+                ],
+                [
+                    4,
+                    2,
+                    1,
+                    8
+                ],
+                [
+                    0.5,
+                    0.24,
+                    0.0125,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    0.5,
+                    0.25,
+                    2,
+                    4
+                ],
+                [
+                    2,
+                    1,
+                    0.5,
+                    4,
+                    8
+                ],
+                [
+                    4,
+                    2,
+                    1,
+                    8,
+                    16
+                ],
+                [
+                    0.5,
+                    0.25,
+                    0.0125,
+                    1,
+                    2
+                ],
+                [
+                    0.25,
+                    0.0125,
+                    0.00625,
+                    0.5,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    0.523,
+                    0.25,
+                    2,
+                    4
+                ],
+                [
+                    2,
+                    1.023,
+                    0.512,
+                    4,
+                    8
+                ],
+                [
+                    4.1,
+                    2,
+                    1,
+                    8.02,
+                    16
+                ],
+                [
+                    0.5,
+                    0.215,
+                    0.01235,
+                    1,
+                    2
+                ],
+                [
+                    0.25,
+                    0.01251,
+                    0.00625,
+                    0.5,
+                    1
+                ]
+            ]
+        },
+        {
+            "exchangeRates": [
+                [
+                    1,
+                    0.5,
+                    0.25,
+                    2,
+                    4
+                ],
+                [
+                    2,
+                    1,
+                    0.5,
+                    4,
+                    8
+                ],
+                [
+                    4,
+                    2,
+                    1,
+                    8,
+                    16
+                ],
+                [
+                    0.5,
+                    0.25,
+                    0.0125,
+                    1,
+                    2
+                ],
+                [
+                    0.25,
+                    0.0125,
+                    0.00625,
+                    0.5,
+                    1
+                ]
+            ]
+        }
+    ],
+    "changelog": []
+}

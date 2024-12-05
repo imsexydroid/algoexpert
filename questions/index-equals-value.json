@@ -1,0 +1,603 @@
+{
+    "uid": "index-equals-value",
+    "testStrategy": "JSON",
+    "name": "Index Equals Value",
+    "version": 0,
+    "releaseDate": "2020-11-16T00:00:00Z",
+    "category": "Searching",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 10212,
+        "failureCount": 2934
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "558316280",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Tim Ruscica",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1112
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Write a function that takes in a sorted array of distinct integers and returns\n  the first index in the array that is equal to the value at that index. In\n  other words, your function should return the minimum index where\n  <span>index == array[index]</span>.\n</p>\n<p>If there is no such index, your function should return <span>-1</span>.</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">array</span> = [-5, -3, 0, 3, 4, 5, 9]\n</pre>\n<h3>Sample Output</h3>\n<pre>\n3 <span class=\"CodeEditor-promptComment\">// 3 == array[3]</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\nFirst think about a simple brute-force approach to solve this problem. What is the time complexity of this approach and what improvements could be made to this time complexity?\n</p>\n",
+        "\n<p>\nIf the brute force solution runs in linear time complexity, then a better solution would have to run in O(log(n)) time. Which algorithm has an O(log(n)) time complexity?\n</p>\n",
+        "\n<p>\nImplement a variation of binary search to solve this problem. Think about what conditions or checks must be added to search for the desired index-value pair.\n</p>\n",
+        "\n<p>\nAs you perform a variation of binary search on the input array, if the value that you're looking at is smaller than its index, cut the left half of the array from the search space, because all values to the left will be smaller than their corresponding indices; this is guaranteed to be true, since left indices will naturally decrement by 1 each and left values will decrement by at least 1 each due to the array being sorted. Similar logic applies to the right side of the array when the value that you're looking at is greater than its index.\n</p>\n",
+        "\n<p>\nWhen you encounter a value that's equal to its index, you'll have to perform some additional logic to make sure that you're not potentially missing other values in the array that are equal to their index and that come before the value that you're looking at.\n</p>"
+    ],
+    "spaceTime": "O(log(n)) time | O(1) space - where n is the length of the input array",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\nusing namespace std;\n\nint indexEqualsValue(vector<int> array) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <vector>\nusing namespace std;\n\n// O(n) time | O(1) space - where n is the length of the input array\nint indexEqualsValue(vector<int> array) {\n  for (int i = 0; i < array.size(); i++) {\n    if (i == array[i]) {\n      return i;\n    }\n  }\n  return -1;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <vector>\nusing namespace std;\n\nint indexEqualsValueHelper(vector<int>&, int leftIndex, int rightIndex);\n\n// O(log(n)) time | O(log(n)) space - where n is the length of the input array\nint indexEqualsValue(vector<int> array) {\n  return indexEqualsValueHelper(array, 0, array.size() - 1);\n}\n\nint indexEqualsValueHelper(vector<int>& array, int leftIndex, int rightIndex) {\n  if (leftIndex > rightIndex) {\n    return -1;\n  }\n\n  int middleIndex = leftIndex + (rightIndex - leftIndex) / 2;\n  int middleValue = array[middleIndex];\n  if (middleValue < middleIndex) {\n    return indexEqualsValueHelper(array, middleIndex + 1, rightIndex);\n  } else if (middleValue == middleIndex && middleIndex == 0) {\n    return middleIndex;\n  } else if (middleValue == middleIndex && array[middleIndex - 1] < middleIndex - 1) {\n    return middleIndex;\n  } else {\n    return indexEqualsValueHelper(array, leftIndex, middleIndex - 1);\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <vector>\nusing namespace std;\n\n// O(log(n)) time | O(1) space - where n is the length of the input array\nint indexEqualsValue(vector<int> array) {\n  int leftIndex = 0;\n  int rightIndex = array.size() - 1;\n\n  while (leftIndex <= rightIndex) {\n    int middleIndex = leftIndex + (rightIndex - leftIndex) / 2;\n    int middleValue = array[middleIndex];\n\n    if (middleValue < middleIndex) {\n      leftIndex = middleIndex + 1;\n    } else if (middleValue == middleIndex && middleIndex == 0) {\n      return middleIndex;\n    } else if (middleValue == middleIndex && array[middleIndex - 1] < middleIndex - 1) {\n      return middleIndex;\n    } else {\n      rightIndex = middleIndex - 1;\n    }\n  }\n  return -1;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input = {-5, -3, 0, 3, 4, 5, 9};\n      int expected = 3;\n      int actual = indexEqualsValue(input);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input = {-5, -3, 0, 3, 4, 5, 9};\n      int expected = 3;\n      int actual = indexEqualsValue(input);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int IndexEqualsValue(int[] array) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(n) time | O(1) space - where n is the length of the input array\n  public int IndexEqualsValue(int[] array) {\n    for (int index = 0; index < array.Length; index++) {\n      int value = array[index];\n      if (index == value) {\n        return index;\n      }\n    }\n\n    return -1;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(log(n)) time | O(log(n)) space - where n is the length of the input array\n  public int IndexEqualsValue(int[] array) {\n    return indexEqualsValueHelper(array, 0, array.Length - 1);\n  }\n\n  public int indexEqualsValueHelper(\n    int[] array, int leftIndex, int rightIndex\n  ) {\n    if (leftIndex > rightIndex) {\n      return -1;\n    }\n\n    int middleIndex = leftIndex + (rightIndex - leftIndex) / 2;\n    int middleValue = array[middleIndex];\n\n    if (middleValue < middleIndex) {\n      return indexEqualsValueHelper(array, middleIndex + 1, rightIndex);\n    } else if ((middleValue == middleIndex) && (middleIndex == 0)) {\n      return middleIndex;\n    } else if ((middleValue == middleIndex) && (array[middleIndex - 1] < (middleIndex - 1))) {\n      return middleIndex;\n    } else {\n      return indexEqualsValueHelper(array, leftIndex, middleIndex - 1);\n    }\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(log(n)) time | O(1) space - where n is the length of the input array\n  public int IndexEqualsValue(int[] array) {\n    int leftIndex = 0;\n    int rightIndex = array.Length - 1;\n\n    while (leftIndex <= rightIndex) {\n      int middleIndex = rightIndex + (leftIndex - rightIndex) / 2;\n      int middleValue = array[middleIndex];\n\n      if (middleValue < middleIndex) {\n        leftIndex = middleIndex + 1;\n      } else if ((middleValue == middleIndex) && (middleIndex == 0)) {\n        return middleIndex;\n      } else if ((middleValue == middleIndex) && (array[middleIndex - 1] < (middleIndex - 1))) {\n        return middleIndex;\n      } else {\n        rightIndex = middleIndex - 1;\n      }\n    }\n\n    return -1;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    Utils.AssertTrue(\n      new Program().IndexEqualsValue(new int[] { -5, -3, 0, 3, 4, 5, 9 }) == 3\n    );\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    Utils.AssertTrue(\n      new Program().IndexEqualsValue(new int[] { -5, -3, 0, 3, 4, 5, 9 }) == 3\n    );\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc IndexEqualsValue(array []int) int {\n\t// Write your code here.\n\treturn -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n) time | O(1) space - where n is the length of the input array\nfunc IndexEqualsValue(array []int) int {\n\tfor index, value := range array {\n\t\tif index == value {\n\t\t\treturn index\n\t\t}\n\t}\n\treturn -1\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(log(n)) time | O(log(n)) space - where n is the length of the input array\nfunc IndexEqualsValue(array []int) int {\n\treturn indexEqualsValueHelper(array, 0, len(array)-1)\n}\n\nfunc indexEqualsValueHelper(array []int, leftIndex int, rightIndex int) int {\n\tif leftIndex > rightIndex {\n\t\treturn -1\n\t}\n\n\tmiddleIndex := leftIndex + (rightIndex-leftIndex)/2\n\tmiddleValue := array[middleIndex]\n\tif middleValue < middleIndex {\n\t\treturn indexEqualsValueHelper(array, middleIndex+1, rightIndex)\n\t} else if middleValue == middleIndex && middleIndex == 0 {\n\t\treturn middleIndex\n\t} else if middleValue == middleIndex && array[middleIndex-1] < middleIndex-1 {\n\t\treturn middleIndex\n\t} else {\n\t\treturn indexEqualsValueHelper(array, leftIndex, middleIndex-1)\n\t}\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(log(n)) time | O(1) space - where n is the length of the input array\nfunc IndexEqualsValue(array []int) int {\n\tleftIndex := 0\n\trightIndex := len(array) - 1\n\n\tfor leftIndex <= rightIndex {\n\t\tmiddleIndex := leftIndex + (rightIndex-leftIndex)/2\n\t\tmiddleValue := array[middleIndex]\n\n\t\tif middleValue < middleIndex {\n\t\t\tleftIndex = middleIndex + 1\n\t\t} else if middleValue == middleIndex && middleIndex == 0 {\n\t\t\treturn middleIndex\n\t\t} else if middleValue == middleIndex && array[middleIndex-1] < middleIndex-1 {\n\t\t\treturn middleIndex\n\t\t} else {\n\t\t\trightIndex = middleIndex - 1\n\t\t}\n\t}\n\treturn -1\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []int{-5, -3, 0, 3, 4, 5, 9}\n\texpected := 3\n\tactual := IndexEqualsValue(input)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []int{-5, -3, 0, 3, 4, 5, 9}\n\texpected := 3\n\tactual := IndexEqualsValue(input)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int indexEqualsValue(int[] array) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n) time | O(1) space - where n is the length of the input array\n  public int indexEqualsValue(int[] array) {\n    for (int index = 0; index < array.length; index++) {\n      int value = array[index];\n      if (index == value) {\n        return index;\n      }\n    }\n\n    return -1;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(log(n)) time | O(log(n)) space - where n is the length of the input array\n  public int indexEqualsValue(int[] array) {\n    return indexEqualsValueHelper(array, 0, array.length - 1);\n  }\n\n  public int indexEqualsValueHelper(\n    int[] array, int leftIndex, int rightIndex\n  ) {\n    if (leftIndex > rightIndex) {\n      return -1;\n    }\n\n    int middleIndex = leftIndex + (rightIndex - leftIndex) / 2;\n    int middleValue = array[middleIndex];\n\n    if (middleValue < middleIndex) {\n      return indexEqualsValueHelper(array, middleIndex + 1, rightIndex);\n    } else if ((middleValue == middleIndex) && (middleIndex == 0)) {\n      return middleIndex;\n    } else if ((middleValue == middleIndex) && (array[middleIndex - 1] < (middleIndex - 1))) {\n      return middleIndex;\n    } else {\n      return indexEqualsValueHelper(array, leftIndex, middleIndex - 1);\n    }\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(log(n)) time | O(1) space - where n is the length of the input array\n  public int indexEqualsValue(int[] array) {\n    int leftIndex = 0;\n    int rightIndex = array.length - 1;\n\n    while (leftIndex <= rightIndex) {\n      int middleIndex = rightIndex + (leftIndex - rightIndex) / 2;\n      int middleValue = array[middleIndex];\n\n      if (middleValue < middleIndex) {\n        leftIndex = middleIndex + 1;\n      } else if ((middleValue == middleIndex) && (middleIndex == 0)) {\n        return middleIndex;\n      } else if ((middleValue == middleIndex) && (array[middleIndex - 1] < (middleIndex - 1))) {\n        return middleIndex;\n      } else {\n        rightIndex = middleIndex - 1;\n      }\n    }\n\n    return -1;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    Utils.assertTrue(\n      new Program().indexEqualsValue(new int[] {-5, -3, 0, 3, 4, 5, 9}) == 3\n    );\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    Utils.assertTrue(\n      new Program().indexEqualsValue(new int[] {-5, -3, 0, 3, 4, 5, 9}) == 3\n    );\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function indexEqualsValue(array) {\n  // Write your code here.\n}\n\n// Do not edit the line below.\nexports.indexEqualsValue = indexEqualsValue;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(1) space - where n is the length of the input array\nfunction indexEqualsValue(array) {\n  for (let index = 0; index < array.length; index++) {\n    const value = array[index];\n    if (index === value) {\n      return index;\n    }\n  }\n\n  return -1;\n}\n\nexports.indexEqualsValue = indexEqualsValue;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(log(n)) time | O(log(n)) space - where n is the length of the input array\nfunction indexEqualsValue(array) {\n  return indexEqualsValueHelper(array, 0, array.length - 1);\n}\n\nfunction indexEqualsValueHelper(array, leftIndex, rightIndex) {\n  if (leftIndex > rightIndex) return -1;\n\n  const middleIndex = leftIndex + Math.floor((rightIndex - leftIndex) / 2);\n  const middleValue = array[middleIndex];\n\n  if (middleValue < middleIndex) {\n    return indexEqualsValueHelper(array, middleIndex + 1, rightIndex);\n  } else if (middleValue === middleIndex && middleIndex === 0) {\n    return middleIndex;\n  } else if (middleValue === middleIndex && array[middleIndex - 1] < middleIndex - 1) {\n    return middleIndex;\n  } else {\n    return indexEqualsValueHelper(array, leftIndex, middleIndex - 1);\n  }\n}\n\nexports.indexEqualsValue = indexEqualsValue;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(log(n)) time | O(1) space - where n is the length of the input array\nfunction indexEqualsValue(array) {\n  let leftIndex = 0;\n  let rightIndex = array.length - 1;\n\n  while (leftIndex <= rightIndex) {\n    const middleIndex = leftIndex + Math.floor((rightIndex - leftIndex) / 2);\n    const middleValue = array[middleIndex];\n\n    if (middleValue < middleIndex) {\n      leftIndex = middleIndex + 1;\n    } else if (middleValue === middleIndex && middleIndex === 0) {\n      return middleIndex;\n    } else if (middleValue === middleIndex && array[middleIndex - 1] < middleIndex - 1) {\n      return middleIndex;\n    } else {\n      rightIndex = middleIndex - 1;\n    }\n  }\n\n  return -1;\n}\n\nexports.indexEqualsValue = indexEqualsValue;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const array = [-5, -3, 0, 3, 4, 5, 9];\n  const expected = 3;\n  const actual = program.indexEqualsValue(array);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const array = [-5, -3, 0, 3, 4, 5, 9];\n  const expected = 3;\n  const actual = program.indexEqualsValue(array);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun indexEqualsValue(array: List<Int>): Int {\n    // Write your code here.\n    return -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n) time | O(1) space - where n is the length of the input array\nfun indexEqualsValue(array: List<Int>): Int {\n    for (index in 0 until array.size) {\n        val value = array[index]\n        if (index == value) return index\n    }\n    return -1\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(log(n)) time | O(log(n)) space - where n is the length of the input array\nfun indexEqualsValue(array: List<Int>): Int {\n    return indexEqualsValueHelper(array, 0, array.size - 1)\n}\n\nfun indexEqualsValueHelper(array: List<Int>, leftIndex: Int, rightIndex: Int): Int {\n    if (leftIndex > rightIndex) return -1\n\n    val middleIndex = leftIndex + (rightIndex - leftIndex) / 2\n    val middleValue = array[middleIndex]\n\n    if (middleValue < middleIndex) {\n        return indexEqualsValueHelper(array, middleIndex + 1, rightIndex)\n    } else if (middleValue == middleIndex && middleIndex == 0) {\n        return middleIndex\n    } else if (middleValue == middleIndex && array[middleIndex - 1] < middleIndex - 1) {\n        return middleIndex\n    } else {\n        return indexEqualsValueHelper(array, leftIndex, middleIndex - 1)\n    }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(log(n)) time | O(1) space - where n is the length of the input array\nfun indexEqualsValue(array: List<Int>): Int {\n    var leftIndex = 0\n    var rightIndex = array.size - 1\n\n    while (leftIndex <= rightIndex) {\n        val middleIndex = leftIndex + (rightIndex - leftIndex) / 2\n        val middleValue = array[middleIndex]\n\n        if (middleValue < middleIndex) {\n            leftIndex = middleIndex + 1\n        } else if (middleValue == middleIndex && middleIndex == 0) {\n            return middleIndex\n        } else if (middleValue == middleIndex && array[middleIndex - 1] < middleIndex - 1) {\n            return middleIndex\n        } else {\n            rightIndex = middleIndex - 1\n        }\n    }\n\n    return -1\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.indexEqualsValue\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(-5, -3, 0, 3, 4, 5, 9)\n        val expected = 3\n        val output = indexEqualsValue(input)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.indexEqualsValue\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(-5, -3, 0, 3, 4, 5, 9)\n        val expected = 3\n        val output = indexEqualsValue(input)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def indexEqualsValue(array):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(1) space - where n is the length of the input array\ndef indexEqualsValue(array):\n    for index in range(len(array)):\n        value = array[index]\n        if index == value:\n            return index\n\n    return -1\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(log(n)) time | O(log(n)) space - where n is the length of the input array\ndef indexEqualsValue(array):\n    return indexEqualsValueHelper(array, 0, len(array) - 1)\n\n\ndef indexEqualsValueHelper(array, leftIndex, rightIndex):\n    if leftIndex > rightIndex:\n        return -1\n\n    middleIndex = leftIndex + (rightIndex - leftIndex) // 2\n    middleValue = array[middleIndex]\n\n    if middleValue < middleIndex:\n        return indexEqualsValueHelper(array, middleIndex + 1, rightIndex)\n    elif middleValue == middleIndex and middleIndex == 0:\n        return middleIndex\n    elif middleValue == middleIndex and array[middleIndex - 1] < middleIndex - 1:\n        return middleIndex\n    else:\n        return indexEqualsValueHelper(array, leftIndex, middleIndex - 1)\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(log(n)) time | O(1) space - where n is the length of the input array\ndef indexEqualsValue(array):\n    leftIndex = 0\n    rightIndex = len(array) - 1\n\n    while leftIndex <= rightIndex:\n        middleIndex = leftIndex + (rightIndex - leftIndex) // 2\n        middleValue = array[middleIndex]\n\n        if middleValue < middleIndex:\n            leftIndex = middleIndex + 1\n        elif middleValue == middleIndex and middleIndex == 0:\n            return middleIndex\n        elif middleValue == middleIndex and array[middleIndex - 1] < middleIndex - 1:\n            return middleIndex\n        else:\n            rightIndex = middleIndex - 1\n\n    return -1\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        array = [-5, -3, 0, 3, 4, 5, 9]\n        expected = 3\n        actual = program.indexEqualsValue(array)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        array = [-5, -3, 0, 3, 4, 5, 9]\n        expected = 3\n        actual = program.indexEqualsValue(array)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  def indexEqualsValue(array)\n    # Write your code here.\n    return -1\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def indexEqualsValue(array)\n    # Write your code here.\n    return -1\n  end\nend\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def indexEqualsValue(array)\n    # Write your code here.\n    return -1\n  end\nend\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def indexEqualsValue(array)\n    # Write your code here.\n    return -1\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.indexEqualsValue\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.indexEqualsValue\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func indexEqualsValue(_ array: [Int]) -> Int {\n    // Write your code here.\n    return -1\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(1) space - where n is the length of the input array\n  func indexEqualsValue(_ array: [Int]) -> Int {\n    for (index, value) in array.enumerated() {\n      if index == value {\n        return index\n      }\n    }\n    return -1\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(log(n)) time | O(log(n)) space - where n is the length of the input array\n  func indexEqualsValue(_ array: [Int]) -> Int {\n    return indexEqualsValueHelper(array, 0, array.count - 1)\n  }\n\n  func indexEqualsValueHelper(_ array: [Int], _ leftIndex: Int, _ rightIndex: Int) -> Int {\n    if leftIndex > rightIndex {\n      return -1\n    }\n\n    var middleIndex = leftIndex + (rightIndex - leftIndex) / 2\n    var middleValue = array[middleIndex]\n    if middleValue < middleIndex {\n      return indexEqualsValueHelper(array, middleIndex + 1, rightIndex)\n    } else if middleValue == middleIndex, middleIndex == 0 {\n      return middleIndex\n    } else if middleValue == middleIndex, array[middleIndex - 1] < middleIndex - 1 {\n      return middleIndex\n    } else {\n      return indexEqualsValueHelper(array, leftIndex, middleIndex - 1)\n    }\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(log(n)) time | O(1) space - where n is the length of the input array\n  func indexEqualsValue(_ array: [Int]) -> Int {\n    var leftIndex = 0\n    var rightIndex = array.count - 1\n\n    while leftIndex <= rightIndex {\n      var middleIndex = leftIndex + (rightIndex - leftIndex) / 2\n      var middleValue = array[middleIndex]\n\n      if middleValue < middleIndex {\n        leftIndex = middleIndex + 1\n      } else if middleValue == middleIndex, middleIndex == 0 {\n        return middleIndex\n      } else if middleValue == middleIndex, array[middleIndex - 1] < middleIndex - 1 {\n        return middleIndex\n      } else {\n        rightIndex = middleIndex - 1\n      }\n    }\n    return -1\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var input = [-5, -3, 0, 3, 4, 5, 9]\n      var expected = 3\n      var actual = Program().indexEqualsValue(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var input = [-5, -3, 0, 3, 4, 5, 9]\n      var expected = 3\n      var actual = Program().indexEqualsValue(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function indexEqualsValue(array: number[]) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(1) space - where n is the length of the input array\nexport function indexEqualsValue(array: number[]) {\n  for (let index = 0; index < array.length; index++) {\n    const value = array[index];\n    if (index === value) {\n      return index;\n    }\n  }\n\n  return -1;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(log(n)) time | O(log(n)) space - where n is the length of the input array\nexport function indexEqualsValue(array: number[]) {\n  return indexEqualsValueHelper(array, 0, array.length - 1);\n}\n\nfunction indexEqualsValueHelper(array: number[], leftIndex: number, rightIndex: number): number {\n  if (leftIndex > rightIndex) return -1;\n\n  const middleIndex = leftIndex + Math.floor((rightIndex - leftIndex) / 2);\n  const middleValue = array[middleIndex];\n\n  if (middleValue < middleIndex) {\n    return indexEqualsValueHelper(array, middleIndex + 1, rightIndex);\n  } else if (middleValue === middleIndex && middleIndex === 0) {\n    return middleIndex;\n  } else if (middleValue === middleIndex && array[middleIndex - 1] < middleIndex - 1) {\n    return middleIndex;\n  } else {\n    return indexEqualsValueHelper(array, leftIndex, middleIndex - 1);\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(log(n)) time | O(1) space - where n is the length of the input array\nexport function indexEqualsValue(array: number[]) {\n  let leftIndex = 0;\n  let rightIndex = array.length - 1;\n\n  while (leftIndex <= rightIndex) {\n    const middleIndex = leftIndex + Math.floor((rightIndex - leftIndex) / 2);\n    const middleValue = array[middleIndex];\n\n    if (middleValue < middleIndex) {\n      leftIndex = middleIndex + 1;\n    } else if (middleValue === middleIndex && middleIndex === 0) {\n      return middleIndex;\n    } else if (middleValue === middleIndex && array[middleIndex - 1] < middleIndex - 1) {\n      return middleIndex;\n    } else {\n      rightIndex = middleIndex - 1;\n    }\n  }\n\n  return -1;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const array = [-5, -3, 0, 3, 4, 5, 9];\n  const expected = 3;\n  const actual = program.indexEqualsValue(array);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const array = [-5, -3, 0, 3, 4, 5, 9];\n  const expected = 3;\n  const actual = program.indexEqualsValue(array);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "array",
+            "example": [
+                -5,
+                -3,
+                0,
+                3,
+                4,
+                5,
+                9
+            ],
+            "schema": {
+                "items": {
+                    "type": "integer"
+                },
+                "type": "array",
+                "uniqueItems": true
+            }
+        }
+    ],
+    "tests": [
+        {
+            "array": [
+                -5,
+                -3,
+                0,
+                3,
+                4,
+                5,
+                9
+            ]
+        },
+        {
+            "array": [
+                -12,
+                1,
+                2,
+                3,
+                12
+            ]
+        },
+        {
+            "array": [
+                -5,
+                -4,
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                3,
+                5,
+                6,
+                7,
+                11,
+                12,
+                14,
+                19,
+                20
+            ]
+        },
+        {
+            "array": [
+                -3,
+                -1,
+                1,
+                3,
+                5,
+                7,
+                9
+            ]
+        },
+        {
+            "array": [
+                -5,
+                -4,
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3,
+                4,
+                5
+            ]
+        },
+        {
+            "array": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ]
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ]
+        },
+        {
+            "array": [
+                0
+            ]
+        },
+        {
+            "array": [
+                0,
+                1
+            ]
+        },
+        {
+            "array": [
+                1,
+                2
+            ]
+        },
+        {
+            "array": [
+                -50,
+                1,
+                2,
+                3,
+                4
+            ]
+        },
+        {
+            "array": [
+                -40,
+                -20,
+                0,
+                2,
+                4,
+                6,
+                8,
+                10
+            ]
+        },
+        {
+            "array": [
+                -1000,
+                0,
+                1,
+                5000,
+                5001,
+                5002,
+                5005
+            ]
+        },
+        {
+            "array": [
+                -1000,
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                5000,
+                5001,
+                5002,
+                5005
+            ]
+        },
+        {
+            "array": [
+                -999,
+                0,
+                2,
+                500,
+                1000,
+                1500,
+                2000,
+                2500,
+                3000,
+                3500
+            ]
+        },
+        {
+            "array": [
+                -9,
+                -8,
+                -7,
+                -6,
+                -5,
+                -4,
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                18
+            ]
+        },
+        {
+            "array": []
+        }
+    ],
+    "jsonTests": [
+        {
+            "array": [
+                -5,
+                -3,
+                0,
+                3,
+                4,
+                5,
+                9
+            ]
+        },
+        {
+            "array": [
+                -12,
+                1,
+                2,
+                3,
+                12
+            ]
+        },
+        {
+            "array": [
+                -5,
+                -4,
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                3,
+                5,
+                6,
+                7,
+                11,
+                12,
+                14,
+                19,
+                20
+            ]
+        },
+        {
+            "array": [
+                -3,
+                -1,
+                1,
+                3,
+                5,
+                7,
+                9
+            ]
+        },
+        {
+            "array": [
+                -5,
+                -4,
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3,
+                4,
+                5
+            ]
+        },
+        {
+            "array": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ]
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ]
+        },
+        {
+            "array": [
+                0
+            ]
+        },
+        {
+            "array": [
+                0,
+                1
+            ]
+        },
+        {
+            "array": [
+                1,
+                2
+            ]
+        },
+        {
+            "array": [
+                -50,
+                1,
+                2,
+                3,
+                4
+            ]
+        },
+        {
+            "array": [
+                -40,
+                -20,
+                0,
+                2,
+                4,
+                6,
+                8,
+                10
+            ]
+        },
+        {
+            "array": [
+                -1000,
+                0,
+                1,
+                5000,
+                5001,
+                5002,
+                5005
+            ]
+        },
+        {
+            "array": [
+                -1000,
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+                5000,
+                5001,
+                5002,
+                5005
+            ]
+        },
+        {
+            "array": [
+                -999,
+                0,
+                2,
+                500,
+                1000,
+                1500,
+                2000,
+                2500,
+                3000,
+                3500
+            ]
+        },
+        {
+            "array": [
+                -9,
+                -8,
+                -7,
+                -6,
+                -5,
+                -4,
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                18
+            ]
+        },
+        {
+            "array": []
+        }
+    ],
+    "changelog": []
+}

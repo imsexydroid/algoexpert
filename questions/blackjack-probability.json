@@ -1,0 +1,324 @@
+{
+    "uid": "blackjack-probability",
+    "testStrategy": "JSON",
+    "name": "Blackjack Probability",
+    "version": 0,
+    "releaseDate": "2023-06-02T00:00:00Z",
+    "category": "Recursion",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 1742,
+        "failureCount": 245
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "831685307",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 929
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    In the game of Blackjack, the dealer must draw cards until the sum of the\n    values of their cards is greater than or equal to a\n    <span>target</span> value minus 4. For example, traditional Blackjack uses a\n    <span>target</span> value of 21, so the dealer must draw cards until their\n    total is greater than or equal to 17, at which point they stop drawing cards\n    (they \"stand\"). If the dealer draws a card that brings their total above the\n    <span>target</span> (above 21 in traditional Blackjack), they lose (they\n    \"bust\").\n  </p>\n  <p>\n    Naturally, when a dealer is drawing cards, they can either end up standing\n    or busting, and this is entirely up to the luck of their draw.\n  </p>\n\n  <p>\n    Write a function that takes in a <span>target</span> value as well as a\n    dealer's <span>startingHand</span> value and returns the probability that\n    the dealer will bust (go over the <span>target</span> value before\n    standing). The <span>target</span> value will always be a positive integer,\n    and the <span>startingHand</span> value will always be a positive integer\n    that's smaller than or equal to the <span>target</span> value.\n  </p>\n\n  <p>\n    For simplicity, you can assume that the dealer has an infinite deck of cards\n    and that each card has a value between 1 and 10 inclusive. The likelihood of\n    drawing a card of any value is always the same, regardless of previous\n    draws.\n  </p>\n\n  <p>\n    Your solution should be rounded to 3 decimal places and to the nearest\n    value. For example, a probability of <span>0.314159</span> would be rounded\n    to <span>0.314</span>, while a probability of <span>0.1337</span> would be\n    rounded to <span>0.134</span>.\n  </p>\n  <h3>Sample Input</h3>\n  <pre>\n<span class=\"CodeEditor-promptParameter\">target</span> = 21\n<span class=\"CodeEditor-promptParameter\">startingHand</span> = 15\n</pre>\n  <h3>Sample Output</h3>\n  <pre>\n0.45 <span class=\"CodeEditor-promptComment\">// Drawing a 2-6 would result in the dealer standing.</span>\n<span class=\"CodeEditor-promptComment\">// Drawing a 7-10 would result in the dealer busting.</span>\n<span class=\"CodeEditor-promptComment\">// Drawing a 1 would result in a 16, meaning the dealer keeps drawing.</span>\n<span class=\"CodeEditor-promptComment\">// Drawing with a 16 results in a 0.5 probability of busting (6-10 all result in busts).</span>\n<span class=\"CodeEditor-promptComment\">// The overall probability of busting is 0.4 + (0.1 * 0.5)</span>\n<span class=\"CodeEditor-promptComment\">// (the probability of busting on the first draw + the probability of busting on the second).</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  Try first thinking about a simple case. Given a <span>target</span> value of\n  21 and a <span>startingHand</span> of 15, how would you calculate the\n  probability of busting? And how would that probability change if the\n  <span>startingHand</span> changes to 14?\n</p>\n",
+        "\n<p>\n  The probability of busting from any given <span>startingHand</span> is\n  <span>(0.1 * p(startingHand + 1)) + ... + (0.1 * p(startingHand + 10))</span>.\n</p>\n",
+        "\n<p>\n  Given the formula for the probability of busting, there will be a lot of\n  repeated calculations, particularly for large <span>target</span> values\n  with a low <span>startingHand</span>. Can you use memoization to prevent\n  recalculating these values?\n</p>"
+    ],
+    "spaceTime": "O(t - s) time | O(t - s) space - where t is the target, and s is the starting hand",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nfloat blackjackProbability(int target, int startingHand) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <cmath>\n#include <unordered_map>\n\nusing namespace std;\n\nfloat calculateProbability(\n  int target, int currentHand, unordered_map<int, float>& memo\n);\n\n// O(t - s) time | O(t - s) space - where t is the target, and s is the\n// starting hand\nfloat blackjackProbability(int target, int startingHand) {\n  unordered_map<int, float> memo;\n  return round(calculateProbability(target, startingHand, memo) * 1000) / 1000;\n}\n\nfloat calculateProbability(\n  int target, int currentHand, unordered_map<int, float>& memo\n) {\n  if (memo.find(currentHand) != memo.end()) {\n    return memo[currentHand];\n  }\n\n  if (currentHand > target) {\n    return 1;\n  }\n\n  if (currentHand + 4 >= target) {\n    return 0;\n  }\n\n  float totalProbability = 0;\n  for (int drawnCard = 1; drawnCard <= 10; drawnCard++) {\n    totalProbability +=\n      0.1 * calculateProbability(target, currentHand + drawnCard, memo);\n  }\n\n  memo[currentHand] = totalProbability;\n  return totalProbability;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      int target = 21;\n      int startingHand = 15;\n      float expected = 0.45;\n      float actual = blackjackProbability(target, startingHand);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      int target = 21;\n      int startingHand = 15;\n      float expected = 0.45;\n      float actual = blackjackProbability(target, startingHand);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public float BlackjackProbability(int target, int startingHand) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(t - s) time | O(t - s) space - where t is the target, and s is the\n  // starting hand\n  public double BlackjackProbability(int target, int startingHand) {\n    Dictionary<int, double> memo = new Dictionary<int, double>();\n    return Math.Round(\n             calculateProbability(target, startingHand, memo) * 1000f\n           ) /\n           1000f;\n  }\n\n  private double calculateProbability(\n    int target, int currentHand, Dictionary<int, double> memo\n  ) {\n    if (memo.ContainsKey(currentHand)) {\n      return memo[currentHand];\n    }\n    if (currentHand > target) {\n      return 1;\n    }\n    if (currentHand + 4 >= target) {\n      return 0;\n    }\n\n    double totalProbability = 0;\n    for (int drawnCard = 1; drawnCard <= 10; drawnCard++) {\n      totalProbability +=\n        .1 * calculateProbability(target, currentHand + drawnCard, memo);\n    }\n\n    memo[currentHand] = totalProbability;\n    return totalProbability;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int target = 21;\n    int startingHand = 15;\n    double expected = 0.45;\n    double actual = new Program().BlackjackProbability(target, startingHand);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int target = 21;\n    int startingHand = 15;\n    double expected = 0.45;\n    double actual = new Program().BlackjackProbability(target, startingHand);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc BlackjackProbability(target int, startingHand int) float64 {\n\t// Write your code here.\n\treturn -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport \"math\"\n\n// O(t - s) time | O(t - s) space - where t is the target, and s is the\n// starting hand\nfunc BlackjackProbability(target int, startingHand int) float64 {\n\tmemo := make(map[int]float64)\n\treturn math.Round(calculateProbability(startingHand, target, memo)*1000) / 1000\n}\n\nfunc calculateProbability(currentHand int, target int, memo map[int]float64) float64 {\n\tif val, ok := memo[currentHand]; ok {\n\t\treturn val\n\t}\n\tif currentHand > target {\n\t\treturn 1\n\t}\n\tif currentHand+4 >= target {\n\t\treturn 0\n\t}\n\n\ttotalProbability := 0.0\n\tfor drawnCard := 1; drawnCard <= 10; drawnCard++ {\n\t\ttotalProbability += 0.1 * calculateProbability(currentHand+drawnCard, target, memo)\n\t}\n\n\tmemo[currentHand] = totalProbability\n\treturn totalProbability\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\ttarget := 21\n\tstartingHand := 15\n\texpected := 0.45\n\tactual := BlackjackProbability(target, startingHand)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\ttarget := 21\n\tstartingHand := 15\n\texpected := 0.45\n\tactual := BlackjackProbability(target, startingHand)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public float blackjackProbability(int target, int startingHand) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(t - s) time | O(t - s) space - where t is the target, and s is the\n  // starting hand\n  public float blackjackProbability(int target, int startingHand) {\n    HashMap<Integer, Float> memo = new HashMap<Integer, Float>();\n    return Math.round(\n             this.calculateProbability(target, startingHand, memo) * 1000f\n           )\n      / 1000f;\n  }\n\n  private float calculateProbability(\n    int target, int currentHand, HashMap<Integer, Float> memo\n  ) {\n    if (memo.containsKey(currentHand)) {\n      return memo.get(currentHand);\n    }\n    if (currentHand > target) {\n      return 1;\n    }\n    if (currentHand + 4 >= target) {\n      return 0;\n    }\n\n    float totalProbability = 0;\n    for (int drawnCard = 1; drawnCard <= 10; drawnCard++) {\n      totalProbability +=\n        .1 * calculateProbability(target, currentHand + drawnCard, memo);\n    }\n\n    memo.put(currentHand, totalProbability);\n    return totalProbability;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int target = 21;\n    int startingHand = 15;\n    float expected = 0.45f;\n    float actual = new Program().blackjackProbability(target, startingHand);\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int target = 21;\n    int startingHand = 15;\n    float expected = 0.45f;\n    float actual = new Program().blackjackProbability(target, startingHand);\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function blackjackProbability(target, startingHand) {\n  // Write your code here.\n  return -1;\n}\n\n// Do not edit the line below.\nexports.blackjackProbability = blackjackProbability;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(t - s) time | O(t - s) space - where t is the target, and s is the\n// starting hand\nfunction blackjackProbability(target, startingHand) {\n  const memo = {};\n  return parseFloat(calculateProbability(startingHand, target, memo).toFixed(3));\n}\n\nfunction calculateProbability(currentHand, target, memo) {\n  if (currentHand in memo) return memo[currentHand];\n  if (currentHand > target) return 1;\n  if (currentHand + 4 >= target) return 0;\n\n  let totalProbability = 0;\n  for (let drawnCard = 1; drawnCard <= 10; drawnCard++) {\n    totalProbability += 0.1 * calculateProbability(currentHand + drawnCard, target, memo);\n  }\n\n  memo[currentHand] = totalProbability;\n  return totalProbability;\n}\n\n// Do not edit the line below.\nexports.blackjackProbability = blackjackProbability;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const target = 21;\n  const startingHand = 15;\n  const expected = 0.45;\n  const actual = program.blackjackProbability(target, startingHand);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const target = 21;\n  const startingHand = 15;\n  const expected = 0.45;\n  const actual = program.blackjackProbability(target, startingHand);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun blackjackProbability(target: Int, startingHand: Int): Double {\n    // Write your code here.\n    return -1.0\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(t - s) time | O(t - s) space - where t is the target, and s is the\n// starting hand\nfun blackjackProbability(target: Int, startingHand: Int): Double {\n    val memo = mutableMapOf<Int, Double>()\n    return String.format(\"%.3f\", calculateProbability(startingHand, target, memo)).toDouble()\n}\n\nfun calculateProbability(currentHand: Int, target: Int, memo: MutableMap<Int, Double>): Double {\n    if (currentHand in memo) return memo[currentHand]!!\n    if (currentHand > target) return 1.0\n    if (currentHand + 4 >= target) return 0.0\n\n    var totalProbability = 0.0\n    for (drawnCard in 1 until 11) {\n        totalProbability += 0.1 * calculateProbability(currentHand + drawnCard, target, memo)\n    }\n\n    memo[currentHand] = totalProbability\n    return totalProbability\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.blackjackProbability\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val target = 21\n        val startingHand = 15\n        val expected = 0.45\n        val output = blackjackProbability(target, startingHand)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.blackjackProbability\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val target = 21\n        val startingHand = 15\n        val expected = 0.45\n        val output = blackjackProbability(target, startingHand)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def blackjackProbability(target, startingHand):\n    # Write your code here.\n    return -1\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(t - s) time | O(t - s) space - where t is the target, and s is the\n# starting hand\ndef blackjackProbability(target, startingHand):\n    memo = {}\n    return round(calculateProbability(startingHand, target, memo), 3)\n\n\ndef calculateProbability(currentHand, target, memo):\n    if currentHand in memo:\n        return memo[currentHand]\n    if currentHand > target:\n        return 1\n    if currentHand + 4 >= target:\n        return 0\n\n    totalProbability = 0\n    for drawnCard in range(1, 11):\n        totalProbability += 0.1 * calculateProbability(currentHand + drawnCard, target, memo)\n\n    memo[currentHand] = totalProbability\n    return totalProbability\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        target = 21\n        startingHand = 15\n        expected = 0.45\n        actual = program.blackjackProbability(target, startingHand)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        target = 21\n        startingHand = 15\n        expected = 0.45\n        actual = program.blackjackProbability(target, startingHand)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def blackjackProbability(target, startingHand)\n        # Write your code here.\n        return -1\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def blackjackProbability(target, startingHand)\n        # Write your code here.\n        return -1\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.blackjackProbability\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.blackjackProbability\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func blackjackProbability(_ target: Int, _ startingHand: Int) -> Double {\n    // Write your code here.\n    return -1\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(t - s) time | O(t - s) space - where t is the target, and s is the\n  // starting hand\n  func blackjackProbability(_ target: Int, _ startingHand: Int) -> Double {\n    var memo = [Int: Double]()\n    return (calculateProbability(currentHand: startingHand, target: target, memo: &memo) * 1000.0).rounded() / 1000\n  }\n\n  func calculateProbability(currentHand: Int, target: Int, memo: inout [Int: Double]) -> Double {\n    if let val = memo[currentHand] {\n      return val\n    }\n    if currentHand > target {\n      return 1\n    }\n    if currentHand + 4 >= target {\n      return 0\n    }\n\n    var totalProbability = 0.0\n    for drawnCard in 1 ... 10 {\n      totalProbability += 0.1 * calculateProbability(currentHand: currentHand + drawnCard, target: target, memo: &memo)\n    }\n\n    memo[currentHand] = totalProbability\n    return totalProbability\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var target = 21\n      var startingHand = 15\n      var expected = 0.45\n      var actual = Program().blackjackProbability(target, startingHand)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var target = 21\n      var startingHand = 15\n      var expected = 0.45\n      var actual = Program().blackjackProbability(target, startingHand)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function blackjackProbability(target: number, startingHand: number) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(t - s) time | O(t - s) space - where t is the target, and s is the\n// starting hand\nexport function blackjackProbability(target: number, startingHand: number) {\n  const memo: {[hand: number]: number} = {};\n  return parseFloat(calculateProbability(startingHand, target, memo).toFixed(3));\n}\n\nfunction calculateProbability(currentHand: number, target: number, memo: {[hand: number]: number}) {\n  if (currentHand in memo) return memo[currentHand];\n  if (currentHand > target) return 1;\n  if (currentHand + 4 >= target) return 0;\n\n  let totalProbability = 0;\n  for (let drawnCard = 1; drawnCard <= 10; drawnCard++) {\n    totalProbability += 0.1 * calculateProbability(currentHand + drawnCard, target, memo);\n  }\n\n  memo[currentHand] = totalProbability;\n  return totalProbability;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const target = 21;\n  const startingHand = 15;\n  const expected = 0.45;\n  const actual = program.blackjackProbability(target, startingHand);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const target = 21;\n  const startingHand = 15;\n  const expected = 0.45;\n  const actual = program.blackjackProbability(target, startingHand);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "target",
+            "example": 21,
+            "schema": {
+                "minimum": 1,
+                "type": "integer"
+            }
+        },
+        {
+            "name": "startingHand",
+            "example": 16,
+            "schema": {
+                "minimum": 1,
+                "type": "integer"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "startingHand": 16,
+            "target": 21
+        },
+        {
+            "startingHand": 21,
+            "target": 21
+        },
+        {
+            "startingHand": 20,
+            "target": 21
+        },
+        {
+            "startingHand": 17,
+            "target": 21
+        },
+        {
+            "startingHand": 15,
+            "target": 21
+        },
+        {
+            "startingHand": 12,
+            "target": 21
+        },
+        {
+            "startingHand": 5,
+            "target": 21
+        },
+        {
+            "startingHand": 1,
+            "target": 21
+        },
+        {
+            "startingHand": 95,
+            "target": 100
+        },
+        {
+            "startingHand": 90,
+            "target": 100
+        },
+        {
+            "startingHand": 20,
+            "target": 100
+        },
+        {
+            "startingHand": 100,
+            "target": 100
+        },
+        {
+            "startingHand": 1,
+            "target": 10
+        },
+        {
+            "startingHand": 3,
+            "target": 10
+        },
+        {
+            "startingHand": 3,
+            "target": 30
+        },
+        {
+            "startingHand": 7,
+            "target": 30
+        },
+        {
+            "startingHand": 15,
+            "target": 30
+        },
+        {
+            "startingHand": 25,
+            "target": 30
+        }
+    ],
+    "jsonTests": [
+        {
+            "startingHand": 16,
+            "target": 21
+        },
+        {
+            "startingHand": 21,
+            "target": 21
+        },
+        {
+            "startingHand": 20,
+            "target": 21
+        },
+        {
+            "startingHand": 17,
+            "target": 21
+        },
+        {
+            "startingHand": 15,
+            "target": 21
+        },
+        {
+            "startingHand": 12,
+            "target": 21
+        },
+        {
+            "startingHand": 5,
+            "target": 21
+        },
+        {
+            "startingHand": 1,
+            "target": 21
+        },
+        {
+            "startingHand": 95,
+            "target": 100
+        },
+        {
+            "startingHand": 90,
+            "target": 100
+        },
+        {
+            "startingHand": 20,
+            "target": 100
+        },
+        {
+            "startingHand": 100,
+            "target": 100
+        },
+        {
+            "startingHand": 1,
+            "target": 10
+        },
+        {
+            "startingHand": 3,
+            "target": 10
+        },
+        {
+            "startingHand": 3,
+            "target": 30
+        },
+        {
+            "startingHand": 7,
+            "target": 30
+        },
+        {
+            "startingHand": 15,
+            "target": 30
+        },
+        {
+            "startingHand": 25,
+            "target": 30
+        }
+    ],
+    "changelog": []
+}

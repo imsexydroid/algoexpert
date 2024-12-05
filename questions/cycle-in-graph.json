@@ -1,0 +1,664 @@
+{
+    "uid": "cycle-in-graph",
+    "testStrategy": "JSON",
+    "name": "Cycle In Graph",
+    "version": 0,
+    "releaseDate": "2021-01-19T00:00:00Z",
+    "category": "Graphs",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 19475,
+        "failureCount": 6355
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "499845145",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Tim Ruscica",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1940
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  You're given a list of <span>edges</span> representing an unweighted, directed\n  graph with at least one node. Write a function that returns a boolean\n  representing whether the given graph contains a cycle.\n</p>\n<p>\n  For the purpose of this question, a cycle is defined as any number of\n  vertices, including just one vertex, that are connected in a closed chain. A\n  cycle can also be defined as a chain of at least one vertex in which the first\n  vertex is the same as the last.\n</p>\n<p>\n  The given list is what's called an adjacency list, and it represents a graph.\n  The number of vertices in the graph is equal to the length of\n  <span>edges</span>, where each index <span>i</span> in\n  <span>edges</span> contains vertex <span>i</span>'s outbound edges, in no\n  particular order. Each individual edge is represented by a positive integer\n  that denotes an index (a destination vertex) in the list that this vertex is\n  connected to. Note that these edges are directed, meaning that you can only\n  travel from a particular vertex to its destination, not the other way around\n  (unless the destination vertex itself has an outbound edge to the original\n  vertex).\n</p>\n<p>\n  Also note that this graph may contain self-loops. A self-loop is an edge that\n  has the same destination and origin; in other words, it's an edge that\n  connects a vertex to itself. For the purpose of this question, a self-loop is\n  considered a cycle.\n</p>\n<p>\n  For a more detailed explanation, please refer to the Conceptual Overview\n  section of this question's video explanation.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">edges</span> = [\n  [1, 3],\n  [2, 3, 4],\n  [0],\n  [],\n  [2, 5],\n  [],\n]\n</pre>\n<h3>Sample Output</h3>\n<pre>\ntrue \n<span class=\"CodeEditor-promptComment\">// There are multiple cycles in this graph: </span>\n<span class=\"CodeEditor-promptComment\">// 1) 0 -> 1 -> 2 -> 0</span>\n<span class=\"CodeEditor-promptComment\">// 2) 0 -> 1 -> 4 -> 2 -> 0</span>\n<span class=\"CodeEditor-promptComment\">// 3) 1 -> 2 -> 0 -> 1</span>\n<span class=\"CodeEditor-promptComment\">// These are just 3 examples; there are more.</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\nThere are multiple ways to solve this problem, and they all make use of a depth-first-search traversal.\n</p>\n",
+        "\n<p>\nWhen traversing a graph using depth-first search, a back edge is an edge from a node to one of its ancestors in the depth-first-search tree, and a back edge denotes the presence of a cycle. How can you determine if a graph has any back edges?\n</p>\n",
+        "\n<p>\nTo find back edges, you'll need to keep track of which nodes you've already visited and which nodes are ancestors of the current node in the depth-first-search tree. There are a few ways to do this, but one approach is to recursively traverse the graph and to keep track of which nodes have been visited in general and which nodes have been visited in the current recursion stack; you can do so with two separate data structures. If you reach a node that has an edge to a node that's already in the recursion stack, then you've detected a back edge, and there's a cycle in the graph.\n</p>\n",
+        "\n<p>\nSimilar to the previous hint, you can also detect a back edge by performing a 3-color depth-first search. Each node is colored white to start; recursively traverse through the graph, coloring the current node grey and then calling the recursive traversal function on all of its neighbors. After traversing all the neighbors, color the current node black to signify that it's \"done.\" If you ever find an edge to a node that's grey, you've found a back edge, and there's a cycle in the graph.\n</p>"
+    ],
+    "spaceTime": "O(v + e) time | O(v) space - where v is the number of vertices and e is the number of edges in the graph",
+    "notes": "<div class=\"html\">\n<p class=\"CodeEditor-notesQuestion\">\n  Will the recursive calls of our algorithm affect its space complexity?\n</p>\n<p>\n  There will never be more than <span>v</span> concurrent recursive calls on the\n  call stack, since there are <span>v</span> vertices in the graph and since our\n  algorithm naturally stops at cycles.\n</p>\n<p>\n  Thus, the recursive calls won't change the <span>O(v)</span> space complexity\n  of our algorithm.\n</p>\n</div>",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\nusing namespace std;\n\nbool cycleInGraph(vector<vector<int>> edges) {\n  // Write your code here.\n  return false;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <vector>\nusing namespace std;\n\nbool isNodeInCycle(\n  int node,\n  vector<vector<int>>& edges,\n  vector<bool>& visited,\n  vector<bool>& currentlyInStack\n);\n\n// O(v + e) time | O(v) space - where v is the number of\n// vertices and e is the number of edges in the graph\nbool cycleInGraph(vector<vector<int>> edges) {\n  int numberOfNodes = edges.size();\n  vector<bool> visited(numberOfNodes, false);\n  vector<bool> currentlyInStack(numberOfNodes, false);\n\n  for (int node = 0; node < numberOfNodes; node++) {\n    if (visited[node]) continue;\n\n    bool containsCycle = isNodeInCycle(node, edges, visited, currentlyInStack);\n    if (containsCycle) return true;\n  }\n\n  return false;\n}\n\nbool isNodeInCycle(\n  int node,\n  vector<vector<int>>& edges,\n  vector<bool>& visited,\n  vector<bool>& currentlyInStack\n) {\n  visited[node] = true;\n  currentlyInStack[node] = true;\n\n  auto neighbors = edges[node];\n  for (auto neighbor : neighbors) {\n    if (!visited[neighbor]) {\n      bool containsCycle =\n        isNodeInCycle(neighbor, edges, visited, currentlyInStack);\n      if (containsCycle) return true;\n    } else if (currentlyInStack[neighbor]) {\n      return true;\n    }\n  }\n\n  currentlyInStack[node] = false;\n  return false;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <vector>\nusing namespace std;\n\nbool traverseAndColorNodes(\n  int node, vector<vector<int>>& edges, vector<int>& colors\n);\nint WHITE = 0;\nint GREY = 1;\nint BLACK = 2;\n\n// O(v + e) time | O(v) space - where v is the number of\n// vertices and e is the number of edges in the graph\nbool cycleInGraph(vector<vector<int>> edges) {\n  int numberOfNodes = edges.size();\n  vector<int> colors(numberOfNodes, WHITE);\n\n  for (int node = 0; node < numberOfNodes; node++) {\n    if (colors[node] != WHITE) continue;\n\n    bool containsCycle = traverseAndColorNodes(node, edges, colors);\n    if (containsCycle) return true;\n  }\n\n  return false;\n}\n\nbool traverseAndColorNodes(\n  int node, vector<vector<int>>& edges, vector<int>& colors\n) {\n  colors[node] = GREY;\n\n  auto neighbors = edges[node];\n  for (auto neighbor : neighbors) {\n    int neighborColor = colors[neighbor];\n\n    if (neighborColor == GREY) return true;\n\n    if (neighborColor == BLACK) continue;\n\n    bool containsCycle = traverseAndColorNodes(neighbor, edges, colors);\n    if (containsCycle) return true;\n  }\n\n  colors[node] = BLACK;\n  return false;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> input = {{1, 3}, {2, 3, 4}, {0}, {}, {2, 5}, {}};\n      auto expected = true;\n      auto actual = cycleInGraph(input);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> input = {{1, 3}, {2, 3, 4}, {0}, {}, {2, 5}, {}};\n      auto expected = true;\n      auto actual = cycleInGraph(input);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public bool CycleInGraph(int[][] edges) {\n    // Write your code here.\n    return false;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(v + e) time | O(v) space - where v is the number of\n  // vertices and e is the number of edges in the graph\n  public bool CycleInGraph(int[][] edges) {\n    int numberOfNodes = edges.Length;\n    bool[] visited = new bool[numberOfNodes];\n    bool[] currentlyInStack = new bool[numberOfNodes];\n    Array.Fill(visited, false);\n    Array.Fill(currentlyInStack, false);\n\n    for (int node = 0; node < numberOfNodes; node++) {\n      if (visited[node]) {\n        continue;\n      }\n\n      bool containsCycle =\n        isNodeInCycle(node, edges, visited, currentlyInStack);\n      if (containsCycle) {\n        return true;\n      }\n    }\n\n    return false;\n  }\n\n  public bool isNodeInCycle(\n    int node, int[][] edges, bool[] visited, bool[] currentlyInStack\n  ) {\n    visited[node] = true;\n    currentlyInStack[node] = true;\n\n    bool containsCycle = false;\n    int[] neighbors = edges[node];\n    foreach (var neighbor in neighbors) {\n      if (!visited[neighbor]) {\n        containsCycle =\n          isNodeInCycle(neighbor, edges, visited, currentlyInStack);\n      }\n      if (containsCycle) {\n        return true;\n      } else if (currentlyInStack[neighbor]) {\n        return true;\n      }\n    }\n\n    currentlyInStack[node] = false;\n    return false;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  int WHITE = 0;\n  int GREY = 1;\n  int BLACK = 3;\n\n  // O(v + e) time | O(v) space - where v is the number of\n  // vertices and e is the number of edges in the graph\n  public bool CycleInGraph(int[][] edges) {\n    int numberOfNodes = edges.Length;\n    int[] colors = new int[numberOfNodes];\n    Array.Fill(colors, WHITE);\n\n    for (int node = 0; node < numberOfNodes; node++) {\n      if (colors[node] != WHITE) continue;\n\n      bool containsCycle = traverseAndColorNodes(node, edges, colors);\n      if (containsCycle) return true;\n    }\n\n    return false;\n  }\n\n  public bool traverseAndColorNodes(int node, int[][] edges, int[] colors) {\n    colors[node] = GREY;\n\n    int[] neighbors = edges[node];\n    foreach (var neighbor in neighbors) {\n      int neighborColor = colors[neighbor];\n\n      if (neighborColor == GREY) {\n        return true;\n      }\n\n      if (neighborColor == BLACK) {\n        continue;\n      }\n\n      bool containsCycle = traverseAndColorNodes(neighbor, edges, colors);\n      if (containsCycle) {\n        return true;\n      }\n    }\n\n    colors[node] = BLACK;\n    return false;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[][] input = new int[][] {\n      new int[] { 1, 3 },\n      new int[] { 2, 3, 4 },\n      new int[] { 0 },\n      new int[] {},\n      new int[] { 2, 5 },\n      new int[] {}\n    };\n    bool expected = true;\n    var actual = new Program().CycleInGraph(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[][] input = new int[][] {\n      new int[] { 1, 3 },\n      new int[] { 2, 3, 4 },\n      new int[] { 0 },\n      new int[] {},\n      new int[] { 2, 5 },\n      new int[] {}\n    };\n    bool expected = true;\n    var actual = new Program().CycleInGraph(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc CycleInGraph(edges [][]int) bool {\n\t// Write your code here.\n\treturn false\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(v + e) time | O(v) space - where v is the number of\n// vertices and e is the number of edges in the graph\nfunc CycleInGraph(edges [][]int) bool {\n\tnumberOfNodes := len(edges)\n\tvisited := make([]bool, len(edges))\n\tcurrentlyInStack := make([]bool, len(edges))\n\n\tfor node := 0; node < numberOfNodes; node++ {\n\t\tif visited[node] {\n\t\t\tcontinue\n\t\t}\n\n\t\tcontainsCycle := isNodeInCycle(node, edges, visited, currentlyInStack)\n\t\tif containsCycle {\n\t\t\treturn true\n\t\t}\n\t}\n\treturn false\n}\n\nfunc isNodeInCycle(node int, edges [][]int, visited []bool, currentlyInStack []bool) bool {\n\tvisited[node] = true\n\tcurrentlyInStack[node] = true\n\n\tneighbors := edges[node]\n\tfor _, neighbor := range neighbors {\n\t\tif !visited[neighbor] {\n\t\t\tcontainsCycle := isNodeInCycle(neighbor, edges, visited, currentlyInStack)\n\t\t\tif containsCycle {\n\t\t\t\treturn true\n\t\t\t}\n\t\t} else if currentlyInStack[neighbor] {\n\t\t\treturn true\n\t\t}\n\t}\n\n\tcurrentlyInStack[node] = false\n\treturn false\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\ntype Color int\n\nconst (\n\tWhite Color = 0\n\tGrey  Color = 1\n\tBlack Color = 2\n)\n\n// O(v + e) time | O(v) space - where v is the number of\n// vertices and e is the number of edges in the graph\nfunc CycleInGraph(edges [][]int) bool {\n\tnumberOfNodes := len(edges)\n\tcolors := make([]Color, len(edges))\n\n\tfor node := 0; node < numberOfNodes; node++ {\n\t\tif colors[node] != White {\n\t\t\tcontinue\n\t\t}\n\n\t\tcontainsCycle := traverseAndColorNodes(node, edges, colors)\n\t\tif containsCycle {\n\t\t\treturn true\n\t\t}\n\t}\n\treturn false\n}\n\nfunc traverseAndColorNodes(node int, edges [][]int, colors []Color) bool {\n\tcolors[node] = Grey\n\n\tneighbors := edges[node]\n\tfor _, neighbor := range neighbors {\n\t\tneighborColor := colors[neighbor]\n\n\t\tif neighborColor == Grey {\n\t\t\treturn true\n\t\t}\n\n\t\tif neighborColor == Black {\n\t\t\tcontinue\n\t\t}\n\n\t\tcontainsCycle := traverseAndColorNodes(neighbor, edges, colors)\n\t\tif containsCycle {\n\t\t\treturn true\n\t\t}\n\t}\n\n\tcolors[node] = Black\n\treturn false\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := [][]int{\n\t\t{1, 3},\n\t\t{2, 3, 4},\n\t\t{0},\n\t\t{},\n\t\t{2, 5},\n\t\t{},\n\t}\n\texpected := true\n\tactual := CycleInGraph(input)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := [][]int{\n\t\t{1, 3},\n\t\t{2, 3, 4},\n\t\t{0},\n\t\t{},\n\t\t{2, 5},\n\t\t{},\n\t}\n\texpected := true\n\tactual := CycleInGraph(input)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public boolean cycleInGraph(int[][] edges) {\n    // Write your code here.\n    return false;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(v + e) time | O(v) space - where v is the number of\n  // vertices and e is the number of edges in the graph\n  public boolean cycleInGraph(int[][] edges) {\n    int numberOfNodes = edges.length;\n    boolean[] visited = new boolean[numberOfNodes];\n    boolean[] currentlyInStack = new boolean[numberOfNodes];\n    Arrays.fill(visited, false);\n    Arrays.fill(currentlyInStack, false);\n\n    for (int node = 0; node < numberOfNodes; node++) {\n      if (visited[node]) {\n        continue;\n      }\n\n      boolean containsCycle =\n        isNodeInCycle(node, edges, visited, currentlyInStack);\n      if (containsCycle) {\n        return true;\n      }\n    }\n\n    return false;\n  }\n\n  public boolean isNodeInCycle(\n    int node, int[][] edges, boolean[] visited, boolean[] currentlyInStack\n  ) {\n    visited[node] = true;\n    currentlyInStack[node] = true;\n\n    boolean containsCycle = false;\n    int[] neighbors = edges[node];\n    for (int neighbor : neighbors) {\n      if (!visited[neighbor]) {\n        containsCycle =\n          isNodeInCycle(neighbor, edges, visited, currentlyInStack);\n      }\n      if (containsCycle) {\n        return true;\n      } else if (currentlyInStack[neighbor]) {\n        return true;\n      }\n    }\n\n    currentlyInStack[node] = false;\n    return false;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  public int WHITE = 0;\n  public int GREY = 1;\n  public int BLACK = 3;\n\n  // O(v + e) time | O(v) space - where v is the number of\n  // vertices and e is the number of edges in the graph\n  public boolean cycleInGraph(int[][] edges) {\n    int numberOfNodes = edges.length;\n    int[] colors = new int[numberOfNodes];\n    Arrays.fill(colors, WHITE);\n\n    for (int node = 0; node < numberOfNodes; node++) {\n      if (colors[node] != WHITE) continue;\n\n      boolean containsCycle = traverseAndColorNodes(node, edges, colors);\n      if (containsCycle) return true;\n    }\n\n    return false;\n  }\n\n  public boolean traverseAndColorNodes(int node, int[][] edges, int[] colors) {\n    colors[node] = GREY;\n\n    int[] neighbors = edges[node];\n    for (int neighbor : neighbors) {\n      int neighborColor = colors[neighbor];\n\n      if (neighborColor == GREY) {\n        return true;\n      }\n\n      if (neighborColor == BLACK) {\n        continue;\n      }\n\n      boolean containsCycle = traverseAndColorNodes(neighbor, edges, colors);\n      if (containsCycle) {\n        return true;\n      }\n    }\n\n    colors[node] = BLACK;\n    return false;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[][] input = new int[][] {{1, 3}, {2, 3, 4}, {0}, {}, {2, 5}, {}};\n    boolean expected = true;\n    var actual = new Program().cycleInGraph(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[][] input = new int[][] {{1, 3}, {2, 3, 4}, {0}, {}, {2, 5}, {}};\n    boolean expected = true;\n    var actual = new Program().cycleInGraph(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function cycleInGraph(edges) {\n  // Write your code here.\n  return false;\n}\n\n// Do not edit the line below.\nexports.cycleInGraph = cycleInGraph;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(v + e) time | O(v) space - where v is the number of\n// vertices and e is the number of edges in the graph\nfunction cycleInGraph(edges) {\n  const numberOfNodes = edges.length;\n  const visited = new Array(numberOfNodes).fill(false);\n  const currentlyInStack = new Array(numberOfNodes).fill(false);\n\n  for (let node = 0; node < numberOfNodes; node++) {\n    if (visited[node]) continue;\n\n    const containsCycle = isNodeInCycle(node, edges, visited, currentlyInStack);\n    if (containsCycle) return true;\n  }\n\n  return false;\n}\n\nfunction isNodeInCycle(node, edges, visited, currentlyInStack) {\n  visited[node] = true;\n  currentlyInStack[node] = true;\n\n  const neighbors = edges[node];\n  for (const neighbor of neighbors) {\n    if (!visited[neighbor]) {\n      const containsCycle = isNodeInCycle(neighbor, edges, visited, currentlyInStack);\n      if (containsCycle) return true;\n    } else if (currentlyInStack[neighbor]) {\n      return true;\n    }\n  }\n\n  currentlyInStack[node] = false;\n  return false;\n}\n\n// Do not edit the line below.\nexports.cycleInGraph = cycleInGraph;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nconst [WHITE, GREY, BLACK] = [0, 1, 2];\n\n// O(v + e) time | O(v) space - where v is the number of\n// vertices and e is the number of edges in the graph\nfunction cycleInGraph(edges) {\n  const numberOfNodes = edges.length;\n  const colors = new Array(numberOfNodes).fill(WHITE);\n\n  for (let node = 0; node < numberOfNodes; node++) {\n    if (colors[node] != WHITE) continue;\n\n    const containsCycle = traverseAndColorNodes(node, edges, colors);\n    if (containsCycle) return true;\n  }\n\n  return false;\n}\n\nfunction traverseAndColorNodes(node, edges, colors) {\n  colors[node] = GREY;\n\n  const neighbors = edges[node];\n  for (const neighbor of neighbors) {\n    const neighborColor = colors[neighbor];\n\n    if (neighborColor === GREY) return true;\n\n    if (neighborColor === BLACK) continue;\n\n    const containsCycle = traverseAndColorNodes(neighbor, edges, colors);\n    if (containsCycle) return true;\n  }\n\n  colors[node] = BLACK;\n  return false;\n}\n\n// Do not edit the line below.\nexports.cycleInGraph = cycleInGraph;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [[1, 3], [2, 3, 4], [0], [], [2, 5], []];\n  const expected = true;\n  const actual = program.cycleInGraph(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [[1, 3], [2, 3, 4], [0], [], [2, 5], []];\n  const expected = true;\n  const actual = program.cycleInGraph(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun cycleInGraph(edges: List<List<Int>>): Boolean {\n    // Write your code here.\n    return false\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(v + e) time | O(v) space - where v is the number of\n// vertices and e is the number of edges in the graph\nfun cycleInGraph(edges: List<List<Int>>): Boolean {\n    val numberOfNodes = edges.size\n    val visited = edges.map() { _ -> false }.toMutableList()\n    val currentlyInStack = edges.map() { _ -> false }.toMutableList()\n\n    for (node in 0 until numberOfNodes) {\n        if (visited[node]) continue\n\n        val containsCycle = isNodeInCycle(node, edges, visited, currentlyInStack)\n        if (containsCycle) return true\n    }\n\n    return false\n}\n\nfun isNodeInCycle(node: Int, edges: List<List<Int>>, visited: MutableList<Boolean>, currentlyInStack: MutableList<Boolean>): Boolean {\n    visited[node] = true\n    currentlyInStack[node] = true\n\n    val neighbors = edges[node]\n    for (neighbor in neighbors) {\n        if (!visited[neighbor]) {\n            val containsCycle = isNodeInCycle(neighbor, edges, visited, currentlyInStack)\n            if (containsCycle) return true\n        } else if (currentlyInStack[neighbor]) {\n            return true\n        }\n    }\n\n    currentlyInStack[node] = false\n    return false\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nval WHITE = 0\nval GREY = 1\nval BLACK = 2\n\n// O(v + e) time | O(v) space - where v is the number of\n// vertices and e is the number of edges in the graph\nfun cycleInGraph(edges: List<List<Int>>): Boolean {\n    val numberOfNodes = edges.size\n    val colors = edges.map() { _ -> WHITE }.toMutableList()\n\n    for (node in 0 until numberOfNodes) {\n        if (colors[node] != WHITE) continue\n\n        val containsCycle = traverseAndColorNodes(node, edges, colors)\n        if (containsCycle) return true\n    }\n\n    return false\n}\n\nfun traverseAndColorNodes(node: Int, edges: List<List<Int>>, colors: MutableList<Int>): Boolean {\n    colors[node] = GREY\n\n    val neighbors = edges[node]\n    for (neighbor in neighbors) {\n        val neighborColor = colors[neighbor]\n\n        if (neighborColor == GREY) return true\n\n        if (neighborColor == BLACK) continue\n\n        val containsCycle = traverseAndColorNodes(neighbor, edges, colors)\n        if (containsCycle) return true\n    }\n\n    colors[node] = BLACK\n    return false\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.cycleInGraph\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(\n            listOf(1, 3),\n            listOf(2, 3, 4),\n            listOf(0),\n            listOf(),\n            listOf(2, 5),\n            listOf(),\n        )\n        val expected = true\n        val output = cycleInGraph(input)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.cycleInGraph\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(\n            listOf(1, 3),\n            listOf(2, 3, 4),\n            listOf(0),\n            listOf(),\n            listOf(2, 5),\n            listOf(),\n        )\n        val expected = true\n        val output = cycleInGraph(input)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def cycleInGraph(edges):\n    # Write your code here.\n    return False\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(v + e) time | O(v) space - where v is the number of\n# vertices and e is the number of edges in the graph\ndef cycleInGraph(edges):\n    numberOfNodes = len(edges)\n    visited = [False for _ in range(numberOfNodes)]\n    currentlyInStack = [False for _ in range(numberOfNodes)]\n\n    for node in range(numberOfNodes):\n        if visited[node]:\n            continue\n\n        containsCycle = isNodeInCycle(node, edges, visited, currentlyInStack)\n        if containsCycle:\n            return True\n\n    return False\n\n\ndef isNodeInCycle(node, edges, visited, currentlyInStack):\n    visited[node] = True\n    currentlyInStack[node] = True\n\n    neighbors = edges[node]\n    for neighbor in neighbors:\n        if not visited[neighbor]:\n            containsCycle = isNodeInCycle(neighbor, edges, visited, currentlyInStack)\n            if containsCycle:\n                return True\n        elif currentlyInStack[neighbor]:\n            return True\n\n    currentlyInStack[node] = False\n    return False\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nWHITE, GREY, BLACK = 0, 1, 2\n\n\n# O(v + e) time | O(v) space - where v is the number of\n# vertices and e is the number of edges in the graph\ndef cycleInGraph(edges):\n    numberOfNodes = len(edges)\n    colors = [WHITE for _ in range(numberOfNodes)]\n\n    for node in range(numberOfNodes):\n        if colors[node] != WHITE:\n            continue\n\n        containsCycle = traverseAndColorNodes(node, edges, colors)\n        if containsCycle:\n            return True\n\n    return False\n\n\ndef traverseAndColorNodes(node, edges, colors):\n    colors[node] = GREY\n\n    neighbors = edges[node]\n    for neighbor in neighbors:\n        neighborColor = colors[neighbor]\n\n        if neighborColor == GREY:\n            return True\n\n        if neighborColor == BLACK:\n            continue\n\n        containsCycle = traverseAndColorNodes(neighbor, edges, colors)\n        if containsCycle:\n            return True\n\n    colors[node] = BLACK\n    return False\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [[1, 3], [2, 3, 4], [0], [], [2, 5], []]\n        expected = True\n        actual = program.cycleInGraph(input)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [[1, 3], [2, 3, 4], [0], [], [2, 5], []]\n        expected = True\n        actual = program.cycleInGraph(input)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  def cycleInGraph(edges)\n    # Write your code here.\n    return false\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def cycleInGraph(edges)\n    # Write your code here.\n    return false\n  end\nend\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def cycleInGraph(edges)\n    # Write your code here.\n    return false\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.cycleInGraph\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.cycleInGraph\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func cycleInGraph(_ edges: [[Int]]) -> Bool {\n    // Write your code here.\n    return false\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(v + e) time | O(v) space - where v is the number of\n  // vertices and e is the number of edges in the graph\n  func cycleInGraph(_ edges: [[Int]]) -> Bool {\n    let numberOfNodes = edges.count\n    var visited = Array(repeating: false, count: numberOfNodes)\n    var currentlyInStack = Array(repeating: false, count: numberOfNodes)\n\n    for node in stride(from: 0, to: numberOfNodes, by: 1) {\n      if visited[node] {\n        continue\n      }\n\n      let containsCycle = isNodeInCycle(node, edges, &visited, &currentlyInStack)\n      if containsCycle {\n        return true\n      }\n    }\n    return false\n  }\n\n  func isNodeInCycle(_ node: Int, _ edges: [[Int]], _ visited: inout [Bool], _ currentlyInStack: inout [Bool]) -> Bool {\n    visited[node] = true\n    currentlyInStack[node] = true\n\n    let neighbors = edges[node]\n    for neighbor in neighbors {\n      if !visited[neighbor] {\n        let containsCycle = isNodeInCycle(neighbor, edges, &visited, &currentlyInStack)\n        if containsCycle {\n          return true\n        }\n      } else if currentlyInStack[neighbor] {\n        return true\n      }\n    }\n\n    currentlyInStack[node] = false\n    return false\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  let WHITE = 0\n  let GREY = 1\n  let BLACK = 2\n\n  // O(v + e) time | O(v) space - where v is the number of\n  // vertices and e is the number of edges in the graph\n  func cycleInGraph(_ edges: [[Int]]) -> Bool {\n    let numberOfNodes = edges.count\n    var colors = Array(repeating: 0, count: numberOfNodes)\n\n    for node in stride(from: 0, to: numberOfNodes, by: 1) {\n      if colors[node] != WHITE {\n        continue\n      }\n\n      let containsCycle = traverseAndColorNodes(node, edges, &colors)\n      if containsCycle {\n        return true\n      }\n    }\n    return false\n  }\n\n  func traverseAndColorNodes(_ node: Int, _ edges: [[Int]], _ colors: inout [Int]) -> Bool {\n    colors[node] = GREY\n\n    let neighbors = edges[node]\n    for neighbor in neighbors {\n      let neighborColor = colors[neighbor]\n\n      if neighborColor == GREY {\n        return true\n      }\n\n      if neighborColor == BLACK {\n        continue\n      }\n      let containsCycle = traverseAndColorNodes(neighbor, edges, &colors)\n      if containsCycle {\n        return true\n      }\n    }\n\n    colors[node] = BLACK\n    return false\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var input = [\n        [1, 3],\n        [2, 3, 4],\n        [0],\n        [],\n        [2, 5],\n        [],\n      ]\n      var expected = true\n      var actual = Program().cycleInGraph(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var input = [\n        [1, 3],\n        [2, 3, 4],\n        [0],\n        [],\n        [2, 5],\n        [],\n      ]\n      var expected = true\n      var actual = Program().cycleInGraph(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function cycleInGraph(edges: number[][]) {\n  // Write your code here.\n  return false;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(v + e) time | O(v) space - where v is the number of\n// vertices and e is the number of edges in the graph\nexport function cycleInGraph(edges: number[][]) {\n  const numberOfNodes = edges.length;\n  const visited = new Array(numberOfNodes).fill(false);\n  const currentlyInStack = new Array(numberOfNodes).fill(false);\n\n  for (let node = 0; node < numberOfNodes; node++) {\n    if (visited[node]) continue;\n\n    const containsCycle = isNodeInCycle(node, edges, visited, currentlyInStack);\n    if (containsCycle) return true;\n  }\n\n  return false;\n}\n\nfunction isNodeInCycle(\n  node: number,\n  edges: number[][],\n  visited: boolean[],\n  currentlyInStack: boolean[],\n) {\n  visited[node] = true;\n  currentlyInStack[node] = true;\n\n  const neighbors = edges[node];\n  for (const neighbor of neighbors) {\n    if (!visited[neighbor]) {\n      const containsCycle = isNodeInCycle(neighbor, edges, visited, currentlyInStack);\n      if (containsCycle) return true;\n    } else if (currentlyInStack[neighbor]) {\n      return true;\n    }\n  }\n\n  currentlyInStack[node] = false;\n  return false;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nconst [WHITE, GREY, BLACK] = [0, 1, 2];\n\n// O(v + e) time | O(v) space - where v is the number of\n// vertices and e is the number of edges in the graph\nexport function cycleInGraph(edges: number[][]) {\n  const numberOfNodes = edges.length;\n  const colors = new Array(numberOfNodes).fill(WHITE);\n\n  for (let node = 0; node < numberOfNodes; node++) {\n    if (colors[node] != WHITE) continue;\n\n    const containsCycle = traverseAndColorNodes(node, edges, colors);\n    if (containsCycle) return true;\n  }\n\n  return false;\n}\n\nfunction traverseAndColorNodes(node: number, edges: number[][], colors: number[]) {\n  colors[node] = GREY;\n\n  const neighbors = edges[node];\n  for (const neighbor of neighbors) {\n    const neighborColor = colors[neighbor];\n\n    if (neighborColor === GREY) return true;\n\n    if (neighborColor === BLACK) continue;\n\n    const containsCycle = traverseAndColorNodes(neighbor, edges, colors);\n    if (containsCycle) return true;\n  }\n\n  colors[node] = BLACK;\n  return false;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [[1, 3], [2, 3, 4], [0], [], [2, 5], []];\n  const expected = true;\n  const actual = program.cycleInGraph(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [[1, 3], [2, 3, 4], [0], [], [2, 5], []];\n  const expected = true;\n  const actual = program.cycleInGraph(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "edges",
+            "example": [
+                [
+                    1,
+                    3
+                ],
+                [
+                    2,
+                    3,
+                    4
+                ],
+                [
+                    0
+                ],
+                [],
+                [
+                    2,
+                    5
+                ],
+                []
+            ],
+            "schema": {
+                "items": {
+                    "items": {
+                        "type": "integer"
+                    },
+                    "type": "array"
+                },
+                "minItems": 1,
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "edges": [
+                [
+                    1,
+                    3
+                ],
+                [
+                    2,
+                    3,
+                    4
+                ],
+                [
+                    0
+                ],
+                [],
+                [
+                    2,
+                    5
+                ],
+                []
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    2
+                ],
+                []
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    2
+                ],
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    2
+                ],
+                [
+                    1,
+                    3
+                ],
+                [
+                    3
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [],
+                [
+                    0,
+                    2
+                ],
+                [
+                    0,
+                    3
+                ],
+                [
+                    0,
+                    4
+                ],
+                [
+                    0,
+                    5
+                ],
+                [
+                    0
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    0
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    8
+                ],
+                [
+                    0,
+                    2
+                ],
+                [
+                    0,
+                    3
+                ],
+                [
+                    0,
+                    4
+                ],
+                [
+                    0,
+                    5
+                ],
+                [
+                    0
+                ],
+                [
+                    7
+                ],
+                [
+                    8
+                ],
+                [
+                    6
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1
+                ],
+                [
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7
+                ],
+                [],
+                [
+                    2,
+                    7
+                ],
+                [
+                    5
+                ],
+                [],
+                [
+                    4
+                ],
+                []
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1
+                ],
+                [
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7
+                ],
+                [],
+                [
+                    2,
+                    7
+                ],
+                [
+                    5
+                ],
+                [],
+                [
+                    4
+                ],
+                [
+                    0
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    0
+                ],
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    2
+                ],
+                []
+            ]
+        },
+        {
+            "edges": [
+                [],
+                [
+                    0,
+                    3
+                ],
+                [
+                    0
+                ],
+                [
+                    1,
+                    2
+                ]
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "edges": [
+                [
+                    1,
+                    3
+                ],
+                [
+                    2,
+                    3,
+                    4
+                ],
+                [
+                    0
+                ],
+                [],
+                [
+                    2,
+                    5
+                ],
+                []
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    2
+                ],
+                []
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    2
+                ],
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    2
+                ],
+                [
+                    1,
+                    3
+                ],
+                [
+                    3
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [],
+                [
+                    0,
+                    2
+                ],
+                [
+                    0,
+                    3
+                ],
+                [
+                    0,
+                    4
+                ],
+                [
+                    0,
+                    5
+                ],
+                [
+                    0
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    0
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    8
+                ],
+                [
+                    0,
+                    2
+                ],
+                [
+                    0,
+                    3
+                ],
+                [
+                    0,
+                    4
+                ],
+                [
+                    0,
+                    5
+                ],
+                [
+                    0
+                ],
+                [
+                    7
+                ],
+                [
+                    8
+                ],
+                [
+                    6
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1
+                ],
+                [
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7
+                ],
+                [],
+                [
+                    2,
+                    7
+                ],
+                [
+                    5
+                ],
+                [],
+                [
+                    4
+                ],
+                []
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1
+                ],
+                [
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7
+                ],
+                [],
+                [
+                    2,
+                    7
+                ],
+                [
+                    5
+                ],
+                [],
+                [
+                    4
+                ],
+                [
+                    0
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    0
+                ],
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    2
+                ],
+                []
+            ]
+        },
+        {
+            "edges": [
+                [],
+                [
+                    0,
+                    3
+                ],
+                [
+                    0
+                ],
+                [
+                    1,
+                    2
+                ]
+            ]
+        }
+    ],
+    "changelog": []
+}
