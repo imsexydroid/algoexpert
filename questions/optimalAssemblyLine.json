@@ -1,0 +1,816 @@
+{
+    "uid": "optimalAssemblyLine",
+    "testStrategy": "JSON",
+    "name": "Optimal Assembly Line",
+    "version": 0,
+    "releaseDate": "2023-07-10T00:00:00Z",
+    "category": "Searching",
+    "difficulty": 4,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 388,
+        "failureCount": 30
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "836349604",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1350
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    One of the most efficient ways to run a factory is to use an assembly line,\n    with multiple stations performing different assembling steps simultaneously\n    in order to save time. But an assembly line is only as fast as its slowest\n    station/step; for example, if an assembly line has 100 different steps\n    performed by 100 different stations, with 99 steps taking 1 minute each to\n    complete and 1 step taking 1 hour to complete, then the entire assembly line\n    is dramatically slowed down by the 1-hour-long step.\n  </p>\n  <p>\n    Write a function that takes in a non-empty array of positive integers\n    <span>stepDurations</span> and a positive integer <span>numStations</span>.\n    The input array of integers represents the times that the various steps in\n    an assembly process take, and the input integer represents the number of\n    stations that this assembly process has access to. For this particular\n    assembly process, a single station can perform multiple steps, so long as\n    these steps are performed in order, meaning that a single station can\n    perform multiple steps whose times appear consecutively in the\n    <span>stepDurations</span> array. Your function should return the longest\n    duration of a single station in the assembly line after optimizing the\n    assembly line (i.e., minimizing its slowest station/step).\n  </p>\n  <p>You can assume that there will never be more stations than steps.</p>\n  <h3>Sample Input</h3>\n  <pre>\n<span class=\"CodeEditor-promptParameter\">stepDurations</span> = [15, 15, 30, 30, 45]\n<span class=\"CodeEditor-promptParameter\">numStations</span> = 3</pre>\n  <h3>Sample Output</h3>\n  <pre>60 <span class=\"CodeEditor-promptComment\"> // Station 1 does steps 0 and 1. Station 2 does steps 2 and 3. Station 3 does step 4.</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  First try considering what the range of possible solutions are. What is the\n  smallest possible solution and the largest possible solution?\n</p>\n",
+        "\n<p>\n  The smallest possible solution would be the largest duration in\n  <span>stepDurations</span> in the case that this step was the only step done by its\n  station. The largest possible solution would be the sum of all of the\n  <span>stepDurations</span> if they were all done by one solution.\n</p>\n",
+        "\n<p>\n  Given this smallest and largest possible solution, you can do a binary\n  search between the values to find the smallest potential solution that\n  is actually valid.\n</p>\n",
+        "\n<p>\n  You can check if a potential solution is valid by during a single iteration\n  through the <span>stepDurations</span> array. If a step has a duration larger than\n  the potential solution's max station duration, then that can't be a correct\n  solution. Otherwise, combine that step with the previous steps if the\n  combination of them is not larger than the potential solution's max station\n  duration. If it can't be combined with previous steps, then it must require\n  a new station. Keep track of how many stations are required and ensure it is\n  less than or equal to <span>numStations</span>.\n</p>"
+    ],
+    "spaceTime": "O(n * log(m)) time | O(1) space - where n is the length of steps, and m is the sum of all values in steps",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nint optimalAssemblyLine(vector<int> stepDurations, int numStations) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n\nusing namespace std;\n\nbool isPotentialSolution(\n  vector<int> stepDurations, int numStations, int potentialMaxStationDuration\n);\n\n// O(n * log(m)) time | O(1) space - where n is the length of stepDurations, and\n// m is the sum of all values in stepDurations\nint optimalAssemblyLine(vector<int> stepDurations, int numStations) {\n  int left = INT_MIN;\n  int right = 0;\n  int maxStationDuration = INT_MAX;\n\n  for (auto stepDuration : stepDurations) {\n    left = max(left, stepDuration);\n    right += stepDuration;\n  }\n\n  while (left <= right) {\n    int potentialMaxStationDuration = (left + right) / 2;\n\n    if (isPotentialSolution(\n          stepDurations, numStations, potentialMaxStationDuration\n        )) {\n      maxStationDuration = potentialMaxStationDuration;\n      right = potentialMaxStationDuration - 1;\n    } else {\n      left = potentialMaxStationDuration + 1;\n    }\n  }\n  return maxStationDuration;\n}\n\nbool isPotentialSolution(\n  vector<int> stepDurations, int numStations, int potentialMaxStationDuration\n) {\n  int stationsRequired = 1;\n  int currentDuration = 0;\n\n  for (auto stepDuration : stepDurations) {\n    if (currentDuration + stepDuration > potentialMaxStationDuration) {\n      stationsRequired++;\n      currentDuration = stepDuration;\n    } else {\n      currentDuration += stepDuration;\n    }\n  }\n\n  return stationsRequired <= numStations;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      auto stepDurations = {15, 15, 30, 30, 45};\n      auto numStations = 3;\n      auto actual = optimalAssemblyLine(stepDurations, numStations);\n      auto expected = 60;\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      auto stepDurations = {15, 15, 30, 30, 45};\n      auto numStations = 3;\n      auto actual = optimalAssemblyLine(stepDurations, numStations);\n      auto expected = 60;\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int OptimalAssemblyLine(int[] stepDurations, int numStations) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(n * log(m)) time | O(1) space - where n is the length of stepDurations,\n  // and m is the sum of all values in stepDurations\n  public int OptimalAssemblyLine(int[] stepDurations, int numStations) {\n    int left = Int32.MinValue;\n    int right = 0;\n    int maxStationDuration = Int32.MaxValue;\n\n    foreach (var stepDuration in stepDurations) {\n      left = Math.Max(left, stepDuration);\n      right += stepDuration;\n    }\n\n    while (left <= right) {\n      int potentialMaxStationDuration = (left + right) / 2;\n\n      if (isPotentialSolution(\n            stepDurations, numStations, potentialMaxStationDuration\n          )) {\n        maxStationDuration = potentialMaxStationDuration;\n        right = potentialMaxStationDuration - 1;\n      } else {\n        left = potentialMaxStationDuration + 1;\n      }\n    }\n    return maxStationDuration;\n  }\n\n  static bool isPotentialSolution(\n    int[] stepDurations, int numStations, int potentialMaxStationDuration\n  ) {\n    int stationsRequired = 1;\n    int currentDuration = 0;\n\n    foreach (var stepDuration in stepDurations) {\n      if (currentDuration + stepDuration > potentialMaxStationDuration) {\n        stationsRequired++;\n        currentDuration = stepDuration;\n      } else {\n        currentDuration += stepDuration;\n      }\n    }\n\n    return stationsRequired <= numStations;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] stepDurations = new int[] { 15, 15, 30, 30, 45 };\n    int numStations = 3;\n    int actual = new Program().OptimalAssemblyLine(stepDurations, numStations);\n    int expected = 60;\n    Utils.AssertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] stepDurations = new int[] { 15, 15, 30, 30, 45 };\n    int numStations = 3;\n    int actual = new Program().OptimalAssemblyLine(stepDurations, numStations);\n    int expected = 60;\n    Utils.AssertTrue(expected == actual);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc OptimalAssemblyLine(stepDurations []int, numStations int) int {\n\t// Write your code here.\n\treturn -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport \"math\"\n\n// O(n * log(m)) time | O(1) space - where n is the length of stepDurations, and\n// m is the sum of all values in stepDurations\nfunc OptimalAssemblyLine(stepDurations []int, numStations int) int {\n\tleft := max(stepDurations)\n\tright := func() int {\n\t\tsum := 0\n\t\tfor _, duration := range stepDurations {\n\t\t\tsum += duration\n\t\t}\n\t\treturn sum\n\t}()\n\tmaxStationDuration := math.MaxInt32\n\n\tfor left <= right {\n\t\tpotentialMaxStationDuration := (left + right) / 2\n\n\t\tif isPotentialSolution(stepDurations, numStations, potentialMaxStationDuration) {\n\t\t\tmaxStationDuration = potentialMaxStationDuration\n\t\t\tright = potentialMaxStationDuration - 1\n\t\t} else {\n\t\t\tleft = potentialMaxStationDuration + 1\n\t\t}\n\t}\n\n\treturn maxStationDuration\n}\n\nfunc isPotentialSolution(stepDurations []int, numStations int, potentialMaxStationDuration int) bool {\n\tstationsRequired := 1\n\tcurrentDuration := 0\n\n\tfor _, stepDuration := range stepDurations {\n\t\tif currentDuration+stepDuration > potentialMaxStationDuration {\n\t\t\tstationsRequired++\n\t\t\tcurrentDuration = stepDuration\n\t\t} else {\n\t\t\tcurrentDuration += stepDuration\n\t\t}\n\t}\n\n\treturn stationsRequired <= numStations\n}\n\nfunc max(s []int) int {\n\tif len(s) == 0 {\n\t\treturn 0\n\t}\n\tglobalMax := s[0]\n\tfor _, v := range s {\n\t\tif v > globalMax {\n\t\t\tglobalMax = v\n\t\t}\n\t}\n\treturn globalMax\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tstepDurations := []int{15, 15, 30, 30, 45}\n\tnumStations := 3\n\texpected := 60\n\tactual := OptimalAssemblyLine(stepDurations, numStations)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tstepDurations := []int{15, 15, 30, 30, 45}\n\tnumStations := 3\n\texpected := 60\n\tactual := OptimalAssemblyLine(stepDurations, numStations)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int optimalAssemblyLine(int[] stepDurations, int numStations) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n * log(m)) time | O(1) space - where n is the length of stepDurations,\n  // and m is the sum of all values in stepDurations\n  public int optimalAssemblyLine(int[] stepDurations, int numStations) {\n    int left = Integer.MIN_VALUE;\n    int right = 0;\n    int maxStationDuration = Integer.MAX_VALUE;\n\n    for (int stepDuration : stepDurations) {\n      left = Math.max(left, stepDuration);\n      right += stepDuration;\n    }\n\n    while (left <= right) {\n      int potentialMaxStationDuration = (left + right) / 2;\n\n      if (isPotentialSolution(\n            stepDurations, numStations, potentialMaxStationDuration\n          )) {\n        maxStationDuration = potentialMaxStationDuration;\n        right = potentialMaxStationDuration - 1;\n      } else {\n        left = potentialMaxStationDuration + 1;\n      }\n    }\n    return maxStationDuration;\n  }\n\n  static boolean isPotentialSolution(\n    int[] stepDurations, int numStations, int potentialMaxStationDuration\n  ) {\n    int stationsRequired = 1;\n    int currentDuration = 0;\n\n    for (int stepDuration : stepDurations) {\n      if (currentDuration + stepDuration > potentialMaxStationDuration) {\n        stationsRequired++;\n        currentDuration = stepDuration;\n      } else {\n        currentDuration += stepDuration;\n      }\n    }\n\n    return stationsRequired <= numStations;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] stepDurations = new int[] {15, 15, 30, 30, 45};\n    int numStations = 3;\n    int actual = new Program().optimalAssemblyLine(stepDurations, numStations);\n    int expected = 60;\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] stepDurations = new int[] {15, 15, 30, 30, 45};\n    int numStations = 3;\n    int actual = new Program().optimalAssemblyLine(stepDurations, numStations);\n    int expected = 60;\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function optimalAssemblyLine(stepDurations, numStations) {\n  // Write your code here.\n  return -1;\n}\n\n// Do not edit the line below.\nexports.optimalAssemblyLine = optimalAssemblyLine;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * log(m)) time | O(1) space - where n is the length of stepDurations, and\n// m is the sum of all values in stepDurations\nfunction optimalAssemblyLine(stepDurations, numStations) {\n  let left = Math.max(...stepDurations);\n  let right = stepDurations.reduce((a, b) => a + b);\n  let maxStationDuration = Infinity;\n\n  while (left <= right) {\n    const potentialMaxStationDuration = Math.floor((left + right) / 2);\n\n    if (isPotentialSolution(stepDurations, numStations, potentialMaxStationDuration)) {\n      maxStationDuration = potentialMaxStationDuration;\n      right = potentialMaxStationDuration - 1;\n    } else {\n      left = potentialMaxStationDuration + 1;\n    }\n  }\n\n  return maxStationDuration;\n}\n\nfunction isPotentialSolution(stepDurations, numStations, potentialMaxStationDuration) {\n  let stationsRequired = 1;\n  let currentDuration = 0;\n\n  for (const stepDuration of stepDurations) {\n    if (currentDuration + stepDuration > potentialMaxStationDuration) {\n      stationsRequired += 1;\n      currentDuration = stepDuration;\n    } else {\n      currentDuration += stepDuration;\n    }\n  }\n\n  return stationsRequired <= numStations;\n}\n\n// Do not edit the line below.\nexports.optimalAssemblyLine = optimalAssemblyLine;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const stepDurations = [15, 15, 30, 30, 45];\n  const numStations = 3;\n  const expected = 60;\n  const actual = program.optimalAssemblyLine(stepDurations, numStations);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const stepDurations = [15, 15, 30, 30, 45];\n  const numStations = 3;\n  const expected = 60;\n  const actual = program.optimalAssemblyLine(stepDurations, numStations);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun optimalAssemblyLine(stepDurations: MutableList<Int>, numStations: Int): Int {\n    // Write your code here.\n    return -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n * log(m)) time | O(1) space - where n is the length of stepDurations, and\n// m is the sum of all values in stepDurations\nfun optimalAssemblyLine(stepDurations: MutableList<Int>, numStations: Int): Int {\n    var left = stepDurations.max()!!\n    var right = stepDurations.sum()\n    var maxStationDuration = Int.MAX_VALUE\n\n    while (left <= right) {\n        val potentialMaxStationDuration = (left + right) / 2\n\n        if (isPotentialSolution(stepDurations, numStations, potentialMaxStationDuration)) {\n            maxStationDuration = potentialMaxStationDuration\n            right = potentialMaxStationDuration - 1\n        } else {\n            left = potentialMaxStationDuration + 1\n        }\n    }\n\n    return maxStationDuration\n}\n\nfun isPotentialSolution(stepDurations: MutableList<Int>, numStations: Int, potentialMaxStationDuration: Int): Boolean {\n    var stationsRequired = 1\n    var currentDuration = 0\n\n    for (stepDuration in stepDurations) {\n        if (currentDuration + stepDuration > potentialMaxStationDuration) {\n            stationsRequired += 1\n            currentDuration = stepDuration\n        } else {\n            currentDuration += stepDuration\n        }\n    }\n\n    return stationsRequired <= numStations\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.optimalAssemblyLine\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val stepDurations = mutableListOf(15, 15, 30, 30, 45)\n        val numStations = 3\n        val expected = 60\n        val output = optimalAssemblyLine(stepDurations, numStations)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.optimalAssemblyLine\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val stepDurations = mutableListOf(15, 15, 30, 30, 45)\n        val numStations = 3\n        val expected = 60\n        val output = optimalAssemblyLine(stepDurations, numStations)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def optimalAssemblyLine(stepDurations, numStations):\n    # Write your code here.\n    return -1\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n * log(m)) time | O(1) space - where n is the length of stepDurations, and\n# m is the sum of all values in stepDurations\ndef optimalAssemblyLine(stepDurations, numStations):\n    left, right = max(stepDurations), sum(stepDurations)\n    maxStationDuration = float(\"inf\")\n\n    while left <= right:\n        potentialMaxStationDuration = (left + right) // 2\n\n        if isPotentialSolution(stepDurations, numStations, potentialMaxStationDuration):\n            maxStationDuration = potentialMaxStationDuration\n            right = potentialMaxStationDuration - 1\n        else:\n            left = potentialMaxStationDuration + 1\n\n    return maxStationDuration\n\n\ndef isPotentialSolution(stepDurations, numStations, potentialMaxStationDuration):\n    stationsRequired = 1\n    currentDuration = 0\n\n    for stepDuration in stepDurations:\n        if currentDuration + stepDuration > potentialMaxStationDuration:\n            stationsRequired += 1\n            currentDuration = stepDuration\n        else:\n            currentDuration += stepDuration\n\n    return stationsRequired <= numStations\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        stepDurations = [15, 15, 30, 30, 45]\n        numStations = 3\n        expected = 60\n        actual = program.optimalAssemblyLine(stepDurations, numStations)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        stepDurations = [15, 15, 30, 30, 45]\n        numStations = 3\n        expected = 60\n        actual = program.optimalAssemblyLine(stepDurations, numStations)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def optimalAssemblyLine(stepDurations, numStations)\n        # Write your code here.\n        return -1\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def optimalAssemblyLine(stepDurations, numStations)\n        # Write your code here.\n        return -1\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.optimalAssemblyLine\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.optimalAssemblyLine\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func optimalAssemblyLine(_ stepDurations: [Int], _ numStations: Int) -> Int {\n    // Write your code here.\n    return -1\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n * log(m)) time | O(1) space - where n is the length of stepDurations, and\n  // m is the sum of all values in stepDurations\n  func optimalAssemblyLine(_ stepDurations: [Int], _ numStations: Int) -> Int {\n    var left = stepDurations.max()!\n    var right = stepDurations.reduce(0) { $0 + $1 }\n    var maxStationDuration = Int.max\n\n    while left <= right {\n      let potentialMaxStationDuration = (left + right) / 2\n\n      if isPotentialSolution(stepDurations, numStations, potentialMaxStationDuration) {\n        maxStationDuration = potentialMaxStationDuration\n        right = potentialMaxStationDuration - 1\n      } else {\n        left = potentialMaxStationDuration + 1\n      }\n    }\n\n    return maxStationDuration\n  }\n\n  func isPotentialSolution(_ stepDurations: [Int], _ numStations: Int, _ potentialMaxStationDuration: Int) -> Bool {\n    var stationsRequired = 1\n    var currentDuration = 0\n\n    for stepDuration in stepDurations {\n      if currentDuration + stepDuration > potentialMaxStationDuration {\n        stationsRequired += 1\n        currentDuration = stepDuration\n      } else {\n        currentDuration += stepDuration\n      }\n    }\n\n    return stationsRequired <= numStations\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var stepDurations = [15, 15, 30, 30, 45]\n      var numStations = 3\n      var expected = 60\n      var actual = Program().optimalAssemblyLine(stepDurations, numStations)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var stepDurations = [15, 15, 30, 30, 45]\n      var numStations = 3\n      var expected = 60\n      var actual = Program().optimalAssemblyLine(stepDurations, numStations)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function optimalAssemblyLine(stepDurations: number[], numStations: number) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * log(m)) time | O(1) space - where n is the length of stepDurations, and\n// m is the sum of all values in stepDurations\nexport function optimalAssemblyLine(stepDurations: number[], numStations: number) {\n  let left = Math.max(...stepDurations);\n  let right = stepDurations.reduce((a, b) => a + b);\n  let maxStationDuration = Infinity;\n\n  while (left <= right) {\n    const potentialMaxStationDuration = Math.floor((left + right) / 2);\n\n    if (isPotentialSolution(stepDurations, numStations, potentialMaxStationDuration)) {\n      maxStationDuration = potentialMaxStationDuration;\n      right = potentialMaxStationDuration - 1;\n    } else {\n      left = potentialMaxStationDuration + 1;\n    }\n  }\n\n  return maxStationDuration;\n}\n\nfunction isPotentialSolution(\n  stepDurations: number[],\n  numStations: number,\n  potentialMaxStationDuration: number,\n) {\n  let stationsRequired = 1;\n  let currentDuration = 0;\n\n  for (const stepDuration of stepDurations) {\n    if (currentDuration + stepDuration > potentialMaxStationDuration) {\n      stationsRequired += 1;\n      currentDuration = stepDuration;\n    } else {\n      currentDuration += stepDuration;\n    }\n  }\n\n  return stationsRequired <= numStations;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const stepDurations = [15, 15, 30, 30, 45];\n  const numStations = 3;\n  const expected = 60;\n  const actual = program.optimalAssemblyLine(stepDurations, numStations);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const stepDurations = [15, 15, 30, 30, 45];\n  const numStations = 3;\n  const expected = 60;\n  const actual = program.optimalAssemblyLine(stepDurations, numStations);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "stepDurations",
+            "example": [
+                5
+            ],
+            "schema": {
+                "items": {
+                    "type": "integer"
+                },
+                "minimum": 1,
+                "type": "array"
+            }
+        },
+        {
+            "name": "numStations",
+            "example": 1,
+            "schema": {
+                "minimum": 1,
+                "type": "integer"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "numStations": 1,
+            "stepDurations": [
+                5
+            ]
+        },
+        {
+            "numStations": 2,
+            "stepDurations": [
+                5,
+                7
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                1,
+                2,
+                3,
+                4,
+                5
+            ]
+        },
+        {
+            "numStations": 2,
+            "stepDurations": [
+                5,
+                10,
+                20,
+                30
+            ]
+        },
+        {
+            "numStations": 4,
+            "stepDurations": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                15,
+                25,
+                35,
+                45,
+                55,
+                65
+            ]
+        },
+        {
+            "numStations": 2,
+            "stepDurations": [
+                5,
+                2,
+                9,
+                3
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                6,
+                8,
+                4,
+                2,
+                10
+            ]
+        },
+        {
+            "numStations": 2,
+            "stepDurations": [
+                30,
+                5,
+                20,
+                10
+            ]
+        },
+        {
+            "numStations": 4,
+            "stepDurations": [
+                40,
+                30,
+                10,
+                20,
+                60,
+                50
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                35,
+                65,
+                45,
+                15,
+                25,
+                55
+            ]
+        },
+        {
+            "numStations": 2,
+            "stepDurations": [
+                1,
+                2,
+                2,
+                3
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                15,
+                15,
+                30,
+                30,
+                45
+            ]
+        },
+        {
+            "numStations": 2,
+            "stepDurations": [
+                5,
+                5,
+                10,
+                20,
+                20
+            ]
+        },
+        {
+            "numStations": 4,
+            "stepDurations": [
+                20,
+                10,
+                20,
+                30,
+                10,
+                30
+            ]
+        },
+        {
+            "numStations": 2,
+            "stepDurations": [
+                25,
+                25,
+                35,
+                35
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                10,
+                20,
+                30
+            ]
+        },
+        {
+            "numStations": 4,
+            "stepDurations": [
+                15,
+                25,
+                35,
+                45
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                5,
+                10,
+                20
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                12,
+                23,
+                38,
+                11,
+                47,
+                6
+            ]
+        },
+        {
+            "numStations": 4,
+            "stepDurations": [
+                32,
+                41,
+                15,
+                27,
+                22,
+                9,
+                48
+            ]
+        },
+        {
+            "numStations": 5,
+            "stepDurations": [
+                45,
+                8,
+                37,
+                49,
+                2,
+                23,
+                19,
+                26
+            ]
+        },
+        {
+            "numStations": 1,
+            "stepDurations": [
+                32,
+                41,
+                15,
+                27,
+                22,
+                9,
+                48
+            ]
+        },
+        {
+            "numStations": 1,
+            "stepDurations": [
+                45,
+                8,
+                37,
+                49,
+                2,
+                23,
+                19,
+                26
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                21,
+                14,
+                7,
+                42,
+                35,
+                28
+            ]
+        },
+        {
+            "numStations": 4,
+            "stepDurations": [
+                37,
+                15,
+                8,
+                29,
+                43,
+                22,
+                50,
+                1
+            ]
+        },
+        {
+            "numStations": 5,
+            "stepDurations": [
+                18,
+                33,
+                46,
+                27,
+                9,
+                12,
+                39,
+                24,
+                3
+            ]
+        },
+        {
+            "numStations": 2,
+            "stepDurations": [
+                21,
+                14,
+                7,
+                42,
+                35,
+                28
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                37,
+                15,
+                8,
+                29,
+                43,
+                22,
+                50,
+                1
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                18,
+                33,
+                46,
+                27,
+                9,
+                12,
+                39,
+                24,
+                3
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "numStations": 1,
+            "stepDurations": [
+                5
+            ]
+        },
+        {
+            "numStations": 2,
+            "stepDurations": [
+                5,
+                7
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                1,
+                2,
+                3,
+                4,
+                5
+            ]
+        },
+        {
+            "numStations": 2,
+            "stepDurations": [
+                5,
+                10,
+                20,
+                30
+            ]
+        },
+        {
+            "numStations": 4,
+            "stepDurations": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                15,
+                25,
+                35,
+                45,
+                55,
+                65
+            ]
+        },
+        {
+            "numStations": 2,
+            "stepDurations": [
+                5,
+                2,
+                9,
+                3
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                6,
+                8,
+                4,
+                2,
+                10
+            ]
+        },
+        {
+            "numStations": 2,
+            "stepDurations": [
+                30,
+                5,
+                20,
+                10
+            ]
+        },
+        {
+            "numStations": 4,
+            "stepDurations": [
+                40,
+                30,
+                10,
+                20,
+                60,
+                50
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                35,
+                65,
+                45,
+                15,
+                25,
+                55
+            ]
+        },
+        {
+            "numStations": 2,
+            "stepDurations": [
+                1,
+                2,
+                2,
+                3
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                15,
+                15,
+                30,
+                30,
+                45
+            ]
+        },
+        {
+            "numStations": 2,
+            "stepDurations": [
+                5,
+                5,
+                10,
+                20,
+                20
+            ]
+        },
+        {
+            "numStations": 4,
+            "stepDurations": [
+                20,
+                10,
+                20,
+                30,
+                10,
+                30
+            ]
+        },
+        {
+            "numStations": 2,
+            "stepDurations": [
+                25,
+                25,
+                35,
+                35
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                10,
+                20,
+                30
+            ]
+        },
+        {
+            "numStations": 4,
+            "stepDurations": [
+                15,
+                25,
+                35,
+                45
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                5,
+                10,
+                20
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                12,
+                23,
+                38,
+                11,
+                47,
+                6
+            ]
+        },
+        {
+            "numStations": 4,
+            "stepDurations": [
+                32,
+                41,
+                15,
+                27,
+                22,
+                9,
+                48
+            ]
+        },
+        {
+            "numStations": 5,
+            "stepDurations": [
+                45,
+                8,
+                37,
+                49,
+                2,
+                23,
+                19,
+                26
+            ]
+        },
+        {
+            "numStations": 1,
+            "stepDurations": [
+                32,
+                41,
+                15,
+                27,
+                22,
+                9,
+                48
+            ]
+        },
+        {
+            "numStations": 1,
+            "stepDurations": [
+                45,
+                8,
+                37,
+                49,
+                2,
+                23,
+                19,
+                26
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                21,
+                14,
+                7,
+                42,
+                35,
+                28
+            ]
+        },
+        {
+            "numStations": 4,
+            "stepDurations": [
+                37,
+                15,
+                8,
+                29,
+                43,
+                22,
+                50,
+                1
+            ]
+        },
+        {
+            "numStations": 5,
+            "stepDurations": [
+                18,
+                33,
+                46,
+                27,
+                9,
+                12,
+                39,
+                24,
+                3
+            ]
+        },
+        {
+            "numStations": 2,
+            "stepDurations": [
+                21,
+                14,
+                7,
+                42,
+                35,
+                28
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                37,
+                15,
+                8,
+                29,
+                43,
+                22,
+                50,
+                1
+            ]
+        },
+        {
+            "numStations": 3,
+            "stepDurations": [
+                18,
+                33,
+                46,
+                27,
+                9,
+                12,
+                39,
+                24,
+                3
+            ]
+        }
+    ],
+    "changelog": []
+}

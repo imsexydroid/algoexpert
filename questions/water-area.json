@@ -1,0 +1,554 @@
+{
+    "uid": "water-area",
+    "testStrategy": "JSON",
+    "name": "Water Area",
+    "version": 0,
+    "releaseDate": "2000-05-04T00:00:00Z",
+    "category": "Dynamic Programming",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 16911,
+        "failureCount": 4967
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "225758783",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Clement Mihailescu",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1633
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  You're given an array of non-negative integers where each non-zero integer\n  represents the height of a pillar of width <span>1</span>. Imagine water being\n  poured over all of the pillars; write a function that returns the surface area\n  of the water trapped between the pillars viewed from the front. Note that\n  spilled water should be ignored.\n</p>\n<p>\n  You can refer to the first three minutes of this question's video explanation\n  for a visual example.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">heights</span> = [0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3]\n</pre>\n<h3>Sample Output</h3>\n<pre>\n48\n\n<span class=\"CodeEditor-promptComment\">// Below is a visual representation of the sample input.</span>\n<span class=\"CodeEditor-promptComment\">// The dots and vertical lines represent trapped water and pillars, respectively.</span>\n<span class=\"CodeEditor-promptComment\">// Note that there are 48 dots.</span>\n<span class=\"CodeEditor-promptComment\">//        |</span>\n<span class=\"CodeEditor-promptComment\">//        |</span>\n<span class=\"CodeEditor-promptComment\">//  |.....|</span>\n<span class=\"CodeEditor-promptComment\">//  |.....|</span>\n<span class=\"CodeEditor-promptComment\">//  |.....|</span>\n<span class=\"CodeEditor-promptComment\">//  |..|..|</span>\n<span class=\"CodeEditor-promptComment\">//  |..|..|</span>\n<span class=\"CodeEditor-promptComment\">//  |..|..|.....|</span>\n<span class=\"CodeEditor-promptComment\">//  |..|..|.....|</span>\n<span class=\"CodeEditor-promptComment\">// _|..|..|..||.|</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\nIn order to calculate the amount of water above a single point in the input array, you must know the height of the tallest pillar to its left and the height of the tallest pillar to its right.\n</p>\n",
+        "\n<p>\nIf a point can hold water above it, then the smallest of the two heights mentioned in Hint #1 minus the height at that respective point should lead you to the amount of water above it.\n</p>\n",
+        "\n<p>\nTry building an array of the left and right max heights for each point in the input array. You should be able to build this array and to compute the final amount of water above each point in just two loops over the input array.\n</p>"
+    ],
+    "spaceTime": "O(n) time | O(1) space - where n is the length of the input array",
+    "notes": "<div class=\"html\">\n<p>\n  The video explanation of this question covers a solution that runs with linear\n  space, but we can actually also solve this question with constant space (see\n  our written <b>Solution 2</b>).\n</p>\n<p>\n  To do so, we have to realize that, if we just look at the two extremeties of\n  the input array, the smaller of the two values gives us information about\n  water to be trapped in the middle. For example, consider the following simple\n  array:\n</p>\n<pre>\n<span class=\"CodeEditor-promptParameter\">heights</span> = [4, 0, 6, 0, 10]\n</pre>\n<p>\n  Since the leftmost value <span>4</span> is smaller than the rightmost value\n  <span>10</span>, we know that, assuming all values in between are smaller than\n  this leftmost value, we'll trap water equal to the difference between\n  <span>4</span> and those values.\n</p>\n<p>\n  Now of course, middle values won't always be smaller than the leftmost value,\n  like the middlemost value in the array above which is <span>6</span>. In those\n  cases, we update the leftmost value, making the leftmost value effectively\n  contain the greatest most recently visited value to the left.\n</p>\n<p>\n  Broadly speaking, the algorithm works by setting up two pointers\u2014a left and\n  right pointer\u2014at the extremities of the input array and progressively pushing\n  the one that points to the smallest value inward. At each value in between the\n  pointers, we update the relevant left-or-right max value (this depends on\n  which pointer we moved inward), and we add to our final surface area the\n  difference between the relevant left-or-right max value and the current value.\n  We repeat this until the left and right pointers pass each other.\n</p>\n<p>\n  Since we only need to store five values, this algorithm only requires constant\n  space.\n</p>\n<p><b>Solution 2</b> implements this algorithm.</p>\n</div>",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\nusing namespace std;\n\nint waterArea(vector<int> heights) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <vector>\nusing namespace std;\n\n// O(n) time | O(n) space - where n is the length of the input array\nint waterArea(vector<int> heights) {\n  vector<int> maxes(heights.size(), 0);\n  int leftMax = 0;\n  for (int i = 0; i < heights.size(); i++) {\n    int height = heights[i];\n    maxes[i] = leftMax;\n    leftMax = max(leftMax, height);\n  }\n  int rightMax = 0;\n  for (int i = heights.size() - 1; i >= 0; i--) {\n    int height = heights[i];\n    int minHeight = min(rightMax, maxes[i]);\n    if (height < minHeight) {\n      maxes[i] = minHeight - height;\n    } else {\n      maxes[i] = 0;\n    }\n    rightMax = max(rightMax, height);\n  }\n  int total = 0;\n  for (int i = 0; i < heights.size(); i++) {\n    total += maxes[i];\n  }\n  return total;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <vector>\nusing namespace std;\n\n// O(n) time | O(1) space - where n is the length of the input array\nint waterArea(vector<int> heights) {\n  if (heights.size() == 0) return 0;\n\n  auto leftIdx = 0;\n  auto rightIdx = heights.size() - 1;\n  auto leftMax = heights[leftIdx];\n  auto rightMax = heights[rightIdx];\n  auto surfaceArea = 0;\n\n  while (leftIdx < rightIdx) {\n    if (heights[leftIdx] < heights[rightIdx]) {\n      leftIdx++;\n      leftMax = max(leftMax, heights[leftIdx]);\n      surfaceArea += leftMax - heights[leftIdx];\n    } else {\n      rightIdx--;\n      rightMax = max(rightMax, heights[rightIdx]);\n      surfaceArea += rightMax - heights[rightIdx];\n    }\n  }\n\n  return surfaceArea;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input{0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3};\n      assert(waterArea(input) == 48);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input{0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3};\n      assert(waterArea(input) == 48);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public static int WaterArea(int[] heights) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(n) time | O(n) space - where n is the length of the input array\n  public static int WaterArea(int[] heights) {\n    int[] maxes = new int[heights.Length];\n    int leftMax = 0;\n    for (int i = 0; i < heights.Length; i++) {\n      int height = heights[i];\n      maxes[i] = leftMax;\n      leftMax = Math.Max(leftMax, height);\n    }\n    int rightMax = 0;\n    for (int i = heights.Length - 1; i >= 0; i--) {\n      int height = heights[i];\n      int minHeight = Math.Min(rightMax, maxes[i]);\n      if (height < minHeight) {\n        maxes[i] = minHeight - height;\n      } else {\n        maxes[i] = 0;\n      }\n      rightMax = Math.Max(rightMax, height);\n    }\n    int total = 0;\n    for (int i = 0; i < heights.Length; i++) {\n      total += maxes[i];\n    }\n    return total;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(n) time | O(1) space - where n is the length of the input array\n  public static int WaterArea(int[] heights) {\n    if (heights.Length == 0) return 0;\n\n    var leftIdx = 0;\n    var rightIdx = heights.Length - 1;\n    var leftMax = heights[leftIdx];\n    var rightMax = heights[rightIdx];\n    var surfaceArea = 0;\n\n    while (leftIdx < rightIdx) {\n      if (heights[leftIdx] < heights[rightIdx]) {\n        leftIdx++;\n        leftMax = Math.Max(leftMax, heights[leftIdx]);\n        surfaceArea += leftMax - heights[leftIdx];\n      } else {\n        rightIdx--;\n        rightMax = Math.Max(rightMax, heights[rightIdx]);\n        surfaceArea += rightMax - heights[rightIdx];\n      }\n    }\n\n    return surfaceArea;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] input = { 0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3 };\n    Utils.AssertTrue(Program.WaterArea(input) == 48);\n  }\n}\n",
+            "unitTests": "public class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] input = { 0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3 };\n    Utils.AssertTrue(Program.WaterArea(input) == 48);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc WaterArea(heights []int) int {\n\t// Write your code here.\n\treturn -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n) time | O(n) space - where n is the length of the input array\nfunc WaterArea(heights []int) int {\n\tmaxes := make([]int, len(heights))\n\tleftmax := 0\n\tfor i, height := range heights {\n\t\tmaxes[i] = leftmax\n\t\tleftmax = max(leftmax, height)\n\t}\n\trightmax := 0\n\tfor i := range heights {\n\t\tj := len(heights) - i - 1\n\t\theight := heights[j]\n\t\tminheight := min(rightmax, maxes[j])\n\t\tif height < minheight {\n\t\t\tmaxes[j] = minheight - height\n\t\t} else {\n\t\t\tmaxes[j] = 0\n\t\t}\n\t\trightmax = max(rightmax, height)\n\t}\n\treturn sum(maxes)\n}\n\nfunc min(arg1 int, rest ...int) int {\n\tcurr := arg1\n\tfor _, num := range rest {\n\t\tif num < curr {\n\t\t\tcurr = num\n\t\t}\n\t}\n\treturn curr\n}\n\nfunc max(arg1 int, rest ...int) int {\n\tcurr := arg1\n\tfor _, num := range rest {\n\t\tif num > curr {\n\t\t\tcurr = num\n\t\t}\n\t}\n\treturn curr\n}\n\nfunc sum(arr []int) int {\n\tacc := 0\n\tfor _, num := range arr {\n\t\tacc += num\n\t}\n\treturn acc\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n) time | O(1) space - where n is the length of the input array\nfunc WaterArea(heights []int) int {\n\tif len(heights) == 0 {\n\t\treturn 0\n\t}\n\n\tleftIdx := 0\n\trightIdx := len(heights) - 1\n\tleftMax := heights[leftIdx]\n\trightMax := heights[rightIdx]\n\tsurfaceArea := 0\n\n\tfor leftIdx < rightIdx {\n\t\tif heights[leftIdx] < heights[rightIdx] {\n\t\t\tleftIdx++\n\t\t\tleftMax = max(leftMax, heights[leftIdx])\n\t\t\tsurfaceArea += leftMax - heights[leftIdx]\n\t\t} else {\n\t\t\trightIdx--\n\t\t\trightMax = max(rightMax, heights[rightIdx])\n\t\t\tsurfaceArea += rightMax - heights[rightIdx]\n\t\t}\n\t}\n\treturn surfaceArea\n}\n\nfunc max(arg1 int, rest ...int) int {\n\tcurr := arg1\n\tfor _, num := range rest {\n\t\tif num > curr {\n\t\t\tcurr = num\n\t\t}\n\t}\n\treturn curr\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\texpected := 48\n\toutput := WaterArea([]int{0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3})\n\trequire.Equal(t, expected, output)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\texpected := 48\n\toutput := WaterArea([]int{0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3})\n\trequire.Equal(t, expected, output)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public static int waterArea(int[] heights) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(n) space - where n is the length of the input array\n  public static int waterArea(int[] heights) {\n    int[] maxes = new int[heights.length];\n    int leftMax = 0;\n    for (int i = 0; i < heights.length; i++) {\n      int height = heights[i];\n      maxes[i] = leftMax;\n      leftMax = Math.max(leftMax, height);\n    }\n    int rightMax = 0;\n    for (int i = heights.length - 1; i >= 0; i--) {\n      int height = heights[i];\n      int minHeight = Math.min(rightMax, maxes[i]);\n      if (height < minHeight) {\n        maxes[i] = minHeight - height;\n      } else {\n        maxes[i] = 0;\n      }\n      rightMax = Math.max(rightMax, height);\n    }\n    int total = 0;\n    for (int i = 0; i < heights.length; i++) {\n      total += maxes[i];\n    }\n    return total;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(1) space - where n is the length of the input array\n  public static int waterArea(int[] heights) {\n    if (heights.length == 0) return 0;\n\n    var leftIdx = 0;\n    var rightIdx = heights.length - 1;\n    var leftMax = heights[leftIdx];\n    var rightMax = heights[rightIdx];\n    var surfaceArea = 0;\n\n    while (leftIdx < rightIdx) {\n      if (heights[leftIdx] < heights[rightIdx]) {\n        leftIdx++;\n        leftMax = Math.max(leftMax, heights[leftIdx]);\n        surfaceArea += leftMax - heights[leftIdx];\n      } else {\n        rightIdx--;\n        rightMax = Math.max(rightMax, heights[rightIdx]);\n        surfaceArea += rightMax - heights[rightIdx];\n      }\n    }\n\n    return surfaceArea;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] input = {0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3};\n    Utils.assertTrue(Program.waterArea(input) == 48);\n  }\n}\n",
+            "unitTests": "class ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] input = {0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3};\n    Utils.assertTrue(Program.waterArea(input) == 48);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function waterArea(heights) {\n  // Write your code here.\n}\n\n// Do not edit the line below.\nexports.waterArea = waterArea;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space - where n is the length of the input array\nfunction waterArea(heights) {\n  const maxes = new Array(heights.length).fill(0);\n  let leftMax = 0;\n  for (let i = 0; i < heights.length; i++) {\n    const height = heights[i];\n    maxes[i] = leftMax;\n    leftMax = Math.max(leftMax, height);\n  }\n  let rightMax = 0;\n  for (let i = heights.length - 1; i >= 0; i--) {\n    const height = heights[i];\n    const minHeight = Math.min(rightMax, maxes[i]);\n    if (height < minHeight) {\n      maxes[i] = minHeight - height;\n    } else {\n      maxes[i] = 0;\n    }\n    rightMax = Math.max(rightMax, height);\n  }\n  return maxes.reduce((a, b) => a + b, 0);\n}\n\nexports.waterArea = waterArea;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(1) space - where n is the length of the input array\nfunction waterArea(heights) {\n  if (heights.length === 0) return 0;\n\n  let leftIdx = 0;\n  let rightIdx = heights.length - 1;\n  let leftMax = heights[leftIdx];\n  let rightMax = heights[rightIdx];\n  let surfaceArea = 0;\n\n  while (leftIdx < rightIdx) {\n    if (heights[leftIdx] < heights[rightIdx]) {\n      leftIdx++;\n      leftMax = Math.max(leftMax, heights[leftIdx]);\n      surfaceArea += leftMax - heights[leftIdx];\n    } else {\n      rightIdx--;\n      rightMax = Math.max(rightMax, heights[rightIdx]);\n      surfaceArea += rightMax - heights[rightIdx];\n    }\n  }\n\n  return surfaceArea;\n}\n\nexports.waterArea = waterArea;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  chai.expect(program.waterArea([0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3])).to.deep.equal(48);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  chai.expect(program.waterArea([0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3])).to.deep.equal(48);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun waterArea(heights: List<Int>): Int {\n    // Write your code here.\n    return -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.max\nimport kotlin.math.min\n\n// O(n) time | O(n) space - where n is the length of the input array\nfun waterArea(heights: List<Int>): Int {\n    val maxes = MutableList<Int>(heights.size) { 0 }\n    var leftMax = 0\n    for (i in 0 until heights.size) {\n        val height = heights[i]\n        maxes[i] = leftMax\n        leftMax = max(leftMax, height)\n    }\n\n    var rightMax = 0\n    for (i in heights.size - 1 downTo 0) {\n        val height = heights[i]\n        var minHeight = min(rightMax, maxes[i])\n        if (height < minHeight) {\n            maxes[i] = minHeight - height\n        } else {\n            maxes[i] = 0\n        }\n        rightMax = max(rightMax, height)\n    }\n\n    var total = 0\n    for (i in 0 until heights.size) {\n        total += maxes[i]\n    }\n    return total\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.max\n\n// O(n) time | O(1) space - where n is the length of the input array\nfun waterArea(heights: List<Int>): Int {\n    if (heights.size == 0) return 0\n\n    var leftIdx = 0\n    var rightIdx = heights.size - 1\n    var leftMax = heights[leftIdx]\n    var rightMax = heights[rightIdx]\n    var surfaceArea = 0\n\n    while (leftIdx < rightIdx) {\n        if (heights[leftIdx] < heights[rightIdx]) {\n            leftIdx++\n            leftMax = max(leftMax, heights[leftIdx])\n            surfaceArea += leftMax - heights[leftIdx]\n        } else {\n            rightIdx--\n            rightMax = max(rightMax, heights[rightIdx])\n            surfaceArea += rightMax - heights[rightIdx]\n        }\n    }\n\n    return surfaceArea\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.waterArea\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3)\n        assert(waterArea(input) == 48)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.waterArea\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3)\n        assert(waterArea(input) == 48)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def waterArea(heights):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(n) space - where n is the length of the input array\ndef waterArea(heights):\n    maxes = [0 for x in heights]\n    leftMax = 0\n    for i in range(len(heights)):\n        height = heights[i]\n        maxes[i] = leftMax\n        leftMax = max(leftMax, height)\n    rightMax = 0\n    for i in reversed(range(len(heights))):\n        height = heights[i]\n        minHeight = min(rightMax, maxes[i])\n        if height < minHeight:\n            maxes[i] = minHeight - height\n        else:\n            maxes[i] = 0\n        rightMax = max(rightMax, height)\n    return sum(maxes)\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(1) space - where n is the length of the input array\ndef waterArea(heights):\n    if len(heights) == 0:\n        return 0\n\n    leftIdx = 0\n    rightIdx = len(heights) - 1\n    leftMax = heights[leftIdx]\n    rightMax = heights[rightIdx]\n    surfaceArea = 0\n\n    while leftIdx < rightIdx:\n        if heights[leftIdx] < heights[rightIdx]:\n            leftIdx += 1\n            leftMax = max(leftMax, heights[leftIdx])\n            surfaceArea += leftMax - heights[leftIdx]\n        else:\n            rightIdx -= 1\n            rightMax = max(rightMax, heights[rightIdx])\n            surfaceArea += rightMax - heights[rightIdx]\n\n    return surfaceArea\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        self.assertEqual(program.waterArea([0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3]), 48)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        self.assertEqual(program.waterArea([0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3]), 48)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  def waterArea(heights)\n    # Write your code here.\n    return -1\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def waterArea(heights)\n    # Write your code here.\n    return -1\n  end\nend\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def waterArea(heights)\n    # Write your code here.\n    return -1\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.waterArea\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.waterArea\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func waterArea(heights: [Int]) -> Int {\n    // Write your code here.\n    return -1\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(n) space - where n is the length of the input array\n  func waterArea(heights: [Int]) -> Int {\n    var maxes = Array(repeating: 0, count: heights.count)\n    var leftMax = 0\n\n    for i in 0 ..< heights.count {\n      let currentHeight = heights[i]\n\n      maxes[i] = leftMax\n      leftMax = max(leftMax, currentHeight)\n    }\n\n    var rightMax = 0\n\n    for i in (0 ..< heights.count).reversed() {\n      let currentHeight = heights[i]\n\n      let minMax = min(rightMax, maxes[i])\n\n      if currentHeight < minMax {\n        maxes[i] = minMax - currentHeight\n      } else {\n        maxes[i] = 0\n      }\n\n      rightMax = max(rightMax, currentHeight)\n    }\n\n    return maxes.reduce(0) {\n      x, y in\n\n      x + y\n    }\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(1) space - where n is the length of the input array\n  func waterArea(heights: [Int]) -> Int {\n    if heights.count == 0 {\n      return 0\n    }\n\n    var leftIdx = 0\n    var rightIdx = heights.count - 1\n    var leftMax = heights[leftIdx]\n    var rightMax = heights[rightIdx]\n    var surfaceArea = 0\n\n    while leftIdx < rightIdx {\n      if heights[leftIdx] < heights[rightIdx] {\n        leftIdx += 1\n        leftMax = max(leftMax, heights[leftIdx])\n        surfaceArea += leftMax - heights[leftIdx]\n      } else {\n        rightIdx -= 1\n        rightMax = max(rightMax, heights[rightIdx])\n        surfaceArea += rightMax - heights[rightIdx]\n      }\n    }\n    return surfaceArea\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws -> Void in\n      try assertEqual(48, program.waterArea(heights: [0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3]))\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws -> Void in\n      try assertEqual(48, program.waterArea(heights: [0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3]))\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function waterArea(heights: number[]) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space - where n is the length of the input array\nexport function waterArea(heights: number[]) {\n  const maxes: number[] = new Array(heights.length).fill(0);\n  let leftMax = 0;\n  for (let i = 0; i < heights.length; i++) {\n    const height = heights[i];\n    maxes[i] = leftMax;\n    leftMax = Math.max(leftMax, height);\n  }\n  let rightMax = 0;\n  for (let i = heights.length - 1; i >= 0; i--) {\n    const height = heights[i];\n    const minHeight = Math.min(rightMax, maxes[i]);\n    if (height < minHeight) {\n      maxes[i] = minHeight - height;\n    } else {\n      maxes[i] = 0;\n    }\n    rightMax = Math.max(rightMax, height);\n  }\n  return maxes.reduce((a, b) => a + b, 0);\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(1) space - where n is the length of the input array\nexport function waterArea(heights: number[]) {\n  if (heights.length === 0) return 0;\n\n  let leftIdx = 0;\n  let rightIdx = heights.length - 1;\n  let leftMax = heights[leftIdx];\n  let rightMax = heights[rightIdx];\n  let surfaceArea = 0;\n\n  while (leftIdx < rightIdx) {\n    if (heights[leftIdx] < heights[rightIdx]) {\n      leftIdx++;\n      leftMax = Math.max(leftMax, heights[leftIdx]);\n      surfaceArea += leftMax - heights[leftIdx];\n    } else {\n      rightIdx--;\n      rightMax = Math.max(rightMax, heights[rightIdx]);\n      surfaceArea += rightMax - heights[rightIdx];\n    }\n  }\n\n  return surfaceArea;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  chai.expect(program.waterArea([0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3])).to.deep.equal(48);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  chai.expect(program.waterArea([0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3])).to.deep.equal(48);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "heights",
+            "example": [
+                0,
+                8,
+                0,
+                0,
+                5,
+                0,
+                0,
+                10,
+                0,
+                0,
+                1,
+                1,
+                0,
+                3
+            ],
+            "schema": {
+                "items": {
+                    "minimum": 0,
+                    "type": "integer"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "heights": [
+                0,
+                8,
+                0,
+                0,
+                5,
+                0,
+                0,
+                10,
+                0,
+                0,
+                1,
+                1,
+                0,
+                3
+            ]
+        },
+        {
+            "heights": []
+        },
+        {
+            "heights": [
+                0,
+                0,
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "heights": [
+                0,
+                1,
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "heights": [
+                0,
+                1,
+                1,
+                0,
+                0
+            ]
+        },
+        {
+            "heights": [
+                0,
+                1,
+                2,
+                1,
+                1
+            ]
+        },
+        {
+            "heights": [
+                0,
+                1,
+                0,
+                1,
+                0
+            ]
+        },
+        {
+            "heights": [
+                0,
+                1,
+                0,
+                1,
+                0,
+                2,
+                0,
+                3
+            ]
+        },
+        {
+            "heights": [
+                0,
+                8,
+                0,
+                0,
+                10,
+                0,
+                0,
+                10,
+                0,
+                0,
+                1,
+                1,
+                0,
+                3
+            ]
+        },
+        {
+            "heights": [
+                0,
+                100,
+                0,
+                0,
+                10,
+                1,
+                1,
+                10,
+                1,
+                0,
+                1,
+                1,
+                0,
+                100
+            ]
+        },
+        {
+            "heights": [
+                0,
+                100,
+                0,
+                0,
+                10,
+                1,
+                1,
+                10,
+                1,
+                0,
+                1,
+                1,
+                0,
+                0
+            ]
+        },
+        {
+            "heights": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                8
+            ]
+        },
+        {
+            "heights": [
+                8,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1
+            ]
+        },
+        {
+            "heights": [
+                1,
+                8,
+                6,
+                2,
+                5,
+                4,
+                8,
+                3,
+                7
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "heights": [
+                0,
+                8,
+                0,
+                0,
+                5,
+                0,
+                0,
+                10,
+                0,
+                0,
+                1,
+                1,
+                0,
+                3
+            ]
+        },
+        {
+            "heights": []
+        },
+        {
+            "heights": [
+                0,
+                0,
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "heights": [
+                0,
+                1,
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "heights": [
+                0,
+                1,
+                1,
+                0,
+                0
+            ]
+        },
+        {
+            "heights": [
+                0,
+                1,
+                2,
+                1,
+                1
+            ]
+        },
+        {
+            "heights": [
+                0,
+                1,
+                0,
+                1,
+                0
+            ]
+        },
+        {
+            "heights": [
+                0,
+                1,
+                0,
+                1,
+                0,
+                2,
+                0,
+                3
+            ]
+        },
+        {
+            "heights": [
+                0,
+                8,
+                0,
+                0,
+                10,
+                0,
+                0,
+                10,
+                0,
+                0,
+                1,
+                1,
+                0,
+                3
+            ]
+        },
+        {
+            "heights": [
+                0,
+                100,
+                0,
+                0,
+                10,
+                1,
+                1,
+                10,
+                1,
+                0,
+                1,
+                1,
+                0,
+                100
+            ]
+        },
+        {
+            "heights": [
+                0,
+                100,
+                0,
+                0,
+                10,
+                1,
+                1,
+                10,
+                1,
+                0,
+                1,
+                1,
+                0,
+                0
+            ]
+        },
+        {
+            "heights": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                8
+            ]
+        },
+        {
+            "heights": [
+                8,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1
+            ]
+        },
+        {
+            "heights": [
+                1,
+                8,
+                6,
+                2,
+                5,
+                4,
+                8,
+                3,
+                7
+            ]
+        }
+    ],
+    "changelog": []
+}

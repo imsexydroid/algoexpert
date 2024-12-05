@@ -1,0 +1,3253 @@
+{
+    "uid": "reveal-minesweeper",
+    "testStrategy": "JSON",
+    "name": "Reveal Minesweeper",
+    "version": 0,
+    "releaseDate": "2023-06-02T00:00:00Z",
+    "category": "Recursion",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 1587,
+        "failureCount": 197
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "826411133",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 676
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    <a\n      class=\"Link Link--ae\"\n      href=\"https://en.wikipedia.org/wiki/Minesweeper_(video_game)\"\n      target=\"_blank\"\n    >\n      Minesweeper\n    </a>\n    is a popular video game. From Wikipedia, \"The game features a grid of\n    clickable squares, with hidden \"mines\" scattered throughout the board. The\n    objective is to clear the board without detonating any mines, with help from\n    clues about the number of neighboring mines in each field.\" Specifically,\n    when a player clicks on a square (also called a cell) that doesn't contain a\n    mine, the square reveals a number representing the number of immediately\n    adjacent mines (including diagonally adjacent mines).\n  </p>\n\n  <p>\n    You're given a two-dimensional array of strings that represents a\n    Minesweeper board for a game in progress. You're also given a row and a\n    column representing the indices of the next square that the player clicks on\n    the board. Write a function that returns an updated board after the click\n    (your function can mutate the input board).\n  </p>\n\n  <p>\n    The board will always contain only strings, and each string will be one of\n    the following:\n  </p>\n  <ul>\n    <li><span>\"M\"</span>: A mine that has not been clicked on.</li>\n    <li>\n      <span>\"X\"</span>: A mine that has been clicked on, indicating a lost game.\n    </li>\n    <li>\n      <span>\"H\"</span>: A cell with no mine, but whose content is still hidden\n      to the player.\n    </li>\n    <li>\n      <span>\"0-8\"</span>: A cell with no mine, with an integer from 0 to 8\n      representing the number of adjacent mines. Note that this is a\n      single-digit integer represented as a string. For example\n      <span>\"2\"</span> would mean there are 2 adjacent cells with mines.\n      Numbered cells are not clickable as they have already been revealed.\n    </li>\n  </ul>\n\n  <p>\n    If the player clicks on a mine, replace the <span>\"M\"</span> with\n    <span>\"X\"</span>, indicating the game was lost.\n  </p>\n  <p>\n    If the player clicks on a cell adjacent to a mine, replace the\n    <span>\"H\"</span> with a string representing the number of adjacent mines.\n  </p>\n  <p>\n    If the player clicks on a cell with no adjacent mines, replace the\n    <span>\"H\"</span> with <span>\"0\"</span>. Additionally, reveal all of the\n    adjacent hidden cells as if the player had clicked on those cells as well.\n  </p>\n\n  <p>\n    You can assume the given row and column will always represent a legal move.\n    The board can be of any size and have any number of mines in it.\n  </p>\n\n  <h3>Sample Input #1</h3>\n  <pre>\n<span class=\"CodeEditor-promptParameter\">board</span> = [\n  [\"M\", \"M\"],\n  [\"H\", \"H\"],\n  [\"H\", \"H\"]\n]   \n<span class=\"CodeEditor-promptParameter\">row</span> = 2\n<span class=\"CodeEditor-promptParameter\">column</span> = 0\n  </pre>\n  <h3>Sample Output #1</h3>\n  <pre>\n[\n  [\"M\", \"M\"],\n  [\"2\", \"2\"],\n  [\"0\", \"0\"]\n]\n  </pre>\n\n  <h3>Sample Input #2</h3>\n  <pre>\n<span class=\"CodeEditor-promptParameter\">board</span> = [\n  [\"H\", \"H\", \"H\", \"H\", \"M\"],\n  [\"H\", \"1\", \"M\", \"H\", \"1\"],\n  [\"H\", \"H\", \"H\", \"H\", \"H\"],\n  [\"H\", \"H\", \"H\", \"H\", \"H\"]\n]   \n<span class=\"CodeEditor-promptParameter\">row</span> = 3\n<span class=\"CodeEditor-promptParameter\">column</span> = 4\n\n</pre>\n  <h3>Sample Output #2</h3>\n  <pre>\n[\n  [\"0\", \"1\", \"H\", \"H\", \"M\"],\n  [\"0\", \"1\", \"M\", \"2\", \"1\"],\n  [\"0\", \"1\", \"1\", \"1\", \"0\"],\n  [\"0\", \"0\", \"0\", \"0\", \"0\"]\n]\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  While the input is a 2D array, this problem can also be thought of as a graph\n  problem. Each cell is a node, each with up to 8 edges to their adjacent cells.\n</p>\n",
+        "\n<p>\n  If the player clicks on a cell with no adjacent mines, it is as if they\n  clicked on all of the hidden cells adjacent to that cell as well. Try solving\n  this recursively, running the function again on those adjacent cells.\n</p>\n",
+        "\n<p>\n  Doing DFS or BFS through all of the adjacent cells without mines will be the\n  most efficient way to find and reveal them all.\n</p>"
+    ],
+    "spaceTime": "O(w * h) time | O(w * h) space - where w is the width of the board, and h is the height of the board",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nvector<vector<string>> revealMinesweeper(\n  vector<vector<string>> board, int row, int column\n) {\n  // Write your code here.\n  return {};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing namespace std;\n\nstruct CellLocation {\n  int row;\n  int column;\n  CellLocation(int row, int column) : row(row), column(column) {}\n};\n\nvector<CellLocation> getNeighbors(\n  vector<vector<string>>& board, int row, int column\n);\n\n// O(w * h) time | O(w * h) space - where w is the width of the board, and\n// h is the height of the board\nvector<vector<string>> revealMinesweeper(\n  vector<vector<string>>& board, int row, int column\n) {\n  if (board[row][column] == \"M\") {\n    board[row][column] = \"X\";\n    return board;\n  }\n\n  auto neighbors = getNeighbors(board, row, column);\n  int adjacentMinesCount = 0;\n  for (auto const& neighbor : neighbors) {\n    if (board[neighbor.row][neighbor.column] == \"M\") {\n      adjacentMinesCount++;\n    }\n  }\n\n  if (adjacentMinesCount > 0) {\n    board[row][column] = to_string(adjacentMinesCount);\n  } else {\n    board[row][column] = \"0\";\n    for (auto const& neighbor : neighbors) {\n      if (board[neighbor.row][neighbor.column] == \"H\") {\n        revealMinesweeper(board, neighbor.row, neighbor.column);\n      }\n    }\n  }\n\n  return board;\n}\n\nvector<CellLocation> getNeighbors(\n  vector<vector<string>>& board, int row, int column\n) {\n  vector<vector<int>> directions = {\n    {0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};\n  vector<CellLocation> neighbors;\n\n  for (auto const& direction : directions) {\n    int newRow = row + direction[0];\n    int newColumn = column + direction[1];\n\n    if (newRow >= 0 && newRow < board.size() && newColumn >= 0 &&\n        newColumn < board[0].size()) {\n      neighbors.push_back(CellLocation(newRow, newColumn));\n    }\n  }\n\n  return neighbors;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<string>> board = {\n        {\"H\", \"H\", \"H\", \"H\", \"M\"},\n        {\"H\", \"H\", \"M\", \"H\", \"H\"},\n        {\"H\", \"H\", \"H\", \"H\", \"H\"},\n        {\"H\", \"H\", \"H\", \"H\", \"H\"}};\n      int row = 3;\n      int column = 4;\n      vector<vector<string>> expected = {\n        {\"0\", \"1\", \"H\", \"H\", \"M\"},\n        {\"0\", \"1\", \"M\", \"2\", \"1\"},\n        {\"0\", \"1\", \"1\", \"1\", \"0\"},\n        {\"0\", \"0\", \"0\", \"0\", \"0\"}};\n      auto actual = revealMinesweeper(board, row, column);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<string>> board = {\n        {\"H\", \"H\", \"H\", \"H\", \"M\"},\n        {\"H\", \"H\", \"M\", \"H\", \"H\"},\n        {\"H\", \"H\", \"H\", \"H\", \"H\"},\n        {\"H\", \"H\", \"H\", \"H\", \"H\"}};\n      int row = 3;\n      int column = 4;\n      vector<vector<string>> expected = {\n        {\"0\", \"1\", \"H\", \"H\", \"M\"},\n        {\"0\", \"1\", \"M\", \"2\", \"1\"},\n        {\"0\", \"1\", \"1\", \"1\", \"0\"},\n        {\"0\", \"0\", \"0\", \"0\", \"0\"}};\n      auto actual = revealMinesweeper(board, row, column);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public string[][] RevealMinesweeper(string[][] board, int row, int column) {\n    // Write your code here.\n    return new string[][] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(w * h) time | O(w * h) space - where w is the width of the board, and\n  // h is the height of the board\n  public string[][] RevealMinesweeper(string[][] board, int row, int column) {\n    if (board[row][column].Equals(\"M\")) {\n      board[row][column] = \"X\";\n      return board;\n    }\n\n    List<CellLocation> neighbors = getNeighbors(board, row, column);\n    int adjacentMinesCount = 0;\n    foreach (var neighbor in neighbors) {\n      if (board[neighbor.row][neighbor.column].Equals(\"M\")) {\n        adjacentMinesCount++;\n      }\n    }\n\n    if (adjacentMinesCount > 0) {\n      board[row][column] = adjacentMinesCount.ToString();\n    } else {\n      board[row][column] = \"0\";\n      foreach (var neighbor in neighbors) {\n        if (board[neighbor.row][neighbor.column].Equals(\"H\")) {\n          RevealMinesweeper(board, neighbor.row, neighbor.column);\n        }\n      }\n    }\n\n    return board;\n  }\n\n  private List<CellLocation> getNeighbors(\n    string[][] board, int row, int column\n  ) {\n    int[,] directions = new int[8, 2] {\n      { 0, 1 },\n      { 0, -1 },\n      { 1, 0 },\n      { -1, 0 },\n      { 1, 1 },\n      { 1, -1 },\n      { -1, 1 },\n      { -1, -1 }\n    };\n    List<CellLocation> neighbors = new List<CellLocation>();\n\n    for (var i = 0; i < directions.GetLength(0); i++) {\n      int newRow = row + directions[i, 0];\n      int newColumn = column + directions[i, 1];\n\n      if (0 <= newRow && newRow < board.Length && 0 <= newColumn &&\n          newColumn < board[0].Length) {\n        neighbors.Add(new CellLocation(newRow, newColumn));\n      }\n    }\n\n    return neighbors;\n  }\n\n  public class CellLocation {\n    public int row;\n    public int column;\n\n    public CellLocation(int row, int column) {\n      this.row = row;\n      this.column = column;\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    string[][] board = new string[][] {\n      new string[] { \"H\", \"H\", \"H\", \"H\", \"M\" },\n      new string[] { \"H\", \"H\", \"M\", \"H\", \"H\" },\n      new string[] { \"H\", \"H\", \"H\", \"H\", \"H\" },\n      new string[] { \"H\", \"H\", \"H\", \"H\", \"H\" }\n    };\n    int row = 3;\n    int column = 4;\n    string[][] expected = new string[][] {\n      new string[] { \"0\", \"1\", \"H\", \"H\", \"M\" },\n      new string[] { \"0\", \"1\", \"M\", \"2\", \"1\" },\n      new string[] { \"0\", \"1\", \"1\", \"1\", \"0\" },\n      new string[] { \"0\", \"0\", \"0\", \"0\", \"0\" }\n    };\n    string[][] actual = new Program().RevealMinesweeper(board, row, column);\n\n    Utils.AssertTrue(expected.Length == actual.Length);\n    Utils.AssertTrue(expected[0].Length == actual[0].Length);\n\n    for (int currRow = 0; currRow < expected.Length; currRow++) {\n      for (int currColumn = 0; currColumn < expected[0].Length; currColumn++) {\n        Utils.AssertTrue(\n          expected[currRow][currColumn].Equals(actual[currRow][currColumn])\n        );\n      }\n    }\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    string[][] board = new string[][] {\n      new string[] { \"H\", \"H\", \"H\", \"H\", \"M\" },\n      new string[] { \"H\", \"H\", \"M\", \"H\", \"H\" },\n      new string[] { \"H\", \"H\", \"H\", \"H\", \"H\" },\n      new string[] { \"H\", \"H\", \"H\", \"H\", \"H\" }\n    };\n    int row = 3;\n    int column = 4;\n    string[][] expected = new string[][] {\n      new string[] { \"0\", \"1\", \"H\", \"H\", \"M\" },\n      new string[] { \"0\", \"1\", \"M\", \"2\", \"1\" },\n      new string[] { \"0\", \"1\", \"1\", \"1\", \"0\" },\n      new string[] { \"0\", \"0\", \"0\", \"0\", \"0\" }\n    };\n    string[][] actual = new Program().RevealMinesweeper(board, row, column);\n\n    Utils.AssertTrue(expected.Length == actual.Length);\n    Utils.AssertTrue(expected[0].Length == actual[0].Length);\n\n    for (int currRow = 0; currRow < expected.Length; currRow++) {\n      for (int currColumn = 0; currColumn < expected[0].Length; currColumn++) {\n        Utils.AssertTrue(\n          expected[currRow][currColumn].Equals(actual[currRow][currColumn])\n        );\n      }\n    }\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc RevealMinesweeper(board [][]string, row int, column int) [][]string {\n\t// Write your code here.\n\treturn [][]string{}\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport \"fmt\"\n\n// O(w * h) time | O(w * h) space - where w is the width of the board, and\n// h is the height of the board\nfunc RevealMinesweeper(board [][]string, row int, column int) [][]string {\n\tif board[row][column] == \"M\" {\n\t\tboard[row][column] = \"X\"\n\t\treturn board\n\t}\n\n\tneighbors := getNeighbors(board, row, column)\n\tadjacentMinesCount := 0\n\tfor _, neighbor := range neighbors {\n\t\tneighborRow, neighborColumn := neighbor[0], neighbor[1]\n\t\tif board[neighborRow][neighborColumn] == \"M\" {\n\t\t\tadjacentMinesCount += 1\n\t\t}\n\t}\n\n\tif adjacentMinesCount > 0 {\n\t\tboard[row][column] = fmt.Sprintf(\"%d\", adjacentMinesCount)\n\t} else {\n\t\tboard[row][column] = \"0\"\n\t\tfor _, neighbor := range neighbors {\n\t\t\tneighborRow, neighborColumn := neighbor[0], neighbor[1]\n\t\t\tif board[neighborRow][neighborColumn] == \"H\" {\n\t\t\t\tRevealMinesweeper(board, neighborRow, neighborColumn)\n\t\t\t}\n\t\t}\n\t}\n\n\treturn board\n}\n\nfunc getNeighbors(board [][]string, row int, column int) [][]int {\n\tdirections := [][]int{{0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}}\n\tneighbors := [][]int{}\n\tfor _, direction := range directions {\n\t\tdirectionRow, directionColumn := direction[0], direction[1]\n\t\tnewRow := row + directionRow\n\t\tnewColumn := column + directionColumn\n\t\tif 0 <= newRow && newRow < len(board) && 0 <= newColumn && newColumn < len(board[0]) {\n\t\t\tneighbors = append(neighbors, []int{newRow, newColumn})\n\t\t}\n\t}\n\n\treturn neighbors\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tboard := [][]string{\n\t\t{\"H\", \"H\", \"H\", \"H\", \"M\"},\n\t\t{\"H\", \"1\", \"M\", \"H\", \"1\"},\n\t\t{\"H\", \"H\", \"H\", \"H\", \"H\"},\n\t\t{\"H\", \"H\", \"H\", \"H\", \"H\"},\n\t}\n\trow := 3\n\tcolumn := 4\n\texpected := [][]string{\n\t\t{\"0\", \"1\", \"H\", \"H\", \"M\"},\n\t\t{\"0\", \"1\", \"M\", \"2\", \"1\"},\n\t\t{\"0\", \"1\", \"1\", \"1\", \"0\"},\n\t\t{\"0\", \"0\", \"0\", \"0\", \"0\"},\n\t}\n\tactual := RevealMinesweeper(board, row, column)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tboard := [][]string{\n\t\t{\"H\", \"H\", \"H\", \"H\", \"M\"},\n\t\t{\"H\", \"1\", \"M\", \"H\", \"1\"},\n\t\t{\"H\", \"H\", \"H\", \"H\", \"H\"},\n\t\t{\"H\", \"H\", \"H\", \"H\", \"H\"},\n\t}\n\trow := 3\n\tcolumn := 4\n\texpected := [][]string{\n\t\t{\"0\", \"1\", \"H\", \"H\", \"M\"},\n\t\t{\"0\", \"1\", \"M\", \"2\", \"1\"},\n\t\t{\"0\", \"1\", \"1\", \"1\", \"0\"},\n\t\t{\"0\", \"0\", \"0\", \"0\", \"0\"},\n\t}\n\tactual := RevealMinesweeper(board, row, column)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public String[][] revealMinesweeper(String[][] board, int row, int column) {\n    // Write your code here.\n    return new String[][] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(w * h) time | O(w * h) space - where w is the width of the board, and\n  // h is the height of the board\n  public String[][] revealMinesweeper(String[][] board, int row, int column) {\n    if (board[row][column].equals(\"M\")) {\n      board[row][column] = \"X\";\n      return board;\n    }\n\n    ArrayList<CellLocation> neighbors = getNeighbors(board, row, column);\n    int adjacentMinesCount = 0;\n    for (CellLocation neighbor : neighbors) {\n      if (board[neighbor.row][neighbor.column].equals(\"M\")) {\n        adjacentMinesCount++;\n      }\n    }\n\n    if (adjacentMinesCount > 0) {\n      board[row][column] = Integer.toString(adjacentMinesCount);\n    } else {\n      board[row][column] = \"0\";\n      for (CellLocation neighbor : neighbors) {\n        if (board[neighbor.row][neighbor.column].equals(\"H\")) {\n          revealMinesweeper(board, neighbor.row, neighbor.column);\n        }\n      }\n    }\n\n    return board;\n  }\n\n  private ArrayList<CellLocation> getNeighbors(\n    String[][] board, int row, int column\n  ) {\n    int[][] directions = new int[][] {\n      {0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};\n    ArrayList<CellLocation> neighbors = new ArrayList<CellLocation>();\n\n    for (int[] direction : directions) {\n      int newRow = row + direction[0];\n      int newColumn = column + direction[1];\n\n      if (0 <= newRow && newRow < board.length && 0 <= newColumn\n          && newColumn < board[0].length) {\n        neighbors.add(new CellLocation(newRow, newColumn));\n      }\n    }\n\n    return neighbors;\n  }\n\n  private class CellLocation {\n    int row;\n    int column;\n\n    public CellLocation(int row, int column) {\n      this.row = row;\n      this.column = column;\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    String[][] board = new String[][] {\n      {\"H\", \"H\", \"H\", \"H\", \"M\"},\n      {\"H\", \"H\", \"M\", \"H\", \"H\"},\n      {\"H\", \"H\", \"H\", \"H\", \"H\"},\n      {\"H\", \"H\", \"H\", \"H\", \"H\"}};\n    int row = 3;\n    int column = 4;\n    String[][] expected = new String[][] {\n      {\"0\", \"1\", \"H\", \"H\", \"M\"},\n      {\"0\", \"1\", \"M\", \"2\", \"1\"},\n      {\"0\", \"1\", \"1\", \"1\", \"0\"},\n      {\"0\", \"0\", \"0\", \"0\", \"0\"}};\n    String[][] actual = new Program().revealMinesweeper(board, row, column);\n\n    Utils.assertTrue(expected.length == actual.length);\n    Utils.assertTrue(expected[0].length == actual[0].length);\n\n    for (int currRow = 0; currRow < expected.length; currRow++) {\n      for (int currColumn = 0; currColumn < expected[0].length; currColumn++) {\n        Utils.assertTrue(\n          expected[currRow][currColumn].equals(actual[currRow][currColumn])\n        );\n      }\n    }\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    String[][] board = new String[][] {\n      {\"H\", \"H\", \"H\", \"H\", \"M\"},\n      {\"H\", \"H\", \"M\", \"H\", \"H\"},\n      {\"H\", \"H\", \"H\", \"H\", \"H\"},\n      {\"H\", \"H\", \"H\", \"H\", \"H\"}};\n    int row = 3;\n    int column = 4;\n    String[][] expected = new String[][] {\n      {\"0\", \"1\", \"H\", \"H\", \"M\"},\n      {\"0\", \"1\", \"M\", \"2\", \"1\"},\n      {\"0\", \"1\", \"1\", \"1\", \"0\"},\n      {\"0\", \"0\", \"0\", \"0\", \"0\"}};\n    String[][] actual = new Program().revealMinesweeper(board, row, column);\n\n    Utils.assertTrue(expected.length == actual.length);\n    Utils.assertTrue(expected[0].length == actual[0].length);\n\n    for (int currRow = 0; currRow < expected.length; currRow++) {\n      for (int currColumn = 0; currColumn < expected[0].length; currColumn++) {\n        Utils.assertTrue(\n          expected[currRow][currColumn].equals(actual[currRow][currColumn])\n        );\n      }\n    }\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function revealMinesweeper(board, row, column) {\n  // Write your code here.\n  return [];\n}\n\n// Do not edit the line below.\nexports.revealMinesweeper = revealMinesweeper;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(w * h) time | O(w * h) space - where w is the width of the board, and\n// h is the height of the board\nfunction revealMinesweeper(board, row, column) {\n  if (board[row][column] === 'M') {\n    board[row][column] = 'X';\n    return board;\n  }\n\n  const neighbors = getNeighbors(board, row, column);\n  let adjacentMinesCount = 0;\n  for (const [neighborRow, neighborColumn] of neighbors) {\n    if (board[neighborRow][neighborColumn] === 'M') {\n      adjacentMinesCount += 1;\n    }\n  }\n\n  if (adjacentMinesCount > 0) {\n    board[row][column] = adjacentMinesCount.toString();\n  } else {\n    board[row][column] = '0';\n    for (const [neighborRow, neighborColumn] of neighbors) {\n      if (board[neighborRow][neighborColumn] === 'H') {\n        revealMinesweeper(board, neighborRow, neighborColumn);\n      }\n    }\n  }\n\n  return board;\n}\n\nfunction getNeighbors(board, row, column) {\n  const directions = [\n    [0, 1],\n    [0, -1],\n    [1, 0],\n    [-1, 0],\n    [1, 1],\n    [1, -1],\n    [-1, 1],\n    [-1, -1],\n  ];\n  const neighbors = [];\n  for (const [directionRow, directionColumn] of directions) {\n    const newRow = row + directionRow;\n    const newColumn = column + directionColumn;\n    if (0 <= newRow && newRow < board.length && 0 <= newColumn && newColumn < board[0].length) {\n      neighbors.push([newRow, newColumn]);\n    }\n  }\n\n  return neighbors;\n}\n\n// Do not edit the line below.\nexports.revealMinesweeper = revealMinesweeper;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const board = [\n    ['H', 'H', 'H', 'H', 'M'],\n    ['H', '1', 'M', 'H', '1'],\n    ['H', 'H', 'H', 'H', 'H'],\n    ['H', 'H', 'H', 'H', 'H'],\n  ];\n  const row = 3;\n  const column = 4;\n  const expected = [\n    ['0', '1', 'H', 'H', 'M'],\n    ['0', '1', 'M', '2', '1'],\n    ['0', '1', '1', '1', '0'],\n    ['0', '0', '0', '0', '0'],\n  ];\n  const actual = program.revealMinesweeper(board, row, column);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const board = [\n    ['H', 'H', 'H', 'H', 'M'],\n    ['H', '1', 'M', 'H', '1'],\n    ['H', 'H', 'H', 'H', 'H'],\n    ['H', 'H', 'H', 'H', 'H'],\n  ];\n  const row = 3;\n  const column = 4;\n  const expected = [\n    ['0', '1', 'H', 'H', 'M'],\n    ['0', '1', 'M', '2', '1'],\n    ['0', '1', '1', '1', '0'],\n    ['0', '0', '0', '0', '0'],\n  ];\n  const actual = program.revealMinesweeper(board, row, column);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun revealMinesweeper(board: MutableList<MutableList<String>>, row: Int, column: Int): MutableList<MutableList<String>> {\n    // Write your code here.\n    return mutableListOf()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(w * h) time | O(w * h) space - where w is the width of the board, and\n// h is the height of the board\nfun revealMinesweeper(\n    board: MutableList<MutableList<String>>,\n    row: Int,\n    column: Int,\n): MutableList<MutableList<String>> {\n    if (board[row][column] == \"M\") {\n        board[row][column] = \"X\"\n        return board\n    }\n\n    val neighbors = getNeighbors(board, row, column)\n    var adjacentMinesCount = 0\n    for ((neighborRow, neighborColumn) in neighbors) {\n        if (board[neighborRow][neighborColumn] == \"M\") {\n            adjacentMinesCount += 1\n        }\n    }\n\n    if (adjacentMinesCount > 0) {\n        board[row][column] = adjacentMinesCount.toString()\n    } else {\n        board[row][column] = \"0\"\n        for ((neighborRow, neighborColumn) in neighbors) {\n            if (board[neighborRow][neighborColumn] == \"H\") {\n                revealMinesweeper(board, neighborRow, neighborColumn)\n            }\n        }\n    }\n\n    return board\n}\n\nfun getNeighbors(board: MutableList<MutableList<String>>, row: Int, column: Int): List<List<Int>> {\n    val directions = listOf(\n        listOf(0, 1),\n        listOf(0, -1),\n        listOf(1, 0),\n        listOf(-1, 0),\n        listOf(1, 1),\n        listOf(1, -1),\n        listOf(-1, 1),\n        listOf(-1, -1),\n    )\n    val neighbors = mutableListOf<List<Int>>()\n    for ((directionRow, directionColumn) in directions) {\n        val newRow = row + directionRow\n        val newColumn = column + directionColumn\n        if (0 <= newRow && newRow < board.size && 0 <= newColumn && newColumn < board[0].size) {\n            neighbors.add(listOf(newRow, newColumn))\n        }\n    }\n\n    return neighbors\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.revealMinesweeper\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val board = mutableListOf(\n            mutableListOf(\"H\", \"H\", \"H\", \"H\", \"M\"),\n            mutableListOf(\"H\", \"1\", \"M\", \"H\", \"1\"),\n            mutableListOf(\"H\", \"H\", \"H\", \"H\", \"H\"),\n            mutableListOf(\"H\", \"H\", \"H\", \"H\", \"H\"),\n        )\n        val row = 3\n        val column = 4\n        val expected = listOf(\n            listOf(\"0\", \"1\", \"H\", \"H\", \"M\"),\n            listOf(\"0\", \"1\", \"M\", \"2\", \"1\"),\n            listOf(\"0\", \"1\", \"1\", \"1\", \"0\"),\n            listOf(\"0\", \"0\", \"0\", \"0\", \"0\"),\n        )\n        val output = revealMinesweeper(board, row, column)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.revealMinesweeper\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val board = mutableListOf(\n            mutableListOf(\"H\", \"H\", \"H\", \"H\", \"M\"),\n            mutableListOf(\"H\", \"1\", \"M\", \"H\", \"1\"),\n            mutableListOf(\"H\", \"H\", \"H\", \"H\", \"H\"),\n            mutableListOf(\"H\", \"H\", \"H\", \"H\", \"H\"),\n        )\n        val row = 3\n        val column = 4\n        val expected = listOf(\n            listOf(\"0\", \"1\", \"H\", \"H\", \"M\"),\n            listOf(\"0\", \"1\", \"M\", \"2\", \"1\"),\n            listOf(\"0\", \"1\", \"1\", \"1\", \"0\"),\n            listOf(\"0\", \"0\", \"0\", \"0\", \"0\"),\n        )\n        val output = revealMinesweeper(board, row, column)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def revealMinesweeper(board, row, column):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(w * h) time | O(w * h) space - where w is the width of the board, and\n# h is the height of the board\ndef revealMinesweeper(board, row, column):\n    if board[row][column] == \"M\":\n        board[row][column] = \"X\"\n        return board\n\n    neighbors = getNeighbors(board, row, column)\n    adjacentMinesCount = 0\n    for neighborRow, neighborColumn in neighbors:\n        if board[neighborRow][neighborColumn] == \"M\":\n            adjacentMinesCount += 1\n\n    if adjacentMinesCount > 0:\n        board[row][column] = str(adjacentMinesCount)\n    else:\n        board[row][column] = \"0\"\n        for neighborRow, neighborColumn in neighbors:\n            if board[neighborRow][neighborColumn] == \"H\":\n                revealMinesweeper(board, neighborRow, neighborColumn)\n\n    return board\n\n\ndef getNeighbors(board, row, column):\n    directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]\n    neighbors = []\n    for directionRow, directionColumn in directions:\n        newRow = row + directionRow\n        newColumn = column + directionColumn\n        if 0 <= newRow < len(board) and 0 <= newColumn < len(board[0]):\n            neighbors.append([newRow, newColumn])\n\n    return neighbors\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        board = [\n            [\"H\", \"H\", \"H\", \"H\", \"M\"],\n            [\"H\", \"1\", \"M\", \"H\", \"1\"],\n            [\"H\", \"H\", \"H\", \"H\", \"H\"],\n            [\"H\", \"H\", \"H\", \"H\", \"H\"],\n        ]\n        row = 3\n        column = 4\n        expected = [\n            [\"0\", \"1\", \"H\", \"H\", \"M\"],\n            [\"0\", \"1\", \"M\", \"2\", \"1\"],\n            [\"0\", \"1\", \"1\", \"1\", \"0\"],\n            [\"0\", \"0\", \"0\", \"0\", \"0\"],\n        ]\n        actual = program.revealMinesweeper(board, row, column)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        board = [\n            [\"H\", \"H\", \"H\", \"H\", \"M\"],\n            [\"H\", \"1\", \"M\", \"H\", \"1\"],\n            [\"H\", \"H\", \"H\", \"H\", \"H\"],\n            [\"H\", \"H\", \"H\", \"H\", \"H\"],\n        ]\n        row = 3\n        column = 4\n        expected = [\n            [\"0\", \"1\", \"H\", \"H\", \"M\"],\n            [\"0\", \"1\", \"M\", \"2\", \"1\"],\n            [\"0\", \"1\", \"1\", \"1\", \"0\"],\n            [\"0\", \"0\", \"0\", \"0\", \"0\"],\n        ]\n        actual = program.revealMinesweeper(board, row, column)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def revealMinesweeper(board, row, column)\n        # Write your code here.\n        return []\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def revealMinesweeper(board, row, column)\n        # Write your code here.\n        return []\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.revealMinesweeper\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.revealMinesweeper\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func revealMinesweeper(_ board: inout [[String]], _ row: Int, _ column: Int) -> [[String]] {\n    // Write your code here.\n    return [[String]]()\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(w * h) time | O(w * h) space - where w is the width of the board, and\n  // h is the height of the board\n  func revealMinesweeper(_ board: inout [[String]], _ row: Int, _ column: Int) -> [[String]] {\n    if board[row][column] == \"M\" {\n      board[row][column] = \"X\"\n      return board\n    }\n\n    let neighbors = getNeighbors(board: board, row: row, column: column)\n    var adjacentMinesCount = 0\n    for (neighborRow, neighborColumn) in neighbors {\n      if board[neighborRow][neighborColumn] == \"M\" {\n        adjacentMinesCount += 1\n      }\n    }\n\n    if adjacentMinesCount > 0 {\n      board[row][column] = String(adjacentMinesCount)\n    } else {\n      board[row][column] = \"0\"\n      for (neighborRow, neighborColumn) in neighbors {\n        if board[neighborRow][neighborColumn] == \"H\" {\n          revealMinesweeper(&board, neighborRow, neighborColumn)\n        }\n      }\n    }\n\n    return board\n  }\n\n  func getNeighbors(board: [[String]], row: Int, column: Int) -> [(Int, Int)] {\n    let directions = [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]]\n    var neighbors: [(Int, Int)] = []\n    for direction in directions {\n      let directionRow = direction[0]\n      let directionColumn = direction[1]\n      let newRow = row + directionRow\n      let newColumn = column + directionColumn\n      if newRow >= 0 && newRow < board.count && newColumn >= 0 && newColumn < board[0].count {\n        neighbors.append((newRow, newColumn))\n      }\n    }\n\n    return neighbors\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var board = [\n        [\"H\", \"H\", \"H\", \"H\", \"M\"],\n        [\"H\", \"1\", \"M\", \"H\", \"1\"],\n        [\"H\", \"H\", \"H\", \"H\", \"H\"],\n        [\"H\", \"H\", \"H\", \"H\", \"H\"],\n      ]\n      var row = 3\n      var column = 4\n      var expected = [\n        [\"0\", \"1\", \"H\", \"H\", \"M\"],\n        [\"0\", \"1\", \"M\", \"2\", \"1\"],\n        [\"0\", \"1\", \"1\", \"1\", \"0\"],\n        [\"0\", \"0\", \"0\", \"0\", \"0\"],\n      ]\n      var actual = Program().revealMinesweeper(&board, row, column)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var board = [\n        [\"H\", \"H\", \"H\", \"H\", \"M\"],\n        [\"H\", \"1\", \"M\", \"H\", \"1\"],\n        [\"H\", \"H\", \"H\", \"H\", \"H\"],\n        [\"H\", \"H\", \"H\", \"H\", \"H\"],\n      ]\n      var row = 3\n      var column = 4\n      var expected = [\n        [\"0\", \"1\", \"H\", \"H\", \"M\"],\n        [\"0\", \"1\", \"M\", \"2\", \"1\"],\n        [\"0\", \"1\", \"1\", \"1\", \"0\"],\n        [\"0\", \"0\", \"0\", \"0\", \"0\"],\n      ]\n      var actual = Program().revealMinesweeper(&board, row, column)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function revealMinesweeper(board: string[][], row: number, column: number) {\n  // Write your code here.\n  return [];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(w * h) time | O(w * h) space - where w is the width of the board, and\n// h is the height of the board\nexport function revealMinesweeper(board: string[][], row: number, column: number) {\n  if (board[row][column] === 'M') {\n    board[row][column] = 'X';\n    return board;\n  }\n\n  const neighbors = getNeighbors(board, row, column);\n  let adjacentMinesCount = 0;\n  for (const [neighborRow, neighborColumn] of neighbors) {\n    if (board[neighborRow][neighborColumn] === 'M') {\n      adjacentMinesCount += 1;\n    }\n  }\n\n  if (adjacentMinesCount > 0) {\n    board[row][column] = adjacentMinesCount.toString();\n  } else {\n    board[row][column] = '0';\n    for (const [neighborRow, neighborColumn] of neighbors) {\n      if (board[neighborRow][neighborColumn] === 'H') {\n        revealMinesweeper(board, neighborRow, neighborColumn);\n      }\n    }\n  }\n\n  return board;\n}\n\nfunction getNeighbors(board: string[][], row: number, column: number) {\n  const directions = [\n    [0, 1],\n    [0, -1],\n    [1, 0],\n    [-1, 0],\n    [1, 1],\n    [1, -1],\n    [-1, 1],\n    [-1, -1],\n  ];\n  const neighbors: [number, number][] = [];\n  for (const [directionRow, directionColumn] of directions) {\n    const newRow = row + directionRow;\n    const newColumn = column + directionColumn;\n    if (0 <= newRow && newRow < board.length && 0 <= newColumn && newColumn < board[0].length) {\n      neighbors.push([newRow, newColumn]);\n    }\n  }\n\n  return neighbors;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const board = [\n    ['H', 'H', 'H', 'H', 'M'],\n    ['H', '1', 'M', 'H', '1'],\n    ['H', 'H', 'H', 'H', 'H'],\n    ['H', 'H', 'H', 'H', 'H'],\n  ];\n  const row = 3;\n  const column = 4;\n  const expected = [\n    ['0', '1', 'H', 'H', 'M'],\n    ['0', '1', 'M', '2', '1'],\n    ['0', '1', '1', '1', '0'],\n    ['0', '0', '0', '0', '0'],\n  ];\n  const actual = program.revealMinesweeper(board, row, column);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const board = [\n    ['H', 'H', 'H', 'H', 'M'],\n    ['H', '1', 'M', 'H', '1'],\n    ['H', 'H', 'H', 'H', 'H'],\n    ['H', 'H', 'H', 'H', 'H'],\n  ];\n  const row = 3;\n  const column = 4;\n  const expected = [\n    ['0', '1', 'H', 'H', 'M'],\n    ['0', '1', 'M', '2', '1'],\n    ['0', '1', '1', '1', '0'],\n    ['0', '0', '0', '0', '0'],\n  ];\n  const actual = program.revealMinesweeper(board, row, column);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "board",
+            "example": [
+                [
+                    "H"
+                ]
+            ],
+            "schema": {
+                "items": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "type": "array"
+            }
+        },
+        {
+            "name": "row",
+            "example": 0,
+            "schema": {
+                "minimum": 0,
+                "type": "integer"
+            }
+        },
+        {
+            "name": "column",
+            "example": 0,
+            "schema": {
+                "minimum": 0,
+                "type": "integer"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "board": [
+                [
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "M"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 1
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 1,
+            "row": 1
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 1,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 1,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 1,
+            "row": 1
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 1
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M"
+                ]
+            ],
+            "column": 0,
+            "row": 1
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 1
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 2
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "H",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M"
+                ]
+            ],
+            "column": 1,
+            "row": 1
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ]
+            ],
+            "column": 1,
+            "row": 1
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 3
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 4,
+            "row": 3
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 2,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M"
+                ],
+                [
+                    "H",
+                    "1",
+                    "M",
+                    "H",
+                    "1"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 4,
+            "row": 3
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 6,
+            "row": 3
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 4,
+            "row": 7
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M"
+                ]
+            ],
+            "column": 0,
+            "row": 6
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M",
+                    "1",
+                    "H",
+                    "1",
+                    "H",
+                    "M",
+                    "1"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "2",
+                    "H"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "1",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M"
+                ]
+            ],
+            "column": 0,
+            "row": 6
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M",
+                    "1",
+                    "H",
+                    "1",
+                    "H",
+                    "M",
+                    "1"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "2",
+                    "H"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "1",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "1",
+                    "1",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M"
+                ]
+            ],
+            "column": 0,
+            "row": 6
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M"
+                ]
+            ],
+            "column": 7,
+            "row": 6
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 2,
+            "row": 6
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ]
+            ],
+            "column": 3,
+            "row": 4
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ]
+            ],
+            "column": 5,
+            "row": 5
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "5",
+                    "3",
+                    "3",
+                    "5",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ]
+            ],
+            "column": 5,
+            "row": 5
+        }
+    ],
+    "jsonTests": [
+        {
+            "board": [
+                [
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "M"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 1
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 1,
+            "row": 1
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 1,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 1,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 1,
+            "row": 1
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 1
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M"
+                ]
+            ],
+            "column": 0,
+            "row": 1
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 1
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 2
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "H",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M"
+                ]
+            ],
+            "column": 1,
+            "row": 1
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ]
+            ],
+            "column": 1,
+            "row": 1
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 3
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 4,
+            "row": 3
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M"
+                ],
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 2,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M"
+                ],
+                [
+                    "H",
+                    "1",
+                    "M",
+                    "H",
+                    "1"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 4,
+            "row": 3
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 0,
+            "row": 0
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 6,
+            "row": 3
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "M"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 4,
+            "row": 7
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M"
+                ]
+            ],
+            "column": 0,
+            "row": 6
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M",
+                    "1",
+                    "H",
+                    "1",
+                    "H",
+                    "M",
+                    "1"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "2",
+                    "H"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "1",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M"
+                ]
+            ],
+            "column": 0,
+            "row": 6
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M",
+                    "1",
+                    "H",
+                    "1",
+                    "H",
+                    "M",
+                    "1"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "2",
+                    "H"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "1",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "1",
+                    "1",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M"
+                ]
+            ],
+            "column": 0,
+            "row": 6
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M"
+                ]
+            ],
+            "column": 7,
+            "row": 6
+        },
+        {
+            "board": [
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H"
+                ],
+                [
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ],
+                [
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H"
+                ]
+            ],
+            "column": 2,
+            "row": 6
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ]
+            ],
+            "column": 3,
+            "row": 4
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ]
+            ],
+            "column": 5,
+            "row": 5
+        },
+        {
+            "board": [
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "5",
+                    "3",
+                    "3",
+                    "5",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "H",
+                    "H",
+                    "H",
+                    "H",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ],
+                [
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M",
+                    "M"
+                ]
+            ],
+            "column": 5,
+            "row": 5
+        }
+    ],
+    "changelog": []
+}

@@ -1,0 +1,1314 @@
+{
+    "uid": "prims-algorithm",
+    "testStrategy": "JSON",
+    "name": "Prim's Algorithm",
+    "version": 0,
+    "releaseDate": "2023-10-15T00:00:00Z",
+    "category": "Famous Algorithms",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 399,
+        "failureCount": 55
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "847485742",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1578
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    You're given a list of <span>edges</span> representing a connected,\n    weighted, undirected graph with at least one node.\n  </p>\n\n  <p>\n    The given list is what's called an adjacency list, and it represents a graph.\n    The number of vertices in the graph is equal to the length of\n    <span>edges</span>, where each index <span>i</span> in\n    <span>edges</span> contains vertex <span>i</span>'s siblings, in no\n    particular order. Each of these siblings is an array of length two, with\n    the first value denoting the index in the list that this vertex is connected\n    to, and and the second value denoting the weight of the edge. Note that\n    this graph is undirected, meaning that if a vertex appears in the edge list\n    of another vertex, then the inverse will also be true (along with the same\n    weight).\n  </p>\n\n  <p>\n    Write a function implementing Prim's Algorithm to return a new\n    <span>edges</span> array that represents a minimum spanning tree. A\n    minimum spanning tree is a tree containing all of the vertices of the original\n    graph and a subset of the edges. These edges should connect all of the vertices\n    with the minimum total edge weight and without generating any cycles.\n  </p>\n\n  <p>\n    Note that the graph represented by <span>edges</span> won't contain any\n    self-loops (vertices that have an outbound edge to themselves) and will only\n    have positively weighted edges (i.e., no negative distances). The graph will\n    always have at least one node.\n  </p>\n\n  <p>\n    If you're unfamiliar with Prim's algorithm, we recommend watching the\n    Conceptual Overview section of this question's video explanation before\n    starting to code.\n  </p>\n  <h3>Sample Input</h3>\n  <pre><span class=\"CodeEditor-promptParameter\">edges</span> = [\n  [[1, 3], [2, 5]],\n  [[0, 3], [2, 10], [3, 12]],\n  [[0, 5], [1, 10]],\n  [[1, 12]]\n]</pre>\n  <h3>Sample Output</h3>\n  <pre>[\n  [[1, 3], [2, 5]],\n  [[0, 3], [3, 12]],\n  [[0, 5]],\n  [[1, 12]]\n]</pre>\n</div>",
+    "hints": [
+        "<p>\n  Prim's requires keeping track of all of the edges that have been discovered\n  so far, with the ability to quickly retrieve the lowest distance edge. Is\n  there a data structure that can be helpful here? \n</p>\n",
+        "\n<p>\n  A good place to start is to implement a Min-Heap to hold all of the edges that\n  have been found so far. This heap should prioritize edges based on their\n  distance.\n</p>\n",
+        "\n<p>\n  Prim's can start at any node. Start by choosing any arbitrary node and add all\n  of its edges to the min heap.\n</p>\n",
+        "\n<p>\n  Continue iterating through the heap until it is empty, meaning you have visited\n  all of the potential edges in the minimum spanning tree. For each edge, if it\n  connects to a previously unconnected vertex, add it to the output mst.\n  Additionally, add all of the edges connected to this newly discovered vertex\n  to the Min-Heap.\n</p>"
+    ],
+    "spaceTime": "O(e * log(v)) time | O(e + v) space - where e is the number of edges in the input edges and v is the number of vertices",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nvector<vector<vector<int>>> primsAlgorithm(vector<vector<vector<int>>> edges) {\n  // Write your code here.\n  return {};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing namespace std;\n\nstruct Item {\n  int vertex;\n  int discoveredVertex;\n  int distance;\n\n  Item(int vertex, int discoveredVertex, int distance)\n      : vertex(vertex),\n        discoveredVertex(discoveredVertex),\n        distance(distance) {}\n};\n\nclass MinHeap {\n private:\n  vector<Item> heap;\n\n  void siftDown(int currentIdx, int endIdx);\n  void siftUp(int currentIdx);\n\n public:\n  MinHeap(const vector<Item>& array);\n  bool isEmpty();\n  vector<Item> buildHeap(const vector<Item>& array);\n  Item remove();\n  void insert(Item value);\n  void swap(int i, int j);\n};\n\n// O(e * log(v)) time | O(v + e) space - where e is the number\n// of edges in the input edges and v is the number of vertices\nvector<vector<vector<int>>> primsAlgorithm(vector<vector<vector<int>>> edges) {\n  vector<Item> initialEdgeItems;\n  for (const auto& edge : edges[0]) {\n    Item edgeItem(0, edge[0], edge[1]);\n    initialEdgeItems.push_back(edgeItem);\n  }\n  MinHeap minHeap(initialEdgeItems);\n\n  vector<vector<vector<int>>> mst;\n  for (int i = 0; i < edges.size(); i++) {\n    mst.push_back(vector<vector<int>>());\n  }\n\n  while (!minHeap.isEmpty()) {\n    Item heapItem = minHeap.remove();\n    int vertex = heapItem.vertex;\n    int discoveredVertex = heapItem.discoveredVertex;\n    int distance = heapItem.distance;\n\n    if (mst[discoveredVertex].size() == 0) {\n      mst[vertex].push_back({discoveredVertex, distance});\n      mst[discoveredVertex].push_back({vertex, distance});\n\n      for (const auto& edge : edges[discoveredVertex]) {\n        int neighbor = edge[0];\n        int neighborDistance = edge[1];\n\n        if (mst[neighbor].size() == 0) {\n          minHeap.insert(Item(discoveredVertex, neighbor, neighborDistance));\n        }\n      }\n    }\n  }\n\n  return mst;\n}\n\nvoid MinHeap::siftDown(int currentIdx, int endIdx) {\n  int childOneIdx = currentIdx * 2 + 1;\n  while (childOneIdx <= endIdx) {\n    int childTwoIdx = currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;\n    int idxToSwap;\n    if (childTwoIdx != -1 && heap[childTwoIdx].distance < heap[childOneIdx].distance) {\n      idxToSwap = childTwoIdx;\n    } else {\n      idxToSwap = childOneIdx;\n    }\n    if (heap[idxToSwap].distance < heap[currentIdx].distance) {\n      swap(currentIdx, idxToSwap);\n      currentIdx = idxToSwap;\n      childOneIdx = currentIdx * 2 + 1;\n    } else {\n      return;\n    }\n  }\n}\n\nvoid MinHeap::siftUp(int currentIdx) {\n  int parentIdx = (currentIdx - 1) / 2;\n  while (currentIdx > 0 && heap[currentIdx].distance < heap[parentIdx].distance\n  ) {\n    swap(currentIdx, parentIdx);\n    currentIdx = parentIdx;\n    parentIdx = (currentIdx - 1) / 2;\n  }\n}\n\nMinHeap::MinHeap(const vector<Item>& array) : heap(array) {\n  int firstParentIdx = (array.size() - 2) / 2;\n  for (int currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {\n    siftDown(currentIdx, array.size() - 1);\n  }\n}\n\nbool MinHeap::isEmpty() { return heap.empty(); }\n\nvector<Item> MinHeap::buildHeap(const vector<Item>& array) {\n  heap = array;\n  int firstParentIdx = (array.size() - 2) / 2;\n  for (int currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {\n    siftDown(currentIdx, array.size() - 1);\n  }\n  return heap;\n}\n\nItem MinHeap::remove() {\n  swap(0, heap.size() - 1);\n  Item valueToRemove = heap[heap.size() - 1];\n  heap.pop_back();\n  siftDown(0, heap.size() - 1);\n  return valueToRemove;\n}\n\nvoid MinHeap::insert(Item value) {\n  heap.push_back(value);\n  siftUp(heap.size() - 1);\n}\n\nvoid MinHeap::swap(int i, int j) {\n  Item temp = heap[j];\n  heap[j] = heap[i];\n  heap[i] = temp;\n}"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<vector<int>>> input = {{{1, 1}}, {{0, 1}}};\n      vector<vector<vector<int>>> expected = {{{1, 1}}, {{0, 1}}};\n      auto actual = primsAlgorithm(input);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<vector<int>>> input = {{{1, 1}}, {{0, 1}}};\n      vector<vector<vector<int>>> expected = {{{1, 1}}, {{0, 1}}};\n      auto actual = primsAlgorithm(input);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int[][][] PrimsAlgorithm(int[][][] edges) {\n    // Write your code here.\n    return new int[][][] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System.Linq;\nusing System;\n\npublic class Program {\n  // O(e * log(v)) time | O(v + e) space - where e is the number\n  // of edges in the input edges and v is the number of vertices\n  public int[][][] PrimsAlgorithm(int[][][] edges) {\n    List<Item> intitialEdgeItems = new List<Item>();\n    foreach (var edge in edges[0]) {\n      Item edgeItem = new Item(0, edge[0], edge[1]);\n      intitialEdgeItems.Add(edgeItem);\n    }\n    MinHeap minHeap = new MinHeap(intitialEdgeItems);\n\n    List<List<int[]>> mst = new List<List<int[]>>();\n    for (int i = 0; i < edges.Length; i++) {\n      mst.Add(new List<int[]>());\n    }\n    while (!minHeap.isEmpty()) {\n      Item heapItem = minHeap.remove();\n      int vertex = heapItem.vertex;\n      int discoveredVertex = heapItem.discoveredVertex;\n      int distance = heapItem.distance;\n\n      if (mst[discoveredVertex].Count == 0) {\n        mst[vertex].Add(new int[] { discoveredVertex, distance });\n        mst[discoveredVertex].Add(new int[] { vertex, distance });\n\n        foreach (var edge in edges[discoveredVertex]) {\n          int neighbor = edge[0];\n          int neighborDistance = edge[1];\n\n          if (mst[neighbor].Count == 0) {\n            minHeap.insert(\n              new Item(discoveredVertex, neighbor, neighborDistance)\n            );\n          }\n        }\n      }\n    }\n\n    int[][][] arrayMst = new int [edges.Length][][];\n    for (int i = 0; i < mst.Count; i++) {\n      arrayMst[i] = new int[mst[i].Count][];\n      for (int j = 0; j < mst[i].Count; j++) {\n        arrayMst[i][j] = mst[i][j];\n      }\n    }\n\n    return arrayMst;\n  }\n\n  public class Item {\n    public int vertex;\n    public int discoveredVertex;\n    public int distance;\n\n    public Item(int vertex, int discoveredVertex, int distance) {\n      this.vertex = vertex;\n      this.discoveredVertex = discoveredVertex;\n      this.distance = distance;\n    }\n  };\n\n  public class MinHeap {\n    List<Item> heap = new List<Item>();\n\n    public MinHeap(List<Item> array) {\n      heap = buildHeap(array);\n    }\n\n    public bool isEmpty() {\n      return heap.Count == 0;\n    }\n\n    public List<Item> buildHeap(List<Item> array) {\n      int firstParentIdx = (array.Count - 2) / 2;\n      for (int currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {\n        siftDown(currentIdx, array.Count - 1, array);\n      }\n      return array;\n    }\n\n    public void siftDown(int currentIdx, int endIdx, List<Item> heap) {\n      int childOneIdx = currentIdx * 2 + 1;\n      while (childOneIdx <= endIdx) {\n        int childTwoIdx =\n          currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;\n        int idxToSwap;\n        if (childTwoIdx != -1 && heap[childTwoIdx].distance < heap[childOneIdx].distance) {\n          idxToSwap = childTwoIdx;\n        } else {\n          idxToSwap = childOneIdx;\n        }\n        if (heap[idxToSwap].distance < heap[currentIdx].distance) {\n          swap(currentIdx, idxToSwap, heap);\n          currentIdx = idxToSwap;\n          childOneIdx = currentIdx * 2 + 1;\n        } else {\n          return;\n        }\n      }\n    }\n\n    public void siftUp(int currentIdx, List<Item> heap) {\n      int parentIdx = (currentIdx - 1) / 2;\n      while (currentIdx > 0 &&\n             heap[currentIdx].distance < heap[parentIdx].distance) {\n        swap(currentIdx, parentIdx, heap);\n        currentIdx = parentIdx;\n        parentIdx = (currentIdx - 1) / 2;\n      }\n    }\n\n    public Item remove() {\n      swap(0, heap.Count - 1, heap);\n      Item valueToRemove = heap[heap.Count - 1];\n      heap.RemoveAt(heap.Count - 1);\n      siftDown(0, heap.Count - 1, heap);\n      return valueToRemove;\n    }\n\n    public void insert(Item value) {\n      heap.Add(value);\n      siftUp(heap.Count - 1, heap);\n    }\n\n    public void swap(int i, int j, List<Item> heap) {\n      Item temp = heap[j];\n      heap[j] = heap[i];\n      heap[i] = temp;\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    var input = new int[][][] {\n      new int[][] { new int[] { 1, 1 } }, new int[][] { new int[] { 0, 1 } }\n    };\n    var expected = new int[][][] {\n      new int[][] { new int[] { 1, 1 } }, new int[][] { new int[] { 0, 1 } }\n    };\n    var actual = new Program().PrimsAlgorithm(input);\n    Utils.AssertTrue(expected.Length == actual.Length);\n    for (int i = 0; i < expected.Length; i++) {\n      for (int j = 0; j < expected[i].Length; j++) {\n        for (int k = 0; k < expected[i][j].Length; k++) {\n          Utils.AssertTrue(expected[i][j][k] == actual[i][j][k]);\n        }\n      }\n    }\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    var input = new int[][][] {\n      new int[][] { new int[] { 1, 1 } }, new int[][] { new int[] { 0, 1 } }\n    };\n    var expected = new int[][][] {\n      new int[][] { new int[] { 1, 1 } }, new int[][] { new int[] { 0, 1 } }\n    };\n    var actual = new Program().PrimsAlgorithm(input);\n    Utils.AssertTrue(expected.Length == actual.Length);\n    for (int i = 0; i < expected.Length; i++) {\n      for (int j = 0; j < expected[i].Length; j++) {\n        for (int k = 0; k < expected[i][j].Length; k++) {\n          Utils.AssertTrue(expected[i][j][k] == actual[i][j][k]);\n        }\n      }\n    }\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc PrimsAlgorithm(edges [][][]int) [][][]int {\n\t// Write your code here.\n\treturn [][][]int{}\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(e * log(v)) time | O(v + e) space - where e is the number\n// of edges in the input edges and v is the number of vertices\nfunc PrimsAlgorithm(edges [][][]int) [][][]int {\n\tinitialEdgeItems := make([][]int, 0)\n\tfor _, edge := range edges[0] {\n\t\tinitialEdgeItems = append(initialEdgeItems, []int{0, edge[0], edge[1]})\n\t}\n\tminHeap := NewMinHeap(initialEdgeItems)\n\n\tmst := make([][][]int, len(edges))\n\tfor i := range mst {\n\t\tmst[i] = make([][]int, 0)\n\t}\n\n\tfor minHeap.Length() > 0 {\n\t\titem := minHeap.Remove()\n\t\tvertex := item[0]\n\t\tdiscoveredVertex := item[1]\n\t\tdistance := item[2]\n\n\t\tif len(mst[discoveredVertex]) == 0 {\n\t\t\tmst[vertex] = append(mst[vertex], []int{discoveredVertex, distance})\n\t\t\tmst[discoveredVertex] = append(mst[discoveredVertex], []int{vertex, distance})\n\t\t}\n\n\t\tfor _, neighbor := range edges[discoveredVertex] {\n\t\t\tif len(mst[neighbor[0]]) == 0 {\n\t\t\t\tminHeap.Insert([]int{discoveredVertex, neighbor[0], neighbor[1]})\n\t\t\t}\n\t\t}\n\t}\n\n\treturn mst\n}\n\ntype MinHeap [][]int\n\nfunc NewMinHeap(array [][]int) *MinHeap {\n\theap := MinHeap(array)\n\tptr := &heap\n\tptr.BuildHeap(array)\n\treturn ptr\n}\n\nfunc (h *MinHeap) BuildHeap(array [][]int) {\n\tfirst := (len(array) - 2) / 2\n\tfor currentIdx := first; currentIdx >= 0; currentIdx-- {\n\t\th.siftDown(currentIdx, len(array)-1)\n\t}\n}\n\nfunc (h *MinHeap) siftDown(currentIdx, endIdx int) {\n\tchildOneIdx := currentIdx*2 + 1\n\tfor childOneIdx <= endIdx {\n\t\tchildTwoIdx := -1\n\t\tif currentIdx*2+2 <= endIdx {\n\t\t\tchildTwoIdx = currentIdx*2 + 2\n\t\t}\n\t\tindexToSwap := childOneIdx\n\t\tif childTwoIdx != -1 && (*h)[childTwoIdx][2] < (*h)[childOneIdx][2] {\n\t\t\tindexToSwap = childTwoIdx\n\t\t}\n\t\tif (*h)[indexToSwap][2] < (*h)[currentIdx][2] {\n\t\t\th.swap(currentIdx, indexToSwap)\n\t\t\tcurrentIdx = indexToSwap\n\t\t\tchildOneIdx = currentIdx*2 + 1\n\t\t} else {\n\t\t\treturn\n\t\t}\n\t}\n}\n\nfunc (h *MinHeap) siftUp(currentIdx int) {\n\tparentIdx := (currentIdx - 1) / 2\n\tfor currentIdx > 0 && (*h)[currentIdx][2] < (*h)[parentIdx][2] {\n\t\th.swap(currentIdx, parentIdx)\n\t\tcurrentIdx = parentIdx\n\t\tparentIdx = (currentIdx - 1) / 2\n\t}\n}\n\nfunc (h *MinHeap) Peek() []int {\n\treturn (*h)[0]\n}\n\nfunc (h *MinHeap) Remove() []int {\n\th.swap(0, h.Length()-1)\n\tlast := (*h)[h.Length()-1]\n\t*h = (*h)[:h.Length()-1]\n\th.siftDown(0, h.Length()-1)\n\treturn last\n}\n\nfunc (h *MinHeap) Insert(value []int) {\n\t*h = append(*h, value)\n\th.siftUp(h.Length() - 1)\n}\n\nfunc (h *MinHeap) IsEmpty() bool {\n\treturn len(*h) == 0\n}\n\nfunc (h *MinHeap) swap(i, j int) {\n\t(*h)[i], (*h)[j] = (*h)[j], (*h)[i]\n}\n\nfunc (h *MinHeap) Length() int {\n\treturn len(*h)\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := [][][]int{{{1, 1}}, {{0, 1}}}\n\texpected := [][][]int{{{1, 1}}, {{0, 1}}}\n\tactual := PrimsAlgorithm(input)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := [][][]int{{{1, 1}}, {{0, 1}}}\n\texpected := [][][]int{{{1, 1}}, {{0, 1}}}\n\tactual := PrimsAlgorithm(input)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int[][][] primsAlgorithm(int[][][] edges) {\n    // Write your code here.\n    return new int[][][] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(e * log(v)) time | O(v + e) space - where e is the number\n  // of edges in the input edges and v is the number of vertices\n  public int[][][] primsAlgorithm(int[][][] edges) {\n    List<Item> intitialEdgeItems = new ArrayList<Item>();\n    for (int[] edge : edges[0]) {\n      Item edgeItem = new Item(0, edge[0], edge[1]);\n      intitialEdgeItems.add(edgeItem);\n    }\n    MinHeap minHeap = new MinHeap(intitialEdgeItems);\n\n    ArrayList<ArrayList<int[]>> mst = new ArrayList<ArrayList<int[]>>();\n    for (int i = 0; i < edges.length; i++) {\n      mst.add(i, new ArrayList<int[]>());\n    }\n    while (!minHeap.isEmpty()) {\n      Item heapItem = minHeap.remove();\n      int vertex = heapItem.vertex;\n      int discoveredVertex = heapItem.discoveredVertex;\n      int distance = heapItem.distance;\n\n      if (mst.get(discoveredVertex).size() == 0) {\n        mst.get(vertex).add(new int[] {discoveredVertex, distance});\n        mst.get(discoveredVertex).add(new int[] {vertex, distance});\n\n        for (int[] edge : edges[discoveredVertex]) {\n          int neighbor = edge[0];\n          int neighborDistance = edge[1];\n\n          if (mst.get(neighbor).size() == 0) {\n            minHeap.insert(\n              new Item(discoveredVertex, neighbor, neighborDistance)\n            );\n          }\n        }\n      }\n    }\n\n    int[][][] arrayMst = new int[edges.length][][];\n    for (int i = 0; i < mst.size(); i++) {\n      arrayMst[i] = new int[mst.get(i).size()][];\n      for (int j = 0; j < mst.get(i).size(); j++) {\n        arrayMst[i][j] = mst.get(i).get(j);\n      }\n    }\n\n    return arrayMst;\n  }\n\n  static class Item {\n    int vertex;\n    int discoveredVertex;\n    int distance;\n\n    public Item(int vertex, int discoveredVertex, int distance) {\n      this.vertex = vertex;\n      this.discoveredVertex = discoveredVertex;\n      this.distance = distance;\n    }\n  };\n\n  static class MinHeap {\n    List<Item> heap = new ArrayList<Item>();\n\n    public MinHeap(List<Item> array) {\n      heap = buildHeap(array);\n    }\n\n    public boolean isEmpty() {\n      return heap.size() == 0;\n    }\n\n    public List<Item> buildHeap(List<Item> array) {\n      int firstParentIdx = (array.size() - 2) / 2;\n      for (int currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {\n        siftDown(currentIdx, array.size() - 1, array);\n      }\n      return array;\n    }\n\n    public void siftDown(int currentIdx, int endIdx, List<Item> heap) {\n      int childOneIdx = currentIdx * 2 + 1;\n      while (childOneIdx <= endIdx) {\n        int childTwoIdx =\n          currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;\n        int idxToSwap;\n        if (childTwoIdx != -1 && heap.get(childTwoIdx).distance < heap.get(childOneIdx).distance) {\n          idxToSwap = childTwoIdx;\n        } else {\n          idxToSwap = childOneIdx;\n        }\n        if (heap.get(idxToSwap).distance < heap.get(currentIdx).distance) {\n          swap(currentIdx, idxToSwap, heap);\n          currentIdx = idxToSwap;\n          childOneIdx = currentIdx * 2 + 1;\n        } else {\n          return;\n        }\n      }\n    }\n\n    public void siftUp(int currentIdx, List<Item> heap) {\n      int parentIdx = (currentIdx - 1) / 2;\n      while (currentIdx > 0\n             && heap.get(currentIdx).distance < heap.get(parentIdx).distance) {\n        swap(currentIdx, parentIdx, heap);\n        currentIdx = parentIdx;\n        parentIdx = (currentIdx - 1) / 2;\n      }\n    }\n\n    public Item remove() {\n      swap(0, heap.size() - 1, heap);\n      Item valueToRemove = heap.get(heap.size() - 1);\n      heap.remove(heap.size() - 1);\n      siftDown(0, heap.size() - 1, heap);\n      return valueToRemove;\n    }\n\n    public void insert(Item value) {\n      heap.add(value);\n      siftUp(heap.size() - 1, heap);\n    }\n\n    public void swap(int i, int j, List<Item> heap) {\n      Item temp = heap.get(j);\n      heap.set(j, heap.get(i));\n      heap.set(i, temp);\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var input = new int[][][] {{{1, 1}}, {{0, 1}}};\n    var expected = new int[][][] {{{1, 1}}, {{0, 1}}};\n    var actual = new Program().primsAlgorithm(input);\n    Utils.assertTrue(Arrays.deepEquals(expected, actual));\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var input = new int[][][] {{{1, 1}}, {{0, 1}}};\n    var expected = new int[][][] {{{1, 1}}, {{0, 1}}};\n    var actual = new Program().primsAlgorithm(input);\n    Utils.assertTrue(Arrays.deepEquals(expected, actual));\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function primsAlgorithm(edges) {\n  // Write your code here.\n  return [];\n}\n\n// Do not edit the line below.\nexports.primsAlgorithm = primsAlgorithm;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(e * log(v)) time | O(v + e) space - where e is the number\n// of edges in the input edges and v is the number of vertices\nfunction primsAlgorithm(edges) {\n  const intitialEdgeItems = edges[0].map(edge => [0, edge[0], edge[1]]);\n  const minHeap = new MinHeap(intitialEdgeItems);\n\n  const mst = edges.map(_ => []);\n  while (!minHeap.isEmpty()) {\n    const [vertex, discoveredVertex, distance] = minHeap.remove();\n\n    if (mst[discoveredVertex].length === 0) {\n      mst[vertex].push([discoveredVertex, distance]);\n      mst[discoveredVertex].push([vertex, distance]);\n    }\n\n    for (const [neighbor, neighborDistance] of edges[discoveredVertex]) {\n      if (mst[neighbor].length === 0) {\n        minHeap.insert([discoveredVertex, neighbor, neighborDistance]);\n      }\n    }\n  }\n\n  return mst;\n}\n\nclass MinHeap {\n  constructor(array) {\n    this.heap = this.buildHeap(array);\n  }\n\n  isEmpty() {\n    return this.heap.length === 0;\n  }\n\n  buildHeap(array) {\n    const firstParentIdx = Math.floor((array.length - 2) / 2);\n    for (let currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {\n      this.siftDown(currentIdx, array.length - 1, array);\n    }\n    return array;\n  }\n\n  siftDown(currentIdx, endIdx, heap) {\n    let childOneIdx = currentIdx * 2 + 1;\n    while (childOneIdx <= endIdx) {\n      const childTwoIdx = currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;\n      let idxToSwap;\n      if (childTwoIdx !== -1 && heap[childTwoIdx][2] < heap[childOneIdx][2]) {\n        idxToSwap = childTwoIdx;\n      } else {\n        idxToSwap = childOneIdx;\n      }\n      if (heap[idxToSwap][2] < heap[currentIdx][2]) {\n        this.swap(currentIdx, idxToSwap, heap);\n        currentIdx = idxToSwap;\n        childOneIdx = currentIdx * 2 + 1;\n      } else {\n        return;\n      }\n    }\n  }\n\n  siftUp(currentIdx, heap) {\n    let parentIdx = Math.floor((currentIdx - 1) / 2);\n    while (currentIdx > 0 && heap[currentIdx][2] < heap[parentIdx][2]) {\n      this.swap(currentIdx, parentIdx, heap);\n      currentIdx = parentIdx;\n      parentIdx = Math.floor((currentIdx - 1) / 2);\n    }\n  }\n\n  remove() {\n    this.swap(0, this.heap.length - 1, this.heap);\n    const valueToRemove = this.heap.pop();\n    this.siftDown(0, this.heap.length - 1, this.heap);\n    return valueToRemove;\n  }\n\n  insert(value) {\n    this.heap.push(value);\n    this.siftUp(this.heap.length - 1, this.heap);\n  }\n\n  swap(i, j, heap) {\n    const temp = heap[j];\n    heap[j] = heap[i];\n    heap[i] = temp;\n  }\n}\n\n// Do not edit the line below.\nexports.primsAlgorithm = primsAlgorithm;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [[[1, 1]], [[0, 1]]];\n  const expected = [[[1, 1]], [[0, 1]]];\n  const actual = program.primsAlgorithm(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [[[1, 1]], [[0, 1]]];\n  const expected = [[[1, 1]], [[0, 1]]];\n  const actual = program.primsAlgorithm(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun primsAlgorithm(edges: List<List<List<Int>>>): List<List<List<Int>>> {\n    // Write your code here.\n    return listOf()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(e * log(v)) time | O(v + e) space - where e is the number\n// of edges in the input edges and v is the number of vertices\nfun primsAlgorithm(edges: List<List<List<Int>>>): List<List<List<Int>>> {\n    val initialEdgeItems = edges[0].map { edge -> listOf(0, edge[0], edge[1]) }.toMutableList()\n    val minHeap = MinHeap(initialEdgeItems)\n\n    val mst = edges.map { it -> mutableListOf<List<Int>>() }\n    while (!minHeap.isEmpty()) {\n        val (vertex, discoveredVertex, distance) = minHeap.remove()!!\n\n        if (mst[discoveredVertex].size == 0) {\n            mst[vertex].add(listOf(discoveredVertex, distance))\n            mst[discoveredVertex].add(listOf(vertex, distance))\n        }\n\n        for ((neighbor, neighborDistance) in edges[discoveredVertex]) {\n            if (mst[neighbor].size == 0) {\n                minHeap.insert(listOf(discoveredVertex, neighbor, neighborDistance))\n            }\n        }\n    }\n\n    return mst\n}\n\nopen class MinHeap(array: MutableList<List<Int>>) {\n    val heap = this.buildHeap(array)\n\n    fun isEmpty(): Boolean {\n        return this.heap.size == 0\n    }\n\n    fun buildHeap(array: MutableList<List<Int>>): MutableList<List<Int>> {\n        val firstParentIdx = (array.size - 2) / 2\n        for (currentIdx in firstParentIdx downTo 0) {\n            this.siftDown(currentIdx, array.size - 1, array)\n        }\n        return array\n    }\n\n    fun siftDown(currentIdx: Int, endIdx: Int, heap: MutableList<List<Int>>) {\n        var newCurrentIdx = currentIdx\n        var childOneIdx = currentIdx * 2 + 1\n        while (childOneIdx <= endIdx) {\n            var childTwoIdx = if (newCurrentIdx * 2 + 2 <= endIdx) newCurrentIdx * 2 + 2 else -1\n            var idxToSwap: Int\n            if (childTwoIdx != -1 && heap[childTwoIdx][2] < heap[childOneIdx][2]) {\n                idxToSwap = childTwoIdx\n            } else {\n                idxToSwap = childOneIdx\n            }\n            if (heap[idxToSwap][2] < heap[newCurrentIdx][2]) {\n                this.swap(newCurrentIdx, idxToSwap, heap)\n                newCurrentIdx = idxToSwap\n                childOneIdx = newCurrentIdx * 2 + 1\n            } else {\n                return\n            }\n        }\n    }\n\n    fun siftUp(currentIdx: Int, heap: MutableList<List<Int>>) {\n        var newCurrentIdx = currentIdx\n        var parentIdx = (currentIdx - 1) / 2\n        while (newCurrentIdx > 0 && heap[newCurrentIdx][2] < heap[parentIdx][2]) {\n            this.swap(newCurrentIdx, parentIdx, heap)\n            newCurrentIdx = parentIdx\n            parentIdx = (newCurrentIdx - 1) / 2\n        }\n    }\n\n    fun remove(): List<Int>? {\n        this.swap(0, this.heap.size - 1, this.heap)\n        val valueToRemove = this.heap.removeAt(this.heap.size - 1)\n        this.siftDown(0, this.heap.size - 1, this.heap)\n        return valueToRemove\n    }\n\n    fun swap(i: Int, j: Int, heap: MutableList<List<Int>>) {\n        val temp = heap[j]\n        heap[j] = heap[i]\n        heap[i] = temp\n    }\n\n    fun insert(value: List<Int>) {\n        this.heap.add(value)\n        this.siftUp(this.heap.size - 1, this.heap)\n    }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.primsAlgorithm\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(listOf(listOf(1, 1)), listOf(listOf(0, 1)))\n        val expected = listOf(listOf(listOf(1, 1)), listOf(listOf(0, 1)))\n        val output = primsAlgorithm(input)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.primsAlgorithm\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(listOf(listOf(1, 1)), listOf(listOf(0, 1)))\n        val expected = listOf(listOf(listOf(1, 1)), listOf(listOf(0, 1)))\n        val output = primsAlgorithm(input)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def primsAlgorithm(edges):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(e * log(v)) time | O(v + e) space - where e is the number\n# of edges in the input edges and v is the number of vertices\ndef primsAlgorithm(edges):\n    minHeap = MinHeap([[0, edge[0], edge[1]] for edge in edges[0]])\n\n    mst = [[] for _ in range(len(edges))]\n    while not minHeap.isEmpty():\n        vertex, discoveredVertex, distance = minHeap.remove()\n\n        if len(mst[discoveredVertex]) == 0:\n            mst[vertex].append([discoveredVertex, distance])\n            mst[discoveredVertex].append([vertex, distance])\n\n            for neighbor, neighborDistance in edges[discoveredVertex]:\n                if len(mst[neighbor]) == 0:\n                    minHeap.insert([discoveredVertex, neighbor, neighborDistance])\n\n    return mst\n\n\nclass MinHeap:\n    def __init__(self, array):\n        self.heap = self.buildHeap(array)\n\n    def isEmpty(self):\n        return len(self.heap) == 0\n\n    def buildHeap(self, array):\n        firstParentIdx = (len(array) - 2) // 2\n        for currentIdx in reversed(range(firstParentIdx + 1)):\n            self.siftDown(currentIdx, len(array) - 1, array)\n        return array\n\n    def siftDown(self, currentIdx, endIdx, heap):\n        childOneIdx = currentIdx * 2 + 1\n        while childOneIdx <= endIdx:\n            childTwoIdx = currentIdx * 2 + 2 if currentIdx * 2 + 2 <= endIdx else -1\n            if childTwoIdx != -1 and heap[childTwoIdx][2] < heap[childOneIdx][2]:\n                idxToSwap = childTwoIdx\n            else:\n                idxToSwap = childOneIdx\n            if heap[idxToSwap][2] < heap[currentIdx][2]:\n                self.swap(currentIdx, idxToSwap, heap)\n                currentIdx = idxToSwap\n                childOneIdx = currentIdx * 2 + 1\n            else:\n                return\n\n    def siftUp(self, currentIdx, heap):\n        parentIdx = (currentIdx - 1) // 2\n        while currentIdx > 0 and heap[currentIdx][2] < heap[parentIdx][2]:\n            self.swap(currentIdx, parentIdx, heap)\n            currentIdx = parentIdx\n            parentIdx = (currentIdx - 1) // 2\n\n    def remove(self):\n        self.swap(0, len(self.heap) - 1, self.heap)\n        valueToRemove = self.heap.pop()\n        self.siftDown(0, len(self.heap) - 1, self.heap)\n        return valueToRemove\n\n    def insert(self, value):\n        self.heap.append(value)\n        self.siftUp(len(self.heap) - 1, self.heap)\n\n    def swap(self, i, j, heap):\n        heap[i], heap[j] = heap[j], heap[i]\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [[[1, 1]], [[0, 1]]]\n        expected = [[[1, 1]], [[0, 1]]]\n        actual = program.primsAlgorithm(input)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [[[1, 1]], [[0, 1]]]\n        expected = [[[1, 1]], [[0, 1]]]\n        actual = program.primsAlgorithm(input)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def primsAlgorithm(edges)\n        # Write your code here.\n        return []\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def primsAlgorithm(edges)\n        # Write your code here.\n        return []\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.primsAlgorithm\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.primsAlgorithm\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func primsAlgorithm(_ edges: [[[Int]]]) -> [[[Int]]] {\n    // Write your code here.\n    return [[[Int]]]()\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(e * log(v)) time | O(v + e) space - where e is the number\n  // of edges in the input edges and v is the number of vertices\n  func primsAlgorithm(_ edges: [[[Int]]]) -> [[[Int]]] {\n    var initialEdgeItems: [[Int]] = []\n    for edge in edges[0] {\n      initialEdgeItems.append([0, edge[0], edge[1]])\n    }\n    var minHeap = MinHeap(initialEdgeItems)\n\n    var mst: [[[Int]]] = edges.map { _ in [] }\n    while !minHeap.isEmpty() {\n      let item = minHeap.remove()\n      let vertex = item[0]\n      let discoveredVertex = item[1]\n      let distance = item[2]\n\n      if mst[discoveredVertex].count == 0 {\n        mst[vertex].append([discoveredVertex, distance])\n        mst[discoveredVertex].append([vertex, distance])\n      }\n\n      for neighbor in edges[discoveredVertex] {\n        if mst[neighbor[0]].count == 0 {\n          minHeap.insert([discoveredVertex, neighbor[0], neighbor[1]])\n        }\n      }\n    }\n\n    return mst\n  }\n\n  class MinHeap {\n    var heap = [[Int]]()\n\n    init(_ array: [[Int]]) {\n      heap = array\n      buildHeap(array: array)\n    }\n\n    func buildHeap(array: [[Int]]) {\n      var firstParentIndex = Double((array.count - 2) / 2)\n      firstParentIndex = firstParentIndex.rounded(.down)\n\n      for var currentIndex in (0 ... Int(firstParentIndex)).reversed() {\n        var endIndex = array.count - 1\n        siftDown(currentIndex, endIndex)\n      }\n    }\n\n    func siftDown(_ currentIndex: Int, _ endIndex: Int) {\n      var childOneIdx = currentIndex * 2 + 1\n      var current = currentIndex\n      while childOneIdx <= endIndex {\n        var childTwoIdx = -1\n        if current * 2 + 2 <= endIndex {\n          childTwoIdx = current * 2 + 2\n        }\n        var indexToSwap = childOneIdx\n        if childTwoIdx != -1, heap[childTwoIdx][2] < heap[childOneIdx][2] {\n          indexToSwap = childTwoIdx\n        }\n\n        if heap[indexToSwap][2] < heap[current][2] {\n          swap(current, indexToSwap)\n          current = indexToSwap\n          childOneIdx = current * 2 + 1\n        } else {\n          return\n        }\n      }\n    }\n\n    func siftUp() {\n      var currentIndex = heap.count - 1\n      var parentIndex = (currentIndex - 1) / 2\n\n      while currentIndex > 0, heap[currentIndex][2] < heap[parentIndex][2] {\n        swap(currentIndex, parentIndex)\n        currentIndex = parentIndex\n        parentIndex = (currentIndex - 1) / 2\n      }\n    }\n\n    func peek() -> [Int] {\n      return heap[0]\n    }\n\n    func remove() -> [Int] {\n      var l = heap.count\n      swap(0, l - 1)\n      var peeked = heap[l - 1]\n      heap.removeLast()\n      siftDown(0, l - 2)\n      return peeked\n    }\n\n    func insert(_ value: [Int]) {\n      heap.append(value)\n      siftUp()\n    }\n\n    func swap(_ firstIndex: Int, _ secondIndex: Int) {\n      let temp = heap[firstIndex]\n      heap[firstIndex] = heap[secondIndex]\n      heap[secondIndex] = temp\n    }\n\n    func length() -> Int {\n      return heap.count\n    }\n\n    func isEmpty() -> Bool {\n      return length() == 0\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var input = [[[1, 1]], [[0, 1]]]\n      var expected = [[[1, 1]], [[0, 1]]]\n      var actual = Program().primsAlgorithm(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var input = [[[1, 1]], [[0, 1]]]\n      var expected = [[[1, 1]], [[0, 1]]]\n      var actual = Program().primsAlgorithm(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function primsAlgorithm(edges: number[][][]) {\n  // Write your code here.\n  return [];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(e * log(v)) time | O(v + e) space - where e is the number\n// of edges in the input edges and v is the number of vertices\nexport function primsAlgorithm(edges: number[][][]) {\n  const intitialEdgeItems = edges[0].map(edge => [0, edge[0], edge[1]]);\n  const minHeap = new MinHeap(intitialEdgeItems);\n\n  const mst: number[][][] = edges.map(_ => []);\n  while (!minHeap.isEmpty()) {\n    const [vertex, discoveredVertex, distance] = minHeap.remove()!;\n\n    if (mst[discoveredVertex].length === 0) {\n      mst[vertex].push([discoveredVertex, distance]);\n      mst[discoveredVertex].push([vertex, distance]);\n    }\n\n    for (const [neighbor, neighborDistance] of edges[discoveredVertex]) {\n      if (mst[neighbor].length === 0) {\n        minHeap.insert([discoveredVertex, neighbor, neighborDistance]);\n      }\n    }\n  }\n\n  return mst;\n}\n\nclass MinHeap {\n  heap: number[][];\n\n  constructor(array: number[][]) {\n    this.heap = this.buildHeap(array);\n  }\n\n  isEmpty() {\n    return this.heap.length === 0;\n  }\n\n  buildHeap(array: number[][]) {\n    const firstParentIdx = Math.floor((array.length - 2) / 2);\n    for (let currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {\n      this.siftDown(currentIdx, array.length - 1, array);\n    }\n    return array;\n  }\n\n  siftDown(currentIdx: number, endIdx: number, heap: number[][]) {\n    let childOneIdx = currentIdx * 2 + 1;\n    while (childOneIdx <= endIdx) {\n      const childTwoIdx = currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;\n      let idxToSwap;\n      if (childTwoIdx !== -1 && heap[childTwoIdx][2] < heap[childOneIdx][2]) {\n        idxToSwap = childTwoIdx;\n      } else {\n        idxToSwap = childOneIdx;\n      }\n      if (heap[idxToSwap][2] < heap[currentIdx][2]) {\n        this.swap(currentIdx, idxToSwap, heap);\n        currentIdx = idxToSwap;\n        childOneIdx = currentIdx * 2 + 1;\n      } else {\n        return;\n      }\n    }\n  }\n\n  siftUp(currentIdx: number, heap: number[][]) {\n    let parentIdx = Math.floor((currentIdx - 1) / 2);\n    while (currentIdx > 0 && heap[currentIdx][2] < heap[parentIdx][2]) {\n      this.swap(currentIdx, parentIdx, heap);\n      currentIdx = parentIdx;\n      parentIdx = Math.floor((currentIdx - 1) / 2);\n    }\n  }\n\n  remove() {\n    this.swap(0, this.heap.length - 1, this.heap);\n    const valueToRemove = this.heap.pop();\n    this.siftDown(0, this.heap.length - 1, this.heap);\n    return valueToRemove;\n  }\n\n  insert(value: number[]) {\n    this.heap.push(value);\n    this.siftUp(this.heap.length - 1, this.heap);\n  }\n\n  swap(i: number, j: number, heap: number[][]) {\n    const temp = heap[j];\n    heap[j] = heap[i];\n    heap[i] = temp;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [[[1, 1]], [[0, 1]]];\n  const expected = [[[1, 1]], [[0, 1]]];\n  const actual = program.primsAlgorithm(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [[[1, 1]], [[0, 1]]];\n  const expected = [[[1, 1]], [[0, 1]]];\n  const actual = program.primsAlgorithm(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "edges",
+            "example": [
+                [
+                    [
+                        1,
+                        1
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        1
+                    ]
+                ]
+            ],
+            "schema": {
+                "items": {
+                    "items": {
+                        "items": {
+                            "items": {
+                                "maxItems": 2,
+                                "minItems": 2
+                            },
+                            "type": "integer"
+                        },
+                        "type": "array"
+                    },
+                    "type": "array"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        1
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        1
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        1
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        1
+                    ],
+                    [
+                        2,
+                        2
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        2
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        2,
+                        5
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        3
+                    ],
+                    [
+                        2,
+                        10
+                    ],
+                    [
+                        3,
+                        12
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        5
+                    ],
+                    [
+                        1,
+                        10
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        12
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        2,
+                        5
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        3
+                    ],
+                    [
+                        2,
+                        10
+                    ],
+                    [
+                        3,
+                        12
+                    ],
+                    [
+                        4,
+                        1
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        5
+                    ],
+                    [
+                        1,
+                        10
+                    ],
+                    [
+                        4,
+                        7
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        12
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        1
+                    ],
+                    [
+                        2,
+                        7
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        2,
+                        5
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        3
+                    ],
+                    [
+                        2,
+                        10
+                    ],
+                    [
+                        3,
+                        12
+                    ],
+                    [
+                        4,
+                        1
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        5
+                    ],
+                    [
+                        1,
+                        10
+                    ],
+                    [
+                        4,
+                        7
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        12
+                    ],
+                    [
+                        4,
+                        11
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        1
+                    ],
+                    [
+                        2,
+                        7
+                    ],
+                    [
+                        3,
+                        11
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        7
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        7
+                    ],
+                    [
+                        2,
+                        6
+                    ],
+                    [
+                        4,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        6
+                    ]
+                ],
+                [
+                    [
+                        4,
+                        2
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        3,
+                        2
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        7
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        7
+                    ],
+                    [
+                        2,
+                        6
+                    ],
+                    [
+                        4,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        6
+                    ],
+                    [
+                        3,
+                        14
+                    ]
+                ],
+                [
+                    [
+                        2,
+                        14
+                    ],
+                    [
+                        4,
+                        2
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        3,
+                        2
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        7
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        7
+                    ],
+                    [
+                        2,
+                        6
+                    ],
+                    [
+                        3,
+                        20
+                    ],
+                    [
+                        4,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        6
+                    ],
+                    [
+                        3,
+                        14
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        20
+                    ],
+                    [
+                        2,
+                        14
+                    ],
+                    [
+                        4,
+                        2
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        3,
+                        2
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        7
+                    ],
+                    [
+                        2,
+                        5
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        7
+                    ],
+                    [
+                        2,
+                        6
+                    ],
+                    [
+                        3,
+                        20
+                    ],
+                    [
+                        4,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        5
+                    ],
+                    [
+                        1,
+                        6
+                    ],
+                    [
+                        3,
+                        14
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        20
+                    ],
+                    [
+                        2,
+                        14
+                    ],
+                    [
+                        4,
+                        2
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        3,
+                        2
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        2,
+                        5
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        3
+                    ],
+                    [
+                        2,
+                        12
+                    ],
+                    [
+                        3,
+                        20
+                    ],
+                    [
+                        4,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        5
+                    ],
+                    [
+                        1,
+                        12
+                    ],
+                    [
+                        3,
+                        14
+                    ],
+                    [
+                        6,
+                        10
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        20
+                    ],
+                    [
+                        2,
+                        14
+                    ],
+                    [
+                        4,
+                        2
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        3,
+                        2
+                    ],
+                    [
+                        5,
+                        11
+                    ]
+                ],
+                [
+                    [
+                        4,
+                        11
+                    ],
+                    [
+                        6,
+                        2
+                    ]
+                ],
+                [
+                    [
+                        2,
+                        10
+                    ],
+                    [
+                        5,
+                        2
+                    ],
+                    [
+                        7,
+                        100
+                    ]
+                ],
+                [
+                    [
+                        6,
+                        100
+                    ]
+                ]
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        1
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        1
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        1
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        1
+                    ],
+                    [
+                        2,
+                        2
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        2
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        2,
+                        5
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        3
+                    ],
+                    [
+                        2,
+                        10
+                    ],
+                    [
+                        3,
+                        12
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        5
+                    ],
+                    [
+                        1,
+                        10
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        12
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        2,
+                        5
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        3
+                    ],
+                    [
+                        2,
+                        10
+                    ],
+                    [
+                        3,
+                        12
+                    ],
+                    [
+                        4,
+                        1
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        5
+                    ],
+                    [
+                        1,
+                        10
+                    ],
+                    [
+                        4,
+                        7
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        12
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        1
+                    ],
+                    [
+                        2,
+                        7
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        2,
+                        5
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        3
+                    ],
+                    [
+                        2,
+                        10
+                    ],
+                    [
+                        3,
+                        12
+                    ],
+                    [
+                        4,
+                        1
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        5
+                    ],
+                    [
+                        1,
+                        10
+                    ],
+                    [
+                        4,
+                        7
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        12
+                    ],
+                    [
+                        4,
+                        11
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        1
+                    ],
+                    [
+                        2,
+                        7
+                    ],
+                    [
+                        3,
+                        11
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        7
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        7
+                    ],
+                    [
+                        2,
+                        6
+                    ],
+                    [
+                        4,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        6
+                    ]
+                ],
+                [
+                    [
+                        4,
+                        2
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        3,
+                        2
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        7
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        7
+                    ],
+                    [
+                        2,
+                        6
+                    ],
+                    [
+                        4,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        6
+                    ],
+                    [
+                        3,
+                        14
+                    ]
+                ],
+                [
+                    [
+                        2,
+                        14
+                    ],
+                    [
+                        4,
+                        2
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        3,
+                        2
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        7
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        7
+                    ],
+                    [
+                        2,
+                        6
+                    ],
+                    [
+                        3,
+                        20
+                    ],
+                    [
+                        4,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        6
+                    ],
+                    [
+                        3,
+                        14
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        20
+                    ],
+                    [
+                        2,
+                        14
+                    ],
+                    [
+                        4,
+                        2
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        3,
+                        2
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        7
+                    ],
+                    [
+                        2,
+                        5
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        7
+                    ],
+                    [
+                        2,
+                        6
+                    ],
+                    [
+                        3,
+                        20
+                    ],
+                    [
+                        4,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        5
+                    ],
+                    [
+                        1,
+                        6
+                    ],
+                    [
+                        3,
+                        14
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        20
+                    ],
+                    [
+                        2,
+                        14
+                    ],
+                    [
+                        4,
+                        2
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        3,
+                        2
+                    ]
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        2,
+                        5
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        3
+                    ],
+                    [
+                        2,
+                        12
+                    ],
+                    [
+                        3,
+                        20
+                    ],
+                    [
+                        4,
+                        3
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        5
+                    ],
+                    [
+                        1,
+                        12
+                    ],
+                    [
+                        3,
+                        14
+                    ],
+                    [
+                        6,
+                        10
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        20
+                    ],
+                    [
+                        2,
+                        14
+                    ],
+                    [
+                        4,
+                        2
+                    ]
+                ],
+                [
+                    [
+                        1,
+                        3
+                    ],
+                    [
+                        3,
+                        2
+                    ],
+                    [
+                        5,
+                        11
+                    ]
+                ],
+                [
+                    [
+                        4,
+                        11
+                    ],
+                    [
+                        6,
+                        2
+                    ]
+                ],
+                [
+                    [
+                        2,
+                        10
+                    ],
+                    [
+                        5,
+                        2
+                    ],
+                    [
+                        7,
+                        100
+                    ]
+                ],
+                [
+                    [
+                        6,
+                        100
+                    ]
+                ]
+            ]
+        }
+    ],
+    "changelog": []
+}

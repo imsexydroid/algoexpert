@@ -1,0 +1,910 @@
+{
+    "uid": "tournament-winner",
+    "testStrategy": "JSON",
+    "name": "Tournament Winner",
+    "version": 0,
+    "releaseDate": "2021-02-08T00:00:00Z",
+    "category": "Arrays",
+    "difficulty": 1,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 83060,
+        "failureCount": 29341
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "508784676",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Tim Ruscica",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 972
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  There's an algorithms tournament taking place in which teams of programmers\n  compete against each other to solve algorithmic problems as fast as possible.\n  Teams compete in a round robin, where each team faces off against all other\n  teams. Only two teams compete against each other at a time, and for each\n  competition, one team is designated the home team, while the other team is the\n  away team. In each competition there's always one winner and one loser; there\n  are no ties. A team receives 3 points if it wins and 0 points if it loses. The\n  winner of the tournament is the team that receives the most amount of points.\n</p>\n<p>\n  Given an array of pairs representing the teams that have competed against each\n  other and an array containing the results of each competition, write a\n  function that returns the winner of the tournament. The input arrays are named\n  <span>competitions</span> and <span>results</span>, respectively. The\n  <span>competitions</span> array has elements in the form of\n  <span>[homeTeam, awayTeam]</span>, where each team is a string of at most 30\n  characters representing the name of the team. The <span>results</span> array\n  contains information about the winner of each corresponding competition in the\n  <span>competitions</span> array. Specifically, <span>results[i]</span> denotes\n  the winner of <span>competitions[i]</span>, where a <span>1</span> in the\n  <span>results</span> array means that the home team in the corresponding\n  competition won and a <span>0</span> means that the away team won.\n</p>\n<p>\n  It's guaranteed that exactly one team will win the tournament and that each\n  team will compete against all other teams exactly once. It's also guaranteed\n  that the tournament will always have at least two teams.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">competitions</span> = [\n  [\"HTML\", \"C#\"],\n  [\"C#\", \"Python\"],\n  [\"Python\", \"HTML\"],\n]\n<span class=\"CodeEditor-promptParameter\">results</span> = [0, 0, 1]\n</pre>\n<h3>Sample Output</h3>\n<pre>\n\"Python\"\n<span class=\"CodeEditor-promptComment\">// C# beats HTML, Python Beats C#, and Python Beats HTML.</span>\n<span class=\"CodeEditor-promptComment\">// HTML - 0 points </span>\n<span class=\"CodeEditor-promptComment\">// C# -  3 points</span>\n<span class=\"CodeEditor-promptComment\">// Python -  6 points</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  Don't overcomplicate this problem. How would you solve it by hand? Consider\n  that approach, and try to translate it into code.\n</p>\n",
+        "\n<p>\n  Use a hash table to store the total points collected by each team, with the\n  team names as keys in the hash table. Once you know how many points each team\n  has, how can you determine which one is the winner?\n</p>\n",
+        "\n<p>\n  Loop through all of the competitions, and update the hash table at every\n  iteration. For each competition, consider the name of the winning team; if the\n  name already exists in the hash table, update that entry by adding 3 points to\n  it. If the team name doesn't exist in the hash table, add a new entry in the\n  hash table with the key as the team name and the value as 3 (since the team\n  won its first competition). While looping through all of the competitions,\n  keep track of the team with the highest score, and at the end of the\n  algorithm, return the team with the highest score.\n</p>"
+    ],
+    "spaceTime": "O(n) time | O(k) space - where n is the number of competitions and k is the number of teams",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\nusing namespace std;\n\nstring tournamentWinner(\n  vector<vector<string>> competitions, vector<int> results\n) {\n  // Write your code here.\n  return \"\";\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <unordered_map>\n#include <vector>\nusing namespace std;\n\nconst int HOME_TEAM_WON = 1;\nvoid updateScores(string team, int points, unordered_map<string, int>& scores);\n\n// O(n) time | O(k) space - where n is the number\n// of competitions and k is the number of teams\nstring tournamentWinner(\n  vector<vector<string>> competitions, vector<int> results\n) {\n  string currentBestTeam = \"\";\n  unordered_map<string, int> scores = {{currentBestTeam, 0}};\n\n  for (int idx = 0; idx < competitions.size(); idx++) {\n    auto result = results[idx];\n    auto competition = competitions[idx];\n    auto homeTeam = competition[0];\n    auto awayTeam = competition[1];\n    auto winningTeam = result == HOME_TEAM_WON ? homeTeam : awayTeam;\n\n    updateScores(winningTeam, 3, scores);\n\n    if (scores[winningTeam] > scores[currentBestTeam]) {\n      currentBestTeam = winningTeam;\n    }\n  }\n\n  return currentBestTeam;\n}\n\nvoid updateScores(string team, int points, unordered_map<string, int>& scores) {\n  if (scores.find(team) == scores.end()) scores[team] = 0;\n\n  scores[team] += points;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<string>> competitions = {\n        {\"HTML\", \"C#\"}, {\"C#\", \"Python\"}, {\"Python\", \"HTML\"}};\n      vector<int> results = {0, 0, 1};\n      string expected = \"Python\";\n      auto actual = tournamentWinner(competitions, results);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<string>> competitions = {\n        {\"HTML\", \"C#\"}, {\"C#\", \"Python\"}, {\"Python\", \"HTML\"}};\n      vector<int> results = {0, 0, 1};\n      string expected = \"Python\";\n      auto actual = tournamentWinner(competitions, results);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System.Collections.Generic;\nusing System;\n\npublic class Program {\n  public string TournamentWinner(\n    List<List<string> > competitions, List<int> results\n  ) {\n    // Write your code here.\n    return \"\";\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  public int HOME_TEAM_WON = 1;\n\n  // O(n) time | O(k) space - where n is the number\n  // of competitions and k is the number of teams\n  public string TournamentWinner(\n    List<List<string> > competitions, List<int> results\n  ) {\n    string currentBestTeam = \"\";\n    Dictionary<string, int> scores = new Dictionary<string, int>();\n    scores[currentBestTeam] = 0;\n\n    for (int idx = 0; idx < competitions.Count; idx++) {\n      List<string> competition = competitions[idx];\n      int result = results[idx];\n\n      string homeTeam = competition[0];\n      string awayTeam = competition[1];\n\n      string winningTeam = (result == HOME_TEAM_WON) ? homeTeam : awayTeam;\n\n      updateScores(winningTeam, 3, scores);\n\n      if (scores[winningTeam] > scores[currentBestTeam]) {\n        currentBestTeam = winningTeam;\n      }\n    }\n\n    return currentBestTeam;\n  }\n\n  public void updateScores(\n    string team, int points, Dictionary<string, int> scores\n  ) {\n    if (!scores.ContainsKey(team)) {\n      scores[team] = 0;\n    }\n\n    scores[team] = scores[team] + points;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System.Collections.Generic;\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    List<List<string> > competitions = new List<List<string> >();\n    List<string> competition1 = new List<string> { \"HTML\", \"C#\" };\n    List<string> competition2 = new List<string> { \"C#\", \"Python\" };\n    List<string> competition3 = new List<string> { \"Python\", \"HTML\" };\n    competitions.Add(competition1);\n    competitions.Add(competition2);\n    competitions.Add(competition3);\n    List<int> results = new List<int> { 0, 0, 1 };\n    string expected = \"Python\";\n    var actual = new Program().TournamentWinner(competitions, results);\n    Utils.AssertTrue(expected == actual);\n  }\n}",
+            "unitTests": "using System.Collections.Generic;\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    List<List<string> > competitions = new List<List<string> >();\n    List<string> competition1 = new List<string> { \"HTML\", \"C#\" };\n    List<string> competition2 = new List<string> { \"C#\", \"Python\" };\n    List<string> competition3 = new List<string> { \"Python\", \"HTML\" };\n    competitions.Add(competition1);\n    competitions.Add(competition2);\n    competitions.Add(competition3);\n    List<int> results = new List<int> { 0, 0, 1 };\n    string expected = \"Python\";\n    var actual = new Program().TournamentWinner(competitions, results);\n    Utils.AssertTrue(expected == actual);\n  }\n}"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nconst HOME_TEAM_WON = 1\n\nfunc TournamentWinner(competitions [][]string, results []int) string {\n\t// Write your code here.\n\treturn \"\"\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nconst HOME_TEAM_WON = 1\n\n// O(n) time | O(k) space - where n is the number\n// of competitions and k is the number of teams\nfunc TournamentWinner(competitions [][]string, results []int) string {\n\tcurrentBestTeam := \"\"\n\tscores := map[string]int{currentBestTeam: 0}\n\n\tfor idx, competition := range competitions {\n\t\tresult := results[idx]\n\t\thomeTeam, awayTeam := competition[0], competition[1]\n\n\t\twinningTeam := awayTeam\n\t\tif result == HOME_TEAM_WON {\n\t\t\twinningTeam = homeTeam\n\t\t}\n\n\t\tupdateScores(winningTeam, 3, scores)\n\n\t\tif scores[winningTeam] > scores[currentBestTeam] {\n\t\t\tcurrentBestTeam = winningTeam\n\t\t}\n\t}\n\n\treturn currentBestTeam\n}\n\nfunc updateScores(team string, points int, scores map[string]int) {\n\tscores[team] += points\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tcompetitions := [][]string{\n\t\t{\"HTML\", \"C#\"},\n\t\t{\"C#\", \"Python\"},\n\t\t{\"Python\", \"HTML\"},\n\t}\n\tresults := []int{0, 0, 1}\n\texpected := \"Python\"\n\tactual := TournamentWinner(competitions, results)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tcompetitions := [][]string{\n\t\t{\"HTML\", \"C#\"},\n\t\t{\"C#\", \"Python\"},\n\t\t{\"Python\", \"HTML\"},\n\t}\n\tresults := []int{0, 0, 1}\n\texpected := \"Python\"\n\tactual := TournamentWinner(competitions, results)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public String tournamentWinner(\n    ArrayList<ArrayList<String>> competitions, ArrayList<Integer> results\n  ) {\n    // Write your code here.\n    return \"\";\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  public int HOME_TEAM_WON = 1;\n\n  // O(n) time | O(k) space - where n is the number\n  // of competitions and k is the number of teams\n  public String tournamentWinner(\n    ArrayList<ArrayList<String>> competitions, ArrayList<Integer> results\n  ) {\n    String currentBestTeam = \"\";\n    HashMap<String, Integer> scores = new HashMap<String, Integer>();\n    scores.put(currentBestTeam, 0);\n\n    for (int idx = 0; idx < competitions.size(); idx++) {\n      ArrayList<String> competition = competitions.get(idx);\n      int result = results.get(idx);\n\n      String homeTeam = competition.get(0);\n      String awayTeam = competition.get(1);\n\n      String winningTeam = (result == HOME_TEAM_WON) ? homeTeam : awayTeam;\n\n      updateScores(winningTeam, 3, scores);\n\n      if (scores.get(winningTeam) > scores.get(currentBestTeam)) {\n        currentBestTeam = winningTeam;\n      }\n    }\n\n    return currentBestTeam;\n  }\n\n  public void updateScores(\n    String team, int points, HashMap<String, Integer> scores\n  ) {\n    if (!scores.containsKey(team)) {\n      scores.put(team, 0);\n    }\n\n    scores.put(team, scores.get(team) + points);\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    ArrayList<ArrayList<String>> competitions =\n      new ArrayList<ArrayList<String>>();\n    ArrayList<String> competition1 =\n      new ArrayList<String>(Arrays.asList(\"HTML\", \"C#\"));\n    ArrayList<String> competition2 =\n      new ArrayList<String>(Arrays.asList(\"C#\", \"Python\"));\n    ArrayList<String> competition3 =\n      new ArrayList<String>(Arrays.asList(\"Python\", \"HTML\"));\n    competitions.add(competition1);\n    competitions.add(competition2);\n    competitions.add(competition3);\n    ArrayList<Integer> results = new ArrayList<Integer>(Arrays.asList(0, 0, 1));\n    String expected = \"Python\";\n    var actual = new Program().tournamentWinner(competitions, results);\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    ArrayList<ArrayList<String>> competitions =\n      new ArrayList<ArrayList<String>>();\n    ArrayList<String> competition1 =\n      new ArrayList<String>(Arrays.asList(\"HTML\", \"C#\"));\n    ArrayList<String> competition2 =\n      new ArrayList<String>(Arrays.asList(\"C#\", \"Python\"));\n    ArrayList<String> competition3 =\n      new ArrayList<String>(Arrays.asList(\"Python\", \"HTML\"));\n    competitions.add(competition1);\n    competitions.add(competition2);\n    competitions.add(competition3);\n    ArrayList<Integer> results = new ArrayList<Integer>(Arrays.asList(0, 0, 1));\n    String expected = \"Python\";\n    var actual = new Program().tournamentWinner(competitions, results);\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function tournamentWinner(competitions, results) {\n  // Write your code here.\n  return '';\n}\n\n// Do not edit the line below.\nexports.tournamentWinner = tournamentWinner;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nconst HOME_TEAM_WON = 1;\n\n// O(n) time | O(k) space - where n is the number\n// of competitions and k is the number of teams\nfunction tournamentWinner(competitions, results) {\n  let currentBestTeam = '';\n  const scores = {[currentBestTeam]: 0};\n\n  for (let idx = 0; idx < competitions.length; idx++) {\n    const result = results[idx];\n    const [homeTeam, awayTeam] = competitions[idx];\n\n    const winningTeam = result === HOME_TEAM_WON ? homeTeam : awayTeam;\n\n    updateScores(winningTeam, 3, scores);\n\n    if (scores[winningTeam] > scores[currentBestTeam]) {\n      currentBestTeam = winningTeam;\n    }\n  }\n\n  return currentBestTeam;\n}\n\nfunction updateScores(team, points, scores) {\n  if (!(team in scores)) scores[team] = 0;\n\n  scores[team] += points;\n}\n\n// Do not edit the line below.\nexports.tournamentWinner = tournamentWinner;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const competitions = [\n    ['HTML', 'C#'],\n    ['C#', 'Python'],\n    ['Python', 'HTML'],\n  ];\n  const results = [0, 0, 1];\n  const expected = 'Python';\n  const actual = program.tournamentWinner(competitions, results);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const competitions = [\n    ['HTML', 'C#'],\n    ['C#', 'Python'],\n    ['Python', 'HTML'],\n  ];\n  const results = [0, 0, 1];\n  const expected = 'Python';\n  const actual = program.tournamentWinner(competitions, results);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun tournamentWinner(competitions: List<List<String>>, results: List<Int>): String {\n    // Write your code here.\n    return \"\"\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nval HOME_TEAM_WON = 1\n\n// O(n) time | O(k) space - where n is the number\n// of competitions and k is the number of teams\nfun tournamentWinner(competitions: List<List<String>>, results: List<Int>): String {\n    var currentBestTeam = \"\"\n    val scores = mutableMapOf(currentBestTeam to 0)\n\n    for (idx in 0 until competitions.size) {\n        val competition = competitions[idx]\n        val result = results[idx]\n        val (homeTeam, awayTeam) = competition\n\n        val winningTeam = if (result == HOME_TEAM_WON) homeTeam else awayTeam\n\n        updateScores(winningTeam, 3, scores)\n\n        if (scores[winningTeam]!! > scores[currentBestTeam]!!) currentBestTeam = winningTeam\n    }\n\n    return currentBestTeam\n}\n\nfun updateScores(team: String, points: Int, scores: MutableMap<String, Int>) {\n    if (!(team in scores)) scores[team] = 0\n\n    scores[team] = scores[team]!! + points\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.tournamentWinner\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val competitions = listOf(\n            listOf(\"HTML\", \"C#\"),\n            listOf(\"C#\", \"Python\"),\n            listOf(\"Python\", \"HTML\"),\n        )\n        val results = listOf(0, 0, 1)\n        val expected = \"Python\"\n        val output = tournamentWinner(competitions, results)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.tournamentWinner\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val competitions = listOf(\n            listOf(\"HTML\", \"C#\"),\n            listOf(\"C#\", \"Python\"),\n            listOf(\"Python\", \"HTML\"),\n        )\n        val results = listOf(0, 0, 1)\n        val expected = \"Python\"\n        val output = tournamentWinner(competitions, results)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def tournamentWinner(competitions, results):\n    # Write your code here.\n    return \"\"\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nHOME_TEAM_WON = 1\n\n\n# O(n) time | O(k) space - where n is the number\n# of competitions and k is the number of teams\ndef tournamentWinner(competitions, results):\n    currentBestTeam = \"\"\n    scores = {currentBestTeam: 0}\n\n    for idx, competition in enumerate(competitions):\n        result = results[idx]\n        homeTeam, awayTeam = competition\n\n        winningTeam = homeTeam if result == HOME_TEAM_WON else awayTeam\n\n        updateScores(winningTeam, 3, scores)\n\n        if scores[winningTeam] > scores[currentBestTeam]:\n            currentBestTeam = winningTeam\n\n    return currentBestTeam\n\n\ndef updateScores(team, points, scores):\n    if team not in scores:\n        scores[team] = 0\n\n    scores[team] += points\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        competitions = [[\"HTML\", \"C#\"], [\"C#\", \"Python\"], [\"Python\", \"HTML\"]]\n        results = [0, 0, 1]\n        expected = \"Python\"\n        actual = program.tournamentWinner(competitions, results)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        competitions = [[\"HTML\", \"C#\"], [\"C#\", \"Python\"], [\"Python\", \"HTML\"]]\n        results = [0, 0, 1]\n        expected = \"Python\"\n        actual = program.tournamentWinner(competitions, results)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "class Program\n  def tournamentWinner(competitions, results)\n    # Write your code here.\n    return \"\"\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def tournamentWinner(competitions, results)\n    # Write your code here.\n    return \"\"\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.tournamentWinner\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.tournamentWinner\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  let HOME_TEAM_WON = 1\n\n  func tournamentWinner(_ competitions: [[String]], _ results: [Int]) -> String {\n    // Write your code here.\n    return \"\"\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  let HOME_TEAM_WON = 1\n\n  // O(n) time | O(k) space - where n is the number\n  // of competitions and k is the number of teams\n  func tournamentWinner(_ competitions: [[String]], _ results: [Int]) -> String {\n    var currentBestTeam = \"\"\n    var scores = [String: Int]()\n    scores[currentBestTeam] = 0\n    for (idx, competition) in competitions.enumerated() {\n      let result = results[idx]\n      let (homeTeam, awayTeam) = (competition[0], competition[1])\n\n      var winningTeam = awayTeam\n      if result == HOME_TEAM_WON {\n        winningTeam = homeTeam\n      }\n\n      updateScores(winningTeam, 3, &scores)\n\n      if scores[winningTeam]! > scores[currentBestTeam]! {\n        currentBestTeam = winningTeam\n      }\n    }\n    return currentBestTeam\n  }\n\n  func updateScores(_ team: String, _ points: Int, _ scores: inout [String: Int]) {\n    if scores[team] == nil {\n      scores[team] = 0\n    }\n    scores[team] = scores[team]! + points\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let competitions = [\n        [\"HTML\", \"C#\"],\n        [\"C#\", \"Python\"],\n        [\"Python\", \"HTML\"],\n      ]\n      let results = [0, 0, 1]\n      let expected = \"Python\"\n      var actual = Program().tournamentWinner(competitions, results)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let competitions = [\n        [\"HTML\", \"C#\"],\n        [\"C#\", \"Python\"],\n        [\"Python\", \"HTML\"],\n      ]\n      let results = [0, 0, 1]\n      let expected = \"Python\"\n      var actual = Program().tournamentWinner(competitions, results)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function tournamentWinner(competitions: string[][], results: number[]) {\n  // Write your code here.\n  return '';\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nconst HOME_TEAM_WON = 1;\n\n// O(n) time | O(k) space - where n is the number\n// of competitions and k is the number of teams\nexport function tournamentWinner(competitions: string[][], results: number[]) {\n  let currentBestTeam = '';\n  const scores = {[currentBestTeam]: 0};\n\n  for (let idx = 0; idx < competitions.length; idx++) {\n    const result = results[idx];\n    const [homeTeam, awayTeam] = competitions[idx];\n\n    const winningTeam = result === HOME_TEAM_WON ? homeTeam : awayTeam;\n\n    updateScores(winningTeam, 3, scores);\n\n    if (scores[winningTeam] > scores[currentBestTeam]) {\n      currentBestTeam = winningTeam;\n    }\n  }\n\n  return currentBestTeam;\n}\n\nfunction updateScores(team: string, points: number, scores: {[team: string]: number}) {\n  if (!(team in scores)) scores[team] = 0;\n\n  scores[team] += points;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const competitions = [\n    ['HTML', 'C#'],\n    ['C#', 'Python'],\n    ['Python', 'HTML'],\n  ];\n  const results = [0, 0, 1];\n  const expected = 'Python';\n  const actual = program.tournamentWinner(competitions, results);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const competitions = [\n    ['HTML', 'C#'],\n    ['C#', 'Python'],\n    ['Python', 'HTML'],\n  ];\n  const results = [0, 0, 1];\n  const expected = 'Python';\n  const actual = program.tournamentWinner(competitions, results);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "competitions",
+            "example": [
+                [
+                    "HTML",
+                    "C#"
+                ],
+                [
+                    "C#",
+                    "Python"
+                ],
+                [
+                    "Python",
+                    "HTML"
+                ]
+            ],
+            "schema": {
+                "items": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "maxItems": 2,
+                    "minItems": 2,
+                    "type": "array"
+                },
+                "minItems": 1,
+                "type": "array"
+            }
+        },
+        {
+            "name": "results",
+            "example": [
+                0,
+                0,
+                1
+            ],
+            "schema": {
+                "items": {
+                    "maximum": 1,
+                    "minimum": 0,
+                    "type": "integer"
+                },
+                "minItems": 1,
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "competitions": [
+                [
+                    "HTML",
+                    "C#"
+                ],
+                [
+                    "C#",
+                    "Python"
+                ],
+                [
+                    "Python",
+                    "HTML"
+                ]
+            ],
+            "results": [
+                0,
+                0,
+                1
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "HTML",
+                    "Java"
+                ],
+                [
+                    "Java",
+                    "Python"
+                ],
+                [
+                    "Python",
+                    "HTML"
+                ]
+            ],
+            "results": [
+                0,
+                1,
+                1
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "HTML",
+                    "Java"
+                ],
+                [
+                    "Java",
+                    "Python"
+                ],
+                [
+                    "Python",
+                    "HTML"
+                ],
+                [
+                    "C#",
+                    "Python"
+                ],
+                [
+                    "Java",
+                    "C#"
+                ],
+                [
+                    "C#",
+                    "HTML"
+                ]
+            ],
+            "results": [
+                0,
+                1,
+                1,
+                1,
+                0,
+                1
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "HTML",
+                    "Java"
+                ],
+                [
+                    "Java",
+                    "Python"
+                ],
+                [
+                    "Python",
+                    "HTML"
+                ],
+                [
+                    "C#",
+                    "Python"
+                ],
+                [
+                    "Java",
+                    "C#"
+                ],
+                [
+                    "C#",
+                    "HTML"
+                ],
+                [
+                    "SQL",
+                    "C#"
+                ],
+                [
+                    "HTML",
+                    "SQL"
+                ],
+                [
+                    "SQL",
+                    "Python"
+                ],
+                [
+                    "SQL",
+                    "Java"
+                ]
+            ],
+            "results": [
+                0,
+                1,
+                1,
+                1,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "Bulls",
+                    "Eagles"
+                ]
+            ],
+            "results": [
+                1
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "Bulls",
+                    "Eagles"
+                ],
+                [
+                    "Bulls",
+                    "Bears"
+                ],
+                [
+                    "Bears",
+                    "Eagles"
+                ]
+            ],
+            "results": [
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "Bulls",
+                    "Eagles"
+                ],
+                [
+                    "Bulls",
+                    "Bears"
+                ],
+                [
+                    "Bulls",
+                    "Monkeys"
+                ],
+                [
+                    "Eagles",
+                    "Bears"
+                ],
+                [
+                    "Eagles",
+                    "Monkeys"
+                ],
+                [
+                    "Bears",
+                    "Monkeys"
+                ]
+            ],
+            "results": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "AlgoMasters",
+                    "FrontPage Freebirds"
+                ],
+                [
+                    "Runtime Terror",
+                    "Static Startup"
+                ],
+                [
+                    "WeC#",
+                    "Hypertext Assassins"
+                ],
+                [
+                    "AlgoMasters",
+                    "WeC#"
+                ],
+                [
+                    "Static Startup",
+                    "Hypertext Assassins"
+                ],
+                [
+                    "Runtime Terror",
+                    "FrontPage Freebirds"
+                ],
+                [
+                    "AlgoMasters",
+                    "Runtime Terror"
+                ],
+                [
+                    "Hypertext Assassins",
+                    "FrontPage Freebirds"
+                ],
+                [
+                    "Static Startup",
+                    "WeC#"
+                ],
+                [
+                    "AlgoMasters",
+                    "Static Startup"
+                ],
+                [
+                    "FrontPage Freebirds",
+                    "WeC#"
+                ],
+                [
+                    "Hypertext Assassins",
+                    "Runtime Terror"
+                ],
+                [
+                    "AlgoMasters",
+                    "Hypertext Assassins"
+                ],
+                [
+                    "WeC#",
+                    "Runtime Terror"
+                ],
+                [
+                    "FrontPage Freebirds",
+                    "Static Startup"
+                ]
+            ],
+            "results": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0,
+                1,
+                0,
+                0,
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "HTML",
+                    "Java"
+                ],
+                [
+                    "Java",
+                    "Python"
+                ],
+                [
+                    "Python",
+                    "HTML"
+                ],
+                [
+                    "C#",
+                    "Python"
+                ],
+                [
+                    "Java",
+                    "C#"
+                ],
+                [
+                    "C#",
+                    "HTML"
+                ],
+                [
+                    "SQL",
+                    "C#"
+                ],
+                [
+                    "HTML",
+                    "SQL"
+                ],
+                [
+                    "SQL",
+                    "Python"
+                ],
+                [
+                    "SQL",
+                    "Java"
+                ]
+            ],
+            "results": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                1,
+                1
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "A",
+                    "B"
+                ]
+            ],
+            "results": [
+                0
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "competitions": [
+                [
+                    "HTML",
+                    "C#"
+                ],
+                [
+                    "C#",
+                    "Python"
+                ],
+                [
+                    "Python",
+                    "HTML"
+                ]
+            ],
+            "results": [
+                0,
+                0,
+                1
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "HTML",
+                    "Java"
+                ],
+                [
+                    "Java",
+                    "Python"
+                ],
+                [
+                    "Python",
+                    "HTML"
+                ]
+            ],
+            "results": [
+                0,
+                1,
+                1
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "HTML",
+                    "Java"
+                ],
+                [
+                    "Java",
+                    "Python"
+                ],
+                [
+                    "Python",
+                    "HTML"
+                ],
+                [
+                    "C#",
+                    "Python"
+                ],
+                [
+                    "Java",
+                    "C#"
+                ],
+                [
+                    "C#",
+                    "HTML"
+                ]
+            ],
+            "results": [
+                0,
+                1,
+                1,
+                1,
+                0,
+                1
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "HTML",
+                    "Java"
+                ],
+                [
+                    "Java",
+                    "Python"
+                ],
+                [
+                    "Python",
+                    "HTML"
+                ],
+                [
+                    "C#",
+                    "Python"
+                ],
+                [
+                    "Java",
+                    "C#"
+                ],
+                [
+                    "C#",
+                    "HTML"
+                ],
+                [
+                    "SQL",
+                    "C#"
+                ],
+                [
+                    "HTML",
+                    "SQL"
+                ],
+                [
+                    "SQL",
+                    "Python"
+                ],
+                [
+                    "SQL",
+                    "Java"
+                ]
+            ],
+            "results": [
+                0,
+                1,
+                1,
+                1,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "Bulls",
+                    "Eagles"
+                ]
+            ],
+            "results": [
+                1
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "Bulls",
+                    "Eagles"
+                ],
+                [
+                    "Bulls",
+                    "Bears"
+                ],
+                [
+                    "Bears",
+                    "Eagles"
+                ]
+            ],
+            "results": [
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "Bulls",
+                    "Eagles"
+                ],
+                [
+                    "Bulls",
+                    "Bears"
+                ],
+                [
+                    "Bulls",
+                    "Monkeys"
+                ],
+                [
+                    "Eagles",
+                    "Bears"
+                ],
+                [
+                    "Eagles",
+                    "Monkeys"
+                ],
+                [
+                    "Bears",
+                    "Monkeys"
+                ]
+            ],
+            "results": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "AlgoMasters",
+                    "FrontPage Freebirds"
+                ],
+                [
+                    "Runtime Terror",
+                    "Static Startup"
+                ],
+                [
+                    "WeC#",
+                    "Hypertext Assassins"
+                ],
+                [
+                    "AlgoMasters",
+                    "WeC#"
+                ],
+                [
+                    "Static Startup",
+                    "Hypertext Assassins"
+                ],
+                [
+                    "Runtime Terror",
+                    "FrontPage Freebirds"
+                ],
+                [
+                    "AlgoMasters",
+                    "Runtime Terror"
+                ],
+                [
+                    "Hypertext Assassins",
+                    "FrontPage Freebirds"
+                ],
+                [
+                    "Static Startup",
+                    "WeC#"
+                ],
+                [
+                    "AlgoMasters",
+                    "Static Startup"
+                ],
+                [
+                    "FrontPage Freebirds",
+                    "WeC#"
+                ],
+                [
+                    "Hypertext Assassins",
+                    "Runtime Terror"
+                ],
+                [
+                    "AlgoMasters",
+                    "Hypertext Assassins"
+                ],
+                [
+                    "WeC#",
+                    "Runtime Terror"
+                ],
+                [
+                    "FrontPage Freebirds",
+                    "Static Startup"
+                ]
+            ],
+            "results": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0,
+                1,
+                0,
+                0,
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "HTML",
+                    "Java"
+                ],
+                [
+                    "Java",
+                    "Python"
+                ],
+                [
+                    "Python",
+                    "HTML"
+                ],
+                [
+                    "C#",
+                    "Python"
+                ],
+                [
+                    "Java",
+                    "C#"
+                ],
+                [
+                    "C#",
+                    "HTML"
+                ],
+                [
+                    "SQL",
+                    "C#"
+                ],
+                [
+                    "HTML",
+                    "SQL"
+                ],
+                [
+                    "SQL",
+                    "Python"
+                ],
+                [
+                    "SQL",
+                    "Java"
+                ]
+            ],
+            "results": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                1,
+                1
+            ]
+        },
+        {
+            "competitions": [
+                [
+                    "A",
+                    "B"
+                ]
+            ],
+            "results": [
+                0
+            ]
+        }
+    ],
+    "changelog": []
+}

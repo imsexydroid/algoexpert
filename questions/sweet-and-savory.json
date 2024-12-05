@@ -1,0 +1,937 @@
+{
+    "uid": "sweet-and-savory",
+    "testStrategy": "JSON",
+    "name": "Sweet And Savory",
+    "version": 0,
+    "releaseDate": "2023-06-02T00:00:00Z",
+    "category": "Arrays",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 5197,
+        "failureCount": 1128
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "826332334",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 491
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    You're hosting an event at a food festival and want to showcase the best\n    possible pairing of two dishes from the festival that complement each\n    other's flavor profile.\n  </p>\n\n  <p>\n    Each dish has a flavor profile represented by an integer. A negative integer\n    means a dish is sweet, while a positive integer means a dish is savory. The\n    absolute value of that integer represents the intensity of that flavor. For\n    example, a flavor profile of -3 is slightly sweet, one of -10 is extremely\n    sweet, one of 2 is mildly savory, and one of 8 is significantly savory.\n  </p>\n\n  <p>\n    You're given an array of these dishes and a target combined flavor profile.\n    Write a function that returns the best possible pairing of two dishes (the\n    pairing with a total flavor profile that's closest to the target one). Note\n    that this pairing must include one sweet and one savory dish. You're also\n    concerned about the dish being too savory, so your pairing should never be\n    more savory than the target flavor profile.\n  </p>\n\n  <p>\n    All dishes will have a positive or negative flavor profile; there are no\n    dishes with a 0 value. For simplicity, you can assume that there will be at\n    most one best solution. If there isn't a valid solution, your function\n    should return <span>[0, 0]</span>. The returned array should be sorted,\n    meaning the sweet dish should always come first.\n  </p>\n\n  <h3>Sample Input #1</h3>\n  <pre>\n<span class=\"CodeEditor-promptParameter\">dishes</span> = [-3, -5, 1, 7]   \n<span class=\"CodeEditor-promptParameter\">target</span> = 8\n</pre>\n  <h3>Sample Output #1</h3>\n  <pre>\n[-3, 7] <span class=\"CodeEditor-promptComment\">// The combined profile of 4 is closest without going over</span>\n</pre>\n\n  <h3>Sample Input #2</h3>\n  <pre>\n<span class=\"CodeEditor-promptParameter\">dishes</span> = [3, 5, 7, 2, 6, 8, 1]  \n<span class=\"CodeEditor-promptParameter\">target</span> = 10\n</pre>\n  <h3>Sample Output #2</h3>\n  <pre>\n[0, 0] <span class=\"CodeEditor-promptComment\">// There are no sweet dishes\n</span>\n</pre>\n\n  <h3>Sample Input #3</h3>\n  <pre>\n<span class=\"CodeEditor-promptParameter\">dishes</span> = [2, 5, -4, -7, 12, 100, -25]  \n<span class=\"CodeEditor-promptParameter\">target</span> = -20\n</pre>\n  <h3>Sample Output #3</h3>\n  <pre>\n[-25, 5] <span class=\"CodeEditor-promptComment\">// This pairing gets the exact combined profile of -20</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  The sweet and savory dishes are essentially two different lists that have\n  been combined into one. It can be helpful to first separate them.\n</p>\n",
+        "\n<p>\n  Looking at all possible pairs will be inefficient. Would sorting the lists\n  first help improve the time complexity?\n</p>\n",
+        "\n<p>\n  Try using a two pointer approach to find the best pairing. Start with a\n  current pairing, and move the savory pointer until the pairing gets too\n  savory. If the dish is too savory, then move the sweet pointer. Do this\n  through the entire lists, keeping track of the best pairing you find.\n</p>"
+    ],
+    "spaceTime": "O(n * log(n)) time | O(n) space - where n is number of dishes",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nvector<int> sweetAndSavory(vector<int> dishes, int target) {\n  // Write your code here.\n  return {};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing namespace std;\n\n// O(n * log(n)) time | O(n) space - where n is number of dishes\nvector<int> sweetAndSavory(vector<int> dishes, int target) {\n  vector<int> sweetDishes;\n  vector<int> savoryDishes;\n\n  for (auto dish : dishes) {\n    if (dish < 0) {\n      sweetDishes.push_back(dish);\n    } else {\n      savoryDishes.push_back(dish);\n    }\n  }\n\n  sort(sweetDishes.begin(), sweetDishes.end(), [](int a, int b) {\n    return abs(a) < abs(b);\n  });\n  sort(savoryDishes.begin(), savoryDishes.end());\n\n  vector<int> bestPair = {0, 0};\n  int bestDifference = INT_MAX;\n  int sweetIndex = 0;\n  int savoryIndex = 0;\n\n  while (sweetIndex < sweetDishes.size() && savoryIndex < savoryDishes.size()) {\n    int currentSum = sweetDishes[sweetIndex] + savoryDishes[savoryIndex];\n\n    if (currentSum <= target) {\n      int currentDifference = target - currentSum;\n      if (currentDifference < bestDifference) {\n        bestDifference = currentDifference;\n        bestPair[0] = sweetDishes[sweetIndex];\n        bestPair[1] = savoryDishes[savoryIndex];\n      }\n      savoryIndex++;\n    } else {\n      sweetIndex++;\n    }\n  }\n\n  return bestPair;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> dishes = {-3, -5, 1, 7};\n      int target = 8;\n      vector<int> expected = {-3, 7};\n      auto actual = sweetAndSavory(dishes, target);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> dishes = {-3, -5, 1, 7};\n      int target = 8;\n      vector<int> expected = {-3, 7};\n      auto actual = sweetAndSavory(dishes, target);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int[] SweetAndSavory(int[] dishes, int target) {\n    // Write your code here.\n    return new int[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n * log(n)) time | O(n) space - where n is number of dishes\n  public int[] SweetAndSavory(int[] dishes, int target) {\n    List<int> sweetDishes = new List<int>();\n    List<int> savoryDishes = new List<int>();\n\n    foreach (var dish in dishes) {\n      if (dish < 0) {\n        sweetDishes.Add(dish);\n      } else {\n        savoryDishes.Add(dish);\n      }\n    }\n    sweetDishes.Sort((a, b) => Math.Abs(a) - Math.Abs(b));\n    savoryDishes.Sort();\n\n    int[] bestPair = new int[2];\n    int bestDifference = Int32.MaxValue;\n    int sweetIndex = 0, savoryIndex = 0;\n\n    while (sweetIndex < sweetDishes.Count && savoryIndex < savoryDishes.Count) {\n      int currentSum = sweetDishes[sweetIndex] + savoryDishes[savoryIndex];\n\n      if (currentSum <= target) {\n        int currentDifference = target - currentSum;\n        if (currentDifference < bestDifference) {\n          bestDifference = currentDifference;\n          bestPair[0] = sweetDishes[sweetIndex];\n          bestPair[1] = savoryDishes[savoryIndex];\n        }\n        savoryIndex++;\n      } else {\n        sweetIndex++;\n      }\n    }\n\n    return bestPair;\n  }\n}"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] dishes = new int[] { -3, -5, 1, 7 };\n    int target = 8;\n    int[] expected = new int[] { -3, 7 };\n    int[] actual = new Program().SweetAndSavory(dishes, target);\n    Utils.AssertTrue(actual.Length == 2);\n    Utils.AssertTrue(actual[0] == expected[0]);\n    Utils.AssertTrue(actual[1] == expected[1]);\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] dishes = new int[] { -3, -5, 1, 7 };\n    int target = 8;\n    int[] expected = new int[] { -3, 7 };\n    int[] actual = new Program().SweetAndSavory(dishes, target);\n    Utils.AssertTrue(actual.Length == 2);\n    Utils.AssertTrue(actual[0] == expected[0]);\n    Utils.AssertTrue(actual[1] == expected[1]);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc SweetAndSavory(dishes []int, target int) []int {\n\t// Write your code here.\n\treturn []int{}\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport \"sort\"\n\n// O(n * log(n)) time | O(n) space - where n is number of dishes\nfunc SweetAndSavory(dishes []int, target int) []int {\n\tsweetDishes := make([]int, 0)\n\tsavoryDishes := make([]int, 0)\n\n\tfor _, dish := range dishes {\n\t\tif dish < 0 {\n\t\t\tsweetDishes = append(sweetDishes, dish)\n\t\t} else if dish > 0 {\n\t\t\tsavoryDishes = append(savoryDishes, dish)\n\t\t}\n\t}\n\n\tsort.Slice(sweetDishes, func(i, j int) bool {\n\t\treturn sweetDishes[i] > sweetDishes[j]\n\t})\n\n\tsort.Slice(savoryDishes, func(i, j int) bool {\n\t\treturn savoryDishes[i] < savoryDishes[j]\n\t})\n\n\tbestPair := []int{0, 0}\n\tbestDifference := int(^uint(0) >> 1) // Initialize with maximum integer value\n\tsweetIndex := 0\n\tsavoryIndex := 0\n\n\tfor sweetIndex < len(sweetDishes) && savoryIndex < len(savoryDishes) {\n\t\tcurrentSum := sweetDishes[sweetIndex] + savoryDishes[savoryIndex]\n\n\t\tif currentSum <= target {\n\t\t\tcurrentDifference := target - currentSum\n\t\t\tif currentDifference < bestDifference {\n\t\t\t\tbestDifference = currentDifference\n\t\t\t\tbestPair[0] = sweetDishes[sweetIndex]\n\t\t\t\tbestPair[1] = savoryDishes[savoryIndex]\n\t\t\t}\n\t\t\tsavoryIndex++\n\t\t} else {\n\t\t\tsweetIndex++\n\t\t}\n\t}\n\n\treturn bestPair\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tdishes := []int{-3, -5, 1, 7}\n\ttarget := 8\n\texpected := []int{-3, 7}\n\tactual := SweetAndSavory(dishes, target)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tdishes := []int{-3, -5, 1, 7}\n\ttarget := 8\n\texpected := []int{-3, 7}\n\tactual := SweetAndSavory(dishes, target)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int[] sweetAndSavory(int[] dishes, int target) {\n    // Write your code here.\n    return new int[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n * log(n)) time | O(n) space - where n is number of dishes\n  public int[] sweetAndSavory(int[] dishes, int target) {\n    ArrayList<Integer> sweetDishes = new ArrayList<Integer>();\n    ArrayList<Integer> savoryDishes = new ArrayList<Integer>();\n\n    for (int dish : dishes) {\n      if (dish < 0) {\n        sweetDishes.add(dish);\n      } else {\n        savoryDishes.add(dish);\n      }\n    }\n    sweetDishes.sort(Comparator.comparingInt(Math::abs));\n    savoryDishes.sort(Comparator.naturalOrder());\n\n    int[] bestPair = new int[2];\n    int bestDifference = Integer.MAX_VALUE;\n    int sweetIndex = 0, savoryIndex = 0;\n\n    while (sweetIndex < sweetDishes.size() && savoryIndex < savoryDishes.size()\n    ) {\n      int currentSum =\n        sweetDishes.get(sweetIndex) + savoryDishes.get(savoryIndex);\n\n      if (currentSum <= target) {\n        int currentDifference = target - currentSum;\n        if (currentDifference < bestDifference) {\n          bestDifference = currentDifference;\n          bestPair[0] = sweetDishes.get(sweetIndex);\n          bestPair[1] = savoryDishes.get(savoryIndex);\n        }\n        savoryIndex++;\n      } else {\n        sweetIndex++;\n      }\n    }\n\n    return bestPair;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] dishes = new int[] {-3, -5, 1, 7};\n    int target = 8;\n    int[] expected = new int[] {-3, 7};\n    int[] actual = new Program().sweetAndSavory(dishes, target);\n    Utils.assertTrue(actual.length == 2);\n    Utils.assertTrue(actual[0] == expected[0]);\n    Utils.assertTrue(actual[1] == expected[1]);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] dishes = new int[] {-3, -5, 1, 7};\n    int target = 8;\n    int[] expected = new int[] {-3, 7};\n    int[] actual = new Program().sweetAndSavory(dishes, target);\n    Utils.assertTrue(actual.length == 2);\n    Utils.assertTrue(actual[0] == expected[0]);\n    Utils.assertTrue(actual[1] == expected[1]);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function sweetAndSavory(dishes, target) {\n  // Write your code here.\n  return [];\n}\n\n// Do not edit the line below.\nexports.sweetAndSavory = sweetAndSavory;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * log(n)) time | O(n) space - where n is number of dishes\nfunction sweetAndSavory(dishes, target) {\n  const sweetDishes = dishes.filter(dish => dish < 0).sort((a, b) => b - a);\n  const savoryDishes = dishes.filter(dish => dish > 0).sort((a, b) => a - b);\n\n  let bestPair = [0, 0];\n  let bestDifference = Infinity;\n  let sweetIndex = 0,\n    savoryIndex = 0;\n\n  while (sweetIndex < sweetDishes.length && savoryIndex < savoryDishes.length) {\n    const currentSum = sweetDishes[sweetIndex] + savoryDishes[savoryIndex];\n\n    if (currentSum <= target) {\n      const currentDifference = target - currentSum;\n      if (currentDifference < bestDifference) {\n        bestDifference = currentDifference;\n        bestPair = [sweetDishes[sweetIndex], savoryDishes[savoryIndex]];\n      }\n      savoryIndex += 1;\n    } else {\n      sweetIndex += 1;\n    }\n  }\n\n  return bestPair;\n}\n\n// Do not edit the line below.\nexports.sweetAndSavory = sweetAndSavory;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const dishes = [-3, -5, 1, 7];\n  const target = 8;\n  const expected = [-3, 7];\n  const actual = program.sweetAndSavory(dishes, target);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const dishes = [-3, -5, 1, 7];\n  const target = 8;\n  const expected = [-3, 7];\n  const actual = program.sweetAndSavory(dishes, target);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun sweetAndSavory(dishes: MutableList<Int>, target: Int): List<Int> {\n    // Write your code here.\n    return listOf()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n * log(n)) time | O(n) space - where n is number of dishes\nfun sweetAndSavory(dishes: MutableList<Int>, target: Int): List<Int> {\n    val sweetDishes = dishes.filter({ dish -> dish < 0 }).toMutableList()\n    val savoryDishes = dishes.filter({ dish -> dish > 0 }).toMutableList()\n    sweetDishes.sortDescending()\n    savoryDishes.sort()\n\n    var bestPair = listOf(0, 0)\n    var bestDifference = Int.MAX_VALUE\n    var sweetIndex = 0\n    var savoryIndex = 0\n\n    while (sweetIndex < sweetDishes.size && savoryIndex < savoryDishes.size) {\n        val currentSum = sweetDishes[sweetIndex] + savoryDishes[savoryIndex]\n\n        if (currentSum <= target) {\n            val currentDifference = target - currentSum\n            if (currentDifference < bestDifference) {\n                bestDifference = currentDifference\n                bestPair = listOf(sweetDishes[sweetIndex], savoryDishes[savoryIndex])\n            }\n            savoryIndex += 1\n        } else {\n            sweetIndex += 1\n        }\n    }\n\n    return bestPair\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.sweetAndSavory\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val dishes = mutableListOf(-3, -5, 1, 7)\n        val target = 8\n        val expected = listOf(-3, 7)\n        val output = sweetAndSavory(dishes, target)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.sweetAndSavory\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val dishes = mutableListOf(-3, -5, 1, 7)\n        val target = 8\n        val expected = listOf(-3, 7)\n        val output = sweetAndSavory(dishes, target)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def sweetAndSavory(dishes, target):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n * log(n)) time | O(n) space - where n is number of dishes\ndef sweetAndSavory(dishes, target):\n    sweetDishes = sorted([dish for dish in dishes if dish < 0], key=abs)\n    savoryDishes = sorted([dish for dish in dishes if dish > 0])\n\n    bestPair = [0, 0]\n    bestDifference = float(\"inf\")\n    sweetIndex, savoryIndex = 0, 0\n\n    while sweetIndex < len(sweetDishes) and savoryIndex < len(savoryDishes):\n        currentSum = sweetDishes[sweetIndex] + savoryDishes[savoryIndex]\n\n        if currentSum <= target:\n            currentDifference = target - currentSum\n            if currentDifference < bestDifference:\n                bestDifference = currentDifference\n                bestPair = [sweetDishes[sweetIndex], savoryDishes[savoryIndex]]\n            savoryIndex += 1\n        else:\n            sweetIndex += 1\n\n    return bestPair\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        dishes = [-3, -5, 1, 7]\n        target = 8\n        expected = [-3, 7]\n        actual = program.sweetAndSavory(dishes, target)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        dishes = [-3, -5, 1, 7]\n        target = 8\n        expected = [-3, 7]\n        actual = program.sweetAndSavory(dishes, target)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def sweetAndSavory(dishes, target)\n        # Write your code here.\n        return []\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def sweetAndSavory(dishes, target)\n        # Write your code here.\n        return []\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.sweetAndSavory\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.sweetAndSavory\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func sweetAndSavory(_ dishes: [Int], _ target: Int) -> [Int] {\n    // Write your code here.\n    return [Int]()\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n * log(n)) time | O(n) space - where n is number of dishes\n  func sweetAndSavory(_ dishes: [Int], _ target: Int) -> [Int] {\n    let sweetDishes = dishes.filter { $0 < 0 }.sorted(by: >)\n    let savoryDishes = dishes.filter { $0 > 0 }.sorted()\n\n    var bestPair: [Int] = [0, 0]\n    var bestDifference = Int.max\n    var sweetIndex = 0\n    var savoryIndex = 0\n\n    while sweetIndex < sweetDishes.count && savoryIndex < savoryDishes.count {\n      let currentSum = sweetDishes[sweetIndex] + savoryDishes[savoryIndex]\n\n      if currentSum <= target {\n        let currentDifference = target - currentSum\n        if currentDifference < bestDifference {\n          bestDifference = currentDifference\n          bestPair = [sweetDishes[sweetIndex], savoryDishes[savoryIndex]]\n        }\n        savoryIndex += 1\n      } else {\n        sweetIndex += 1\n      }\n    }\n\n    return bestPair\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var dishes = [-3, -5, 1, 7]\n      var target = 8\n      var expected = [-3, 7]\n      var actual = Program().sweetAndSavory(dishes, target)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var dishes = [-3, -5, 1, 7]\n      var target = 8\n      var expected = [-3, 7]\n      var actual = Program().sweetAndSavory(dishes, target)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function sweetAndSavory(dishes: number[], target: number) {\n  // Write your code here.\n  return [];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * log(n)) time | O(n) space - where n is number of dishes\nexport function sweetAndSavory(dishes: number[], target: number) {\n  const sweetDishes = dishes.filter(dish => dish < 0).sort((a, b) => b - a);\n  const savoryDishes = dishes.filter(dish => dish > 0).sort((a, b) => a - b);\n\n  let bestPair = [0, 0];\n  let bestDifference = Infinity;\n  let sweetIndex = 0,\n    savoryIndex = 0;\n\n  while (sweetIndex < sweetDishes.length && savoryIndex < savoryDishes.length) {\n    const currentSum = sweetDishes[sweetIndex] + savoryDishes[savoryIndex];\n\n    if (currentSum <= target) {\n      const currentDifference = target - currentSum;\n      if (currentDifference < bestDifference) {\n        bestDifference = currentDifference;\n        bestPair = [sweetDishes[sweetIndex], savoryDishes[savoryIndex]];\n      }\n      savoryIndex += 1;\n    } else {\n      sweetIndex += 1;\n    }\n  }\n\n  return bestPair;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const dishes = [-3, -5, 1, 7];\n  const target = 8;\n  const expected = [-3, 7];\n  const actual = program.sweetAndSavory(dishes, target);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const dishes = [-3, -5, 1, 7];\n  const target = 8;\n  const expected = [-3, 7];\n  const actual = program.sweetAndSavory(dishes, target);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "dishes",
+            "example": [],
+            "schema": {
+                "items": {
+                    "type": "integer"
+                },
+                "type": "array"
+            }
+        },
+        {
+            "name": "target",
+            "example": 10,
+            "schema": {
+                "type": "integer"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "dishes": [],
+            "target": 10
+        },
+        {
+            "dishes": [
+                4
+            ],
+            "target": 10
+        },
+        {
+            "dishes": [
+                -5,
+                10
+            ],
+            "target": 4
+        },
+        {
+            "dishes": [],
+            "target": -10
+        },
+        {
+            "dishes": [
+                4
+            ],
+            "target": -10
+        },
+        {
+            "dishes": [
+                -5,
+                10
+            ],
+            "target": -4
+        },
+        {
+            "dishes": [
+                5,
+                -10
+            ],
+            "target": -4
+        },
+        {
+            "dishes": [
+                -5,
+                10
+            ],
+            "target": 5
+        },
+        {
+            "dishes": [
+                -5,
+                10
+            ],
+            "target": 0
+        },
+        {
+            "dishes": [
+                5,
+                -10
+            ],
+            "target": 0
+        },
+        {
+            "dishes": [
+                10,
+                -5
+            ],
+            "target": 5
+        },
+        {
+            "dishes": [
+                10,
+                -5
+            ],
+            "target": 100
+        },
+        {
+            "dishes": [
+                5,
+                -5,
+                5,
+                -5,
+                5,
+                -5
+            ],
+            "target": 10
+        },
+        {
+            "dishes": [
+                5,
+                -5,
+                5,
+                -5,
+                5,
+                -5
+            ],
+            "target": 0
+        },
+        {
+            "dishes": [
+                3,
+                5,
+                7,
+                2,
+                6,
+                8,
+                1
+            ],
+            "target": 10
+        },
+        {
+            "dishes": [
+                -3,
+                -5,
+                1,
+                7
+            ],
+            "target": 8
+        },
+        {
+            "dishes": [
+                -3,
+                -5,
+                1,
+                7
+            ],
+            "target": 0
+        },
+        {
+            "dishes": [
+                2,
+                5,
+                -4,
+                -7,
+                12,
+                100,
+                -25
+            ],
+            "target": -5
+        },
+        {
+            "dishes": [
+                2,
+                5,
+                -4,
+                -7,
+                12,
+                100,
+                -25
+            ],
+            "target": -7
+        },
+        {
+            "dishes": [
+                2,
+                4,
+                -4,
+                -7,
+                12,
+                100,
+                -25
+            ],
+            "target": -1
+        },
+        {
+            "dishes": [
+                2,
+                5,
+                -4,
+                -7,
+                12,
+                100,
+                -25
+            ],
+            "target": -20
+        },
+        {
+            "dishes": [
+                2,
+                5,
+                -4,
+                -7,
+                12,
+                100,
+                -25
+            ],
+            "target": 5
+        },
+        {
+            "dishes": [
+                2,
+                5,
+                -4,
+                -7,
+                12,
+                100,
+                -25
+            ],
+            "target": 7
+        },
+        {
+            "dishes": [
+                2,
+                5,
+                -4,
+                -7,
+                12,
+                100,
+                -25
+            ],
+            "target": 1
+        },
+        {
+            "dishes": [
+                2,
+                5,
+                -4,
+                -7,
+                12,
+                100,
+                -25
+            ],
+            "target": 20
+        },
+        {
+            "dishes": [
+                -5,
+                -4,
+                -3,
+                -2,
+                -1,
+                1,
+                2,
+                3,
+                4,
+                5
+            ],
+            "target": 6
+        },
+        {
+            "dishes": [
+                -5,
+                -4,
+                -3,
+                -2,
+                -1,
+                1,
+                2,
+                3,
+                4,
+                5
+            ],
+            "target": -6
+        },
+        {
+            "dishes": [
+                17,
+                37,
+                12,
+                -102,
+                53,
+                49,
+                -90,
+                102,
+                49,
+                16,
+                52
+            ],
+            "target": 12
+        },
+        {
+            "dishes": [
+                17,
+                37,
+                12,
+                -102,
+                53,
+                49,
+                -90,
+                102,
+                49,
+                16,
+                52
+            ],
+            "target": 11
+        },
+        {
+            "dishes": [
+                17,
+                37,
+                12,
+                -102,
+                53,
+                49,
+                -90,
+                102,
+                49,
+                16,
+                52
+            ],
+            "target": -100
+        },
+        {
+            "dishes": [
+                17,
+                37,
+                12,
+                -102,
+                53,
+                49,
+                -90,
+                102,
+                49,
+                16,
+                52
+            ],
+            "target": -28
+        },
+        {
+            "dishes": [
+                -12,
+                13,
+                100,
+                -53,
+                540,
+                -538,
+                53,
+                76,
+                32,
+                -63
+            ],
+            "target": 0
+        },
+        {
+            "dishes": [
+                -12,
+                13,
+                100,
+                -53,
+                540,
+                -538,
+                53,
+                76,
+                32,
+                -63
+            ],
+            "target": -34
+        },
+        {
+            "dishes": [
+                -12,
+                13,
+                100,
+                -53,
+                540,
+                -538,
+                53,
+                76,
+                32,
+                -63
+            ],
+            "target": -15
+        },
+        {
+            "dishes": [
+                -12,
+                13,
+                100,
+                -53,
+                540,
+                -538,
+                53,
+                76,
+                32,
+                -63
+            ],
+            "target": 42
+        }
+    ],
+    "jsonTests": [
+        {
+            "dishes": [],
+            "target": 10
+        },
+        {
+            "dishes": [
+                4
+            ],
+            "target": 10
+        },
+        {
+            "dishes": [
+                -5,
+                10
+            ],
+            "target": 4
+        },
+        {
+            "dishes": [],
+            "target": -10
+        },
+        {
+            "dishes": [
+                4
+            ],
+            "target": -10
+        },
+        {
+            "dishes": [
+                -5,
+                10
+            ],
+            "target": -4
+        },
+        {
+            "dishes": [
+                5,
+                -10
+            ],
+            "target": -4
+        },
+        {
+            "dishes": [
+                -5,
+                10
+            ],
+            "target": 5
+        },
+        {
+            "dishes": [
+                -5,
+                10
+            ],
+            "target": 0
+        },
+        {
+            "dishes": [
+                5,
+                -10
+            ],
+            "target": 0
+        },
+        {
+            "dishes": [
+                10,
+                -5
+            ],
+            "target": 5
+        },
+        {
+            "dishes": [
+                10,
+                -5
+            ],
+            "target": 100
+        },
+        {
+            "dishes": [
+                5,
+                -5,
+                5,
+                -5,
+                5,
+                -5
+            ],
+            "target": 10
+        },
+        {
+            "dishes": [
+                5,
+                -5,
+                5,
+                -5,
+                5,
+                -5
+            ],
+            "target": 0
+        },
+        {
+            "dishes": [
+                3,
+                5,
+                7,
+                2,
+                6,
+                8,
+                1
+            ],
+            "target": 10
+        },
+        {
+            "dishes": [
+                -3,
+                -5,
+                1,
+                7
+            ],
+            "target": 8
+        },
+        {
+            "dishes": [
+                -3,
+                -5,
+                1,
+                7
+            ],
+            "target": 0
+        },
+        {
+            "dishes": [
+                2,
+                5,
+                -4,
+                -7,
+                12,
+                100,
+                -25
+            ],
+            "target": -5
+        },
+        {
+            "dishes": [
+                2,
+                5,
+                -4,
+                -7,
+                12,
+                100,
+                -25
+            ],
+            "target": -7
+        },
+        {
+            "dishes": [
+                2,
+                4,
+                -4,
+                -7,
+                12,
+                100,
+                -25
+            ],
+            "target": -1
+        },
+        {
+            "dishes": [
+                2,
+                5,
+                -4,
+                -7,
+                12,
+                100,
+                -25
+            ],
+            "target": -20
+        },
+        {
+            "dishes": [
+                2,
+                5,
+                -4,
+                -7,
+                12,
+                100,
+                -25
+            ],
+            "target": 5
+        },
+        {
+            "dishes": [
+                2,
+                5,
+                -4,
+                -7,
+                12,
+                100,
+                -25
+            ],
+            "target": 7
+        },
+        {
+            "dishes": [
+                2,
+                5,
+                -4,
+                -7,
+                12,
+                100,
+                -25
+            ],
+            "target": 1
+        },
+        {
+            "dishes": [
+                2,
+                5,
+                -4,
+                -7,
+                12,
+                100,
+                -25
+            ],
+            "target": 20
+        },
+        {
+            "dishes": [
+                -5,
+                -4,
+                -3,
+                -2,
+                -1,
+                1,
+                2,
+                3,
+                4,
+                5
+            ],
+            "target": 6
+        },
+        {
+            "dishes": [
+                -5,
+                -4,
+                -3,
+                -2,
+                -1,
+                1,
+                2,
+                3,
+                4,
+                5
+            ],
+            "target": -6
+        },
+        {
+            "dishes": [
+                17,
+                37,
+                12,
+                -102,
+                53,
+                49,
+                -90,
+                102,
+                49,
+                16,
+                52
+            ],
+            "target": 12
+        },
+        {
+            "dishes": [
+                17,
+                37,
+                12,
+                -102,
+                53,
+                49,
+                -90,
+                102,
+                49,
+                16,
+                52
+            ],
+            "target": 11
+        },
+        {
+            "dishes": [
+                17,
+                37,
+                12,
+                -102,
+                53,
+                49,
+                -90,
+                102,
+                49,
+                16,
+                52
+            ],
+            "target": -100
+        },
+        {
+            "dishes": [
+                17,
+                37,
+                12,
+                -102,
+                53,
+                49,
+                -90,
+                102,
+                49,
+                16,
+                52
+            ],
+            "target": -28
+        },
+        {
+            "dishes": [
+                -12,
+                13,
+                100,
+                -53,
+                540,
+                -538,
+                53,
+                76,
+                32,
+                -63
+            ],
+            "target": 0
+        },
+        {
+            "dishes": [
+                -12,
+                13,
+                100,
+                -53,
+                540,
+                -538,
+                53,
+                76,
+                32,
+                -63
+            ],
+            "target": -34
+        },
+        {
+            "dishes": [
+                -12,
+                13,
+                100,
+                -53,
+                540,
+                -538,
+                53,
+                76,
+                32,
+                -63
+            ],
+            "target": -15
+        },
+        {
+            "dishes": [
+                -12,
+                13,
+                100,
+                -53,
+                540,
+                -538,
+                53,
+                76,
+                32,
+                -63
+            ],
+            "target": 42
+        }
+    ],
+    "changelog": []
+}

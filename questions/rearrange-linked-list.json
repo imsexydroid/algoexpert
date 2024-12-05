@@ -1,0 +1,1424 @@
+{
+    "uid": "rearrange-linked-list",
+    "testStrategy": "JSON",
+    "name": "Rearrange Linked List",
+    "version": 0,
+    "releaseDate": "2020-05-11T00:00:00Z",
+    "category": "Linked Lists",
+    "difficulty": 4,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 5359,
+        "failureCount": 1994
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "415721263",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Clement Mihailescu",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1190
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Write a function that takes in the head of a Singly Linked List and an integer\n  <span>k</span>, rearranges the list in place (i.e., doesn't create a brand new\n  list) around nodes with value <span>k</span>, and returns its new head.\n</p>\n<p>\n  Rearranging a Linked List around nodes with value <span>k</span> means moving\n  all nodes with a value smaller than <span>k</span> before all nodes with value\n  <span>k</span> and moving all nodes with a value greater than\n  <span>k</span> after all nodes with value <span>k</span>.\n</p>\n<p>\n  All moved nodes should maintain their original relative ordering if possible.\n</p>\n<p>\n  Note that the linked list should be rearranged even if it doesn't have any\n  nodes with value <span>k</span>.\n</p>\n<p>\n  Each <span>LinkedList</span> node has an integer <span>value</span> as well as\n  a <span>next</span> node pointing to the next node in the list or to\n  <span>None</span> / <span>null</span> if it's the tail of the list.\n</p>\n<p>\n  You can assume that the input Linked List will always have at least one node;\n  in other words, the head will never be <span>None</span> / <span>null</span>.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">head</span> = 3 -> 0 -> 5 -> 2 -> 1 -> 4 <span class=\"CodeEditor-promptComment\">// the head node with value 3</span>\n<span class=\"CodeEditor-promptParameter\">k</span> = 3\n</pre>\n<h3>Sample Output</h3>\n<pre>\n0 -> 2 -> 1 -> 3 -> 5 -> 4 <span class=\"CodeEditor-promptComment\">// the new head node with value 0</span>\n<span class=\"CodeEditor-promptComment\">// Note that the nodes with values 0, 2, and 1 have</span>\n<span class=\"CodeEditor-promptComment\">// maintained their original relative ordering, and</span>\n<span class=\"CodeEditor-promptComment\">// so have the nodes with values 5 and 4.</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\nThe final linked list that you have to return essentially consists of three linked lists attached to one another: one with nodes whose values are smaller than k, one with nodes whose values are equal to k, and one with nodes whose values are greater than k.\n</p>\n",
+        "\n<p>\nIterate through the linked list once, build the three linked lists mentioned in Hint #1 as you go, and finally connect these three linked lists to form the rearranged list.\n</p>\n",
+        "\n<p>\nTo build the three linked lists mentioned in Hints #1 and #2, you'll have to keep track of their heads and tails and update the appropriate linked list's tail with each node that you traverse as you iterate through the main linked list. You can determine which linked list is the relevant one by simply comparing the value of the node that you're traversing to k.\n</p>\n",
+        "\n<p>\nConnecting the three linked lists mentioned in the previous Hint won't be as simple as it sounds, mainly because one or two of the linked lists might actually be empty, depending on the various nodes' values and the value of k.\n</p>"
+    ],
+    "spaceTime": "O(n) time | O(1) space - where n is the number of nodes in the Linked List",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": "linkedlist",
+        "outputType": "linkedlist"
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nclass LinkedList {\n public:\n  int value;\n  LinkedList* next;\n\n  LinkedList(int value) {\n    this->value = value;\n    next = nullptr;\n  }\n};\n\nLinkedList* rearrangeLinkedList(LinkedList* head, int k) {\n  // Write your code here.\n  return nullptr;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing namespace std;\n\nclass LinkedList {\n public:\n  int value;\n  LinkedList* next;\n\n  LinkedList(int value) {\n    this->value = value;\n    next = nullptr;\n  }\n};\n\nstruct LinkedListPair {\n  LinkedList* head;\n  LinkedList* tail;\n};\n\nLinkedListPair growLinkedList(\n  LinkedList* head, LinkedList* tail, LinkedList* node\n);\nLinkedListPair connectLinkedLists(\n  LinkedList* headOne,\n  LinkedList* tailOne,\n  LinkedList* headTwo,\n  LinkedList* tailTwo\n);\n\n// O(n) time | O(1) space - where n is the number of nodes in the Linked List\nLinkedList* rearrangeLinkedList(LinkedList* head, int k) {\n  LinkedList* smallerListHead = nullptr;\n  LinkedList* smallerListTail = nullptr;\n  LinkedList* equalListHead = nullptr;\n  LinkedList* equalListTail = nullptr;\n  LinkedList* greaterListHead = nullptr;\n  LinkedList* greaterListTail = nullptr;\n\n  LinkedList* node = head;\n  while (node != nullptr) {\n    if (node->value < k) {\n      LinkedListPair smallerList =\n        growLinkedList(smallerListHead, smallerListTail, node);\n      smallerListHead = smallerList.head;\n      smallerListTail = smallerList.tail;\n    } else if (node->value > k) {\n      LinkedListPair greaterList =\n        growLinkedList(greaterListHead, greaterListTail, node);\n      greaterListHead = greaterList.head;\n      greaterListTail = greaterList.tail;\n    } else {\n      LinkedListPair equalList =\n        growLinkedList(equalListHead, equalListTail, node);\n      equalListHead = equalList.head;\n      equalListTail = equalList.tail;\n    }\n\n    LinkedList* prevNode = node;\n    node = node->next;\n    prevNode->next = nullptr;\n  }\n\n  LinkedListPair first = connectLinkedLists(\n    smallerListHead, smallerListTail, equalListHead, equalListTail\n  );\n  LinkedListPair final = connectLinkedLists(\n    first.head, first.tail, greaterListHead, greaterListTail\n  );\n  return final.head;\n}\n\nLinkedListPair growLinkedList(\n  LinkedList* head, LinkedList* tail, LinkedList* node\n) {\n  LinkedList* newHead = head;\n  LinkedList* newTail = node;\n\n  if (newHead == nullptr) newHead = node;\n  if (tail != nullptr) tail->next = node;\n\n  return LinkedListPair{newHead, newTail};\n}\n\nLinkedListPair connectLinkedLists(\n  LinkedList* headOne,\n  LinkedList* tailOne,\n  LinkedList* headTwo,\n  LinkedList* tailTwo\n) {\n  LinkedList* newHead = headOne == nullptr ? headTwo : headOne;\n  LinkedList* newTail = tailTwo == nullptr ? tailOne : tailTwo;\n\n  if (tailOne != nullptr) tailOne->next = headTwo;\n\n  return LinkedListPair{newHead, newTail};\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nvector<int> linkedListToArray(LinkedList* head) {\n  vector<int> array{};\n  auto current = head;\n  while (current != nullptr) {\n    array.push_back(current->value);\n    current = current->next;\n  }\n  return array;\n}\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      auto head = new LinkedList(3);\n      head->next = new LinkedList(0);\n      head->next->next = new LinkedList(5);\n      head->next->next->next = new LinkedList(2);\n      head->next->next->next->next = new LinkedList(1);\n      head->next->next->next->next->next = new LinkedList(4);\n      auto result = rearrangeLinkedList(head, 3);\n      auto array = linkedListToArray(result);\n\n      vector<int> expected{0, 2, 1, 3, 5, 4};\n      assert(expected == array);\n    });\n  }\n};\n",
+            "unitTests": "vector<int> linkedListToArray(LinkedList* head) {\n  vector<int> array{};\n  auto current = head;\n  while (current != nullptr) {\n    array.push_back(current->value);\n    current = current->next;\n  }\n  return array;\n}\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      auto head = new LinkedList(3);\n      head->next = new LinkedList(0);\n      head->next->next = new LinkedList(5);\n      head->next->next->next = new LinkedList(2);\n      head->next->next->next->next = new LinkedList(1);\n      head->next->next->next->next->next = new LinkedList(4);\n      auto result = rearrangeLinkedList(head, 3);\n      auto array = linkedListToArray(result);\n\n      vector<int> expected{0, 2, 1, 3, 5, 4};\n      assert(expected == array);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public static LinkedList RearrangeLinkedList(LinkedList head, int k) {\n    // Write your code here.\n    return null;\n  }\n\n  public class LinkedList {\n    public int value;\n    public LinkedList next;\n\n    public LinkedList(int value) {\n      this.value = value;\n      next = null;\n    }\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npublic class Program {\n  // O(n) time | O(1) space - where n is the number of nodes in the Linked List\n  public static LinkedList RearrangeLinkedList(LinkedList head, int k) {\n    LinkedList smallerListHead = null;\n    LinkedList smallerListTail = null;\n    LinkedList equalListHead = null;\n    LinkedList equalListTail = null;\n    LinkedList greaterListHead = null;\n    LinkedList greaterListTail = null;\n\n    LinkedList node = head;\n    while (node != null) {\n      if (node.value < k) {\n        LinkedListPair smallerList =\n          growLinkedList(smallerListHead, smallerListTail, node);\n        smallerListHead = smallerList.head;\n        smallerListTail = smallerList.tail;\n      } else if (node.value > k) {\n        LinkedListPair greaterList =\n          growLinkedList(greaterListHead, greaterListTail, node);\n        greaterListHead = greaterList.head;\n        greaterListTail = greaterList.tail;\n      } else {\n        LinkedListPair equalList =\n          growLinkedList(equalListHead, equalListTail, node);\n        equalListHead = equalList.head;\n        equalListTail = equalList.tail;\n      }\n\n      LinkedList prevNode = node;\n      node = node.next;\n      prevNode.next = null;\n    }\n\n    LinkedListPair firstPair = connectLinkedLists(\n      smallerListHead, smallerListTail, equalListHead, equalListTail\n    );\n    LinkedListPair finalPair = connectLinkedLists(\n      firstPair.head, firstPair.tail, greaterListHead, greaterListTail\n    );\n    return finalPair.head;\n  }\n\n  public static LinkedListPair growLinkedList(\n    LinkedList head, LinkedList tail, LinkedList node\n  ) {\n    LinkedList newHead = head;\n    LinkedList newTail = node;\n\n    if (newHead == null) newHead = node;\n    if (tail != null) tail.next = node;\n\n    return new LinkedListPair(newHead, newTail);\n  }\n\n  public static LinkedListPair connectLinkedLists(\n    LinkedList headOne,\n    LinkedList tailOne,\n    LinkedList headTwo,\n    LinkedList tailTwo\n  ) {\n    LinkedList newHead = headOne == null ? headTwo : headOne;\n    LinkedList newTail = tailTwo == null ? tailOne : tailTwo;\n\n    if (tailOne != null) tailOne.next = headTwo;\n\n    return new LinkedListPair(newHead, newTail);\n  }\n\n  public class LinkedListPair {\n    public LinkedList head;\n    public LinkedList tail;\n\n    public LinkedListPair(LinkedList head, LinkedList tail) {\n      this.head = head;\n      this.tail = tail;\n    }\n  }\n\n  public class LinkedList {\n    public int value;\n    public LinkedList next;\n\n    public LinkedList(int value) {\n      this.value = value;\n      next = null;\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\nusing System.Linq;\nusing System.Collections.Generic;\n\npublic class ProgramTest {\n  public List<int> linkedListToArray(Program.LinkedList head) {\n    var array = new List<int>();\n    var current = head;\n    while (current != null) {\n      array.Add(current.value);\n      current = current.next;\n    }\n    return array;\n  }\n\n  [Test]\n  public void TestCase1() {\n    var head = new Program.LinkedList(3);\n    head.next = new Program.LinkedList(0);\n    head.next.next = new Program.LinkedList(5);\n    head.next.next.next = new Program.LinkedList(2);\n    head.next.next.next.next = new Program.LinkedList(1);\n    head.next.next.next.next.next = new Program.LinkedList(4);\n    var result = Program.RearrangeLinkedList(head, 3);\n    var array = this.linkedListToArray(result);\n\n    var expected = new List<int> { 0, 2, 1, 3, 5, 4 };\n    Utils.AssertTrue(Enumerable.SequenceEqual(expected, array));\n  }\n}\n",
+            "unitTests": "using System;\nusing System.Linq;\nusing System.Collections.Generic;\n\npublic class ProgramTest {\n  public List<int> linkedListToArray(Program.LinkedList head) {\n    var array = new List<int>();\n    var current = head;\n    while (current != null) {\n      array.Add(current.value);\n      current = current.next;\n    }\n    return array;\n  }\n\n  [Test]\n  public void TestCase1() {\n    var head = new Program.LinkedList(3);\n    head.next = new Program.LinkedList(0);\n    head.next.next = new Program.LinkedList(5);\n    head.next.next.next = new Program.LinkedList(2);\n    head.next.next.next.next = new Program.LinkedList(1);\n    head.next.next.next.next.next = new Program.LinkedList(4);\n    var result = Program.RearrangeLinkedList(head, 3);\n    var array = this.linkedListToArray(result);\n\n    var expected = new List<int> { 0, 2, 1, 3, 5, 4 };\n    Utils.AssertTrue(Enumerable.SequenceEqual(expected, array));\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\ntype LinkedList struct {\n\tValue int\n\tNext  *LinkedList\n}\n\nfunc RearrangeLinkedList(head *LinkedList, k int) *LinkedList {\n\t// Write your code here.\n\treturn nil\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\ntype LinkedList struct {\n\tValue int\n\tNext  *LinkedList\n}\n\n// O(n) time | O(1) space - where n is the number of nodes in the Linked List\nfunc RearrangeLinkedList(head *LinkedList, k int) *LinkedList {\n\tvar smallerListHead, smallerListTail *LinkedList\n\tvar equalListHead, equalListTail *LinkedList\n\tvar greaterListHead, greaterListTail *LinkedList\n\n\tnode := head\n\tfor node != nil {\n\t\tif node.Value < k {\n\t\t\tsmallerListHead, smallerListTail = growLinkedList(smallerListHead, smallerListTail, node)\n\t\t} else if node.Value > k {\n\t\t\tgreaterListHead, greaterListTail = growLinkedList(greaterListHead, greaterListTail, node)\n\t\t} else {\n\t\t\tequalListHead, equalListTail = growLinkedList(equalListHead, equalListTail, node)\n\t\t}\n\n\t\tprevNode := node\n\t\tnode = node.Next\n\t\tprevNode.Next = nil\n\t}\n\n\tfirstHead, firstTail := connectLinkedLists(smallerListHead, smallerListTail, equalListHead, equalListTail)\n\tfinalHead, _ := connectLinkedLists(firstHead, firstTail, greaterListHead, greaterListTail)\n\treturn finalHead\n}\n\nfunc growLinkedList(head, tail, node *LinkedList) (*LinkedList, *LinkedList) {\n\tnewHead, newTail := head, node\n\tif newHead == nil {\n\t\tnewHead = node\n\t}\n\tif tail != nil {\n\t\ttail.Next = node\n\t}\n\treturn newHead, newTail\n}\n\nfunc connectLinkedLists(headOne, tailOne, headTwo, tailTwo *LinkedList) (*LinkedList, *LinkedList) {\n\tnewHead, newTail := headOne, tailTwo\n\tif newHead == nil {\n\t\tnewHead = headTwo\n\t}\n\tif newTail == nil {\n\t\tnewTail = tailOne\n\t}\n\n\tif tailOne != nil {\n\t\ttailOne.Next = headTwo\n\t}\n\n\treturn newHead, newTail\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc newLinkedList(n int) *LinkedList { return &LinkedList{Value: n} }\n\nfunc linkedListToArray(head *LinkedList) []int {\n\tarray := []int{}\n\tcurrent := head\n\tfor current != nil {\n\t\tarray = append(array, current.Value)\n\t\tcurrent = current.Next\n\t}\n\treturn array\n}\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\thead := newLinkedList(3)\n\thead.Next = newLinkedList(0)\n\thead.Next.Next = newLinkedList(5)\n\thead.Next.Next.Next = newLinkedList(2)\n\thead.Next.Next.Next.Next = newLinkedList(1)\n\thead.Next.Next.Next.Next.Next = newLinkedList(4)\n\tresult := RearrangeLinkedList(head, 3)\n\tarray := linkedListToArray(result)\n\n\texpected := []int{0, 2, 1, 3, 5, 4}\n\trequire.Equal(t, expected, array)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc newLinkedList(n int) *LinkedList { return &LinkedList{Value: n} }\n\nfunc linkedListToArray(head *LinkedList) []int {\n\tarray := []int{}\n\tcurrent := head\n\tfor current != nil {\n\t\tarray = append(array, current.Value)\n\t\tcurrent = current.Next\n\t}\n\treturn array\n}\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\thead := newLinkedList(3)\n\thead.Next = newLinkedList(0)\n\thead.Next.Next = newLinkedList(5)\n\thead.Next.Next.Next = newLinkedList(2)\n\thead.Next.Next.Next.Next = newLinkedList(1)\n\thead.Next.Next.Next.Next.Next = newLinkedList(4)\n\tresult := RearrangeLinkedList(head, 3)\n\tarray := linkedListToArray(result)\n\n\texpected := []int{0, 2, 1, 3, 5, 4}\n\trequire.Equal(t, expected, array)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public static LinkedList rearrangeLinkedList(LinkedList head, int k) {\n    // Write your code here.\n    return null;\n  }\n\n  static class LinkedList {\n    public int value;\n    public LinkedList next;\n\n    public LinkedList(int value) {\n      this.value = value;\n      next = null;\n    }\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(1) space - where n is the number of nodes in the Linked List\n  public static LinkedList rearrangeLinkedList(LinkedList head, int k) {\n    LinkedList smallerListHead = null;\n    LinkedList smallerListTail = null;\n    LinkedList equalListHead = null;\n    LinkedList equalListTail = null;\n    LinkedList greaterListHead = null;\n    LinkedList greaterListTail = null;\n\n    LinkedList node = head;\n    while (node != null) {\n      if (node.value < k) {\n        LinkedListPair smallerList =\n          growLinkedList(smallerListHead, smallerListTail, node);\n        smallerListHead = smallerList.head;\n        smallerListTail = smallerList.tail;\n      } else if (node.value > k) {\n        LinkedListPair greaterList =\n          growLinkedList(greaterListHead, greaterListTail, node);\n        greaterListHead = greaterList.head;\n        greaterListTail = greaterList.tail;\n      } else {\n        LinkedListPair equalList =\n          growLinkedList(equalListHead, equalListTail, node);\n        equalListHead = equalList.head;\n        equalListTail = equalList.tail;\n      }\n\n      LinkedList prevNode = node;\n      node = node.next;\n      prevNode.next = null;\n    }\n\n    LinkedListPair firstPair = connectLinkedLists(\n      smallerListHead, smallerListTail, equalListHead, equalListTail\n    );\n    LinkedListPair finalPair = connectLinkedLists(\n      firstPair.head, firstPair.tail, greaterListHead, greaterListTail\n    );\n    return finalPair.head;\n  }\n\n  public static LinkedListPair growLinkedList(\n    LinkedList head, LinkedList tail, LinkedList node\n  ) {\n    LinkedList newHead = head;\n    LinkedList newTail = node;\n\n    if (newHead == null) newHead = node;\n    if (tail != null) tail.next = node;\n\n    return new LinkedListPair(newHead, newTail);\n  }\n\n  public static LinkedListPair connectLinkedLists(\n    LinkedList headOne,\n    LinkedList tailOne,\n    LinkedList headTwo,\n    LinkedList tailTwo\n  ) {\n    LinkedList newHead = headOne == null ? headTwo : headOne;\n    LinkedList newTail = tailTwo == null ? tailOne : tailTwo;\n\n    if (tailOne != null) tailOne.next = headTwo;\n\n    return new LinkedListPair(newHead, newTail);\n  }\n\n  static class LinkedListPair {\n    public LinkedList head;\n    public LinkedList tail;\n\n    public LinkedListPair(LinkedList head, LinkedList tail) {\n      this.head = head;\n      this.tail = tail;\n    }\n  }\n\n  static class LinkedList {\n    public int value;\n    public LinkedList next;\n\n    public LinkedList(int value) {\n      this.value = value;\n      next = null;\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  public List<Integer> linkedListToArray(Program.LinkedList head) {\n    var array = new ArrayList<Integer>();\n    var current = head;\n    while (current != null) {\n      array.add(current.value);\n      current = current.next;\n    }\n    return array;\n  }\n\n  @Test\n  public void TestCase1() {\n    var head = new Program.LinkedList(3);\n    head.next = new Program.LinkedList(0);\n    head.next.next = new Program.LinkedList(5);\n    head.next.next.next = new Program.LinkedList(2);\n    head.next.next.next.next = new Program.LinkedList(1);\n    head.next.next.next.next.next = new Program.LinkedList(4);\n    var result = Program.rearrangeLinkedList(head, 3);\n    var array = this.linkedListToArray(result);\n\n    var expected = Arrays.asList(new Integer[] {0, 2, 1, 3, 5, 4});\n    Utils.assertTrue(expected.equals(array));\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  public List<Integer> linkedListToArray(Program.LinkedList head) {\n    var array = new ArrayList<Integer>();\n    var current = head;\n    while (current != null) {\n      array.add(current.value);\n      current = current.next;\n    }\n    return array;\n  }\n\n  @Test\n  public void TestCase1() {\n    var head = new Program.LinkedList(3);\n    head.next = new Program.LinkedList(0);\n    head.next.next = new Program.LinkedList(5);\n    head.next.next.next = new Program.LinkedList(2);\n    head.next.next.next.next = new Program.LinkedList(1);\n    head.next.next.next.next.next = new Program.LinkedList(4);\n    var result = Program.rearrangeLinkedList(head, 3);\n    var array = this.linkedListToArray(result);\n\n    var expected = Arrays.asList(new Integer[] {0, 2, 1, 3, 5, 4});\n    Utils.assertTrue(expected.equals(array));\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "// This is the class of the input linked list.\nclass LinkedList {\n  constructor(value) {\n    this.value = value;\n    this.next = null;\n  }\n}\n\nfunction rearrangeLinkedList(head, k) {\n  // Write your code here.\n}\n\n// Do not edit the lines below.\nexports.LinkedList = LinkedList;\nexports.rearrangeLinkedList = rearrangeLinkedList;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// This is the class of the input linked list.\nclass LinkedList {\n  constructor(value) {\n    this.value = value;\n    this.next = null;\n  }\n}\n\n// O(n) time | O(1) space - where n is the number of nodes in the Linked List\nfunction rearrangeLinkedList(head, k) {\n  let smallerListHead = null;\n  let smallerListTail = null;\n  let equalListHead = null;\n  let equalListTail = null;\n  let greaterListHead = null;\n  let greaterListTail = null;\n\n  let node = head;\n  while (node !== null) {\n    if (node.value < k) {\n      [smallerListHead, smallerListTail] = growLinkedList(smallerListHead, smallerListTail, node);\n    } else if (node.value > k) {\n      [greaterListHead, greaterListTail] = growLinkedList(greaterListHead, greaterListTail, node);\n    } else {\n      [equalListHead, equalListTail] = growLinkedList(equalListHead, equalListTail, node);\n    }\n\n    const prevNode = node;\n    node = node.next;\n    prevNode.next = null;\n  }\n\n  const [firstHead, firstTail] = connectLinkedLists(\n    smallerListHead,\n    smallerListTail,\n    equalListHead,\n    equalListTail,\n  );\n  const [finalHead, _] = connectLinkedLists(firstHead, firstTail, greaterListHead, greaterListTail);\n  return finalHead;\n}\n\nfunction growLinkedList(head, tail, node) {\n  let newHead = head;\n  let newTail = node;\n\n  if (newHead === null) newHead = node;\n  if (tail !== null) tail.next = node;\n\n  return [newHead, newTail];\n}\n\nfunction connectLinkedLists(headOne, tailOne, headTwo, tailTwo) {\n  const newHead = headOne === null ? headTwo : headOne;\n  const newTail = tailTwo === null ? tailOne : tailTwo;\n\n  if (tailOne !== null) tailOne.next = headTwo;\n\n  return [newHead, newTail];\n}\n\nexports.LinkedList = LinkedList;\nexports.rearrangeLinkedList = rearrangeLinkedList;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nconst {LinkedList} = program;\n\nfunction linkedListToArray(head) {\n  const array = [];\n  let current = head;\n  while (current) {\n    array.push(current.value);\n    current = current.next;\n  }\n  return array;\n}\n\nit('Test Case #1', function () {\n  const head = new LinkedList(3);\n  head.next = new LinkedList(0);\n  head.next.next = new LinkedList(5);\n  head.next.next.next = new LinkedList(2);\n  head.next.next.next.next = new LinkedList(1);\n  head.next.next.next.next.next = new LinkedList(4);\n  const result = program.rearrangeLinkedList(head, 3);\n  const array = linkedListToArray(result);\n\n  var expected = [0, 2, 1, 3, 5, 4];\n  chai.expect(array).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nconst {LinkedList} = program;\n\nfunction linkedListToArray(head) {\n  const array = [];\n  let current = head;\n  while (current) {\n    array.push(current.value);\n    current = current.next;\n  }\n  return array;\n}\n\nit('Test Case #1', function () {\n  const head = new LinkedList(3);\n  head.next = new LinkedList(0);\n  head.next.next = new LinkedList(5);\n  head.next.next.next = new LinkedList(2);\n  head.next.next.next.next = new LinkedList(1);\n  head.next.next.next.next.next = new LinkedList(4);\n  const result = program.rearrangeLinkedList(head, 3);\n  const array = linkedListToArray(result);\n\n  var expected = [0, 2, 1, 3, 5, 4];\n  chai.expect(array).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nopen class LinkedList(value: Int) {\n    var value = value\n    var next: LinkedList? = null\n}\n\nfun rearrangeLinkedList(head: LinkedList, k: Int): LinkedList {\n    // Write your code here.\n    return head\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nopen class LinkedList(value: Int) {\n    var value = value\n    var next: LinkedList? = null\n}\n\nopen class LinkedListPair(head: LinkedList?, tail: LinkedList?) {\n    var head = head\n    var tail = tail\n}\n\n// O(n) time | O(1) space - where n is the number of nodes in the Linked List\nfun rearrangeLinkedList(head: LinkedList, k: Int): LinkedList {\n    var smallerListHead: LinkedList? = null\n    var smallerListTail: LinkedList? = null\n    var equalListHead: LinkedList? = null\n    var equalListTail: LinkedList? = null\n    var greaterListHead: LinkedList? = null\n    var greaterListTail: LinkedList? = null\n\n    var node: LinkedList? = head\n    while (node != null) {\n        if (node.value < k) {\n            val smallerList = growLinkedList(smallerListHead, smallerListTail, node)\n            smallerListHead = smallerList.head\n            smallerListTail = smallerList.tail\n        } else if (node.value > k) {\n            val greaterList = growLinkedList(greaterListHead, greaterListTail, node)\n            greaterListHead = greaterList.head\n            greaterListTail = greaterList.tail\n        } else {\n            val equalList = growLinkedList(equalListHead, equalListTail, node)\n            equalListHead = equalList.head\n            equalListTail = equalList.tail\n        }\n\n        val prevNode = node\n        node = node.next\n        prevNode.next = null\n    }\n\n    val firstPair =\n        connectLinkedLists(smallerListHead, smallerListTail, equalListHead, equalListTail)\n    val finalPair =\n        connectLinkedLists(firstPair.head, firstPair.tail, greaterListHead, greaterListTail)\n    return finalPair.head!!\n}\n\nfun growLinkedList(head: LinkedList?, tail: LinkedList?, node: LinkedList): LinkedListPair {\n    var newHead = head\n    val newTail = node\n\n    if (newHead == null) newHead = node\n    if (tail != null) tail.next = node\n\n    return LinkedListPair(newHead, newTail)\n}\n\nfun connectLinkedLists(headOne: LinkedList?, tailOne: LinkedList?, headTwo: LinkedList?, tailTwo: LinkedList?): LinkedListPair {\n    val newHead = if (headOne == null) headTwo else headOne\n    val newTail = if (tailTwo == null) tailOne else tailTwo\n\n    if (tailOne != null) tailOne.next = headTwo\n\n    return LinkedListPair(newHead, newTail)\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.LinkedList as LinkedList\nimport com.algoexpert.program.rearrangeLinkedList as rearrangeLinkedList\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        var linkedList = LinkedList(3)\n        addAll(linkedList, listOf(0, 5, 2, 1, 4))\n\n        var result = getNodeValuesInArray(rearrangeLinkedList(linkedList, 3))\n        var expected = listOf(0, 2, 1, 3, 5, 4)\n\n        assert(result == expected)\n    }\n}\n\nfun addAll(ll: LinkedList, values: List<Int>) {\n    var current = ll\n    for (value in values) {\n        val newLL = LinkedList(value)\n        current.next = newLL\n        current = newLL\n    }\n}\n\nfun getNodeValuesInArray(linkedList: LinkedList): List<Int> {\n    var values = mutableListOf<Int>()\n    var current: LinkedList? = linkedList\n    while (current != null) {\n        values.add(current.value)\n        current = current.next\n    }\n    return values\n}\n",
+            "unitTests": "import com.algoexpert.program.LinkedList as LinkedList\nimport com.algoexpert.program.rearrangeLinkedList as rearrangeLinkedList\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        var linkedList = LinkedList(3)\n        addAll(linkedList, listOf(0, 5, 2, 1, 4))\n\n        var result = getNodeValuesInArray(rearrangeLinkedList(linkedList, 3))\n        var expected = listOf(0, 2, 1, 3, 5, 4)\n\n        assert(result == expected)\n    }\n}\n\nfun addAll(ll: LinkedList, values: List<Int>) {\n    var current = ll\n    for (value in values) {\n        val newLL = LinkedList(value)\n        current.next = newLL\n        current = newLL\n    }\n}\n\nfun getNodeValuesInArray(linkedList: LinkedList): List<Int> {\n    var values = mutableListOf<Int>()\n    var current: LinkedList? = linkedList\n    while (current != null) {\n        values.add(current.value)\n        current = current.next\n    }\n    return values\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "# This is the class of the input linked list.\nclass LinkedList:\n    def __init__(self, value):\n        self.value = value\n        self.next = None\n\n\ndef rearrangeLinkedList(head, k):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# This is the class of the input linked list.\nclass LinkedList:\n    def __init__(self, value):\n        self.value = value\n        self.next = None\n\n\n# O(n) time | O(1) space - where n is the number of nodes in the Linked List\ndef rearrangeLinkedList(head, k):\n    smallerListHead = None\n    smallerListTail = None\n    equalListHead = None\n    equalListTail = None\n    greaterListHead = None\n    greaterListTail = None\n\n    node = head\n    while node is not None:\n        if node.value < k:\n            smallerListHead, smallerListTail = growLinkedList(\n                smallerListHead, smallerListTail, node\n            )\n        elif node.value > k:\n            greaterListHead, greaterListTail = growLinkedList(\n                greaterListHead, greaterListTail, node\n            )\n        else:\n            equalListHead, equalListTail = growLinkedList(equalListHead, equalListTail, node)\n\n        prevNode = node\n        node = node.next\n        prevNode.next = None\n\n    firstHead, firstTail = connectLinkedLists(\n        smallerListHead, smallerListTail, equalListHead, equalListTail\n    )\n    finalHead, _ = connectLinkedLists(firstHead, firstTail, greaterListHead, greaterListTail)\n    return finalHead\n\n\ndef growLinkedList(head, tail, node):\n    newHead = head\n    newTail = node\n\n    if newHead is None:\n        newHead = node\n    if tail is not None:\n        tail.next = node\n\n    return (newHead, newTail)\n\n\ndef connectLinkedLists(headOne, tailOne, headTwo, tailTwo):\n    newHead = headTwo if headOne is None else headOne\n    newTail = tailOne if tailTwo is None else tailTwo\n\n    if tailOne is not None:\n        tailOne.next = headTwo\n\n    return (newHead, newTail)\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\ndef linkedListToArray(head):\n    array = []\n    current = head\n    while current is not None:\n        array.append(current.value)\n        current = current.next\n    return array\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        head = program.LinkedList(3)\n        head.next = program.LinkedList(0)\n        head.next.next = program.LinkedList(5)\n        head.next.next.next = program.LinkedList(2)\n        head.next.next.next.next = program.LinkedList(1)\n        head.next.next.next.next.next = program.LinkedList(4)\n        result = program.rearrangeLinkedList(head, 3)\n        array = linkedListToArray(result)\n\n        expected = [0, 2, 1, 3, 5, 4]\n        self.assertEqual(expected, array)\n",
+            "unitTests": "import program\nimport unittest\n\n\ndef linkedListToArray(head):\n    array = []\n    current = head\n    while current is not None:\n        array.append(current.value)\n        current = current.next\n    return array\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        head = program.LinkedList(3)\n        head.next = program.LinkedList(0)\n        head.next.next = program.LinkedList(5)\n        head.next.next.next = program.LinkedList(2)\n        head.next.next.next.next = program.LinkedList(1)\n        head.next.next.next.next.next = program.LinkedList(4)\n        result = program.rearrangeLinkedList(head, 3)\n        array = linkedListToArray(result)\n\n        expected = [0, 2, 1, 3, 5, 4]\n        self.assertEqual(expected, array)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "# This is an input struct. Do not edit.\nclass LinkedList\n  attr_accessor :value\n  attr_accessor :next\n\n  def initialize(value)\n    @value = value\n    @next = nil\n  end\nend\n\nclass Program\n  def rearrangeLinkedList(linkedList, k)\n    # Write your code here.\n    return nil\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# This is an input struct. Do not edit.\nclass LinkedList\n  attr_accessor :value\n  attr_accessor :next\n\n  def initialize(value)\n    @value = value\n    @next = nil\n  end\nend\n\nclass Program\n  def rearrangeLinkedList(linkedList, k)\n    # Write your code here.\n    return nil\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.rearrangeLinkedList\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.rearrangeLinkedList\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  class LinkedList {\n    var value: Int\n    var next: LinkedList?\n\n    init(value: Int) {\n      self.value = value\n      next = nil\n    }\n  }\n\n  static func rearrangeLinkedList(_ head: LinkedList, _ k: Int) -> LinkedList? {\n    // Write your code here.\n    return nil\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  class LinkedList {\n    var value: Int\n    var next: LinkedList?\n\n    init(value: Int) {\n      self.value = value\n      next = nil\n    }\n  }\n\n  // O(n) time | O(1) space - where n is the number of nodes in the Linked List\n  static func rearrangeLinkedList(_ head: LinkedList, _ k: Int) -> LinkedList? {\n    var smallerListHead: LinkedList?\n    var smallerListTail: LinkedList?\n    var equalListHead: LinkedList?\n    var equalListTail: LinkedList?\n    var greaterListHead: LinkedList?\n    var greaterListTail: LinkedList?\n\n    var node: LinkedList? = head\n    while let n = node {\n      if n.value < k {\n        (smallerListHead, smallerListTail) = growLinkedList(smallerListHead, smallerListTail, node)\n      } else if n.value > k {\n        (greaterListHead, greaterListTail) = growLinkedList(greaterListHead, greaterListTail, node)\n      } else {\n        (equalListHead, equalListTail) = growLinkedList(equalListHead, equalListTail, node)\n      }\n\n      var prevNode = n\n      node = n.next\n      prevNode.next = nil\n    }\n    var (firstHead, firstTail) = connectLinkedLists(smallerListHead, smallerListTail, equalListHead, equalListTail)\n    var (finalHead, _) = connectLinkedLists(firstHead, firstTail, greaterListHead, greaterListTail)\n    return finalHead\n  }\n\n  static func growLinkedList(_ head: LinkedList?, _ tail: LinkedList?, _ node: LinkedList?) -> (LinkedList?, LinkedList?) {\n    var newHead = head\n    var newTail = node\n    if newHead == nil {\n      newHead = node\n    }\n    if let t = tail {\n      t.next = node\n    }\n    return (newHead, newTail)\n  }\n\n  static func connectLinkedLists(_ headOne: LinkedList?, _ tailOne: LinkedList?,\n                                 _ headTwo: LinkedList?, _ tailTwo: LinkedList?) -> (LinkedList?, LinkedList?)\n  {\n    var newHead = headOne\n    var newTail = tailTwo\n    if newHead == nil {\n      newHead = headTwo\n    }\n    if newTail == nil {\n      newTail = tailOne\n    }\n\n    if let t = tailOne {\n      t.next = headTwo\n    }\n    return (newHead, newTail)\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nfunc linkedListToArray(_ head: Program.LinkedList?) -> [Int] {\n  var array = [Int]()\n  var current = head\n  while let c = current {\n    array.append(c.value)\n    current = c.next\n  }\n  return array\n}\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let head = Program.LinkedList(value: 3)\n      head.next = Program.LinkedList(value: 0)\n      head.next!.next = Program.LinkedList(value: 5)\n      head.next!.next!.next = Program.LinkedList(value: 2)\n      head.next!.next!.next!.next = Program.LinkedList(value: 1)\n      head.next!.next!.next!.next!.next = Program.LinkedList(value: 4)\n      let result = Program.rearrangeLinkedList(head, 3)\n      let array = linkedListToArray(result)\n\n      let expected = [0, 2, 1, 3, 5, 4]\n      try assertEqual(expected, array)\n    }\n  }\n}\n",
+            "unitTests": "func linkedListToArray(_ head: Program.LinkedList?) -> [Int] {\n  var array = [Int]()\n  var current = head\n  while let c = current {\n    array.append(c.value)\n    current = c.next\n  }\n  return array\n}\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let head = Program.LinkedList(value: 3)\n      head.next = Program.LinkedList(value: 0)\n      head.next!.next = Program.LinkedList(value: 5)\n      head.next!.next!.next = Program.LinkedList(value: 2)\n      head.next!.next!.next!.next = Program.LinkedList(value: 1)\n      head.next!.next!.next!.next!.next = Program.LinkedList(value: 4)\n      let result = Program.rearrangeLinkedList(head, 3)\n      let array = linkedListToArray(result)\n\n      let expected = [0, 2, 1, 3, 5, 4]\n      try assertEqual(expected, array)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "// This is the class of the input linked list.\nexport class LinkedList {\n  value: number;\n  next: LinkedList | null;\n\n  constructor(value: number) {\n    this.value = value;\n    this.next = null;\n  }\n}\n\nexport function rearrangeLinkedList(head: LinkedList, k: number) {\n  // Write your code here.\n  return head;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// This is the class of the input linked list.\nexport class LinkedList {\n  value: number;\n  next: LinkedList | null;\n\n  constructor(value: number) {\n    this.value = value;\n    this.next = null;\n  }\n}\n\n// O(n) time | O(1) space - where n is the number of nodes in the Linked List\nexport function rearrangeLinkedList(head: LinkedList, k: number) {\n  let smallerListHead: LinkedList | null = null;\n  let smallerListTail: LinkedList | null = null;\n  let equalListHead: LinkedList | null = null;\n  let equalListTail: LinkedList | null = null;\n  let greaterListHead: LinkedList | null = null;\n  let greaterListTail: LinkedList | null = null;\n\n  let node: LinkedList | null = head;\n  while (node !== null) {\n    if (node.value < k) {\n      [smallerListHead, smallerListTail] = growLinkedList(smallerListHead, smallerListTail, node);\n    } else if (node.value > k) {\n      [greaterListHead, greaterListTail] = growLinkedList(greaterListHead, greaterListTail, node);\n    } else {\n      [equalListHead, equalListTail] = growLinkedList(equalListHead, equalListTail, node);\n    }\n\n    const prevNode = node;\n    node = node.next;\n    prevNode.next = null;\n  }\n\n  const [firstHead, firstTail] = connectLinkedLists(\n    smallerListHead,\n    smallerListTail,\n    equalListHead,\n    equalListTail,\n  );\n  const [finalHead, _] = connectLinkedLists(firstHead, firstTail, greaterListHead, greaterListTail);\n  return finalHead;\n}\n\nfunction growLinkedList(head: LinkedList | null, tail: LinkedList | null, node: LinkedList | null) {\n  let newHead = head;\n  let newTail = node;\n\n  if (newHead === null) newHead = node;\n  if (tail !== null) tail.next = node;\n\n  return [newHead, newTail];\n}\n\nfunction connectLinkedLists(\n  headOne: LinkedList | null,\n  tailOne: LinkedList | null,\n  headTwo: LinkedList | null,\n  tailTwo: LinkedList | null,\n) {\n  const newHead = headOne === null ? headTwo : headOne;\n  const newTail = tailTwo === null ? tailOne : tailTwo;\n\n  if (tailOne !== null) tailOne.next = headTwo;\n\n  return [newHead, newTail];\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\ntype LinkedList = program.LinkedList;\nconst {LinkedList} = program;\n\nfunction linkedListToArray(head: LinkedList | null) {\n  const array: number[] = [];\n  let current: LinkedList | null = head;\n  while (current) {\n    array.push(current.value);\n    current = current.next;\n  }\n  return array;\n}\n\nit('Test Case #1', function () {\n  const head = new LinkedList(3);\n  head.next = new LinkedList(0);\n  head.next.next = new LinkedList(5);\n  head.next.next.next = new LinkedList(2);\n  head.next.next.next.next = new LinkedList(1);\n  head.next.next.next.next.next = new LinkedList(4);\n  const result = program.rearrangeLinkedList(head, 3);\n  const array = linkedListToArray(result);\n\n  var expected = [0, 2, 1, 3, 5, 4];\n  chai.expect(array).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\ntype LinkedList = program.LinkedList;\nconst {LinkedList} = program;\n\nfunction linkedListToArray(head: LinkedList | null) {\n  const array: number[] = [];\n  let current: LinkedList | null = head;\n  while (current) {\n    array.push(current.value);\n    current = current.next;\n  }\n  return array;\n}\n\nit('Test Case #1', function () {\n  const head = new LinkedList(3);\n  head.next = new LinkedList(0);\n  head.next.next = new LinkedList(5);\n  head.next.next.next = new LinkedList(2);\n  head.next.next.next.next = new LinkedList(1);\n  head.next.next.next.next.next = new LinkedList(4);\n  const result = program.rearrangeLinkedList(head, 3);\n  const array = linkedListToArray(result);\n\n  var expected = [0, 2, 1, 3, 5, 4];\n  chai.expect(array).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "linkedList",
+            "example": {
+                "head": "3",
+                "nodes": [
+                    {
+                        "id": "3",
+                        "next": "0",
+                        "value": 3
+                    },
+                    {
+                        "id": "0",
+                        "next": "5",
+                        "value": 0
+                    },
+                    {
+                        "id": "5",
+                        "next": "2",
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": null,
+                        "value": 4
+                    }
+                ]
+            },
+            "schema": {
+                "description": "A Singly Linked List is represented by a list of <span>nodes</span> and a <span>head</span> node. Every node has to\nhave a unique string <span>id</span> that will be referenced by other nodes' <span>next</span> pointers and by the <span>head</span>.\n",
+                "properties": {
+                    "head": {
+                        "type": "string"
+                    },
+                    "nodes": {
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "next": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "value": {
+                                    "type": "integer"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "value",
+                                "next"
+                            ],
+                            "type": "object"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "head",
+                    "nodes"
+                ],
+                "type": "object"
+            }
+        },
+        {
+            "name": "k",
+            "example": 3,
+            "schema": {
+                "type": "integer"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "k": 3,
+            "linkedList": {
+                "head": "3",
+                "nodes": [
+                    {
+                        "id": "3",
+                        "next": "0",
+                        "value": 3
+                    },
+                    {
+                        "id": "0",
+                        "next": "5",
+                        "value": 0
+                    },
+                    {
+                        "id": "5",
+                        "next": "2",
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": null,
+                        "value": 4
+                    }
+                ]
+            }
+        },
+        {
+            "k": 4,
+            "linkedList": {
+                "head": "3",
+                "nodes": [
+                    {
+                        "id": "3",
+                        "next": "0",
+                        "value": 3
+                    },
+                    {
+                        "id": "0",
+                        "next": "2",
+                        "value": 0
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": "5",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "next": null,
+                        "value": 5
+                    }
+                ]
+            }
+        },
+        {
+            "k": 5,
+            "linkedList": {
+                "head": "3",
+                "nodes": [
+                    {
+                        "id": "3",
+                        "next": "0",
+                        "value": 3
+                    },
+                    {
+                        "id": "0",
+                        "next": "2",
+                        "value": 0
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": "5",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "next": null,
+                        "value": 5
+                    }
+                ]
+            }
+        },
+        {
+            "k": 0,
+            "linkedList": {
+                "head": "0",
+                "nodes": [
+                    {
+                        "id": "0",
+                        "next": "3",
+                        "value": 0
+                    },
+                    {
+                        "id": "3",
+                        "next": "2",
+                        "value": 3
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": "5",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "next": null,
+                        "value": 5
+                    }
+                ]
+            }
+        },
+        {
+            "k": -9000,
+            "linkedList": {
+                "head": "0",
+                "nodes": [
+                    {
+                        "id": "0",
+                        "next": "3",
+                        "value": 0
+                    },
+                    {
+                        "id": "3",
+                        "next": "2",
+                        "value": 3
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": "5",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "next": "3-2",
+                        "value": 5
+                    },
+                    {
+                        "id": "3-2",
+                        "next": "-1",
+                        "value": 3
+                    },
+                    {
+                        "id": "-1",
+                        "next": "-2",
+                        "value": -1
+                    },
+                    {
+                        "id": "-2",
+                        "next": "3-3",
+                        "value": -2
+                    },
+                    {
+                        "id": "3-3",
+                        "next": "6",
+                        "value": 3
+                    },
+                    {
+                        "id": "6",
+                        "next": "7",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "next": "3-4",
+                        "value": 7
+                    },
+                    {
+                        "id": "3-4",
+                        "next": "2-2",
+                        "value": 3
+                    },
+                    {
+                        "id": "2-2",
+                        "next": "-9000",
+                        "value": 2
+                    },
+                    {
+                        "id": "-9000",
+                        "next": null,
+                        "value": -9000
+                    }
+                ]
+            }
+        },
+        {
+            "k": 2,
+            "linkedList": {
+                "head": "0",
+                "nodes": [
+                    {
+                        "id": "0",
+                        "next": "3",
+                        "value": 0
+                    },
+                    {
+                        "id": "3",
+                        "next": "2",
+                        "value": 3
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": "5",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "next": "3-2",
+                        "value": 5
+                    },
+                    {
+                        "id": "3-2",
+                        "next": "-1",
+                        "value": 3
+                    },
+                    {
+                        "id": "-1",
+                        "next": "-2",
+                        "value": -1
+                    },
+                    {
+                        "id": "-2",
+                        "next": "3-3",
+                        "value": -2
+                    },
+                    {
+                        "id": "3-3",
+                        "next": "6",
+                        "value": 3
+                    },
+                    {
+                        "id": "6",
+                        "next": "7",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "next": "3-4",
+                        "value": 7
+                    },
+                    {
+                        "id": "3-4",
+                        "next": "2-2",
+                        "value": 3
+                    },
+                    {
+                        "id": "2-2",
+                        "next": "-9000",
+                        "value": 2
+                    },
+                    {
+                        "id": "-9000",
+                        "next": null,
+                        "value": -9000
+                    }
+                ]
+            }
+        },
+        {
+            "k": 3,
+            "linkedList": {
+                "head": "0",
+                "nodes": [
+                    {
+                        "id": "0",
+                        "next": "3",
+                        "value": 0
+                    },
+                    {
+                        "id": "3",
+                        "next": "2",
+                        "value": 3
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": "5",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "next": "3-2",
+                        "value": 5
+                    },
+                    {
+                        "id": "3-2",
+                        "next": "-1",
+                        "value": 3
+                    },
+                    {
+                        "id": "-1",
+                        "next": "-2",
+                        "value": -1
+                    },
+                    {
+                        "id": "-2",
+                        "next": "3-3",
+                        "value": -2
+                    },
+                    {
+                        "id": "3-3",
+                        "next": "6",
+                        "value": 3
+                    },
+                    {
+                        "id": "6",
+                        "next": "7",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "next": "3-4",
+                        "value": 7
+                    },
+                    {
+                        "id": "3-4",
+                        "next": "2-2",
+                        "value": 3
+                    },
+                    {
+                        "id": "2-2",
+                        "next": "-9000",
+                        "value": 2
+                    },
+                    {
+                        "id": "-9000",
+                        "next": null,
+                        "value": -9000
+                    }
+                ]
+            }
+        },
+        {
+            "k": 3,
+            "linkedList": {
+                "head": "0",
+                "nodes": [
+                    {
+                        "id": "0",
+                        "next": "1",
+                        "value": 0
+                    },
+                    {
+                        "id": "1",
+                        "next": "2",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "next": "3",
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "next": "3-2",
+                        "value": 3
+                    },
+                    {
+                        "id": "3-2",
+                        "next": "3-3",
+                        "value": 3
+                    },
+                    {
+                        "id": "3-3",
+                        "next": "3-4",
+                        "value": 3
+                    },
+                    {
+                        "id": "3-4",
+                        "next": "4",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "next": "5",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "next": "6",
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "next": "7",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "next": "8",
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "next": "9",
+                        "value": 8
+                    },
+                    {
+                        "id": "9",
+                        "next": null,
+                        "value": 9
+                    }
+                ]
+            }
+        },
+        {
+            "k": -1,
+            "linkedList": {
+                "head": "3",
+                "nodes": [
+                    {
+                        "id": "3",
+                        "next": "0",
+                        "value": 3
+                    },
+                    {
+                        "id": "0",
+                        "next": "5",
+                        "value": 0
+                    },
+                    {
+                        "id": "5",
+                        "next": "2",
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": null,
+                        "value": 4
+                    }
+                ]
+            }
+        },
+        {
+            "k": 6,
+            "linkedList": {
+                "head": "3",
+                "nodes": [
+                    {
+                        "id": "3",
+                        "next": "0",
+                        "value": 3
+                    },
+                    {
+                        "id": "0",
+                        "next": "5",
+                        "value": 0
+                    },
+                    {
+                        "id": "5",
+                        "next": "2",
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": null,
+                        "value": 4
+                    }
+                ]
+            }
+        },
+        {
+            "k": 3,
+            "linkedList": {
+                "head": "6",
+                "nodes": [
+                    {
+                        "id": "6",
+                        "next": "0",
+                        "value": 6
+                    },
+                    {
+                        "id": "0",
+                        "next": "5",
+                        "value": 0
+                    },
+                    {
+                        "id": "5",
+                        "next": "2",
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": null,
+                        "value": 4
+                    }
+                ]
+            }
+        }
+    ],
+    "jsonTests": [
+        {
+            "k": 3,
+            "linkedList": {
+                "head": "3",
+                "nodes": [
+                    {
+                        "id": "3",
+                        "next": "0",
+                        "value": 3
+                    },
+                    {
+                        "id": "0",
+                        "next": "5",
+                        "value": 0
+                    },
+                    {
+                        "id": "5",
+                        "next": "2",
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": null,
+                        "value": 4
+                    }
+                ]
+            }
+        },
+        {
+            "k": 4,
+            "linkedList": {
+                "head": "3",
+                "nodes": [
+                    {
+                        "id": "3",
+                        "next": "0",
+                        "value": 3
+                    },
+                    {
+                        "id": "0",
+                        "next": "2",
+                        "value": 0
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": "5",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "next": null,
+                        "value": 5
+                    }
+                ]
+            }
+        },
+        {
+            "k": 5,
+            "linkedList": {
+                "head": "3",
+                "nodes": [
+                    {
+                        "id": "3",
+                        "next": "0",
+                        "value": 3
+                    },
+                    {
+                        "id": "0",
+                        "next": "2",
+                        "value": 0
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": "5",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "next": null,
+                        "value": 5
+                    }
+                ]
+            }
+        },
+        {
+            "k": 0,
+            "linkedList": {
+                "head": "0",
+                "nodes": [
+                    {
+                        "id": "0",
+                        "next": "3",
+                        "value": 0
+                    },
+                    {
+                        "id": "3",
+                        "next": "2",
+                        "value": 3
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": "5",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "next": null,
+                        "value": 5
+                    }
+                ]
+            }
+        },
+        {
+            "k": -9000,
+            "linkedList": {
+                "head": "0",
+                "nodes": [
+                    {
+                        "id": "0",
+                        "next": "3",
+                        "value": 0
+                    },
+                    {
+                        "id": "3",
+                        "next": "2",
+                        "value": 3
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": "5",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "next": "3-2",
+                        "value": 5
+                    },
+                    {
+                        "id": "3-2",
+                        "next": "-1",
+                        "value": 3
+                    },
+                    {
+                        "id": "-1",
+                        "next": "-2",
+                        "value": -1
+                    },
+                    {
+                        "id": "-2",
+                        "next": "3-3",
+                        "value": -2
+                    },
+                    {
+                        "id": "3-3",
+                        "next": "6",
+                        "value": 3
+                    },
+                    {
+                        "id": "6",
+                        "next": "7",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "next": "3-4",
+                        "value": 7
+                    },
+                    {
+                        "id": "3-4",
+                        "next": "2-2",
+                        "value": 3
+                    },
+                    {
+                        "id": "2-2",
+                        "next": "-9000",
+                        "value": 2
+                    },
+                    {
+                        "id": "-9000",
+                        "next": null,
+                        "value": -9000
+                    }
+                ]
+            }
+        },
+        {
+            "k": 2,
+            "linkedList": {
+                "head": "0",
+                "nodes": [
+                    {
+                        "id": "0",
+                        "next": "3",
+                        "value": 0
+                    },
+                    {
+                        "id": "3",
+                        "next": "2",
+                        "value": 3
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": "5",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "next": "3-2",
+                        "value": 5
+                    },
+                    {
+                        "id": "3-2",
+                        "next": "-1",
+                        "value": 3
+                    },
+                    {
+                        "id": "-1",
+                        "next": "-2",
+                        "value": -1
+                    },
+                    {
+                        "id": "-2",
+                        "next": "3-3",
+                        "value": -2
+                    },
+                    {
+                        "id": "3-3",
+                        "next": "6",
+                        "value": 3
+                    },
+                    {
+                        "id": "6",
+                        "next": "7",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "next": "3-4",
+                        "value": 7
+                    },
+                    {
+                        "id": "3-4",
+                        "next": "2-2",
+                        "value": 3
+                    },
+                    {
+                        "id": "2-2",
+                        "next": "-9000",
+                        "value": 2
+                    },
+                    {
+                        "id": "-9000",
+                        "next": null,
+                        "value": -9000
+                    }
+                ]
+            }
+        },
+        {
+            "k": 3,
+            "linkedList": {
+                "head": "0",
+                "nodes": [
+                    {
+                        "id": "0",
+                        "next": "3",
+                        "value": 0
+                    },
+                    {
+                        "id": "3",
+                        "next": "2",
+                        "value": 3
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": "5",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "next": "3-2",
+                        "value": 5
+                    },
+                    {
+                        "id": "3-2",
+                        "next": "-1",
+                        "value": 3
+                    },
+                    {
+                        "id": "-1",
+                        "next": "-2",
+                        "value": -1
+                    },
+                    {
+                        "id": "-2",
+                        "next": "3-3",
+                        "value": -2
+                    },
+                    {
+                        "id": "3-3",
+                        "next": "6",
+                        "value": 3
+                    },
+                    {
+                        "id": "6",
+                        "next": "7",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "next": "3-4",
+                        "value": 7
+                    },
+                    {
+                        "id": "3-4",
+                        "next": "2-2",
+                        "value": 3
+                    },
+                    {
+                        "id": "2-2",
+                        "next": "-9000",
+                        "value": 2
+                    },
+                    {
+                        "id": "-9000",
+                        "next": null,
+                        "value": -9000
+                    }
+                ]
+            }
+        },
+        {
+            "k": 3,
+            "linkedList": {
+                "head": "0",
+                "nodes": [
+                    {
+                        "id": "0",
+                        "next": "1",
+                        "value": 0
+                    },
+                    {
+                        "id": "1",
+                        "next": "2",
+                        "value": 1
+                    },
+                    {
+                        "id": "2",
+                        "next": "3",
+                        "value": 2
+                    },
+                    {
+                        "id": "3",
+                        "next": "3-2",
+                        "value": 3
+                    },
+                    {
+                        "id": "3-2",
+                        "next": "3-3",
+                        "value": 3
+                    },
+                    {
+                        "id": "3-3",
+                        "next": "3-4",
+                        "value": 3
+                    },
+                    {
+                        "id": "3-4",
+                        "next": "4",
+                        "value": 3
+                    },
+                    {
+                        "id": "4",
+                        "next": "5",
+                        "value": 4
+                    },
+                    {
+                        "id": "5",
+                        "next": "6",
+                        "value": 5
+                    },
+                    {
+                        "id": "6",
+                        "next": "7",
+                        "value": 6
+                    },
+                    {
+                        "id": "7",
+                        "next": "8",
+                        "value": 7
+                    },
+                    {
+                        "id": "8",
+                        "next": "9",
+                        "value": 8
+                    },
+                    {
+                        "id": "9",
+                        "next": null,
+                        "value": 9
+                    }
+                ]
+            }
+        },
+        {
+            "k": -1,
+            "linkedList": {
+                "head": "3",
+                "nodes": [
+                    {
+                        "id": "3",
+                        "next": "0",
+                        "value": 3
+                    },
+                    {
+                        "id": "0",
+                        "next": "5",
+                        "value": 0
+                    },
+                    {
+                        "id": "5",
+                        "next": "2",
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": null,
+                        "value": 4
+                    }
+                ]
+            }
+        },
+        {
+            "k": 6,
+            "linkedList": {
+                "head": "3",
+                "nodes": [
+                    {
+                        "id": "3",
+                        "next": "0",
+                        "value": 3
+                    },
+                    {
+                        "id": "0",
+                        "next": "5",
+                        "value": 0
+                    },
+                    {
+                        "id": "5",
+                        "next": "2",
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": null,
+                        "value": 4
+                    }
+                ]
+            }
+        },
+        {
+            "k": 3,
+            "linkedList": {
+                "head": "6",
+                "nodes": [
+                    {
+                        "id": "6",
+                        "next": "0",
+                        "value": 6
+                    },
+                    {
+                        "id": "0",
+                        "next": "5",
+                        "value": 0
+                    },
+                    {
+                        "id": "5",
+                        "next": "2",
+                        "value": 5
+                    },
+                    {
+                        "id": "2",
+                        "next": "1",
+                        "value": 2
+                    },
+                    {
+                        "id": "1",
+                        "next": "4",
+                        "value": 1
+                    },
+                    {
+                        "id": "4",
+                        "next": null,
+                        "value": 4
+                    }
+                ]
+            }
+        }
+    ],
+    "changelog": []
+}

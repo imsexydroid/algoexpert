@@ -1,0 +1,420 @@
+{
+    "uid": "non-constructible-change",
+    "testStrategy": "JSON",
+    "name": "Non-Constructible Change",
+    "version": 0,
+    "releaseDate": "2021-02-08T00:00:00Z",
+    "category": "Arrays",
+    "difficulty": 1,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": true,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 67901,
+        "failureCount": 23104
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "504950449",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Tim Ruscica",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1071
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Given an array of positive integers representing the values of coins in your\n  possession, write a function that returns the minimum amount of change (the\n  minimum sum of money) that you <b>cannot</b> create. The given coins can have\n  any positive integer value and aren't necessarily unique (i.e., you can have\n  multiple coins of the same value).\n</p>\n<p>\n  For example, if you're given <span>coins = [1, 2, 5]</span>, the minimum\n  amount of change that you can't create is <span>4</span>. If you're given no\n  coins, the minimum amount of change that you can't create is <span>1</span>.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">coins</span> = [5, 7, 1, 1, 2, 3, 22]\n</pre>\n<h3>Sample Output</h3>\n<pre>\n20\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  One approach to solve this problem is to attempt to create every single amount\n  of change, starting at 1 and going up until you eventually can't create an\n  amount. While this approach works, there <i>is</i> a better one.\n</p>\n",
+        "\n<p>\n  Start by sorting the input array. Since you're trying to find the\n  <b>minimum</b> amount of change that you can't create, it makes sense to\n  consider the smallest coins first.\n</p>\n",
+        "\n<p>\n  To understand the trick to this problem, consider the following example:\n  <span>coins = [1, 2, 4]</span>. With this set of coins, we can create\n  <span>1, 2, 3, 4, 5, 6, 7</span> cents worth of change. Now, if we were to add\n  a coin of value <span>9</span> to this set, we <b>would not</b> be able to\n  create <span>8</span> cents. However, if we were to add a coin of value\n  <span>7</span>, we <b>would</b> be able to create <span>8</span> cents, and we\n  would also be able to create all values of change from <span>1</span> to\n  <span>15</span>. Why is this the case?\n</p>\n",
+        "\n<p>\n  Create a variable to store the amount of change that you can currently create\n  up to. Sort all of your coins, and loop through them in ascending order. At\n  every iteration, compare the current coin to the amount of change that you can\n  currently create up to. Here are the two scenarios that you'll encounter:\n</p>\n<ul>\n  <li>\n    The coin value is <b>greater</b> than the amount of change that you can\n    currently create plus 1.\n  </li>\n  <li>\n    The coin value is <b>smaller than or equal to</b> the amount of change that\n    you can currently create plus 1.\n  </li>\n</ul>\n<p>\n  In the first scenario, you simply return the current amount of change that you\n  can create plus 1, because you can't create that amount of change. In the\n  second scenario, you add the value of the coin to the amount of change that\n  you can currently create up to, and you continue iterating through the coins.\n</p>\n<p>\n  The reason for this is that, if you're in the second scenario, you can create\n  all of the values of change that you can currently create plus the value of\n  the coin that you just considered. If you're given coins <span>[1, 2]</span>,\n  then you can make <span>1, 2, 3</span> cents. So if you add a coin of value\n  <span>4</span>, then you can make <span>4 + 1</span> cents,\n  <span>4 + 2</span> cents, and <span>4 + 3</span> cents. Thus, you can make up\n  to <span>7</span> cents.\n</p>"
+    ],
+    "spaceTime": "O(nlogn) time | O(1) space - where n is the number of coins",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\nusing namespace std;\n\nint nonConstructibleChange(vector<int> coins) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n#include <vector>\nusing namespace std;\n\n// O(nlogn) time | O(1) space - where n is the number of coins\nint nonConstructibleChange(vector<int> coins) {\n  sort(coins.begin(), coins.end());\n\n  int currentChangeCreated = 0;\n  for (int coin : coins) {\n    if (coin > currentChangeCreated + 1) return currentChangeCreated + 1;\n\n    currentChangeCreated += coin;\n  }\n\n  return currentChangeCreated + 1;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input = {5, 7, 1, 1, 2, 3, 22};\n      int expected = 20;\n      auto actual = nonConstructibleChange(input);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input = {5, 7, 1, 1, 2, 3, 22};\n      int expected = 20;\n      auto actual = nonConstructibleChange(input);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int NonConstructibleChange(int[] coins) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(nlogn) time | O(1) space - where n is the number of coins\n  public int NonConstructibleChange(int[] coins) {\n    Array.Sort(coins);\n\n    int currentChangeCreated = 0;\n    foreach (var coin in coins) {\n      if (coin > currentChangeCreated + 1) {\n        return currentChangeCreated + 1;\n      }\n\n      currentChangeCreated += coin;\n    }\n\n    return currentChangeCreated + 1;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] input = new int[] { 5, 7, 1, 1, 2, 3, 22 };\n    int expected = 20;\n    var actual = new Program().NonConstructibleChange(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] input = new int[] { 5, 7, 1, 1, 2, 3, 22 };\n    int expected = 20;\n    var actual = new Program().NonConstructibleChange(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc NonConstructibleChange(coins []int) int {\n\t// Write your code here.\n\treturn -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport (\n\t\"sort\"\n)\n\n// O(nlogn) time | O(1) space - where n is the number of coins\nfunc NonConstructibleChange(coins []int) int {\n\tsort.Ints(coins)\n\n\tvar currentChangeCreated = 0\n\tfor _, coin := range coins {\n\t\tif coin > currentChangeCreated+1 {\n\t\t\treturn currentChangeCreated + 1\n\t\t}\n\t\tcurrentChangeCreated += coin\n\t}\n\n\treturn currentChangeCreated + 1\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []int{5, 7, 1, 1, 2, 3, 22}\n\texpected := 20\n\tactual := NonConstructibleChange(input)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []int{5, 7, 1, 1, 2, 3, 22}\n\texpected := 20\n\tactual := NonConstructibleChange(input)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int nonConstructibleChange(int[] coins) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(nlogn) time | O(1) space - where n is the number of coins\n  public int nonConstructibleChange(int[] coins) {\n    Arrays.sort(coins);\n\n    int currentChangeCreated = 0;\n    for (int coin : coins) {\n      if (coin > currentChangeCreated + 1) {\n        return currentChangeCreated + 1;\n      }\n\n      currentChangeCreated += coin;\n    }\n\n    return currentChangeCreated + 1;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] input = new int[] {5, 7, 1, 1, 2, 3, 22};\n    int expected = 20;\n    var actual = new Program().nonConstructibleChange(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] input = new int[] {5, 7, 1, 1, 2, 3, 22};\n    int expected = 20;\n    var actual = new Program().nonConstructibleChange(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function nonConstructibleChange(coins) {\n  // Write your code here.\n  return 1;\n}\n\n// Do not edit the line below.\nexports.nonConstructibleChange = nonConstructibleChange;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(nlogn) time | O(1) space - where n is the number of coins\nfunction nonConstructibleChange(coins) {\n  coins.sort((a, b) => a - b);\n\n  let currentChangeCreated = 0;\n  for (const coin of coins) {\n    if (coin > currentChangeCreated + 1) return currentChangeCreated + 1;\n\n    currentChangeCreated += coin;\n  }\n\n  return currentChangeCreated + 1;\n}\n\n// Do not edit the line below.\nexports.nonConstructibleChange = nonConstructibleChange;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [5, 7, 1, 1, 2, 3, 22];\n  const expected = 20;\n  const actual = program.nonConstructibleChange(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [5, 7, 1, 1, 2, 3, 22];\n  const expected = 20;\n  const actual = program.nonConstructibleChange(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun nonConstructibleChange(coins: MutableList<Int>): Int {\n    // Write your code here.\n    return -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(nlogn) time | O(1) space - where n is the number of coins\nfun nonConstructibleChange(coins: MutableList<Int>): Int {\n    coins.sort()\n\n    var currentChangeCreated = 0\n    for (coin in coins) {\n        if (coin > currentChangeCreated + 1) return currentChangeCreated + 1\n\n        currentChangeCreated += coin\n    }\n\n    return currentChangeCreated + 1\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.nonConstructibleChange\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(5, 7, 1, 1, 2, 3, 22)\n        val expected = 20\n        val output = nonConstructibleChange(input)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.nonConstructibleChange\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(5, 7, 1, 1, 2, 3, 22)\n        val expected = 20\n        val output = nonConstructibleChange(input)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def nonConstructibleChange(coins):\n    # Write your code here.\n    return 1\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(nlogn) time | O(1) space - where n is the number of coins\ndef nonConstructibleChange(coins):\n    coins.sort()\n\n    currentChangeCreated = 0\n    for coin in coins:\n        if coin > currentChangeCreated + 1:\n            return currentChangeCreated + 1\n\n        currentChangeCreated += coin\n\n    return currentChangeCreated + 1\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [5, 7, 1, 1, 2, 3, 22]\n        expected = 20\n        actual = program.nonConstructibleChange(input)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [5, 7, 1, 1, 2, 3, 22]\n        expected = 20\n        actual = program.nonConstructibleChange(input)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "class Program\n  def nonConstructibleChange(coins)\n    # Write your code here.\n    return -1\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def nonConstructibleChange(coins)\n    # Write your code here.\n    return -1\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.nonConstructibleChange\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.nonConstructibleChange\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func nonConstructibleChange(_ coins: inout [Int]) -> Int {\n    // Write your code here.\n    return -1\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(nlogn) time | O(1) space - where n is the number of coins\n  func nonConstructibleChange(_ coins: inout [Int]) -> Int {\n    coins.sort()\n\n    var currentChangeCreated = 0\n    for coin in coins {\n      if coin > currentChangeCreated + 1 {\n        return currentChangeCreated + 1\n      }\n      currentChangeCreated += coin\n    }\n\n    return currentChangeCreated + 1\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var input = [5, 7, 1, 1, 2, 3, 22]\n      var expected = 20\n      var actual = Program().nonConstructibleChange(&input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var input = [5, 7, 1, 1, 2, 3, 22]\n      var expected = 20\n      var actual = Program().nonConstructibleChange(&input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function nonConstructibleChange(coins: number[]) {\n  // Write your code here.\n  return 1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(nlogn) time | O(1) space - where n is the number of coins\nexport function nonConstructibleChange(coins: number[]) {\n  coins.sort((a, b) => a - b);\n\n  let currentChangeCreated = 0;\n  for (const coin of coins) {\n    if (coin > currentChangeCreated + 1) return currentChangeCreated + 1;\n\n    currentChangeCreated += coin;\n  }\n\n  return currentChangeCreated + 1;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [5, 7, 1, 1, 2, 3, 22];\n  const expected = 20;\n  const actual = program.nonConstructibleChange(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [5, 7, 1, 1, 2, 3, 22];\n  const expected = 20;\n  const actual = program.nonConstructibleChange(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "coins",
+            "example": [
+                5,
+                7,
+                1,
+                1,
+                2,
+                3,
+                22
+            ],
+            "schema": {
+                "items": {
+                    "minimum": 1,
+                    "type": "integer"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "coins": [
+                5,
+                7,
+                1,
+                1,
+                2,
+                3,
+                22
+            ]
+        },
+        {
+            "coins": [
+                1,
+                1,
+                1,
+                1,
+                1
+            ]
+        },
+        {
+            "coins": [
+                1,
+                5,
+                1,
+                1,
+                1,
+                10,
+                15,
+                20,
+                100
+            ]
+        },
+        {
+            "coins": [
+                6,
+                4,
+                5,
+                1,
+                1,
+                8,
+                9
+            ]
+        },
+        {
+            "coins": []
+        },
+        {
+            "coins": [
+                87
+            ]
+        },
+        {
+            "coins": [
+                5,
+                6,
+                1,
+                1,
+                2,
+                3,
+                4,
+                9
+            ]
+        },
+        {
+            "coins": [
+                5,
+                6,
+                1,
+                1,
+                2,
+                3,
+                43
+            ]
+        },
+        {
+            "coins": [
+                1,
+                1
+            ]
+        },
+        {
+            "coins": [
+                2
+            ]
+        },
+        {
+            "coins": [
+                1
+            ]
+        },
+        {
+            "coins": [
+                109,
+                2000,
+                8765,
+                19,
+                18,
+                17,
+                16,
+                8,
+                1,
+                1,
+                2,
+                4
+            ]
+        },
+        {
+            "coins": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "coins": [
+                5,
+                7,
+                1,
+                1,
+                2,
+                3,
+                22
+            ]
+        },
+        {
+            "coins": [
+                1,
+                1,
+                1,
+                1,
+                1
+            ]
+        },
+        {
+            "coins": [
+                1,
+                5,
+                1,
+                1,
+                1,
+                10,
+                15,
+                20,
+                100
+            ]
+        },
+        {
+            "coins": [
+                6,
+                4,
+                5,
+                1,
+                1,
+                8,
+                9
+            ]
+        },
+        {
+            "coins": []
+        },
+        {
+            "coins": [
+                87
+            ]
+        },
+        {
+            "coins": [
+                5,
+                6,
+                1,
+                1,
+                2,
+                3,
+                4,
+                9
+            ]
+        },
+        {
+            "coins": [
+                5,
+                6,
+                1,
+                1,
+                2,
+                3,
+                43
+            ]
+        },
+        {
+            "coins": [
+                1,
+                1
+            ]
+        },
+        {
+            "coins": [
+                2
+            ]
+        },
+        {
+            "coins": [
+                1
+            ]
+        },
+        {
+            "coins": [
+                109,
+                2000,
+                8765,
+                19,
+                18,
+                17,
+                16,
+                8,
+                1,
+                1,
+                2,
+                4
+            ]
+        },
+        {
+            "coins": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+            ]
+        }
+    ],
+    "changelog": []
+}

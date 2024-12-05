@@ -1,0 +1,256 @@
+{
+    "uid": "palindrome-check",
+    "testStrategy": "JSON",
+    "name": "Palindrome Check",
+    "version": 0,
+    "releaseDate": "2000-05-04T00:00:00Z",
+    "category": "Strings",
+    "difficulty": 1,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": true,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 87129,
+        "failureCount": 22344
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "225764612",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Clement Mihailescu",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1130
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Write a function that takes in a non-empty string and that returns a boolean\n  representing whether the string is a palindrome.\n</p>\n<p>\n  A palindrome is defined as a string that's written the same forward and\n  backward. Note that single-character strings are palindromes.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">string</span> = \"abcdcba\"\n</pre>\n<h3>Sample Output</h3>\n<pre>\ntrue <span class=\"CodeEditor-promptComment\">// it's written the same forward and backward</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\nStart by building the input string in reverse order and comparing this newly built string to the input string. Can you do this without using string concatenations?\n</p>\n",
+        "\n<p>\nCan you optimize your algorithm by using recursion? What are the implications of recursion on an algorithm's space-time complexity analysis?\n</p>\n",
+        "\n<p>\nGo back to an iterative solution and try using pointers to solve this problem: start with a pointer at the first index of the string and a pointer at the final index of the string. What can you do from there?\n</p>"
+    ],
+    "spaceTime": "O(n) time | O(1) space - where n is the length of the input string",
+    "notes": "<div class=\"html\">\n<p class=\"CodeEditor-notesQuestion\">\n  Why does the first solution run in <i>O(n^2)</i> time when it only uses a\n  single <i>for</i> loop?\n</p>\n<p>\n  At each iteration in the <i>for</i> loop, the first solution adds a character\n  to the <span>reversedString</span>. In most languages where strings are\n  immutable, adding a character to a string involves re-creating the entire\n  string, which in turn involves iterating through every character in the string\n  (an <i>O(n)</i>-time operation).\n</p>\n<p>\n  This, the first solution has us perform an <i>O(n)</i>-time operation at each\n  iteration in the <i>for</i> loop, leading to an <i>O(n^2)</i>-time algorithm\n  overall.\n</p>\n</div>",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nbool isPalindrome(string str) {\n  // Write your code here.\n  return false;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing namespace std;\n\n// O(n^2) time | O(n) space\nbool isPalindrome(string str) {\n  string reversedString = \"\";\n  for (int i = str.length() - 1; i >= 0; i--) {\n    reversedString += str[i];\n  }\n  return str == reversedString;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <numeric>\n#include <vector>\nusing namespace std;\n\n// O(n) time | O(n) space\nbool isPalindrome(string str) {\n  vector<char> reversedChars;\n  for (int i = str.length() - 1; i >= 0; i--) {\n    reversedChars.push_back(str[i]);\n  }\n  return str == string(reversedChars.begin(), reversedChars.end());\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing namespace std;\n\nbool helper(string str, int i);\n\n// O(n) time | O(n) space\nbool isPalindrome(string str) { return helper(str, 0); }\n\nbool helper(string str, int i) {\n  int j = str.length() - 1 - i;\n  return i >= j ? true : str[i] == str[j] && helper(str, i + 1);\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing namespace std;\n\n// O(n) time | O(1) space\nbool isPalindrome(string str) {\n  int leftIdx = 0;\n  int rightIdx = str.length() - 1;\n  while (leftIdx < rightIdx) {\n    if (str[leftIdx] != str[rightIdx]) {\n      return false;\n    }\n    leftIdx++;\n    rightIdx--;\n  }\n  return true;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() { assert(isPalindrome(\"abcdcba\")); });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() { assert(isPalindrome(\"abcdcba\")); });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public static bool IsPalindrome(string str) {\n    // Write your code here.\n    return false;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npublic class Program {\n  // O(n^2) time | O(n) space\n  public static bool IsPalindrome(string str) {\n    string reversedstring = \"\";\n    for (int i = str.Length - 1; i >= 0; i--) {\n      reversedstring += str[i];\n    }\n    return str.Equals(reversedstring);\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Text;\n\npublic class Program {\n  // O(n) time | O(n) space\n  public static bool IsPalindrome(string str) {\n    StringBuilder reversedstring = new StringBuilder();\n    for (int i = str.Length - 1; i >= 0; i--) {\n      reversedstring.Append(str[i]);\n    }\n    return str.Equals(reversedstring.ToString());\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npublic class Program {\n  // O(n) time | O(n) space\n  public static bool IsPalindrome(string str) {\n    return IsPalindrome(str, 0);\n  }\n\n  public static bool IsPalindrome(string str, int i) {\n    int j = str.Length - 1 - i;\n    return i >= j ? true : str[i] == str[j] && IsPalindrome(str, i + 1);\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npublic class Program {\n  // O(n) time | O(1) space\n  public static bool IsPalindrome(string str) {\n    int leftIdx = 0;\n    int rightIdx = str.Length - 1;\n    while (leftIdx < rightIdx) {\n      if (str[leftIdx] != str[rightIdx]) {\n        return false;\n      }\n      leftIdx++;\n      rightIdx--;\n    }\n    return true;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    Utils.AssertTrue(Program.IsPalindrome(\"abcdcba\"));\n  }\n}\n",
+            "unitTests": "public class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    Utils.AssertTrue(Program.IsPalindrome(\"abcdcba\"));\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc IsPalindrome(str string) bool {\n\t// Write your code here.\n\treturn false\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n^2) time | O(n) space\nfunc IsPalindrome(str string) bool {\n\treversed := \"\"\n\tfor i := len(str) - 1; i >= 0; i-- {\n\t\treversed += string(str[i])\n\t}\n\tfor i := range str {\n\t\tif reversed[i] != str[i] {\n\t\t\treturn false\n\t\t}\n\t}\n\treturn true\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n) time | O(n) space\nfunc IsPalindrome(str string) bool {\n\tresult := []byte{}\n\tfor i := len(str) - 1; i >= 0; i-- {\n\t\tresult = append(result, str[i])\n\t}\n\treturn str == string(result)\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n) time | O(n) space\nfunc IsPalindrome(str string) bool {\n\treturn helper(str, 0)\n}\n\nfunc helper(str string, i int) bool {\n\tj := len(str) - 1 - i\n\tif i >= j {\n\t\treturn true\n\t}\n\tif str[i] != str[j] {\n\t\treturn false\n\t}\n\treturn helper(str, i+1)\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n) time | O(1) space\nfunc IsPalindrome(str string) bool {\n\tfor i := 0; i < len(str); i++ {\n\t\tj := len(str) - i - 1\n\t\tif str[i] != str[j] {\n\t\t\treturn false\n\t\t}\n\t}\n\treturn true\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\texpected := true\n\toutput := IsPalindrome(\"abcdcba\")\n\trequire.Equal(t, expected, output)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\texpected := true\n\toutput := IsPalindrome(\"abcdcba\")\n\trequire.Equal(t, expected, output)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public static boolean isPalindrome(String str) {\n    // Write your code here.\n    return false;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n^2) time | O(n) space\n  public static boolean isPalindrome(String str) {\n    String reversedString = \"\";\n    for (int i = str.length() - 1; i >= 0; i--) {\n      reversedString += str.charAt(i);\n    }\n    return str.equals(reversedString);\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(n) space\n  public static boolean isPalindrome(String str) {\n    StringBuilder reversedString = new StringBuilder();\n    for (int i = str.length() - 1; i >= 0; i--) {\n      reversedString.append(str.charAt(i));\n    }\n    return str.equals(reversedString.toString());\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(n) space\n  public static boolean isPalindrome(String str) {\n    return isPalindrome(str, 0);\n  }\n\n  public static boolean isPalindrome(String str, int i) {\n    int j = str.length() - 1 - i;\n    return i >= j ? true\n                  : str.charAt(i) == str.charAt(j) && isPalindrome(str, i + 1);\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(1) space\n  public static boolean isPalindrome(String str) {\n    int leftIdx = 0;\n    int rightIdx = str.length() - 1;\n    while (leftIdx < rightIdx) {\n      if (str.charAt(leftIdx) != str.charAt(rightIdx)) {\n        return false;\n      }\n      leftIdx++;\n      rightIdx--;\n    }\n    return true;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    Utils.assertTrue(Program.isPalindrome(\"abcdcba\"));\n  }\n}\n",
+            "unitTests": "class ProgramTest {\n  @Test\n  public void TestCase1() {\n    Utils.assertTrue(Program.isPalindrome(\"abcdcba\"));\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function isPalindrome(string) {\n  // Write your code here.\n}\n\n// Do not edit the line below.\nexports.isPalindrome = isPalindrome;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^2) time | O(n) space\nfunction isPalindrome(string) {\n  let reversedString = '';\n  for (let i = string.length - 1; i >= 0; i--) {\n    reversedString += string[i];\n  }\n  return string === reversedString;\n}\n\nexports.isPalindrome = isPalindrome;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space\nfunction isPalindrome(string) {\n  const reversedChars = [];\n  for (let i = string.length - 1; i >= 0; i--) {\n    reversedChars.push(string[i]);\n  }\n  return string === reversedChars.join('');\n}\n\nexports.isPalindrome = isPalindrome;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space\nfunction isPalindrome(string, i = 0) {\n  const j = string.length - 1 - i;\n  return i >= j ? true : string[i] === string[j] && isPalindrome(string, i + 1);\n}\n\nexports.isPalindrome = isPalindrome;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(1) space\nfunction isPalindrome(string) {\n  let leftIdx = 0;\n  let rightIdx = string.length - 1;\n  while (leftIdx < rightIdx) {\n    if (string[leftIdx] !== string[rightIdx]) return false;\n    leftIdx++;\n    rightIdx--;\n  }\n  return true;\n}\n\nexports.isPalindrome = isPalindrome;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  chai.expect(program.isPalindrome('abcdcba')).to.deep.equal(true);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  chai.expect(program.isPalindrome('abcdcba')).to.deep.equal(true);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun isPalindrome(string: String): Boolean {\n    // Write your code here.\n    return false\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n^2) time | O(n) space\nfun isPalindrome(string: String): Boolean {\n    var reversedString = \"\"\n    for (i in string.length - 1 downTo 0) {\n        reversedString += string[i]\n    }\n    return string == reversedString\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n) time | O(n) space\nfun isPalindrome(string: String): Boolean {\n    val reversedChars = mutableListOf<Char>()\n    for (i in string.length - 1 downTo 0) {\n        reversedChars.add(string[i])\n    }\n    return string == reversedChars.joinToString(\"\")\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n) time | O(n) space\nfun isPalindrome(string: String = \"\", i: Int = 0): Boolean {\n    val j = string.length - 1 - i\n    return if (i >= j) true else string[i] == string[j] && isPalindrome(string, i + 1)\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n) time | O(1) space\nfun isPalindrome(string: String): Boolean {\n    var leftIdx = 0\n    var rightIdx = string.length - 1\n    while (leftIdx < rightIdx) {\n        if (string[leftIdx] != string[rightIdx]) return false\n        leftIdx++\n        rightIdx--\n    }\n    return true\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.isPalindrome as isPalindrome\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        assert(isPalindrome(\"abcdcba\"))\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.isPalindrome as isPalindrome\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        assert(isPalindrome(\"abcdcba\"))\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def isPalindrome(string):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n^2) time | O(n) space\ndef isPalindrome(string):\n    reversedString = \"\"\n    for i in reversed(range(len(string))):\n        reversedString += string[i]\n    return string == reversedString\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(n) space\ndef isPalindrome(string):\n    reversedChars = []\n    for i in reversed(range(len(string))):\n        reversedChars.append(string[i])\n    return string == \"\".join(reversedChars)\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(n) space\ndef isPalindrome(string, i=0):\n    j = len(string) - 1 - i\n    return True if i >= j else string[i] == string[j] and isPalindrome(string, i + 1)\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(1) space\ndef isPalindrome(string):\n    leftIdx = 0\n    rightIdx = len(string) - 1\n    while leftIdx < rightIdx:\n        if string[leftIdx] != string[rightIdx]:\n            return False\n        leftIdx += 1\n        rightIdx -= 1\n    return True\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        self.assertEqual(program.isPalindrome(\"abcdcba\"), True)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        self.assertEqual(program.isPalindrome(\"abcdcba\"), True)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  def isPalindrome(string)\n    # Write your code here.\n    return false\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def isPalindrome(string)\n    # Write your code here.\n    return false\n  end\nend\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def isPalindrome(string)\n    # Write your code here.\n    return false\n  end\nend\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def isPalindrome(string)\n    # Write your code here.\n    return false\n  end\nend\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def isPalindrome(string)\n    # Write your code here.\n    return false\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.isPalindrome\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.isPalindrome\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func isPalindrome(string: String) -> Bool {\n    // Write your code here.\n    return false\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n^2) time | O(n) space\n  func isPalindrome(string: String) -> Bool {\n    var reversedString = \"\"\n\n    for i in (0 ..< string.count).reversed() {\n      let startIndex = string.index(string.startIndex, offsetBy: i)\n\n      let currentChar = string[startIndex]\n      reversedString.append(currentChar)\n    }\n\n    return string == reversedString\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(n) space\n  func isPalindrome(string: String) -> Bool {\n    var reversedChars = [Character]()\n\n    for i in (0 ..< string.count).reversed() {\n      let startIndex = string.index(string.startIndex, offsetBy: i)\n\n      let currentChar = string[startIndex]\n      reversedChars.append(currentChar)\n    }\n\n    let reversedString = String(reversedChars)\n\n    return string == reversedString\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(n) space\n  func isPalindrome(string: String, firstIndex: Int = 0) -> Bool {\n    let lastIndex = string.count - 1 - firstIndex\n\n    if firstIndex >= lastIndex {\n      return true\n    }\n\n    let startIndex = string.index(string.startIndex, offsetBy: firstIndex)\n    let endIndex = string.index(string.startIndex, offsetBy: lastIndex)\n\n    let firstAndLastAreEqual = string[startIndex] == string[endIndex]\n    let palindromeCheck = isPalindrome(string: string, firstIndex: firstIndex + 1)\n\n    return firstAndLastAreEqual && palindromeCheck\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(1) space\n  func isPalindrome(string: String) -> Bool {\n    var leftPointer = 0\n    var rightPointer = string.count - 1\n    var leftIndex = string.index(string.startIndex, offsetBy: leftPointer)\n    var rightIndex = string.index(string.startIndex, offsetBy: rightPointer)\n\n    while leftIndex < rightIndex {\n      if string[leftIndex] != string[rightIndex] {\n        return false\n      }\n\n      leftPointer = leftPointer + 1\n      rightPointer = rightPointer - 1\n      leftIndex = string.index(string.startIndex, offsetBy: leftPointer)\n      rightIndex = string.index(string.startIndex, offsetBy: rightPointer)\n    }\n\n    return true\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws -> Void in\n      try assertEqual(true, program.isPalindrome(string: \"abcdcba\"))\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws -> Void in\n      try assertEqual(true, program.isPalindrome(string: \"abcdcba\"))\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function isPalindrome(string: string) {\n  // Write your code here.\n  return false;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^2) time | O(n) space\nexport function isPalindrome(string: string) {\n  let reversedString = '';\n  for (let i = string.length - 1; i >= 0; i--) {\n    reversedString += string[i];\n  }\n  return string === reversedString;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space\nexport function isPalindrome(string: string) {\n  const reversedChars: string[] = [];\n  for (let i = string.length - 1; i >= 0; i--) {\n    reversedChars.push(string[i]);\n  }\n  return string === reversedChars.join('');\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space\nexport function isPalindrome(string: string, i = 0): boolean {\n  const j = string.length - 1 - i;\n  return i >= j ? true : string[i] === string[j] && isPalindrome(string, i + 1);\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(1) space\nexport function isPalindrome(string: string) {\n  let leftIdx = 0;\n  let rightIdx = string.length - 1;\n  while (leftIdx < rightIdx) {\n    if (string[leftIdx] !== string[rightIdx]) return false;\n    leftIdx++;\n    rightIdx--;\n  }\n  return true;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  chai.expect(program.isPalindrome('abcdcba')).to.deep.equal(true);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  chai.expect(program.isPalindrome('abcdcba')).to.deep.equal(true);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "string",
+            "example": "abcdcba",
+            "schema": {
+                "minLength": 1,
+                "type": "string"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "string": "abcdcba"
+        },
+        {
+            "string": "a"
+        },
+        {
+            "string": "ab"
+        },
+        {
+            "string": "aba"
+        },
+        {
+            "string": "abb"
+        },
+        {
+            "string": "abba"
+        },
+        {
+            "string": "abcdefghhgfedcba"
+        },
+        {
+            "string": "abcdefghihgfedcba"
+        },
+        {
+            "string": "abcdefghihgfeddcba"
+        }
+    ],
+    "jsonTests": [
+        {
+            "string": "abcdcba"
+        },
+        {
+            "string": "a"
+        },
+        {
+            "string": "ab"
+        },
+        {
+            "string": "aba"
+        },
+        {
+            "string": "abb"
+        },
+        {
+            "string": "abba"
+        },
+        {
+            "string": "abcdefghhgfedcba"
+        },
+        {
+            "string": "abcdefghihgfedcba"
+        },
+        {
+            "string": "abcdefghihgfeddcba"
+        }
+    ],
+    "changelog": []
+}

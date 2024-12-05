@@ -1,0 +1,842 @@
+{
+    "uid": "strings-made-up-of-strings",
+    "testStrategy": "JSON",
+    "name": "Strings Made Up Of Strings",
+    "version": 0,
+    "releaseDate": "2023-10-15T00:00:00Z",
+    "category": "Tries",
+    "difficulty": 4,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 337,
+        "failureCount": 53
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "845413537",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1468
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    Write a function that takes in a non-empty array of unique strings\n    <span>strings</span> as well as another non-empty array of unique strings\n    <span>substrings</span>. This function should return an array of all of\n    the strings in <span>strings</span> that can be formed by concatenating\n    one or more of the strings in <span>substrings</span>.\n  </p>\n\n  <p>Note that:</p>\n  <ul>\n    <li>\n      The strings in <span>substrings</span> won't necessarily always be\n      smaller than those in <span>strings</span>. For example, the string\n      <span>\"ab\"</span> could be contained in <span>substrings</span> with the\n      string <span>\"a\"</span> contained in <span>strings</span>.\n    </li>\n    <li>\n      A substring can be used multiple times to make up a string. For\n      example, the substring <span>\"foo\"</span> can be used twice to make up\n      the string <span>\"foofoo\"</span>.\n    </li>\n    <li>\n      A substring must be entirely contained in a string in order to be\n      part of it.\n    </li>\n    <li>\n      If a string is exactly equal to a substring, that string should\n      be included in the output array.\n    </li>\n    <li>The order of the strings in the output array doesn't matter.</li>\n  </ul>\n  <p></p>\n  <h3>Sample Input #1</h3>\n  <pre>\n<span class=\"CodeEditor-promptParameter\">strings</span> = [\n  \"bar\",\n  \"are\",\n  \"foo\",\n  \"ba\",\n  \"b\",\n  \"barely\"\n]\n<span class=\"CodeEditor-promptParameter\">substrings</span> = [\n  \"b\",\n  \"a\",\n  \"r\",\n  \"ba\",\n  \"ar\",\n  \"bar\"\n]</pre>\n  <h3>Sample Output #1</h3>\n  <pre>\n[\"bar\", \"ba\", \"b\"]\n</pre\n  >\n\n  <h3>Sample Input #2</h3>\n  <pre>\n<span class=\"CodeEditor-promptParameter\">strings</span> = [\n  \"barbar\",\n  \"algoexpert\",\n  \"frontendexpert\"\n]\n<span class=\"CodeEditor-promptParameter\">substrings</span> = [\n  \"algo\",\n  \"bar\",\n  \"expert\",\n  \"end\",\n  \"front\"\n]</pre>\n  <h3>Sample Output #2</h3>\n  <pre>\n[\"barbar\", \"algoexpert\", \"frontendexpert\"]\n</pre\n  >\n</div>",
+    "hints": [
+        "<p>\n  Try breaking this problem down into small chunks. For every string in\n  <span>strings</span>, we want to first figure out if any of the\n  <span>substrings</span> are the same as the beginning of the current\n  string. Then the process should repeat for the remaining characters of the\n  current string until the entire string has been found.\n</p>\n",
+        "\n<p>\n  Since we need to be able to quickly find if the beginning of a string is\n  present in the <span>substrings</span>, it will be helpful to create a\n  Trie to hold all of the substrings.\n</p>\n",
+        "\n<p>\n  You'll likely end up doing a lot of repetitive work. For this reason, adding\n  a memoization dictionary to contain all of the previous found substrings\n  can help improve the time complexity.\n</p>\n",
+        "\n<p>\n  Finding a substring of a string is usually an O(n) operation. To avoid this,\n  try simply passing start and end indices to helper functions, rather than\n  actually creating the substrings.\n</p>"
+    ],
+    "spaceTime": "O(s2 * m + s1 * n^2) time | O(s2 * m + s1 * n) space - where s2 is the number of substrings, m is the length of the longest substring, s1 is the number of strings, and n is the length of the longest string",
+    "notes": "<div class=\"html\">\n  <p>\n    The worst case time complexity of the <span>isMadeUpOfStrings</span>\n    helper function is <span>O(n^2)</span> where n is the length of the string\n    being checked. However, if we only considered \"typical\" cases that complexity\n    would be closer to <span>O(n)</span>.\n  </p>\n\n  <p>\n    The worst possible input would be a very contrived case where nearly every\n    possible substring of the string being checked exists in the Trie. For this\n    reason, we could end up calling <span>isMadeUpOfStrings</span> on\n    <span>n</span> different inputs, each of which would get past the base\n    cases and require iterating through the characters of the string.\n  </p>\n  </div>",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nvector<string> stringsMadeUpOfStrings(\n  vector<string> strings, vector<string> substrings\n) {\n  // Write your code here.\n  return {};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <unordered_map>\n\nusing namespace std;\n\nclass TrieNode {\n public:\n  unordered_map<char, TrieNode*> children;\n  bool isEndOfString = false;\n};\n\nclass Trie {\n public:\n  TrieNode* root = new TrieNode();\n\n  void insert(string word);\n};\n\nbool isMadeUpOfStrings(\n  string string, int startIdx, Trie& trie, unordered_map<int, bool>& memo\n);\n\n// O(s2 * m + s1 * n^2) time | O(s2 * m + s1 * n) space - where s2 is the\n// number of substrings, m is the length of the longest substring, s1 is the\n// number of strings, and n is the length of the longest string\nvector<string> stringsMadeUpOfStrings(\n  vector<string> strings, vector<string> substrings\n) {\n  Trie trie;\n  for (const string& substring : substrings) {\n    trie.insert(substring);\n  }\n\n  vector<string> solutions;\n  for (const string& string : strings) {\n    unordered_map<int, bool> memo;\n    if (isMadeUpOfStrings(string, 0, trie, memo)) {\n      solutions.push_back(string);\n    }\n  }\n\n  return solutions;\n}\n\nbool isMadeUpOfStrings(\n  string string, int startIdx, Trie& trie, unordered_map<int, bool>& memo\n) {\n  if (startIdx == string.length()) {\n    return true;\n  }\n  if (memo.find(startIdx) != memo.end()) {\n    return memo[startIdx];\n  }\n\n  TrieNode* currentTrieNode = trie.root;\n  for (int currentCharacterIdx = startIdx;\n       currentCharacterIdx < string.length();\n       currentCharacterIdx++) {\n    char currentCharacter = string.at(currentCharacterIdx);\n    if (currentTrieNode->children.find(currentCharacter) == currentTrieNode->children.end()) {\n      break;\n    }\n\n    currentTrieNode = currentTrieNode->children[currentCharacter];\n    if (currentTrieNode->isEndOfString && isMadeUpOfStrings(string, currentCharacterIdx + 1, trie, memo)) {\n      memo[startIdx] = true;\n      return true;\n    }\n  }\n\n  memo[startIdx] = false;\n  return false;\n}\n\nvoid Trie::insert(string word) {\n  TrieNode* trieNode = root;\n  for (char character : word) {\n    if (trieNode->children.find(character) == trieNode->children.end()) {\n      trieNode->children[character] = new TrieNode();\n    }\n    trieNode = trieNode->children[character];\n  }\n  trieNode->isEndOfString = true;\n}"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<string> strings = {\"bar\", \"are\", \"foo\", \"ba\", \"b\", \"barely\"};\n      vector<string> substrings = {\"b\", \"a\", \"r\", \"ba\", \"ar\", \"bar\"};\n      vector<string> expected = {\"bar\", \"ba\", \"b\"};\n      auto actual = stringsMadeUpOfStrings(strings, substrings);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<string> strings = {\"bar\", \"are\", \"foo\", \"ba\", \"b\", \"barely\"};\n      vector<string> substrings = {\"b\", \"a\", \"r\", \"ba\", \"ar\", \"bar\"};\n      vector<string> expected = {\"bar\", \"ba\", \"b\"};\n      auto actual = stringsMadeUpOfStrings(strings, substrings);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public string[] StringsMadeUpOfStrings(\n    string[] strings, string[] substrings\n  ) {\n    // Write your code here.\n    return new string[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(s2 * m + s1 * n^2) time | O(s2 * m + s1 * n) space - where s2 is the\n  // number of substrings, m is the length of the longest substring, s1 is the\n  // number of strings, and n is the length of the longest string\n  public string[] StringsMadeUpOfStrings(\n    string[] strings, string[] substrings\n  ) {\n    Trie trie = new Trie();\n    foreach (var substring in substrings) {\n      trie.insert(substring);\n    }\n\n    List<string> solutions = new List<string>();\n    foreach (var str in strings) {\n      if (isMadeUpOfStrings(str, 0, trie, new Dictionary<int, bool>())) {\n        solutions.Add(str);\n      }\n    }\n\n    return solutions.ToArray();\n  }\n\n  static bool isMadeUpOfStrings(\n    string str, int startIdx, Trie trie, Dictionary<int, bool> memo\n  ) {\n    if (startIdx == str.Length) {\n      return true;\n    }\n    if (memo.ContainsKey(startIdx)) {\n      return memo[startIdx];\n    }\n\n    TrieNode currentTrieNode = trie.root;\n    for (int currentcharIdx = startIdx; currentcharIdx < str.Length;\n         currentcharIdx++) {\n      char currentchar = str[currentcharIdx];\n      if (!currentTrieNode.children.ContainsKey(currentchar)) {\n        break;\n      }\n\n      currentTrieNode = currentTrieNode.children[currentchar];\n      if (currentTrieNode.isEndOfString && isMadeUpOfStrings(str, currentcharIdx + 1, trie, memo)) {\n        memo[startIdx] = true;\n        return true;\n      }\n    }\n\n    memo[startIdx] = false;\n    return false;\n  }\n\n  public class TrieNode {\n    public Dictionary<char, TrieNode> children =\n      new Dictionary<char, TrieNode>();\n    public bool isEndOfString = false;\n  }\n\n  public class Trie {\n    public TrieNode root = new TrieNode();\n\n    public void insert(string word) {\n      TrieNode trieNode = root;\n      foreach (var character in word.ToCharArray()) {\n        if (!trieNode.children.ContainsKey(character)) {\n          trieNode.children[character] = new TrieNode();\n        }\n        trieNode = trieNode.children[character];\n      }\n      trieNode.isEndOfString = true;\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    string[] strings =\n      new string[] { \"bar\", \"are\", \"foo\", \"ba\", \"b\", \"barely\" };\n    string[] substrings = new string[] { \"b\", \"a\", \"r\", \"ba\", \"ar\", \"bar\" };\n    string[] expected = new string[] { \"bar\", \"ba\", \"b\" };\n    string[] actual = new Program().StringsMadeUpOfStrings(strings, substrings);\n    Utils.AssertTrue(expected.Length == actual.Length);\n\n    for (int i = 0; i < expected.Length; i++) {\n      Utils.AssertTrue(expected[i] == actual[i]);\n    }\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    string[] strings =\n      new string[] { \"bar\", \"are\", \"foo\", \"ba\", \"b\", \"barely\" };\n    string[] substrings = new string[] { \"b\", \"a\", \"r\", \"ba\", \"ar\", \"bar\" };\n    string[] expected = new string[] { \"bar\", \"ba\", \"b\" };\n    string[] actual = new Program().StringsMadeUpOfStrings(strings, substrings);\n    Utils.AssertTrue(expected.Length == actual.Length);\n\n    for (int i = 0; i < expected.Length; i++) {\n      Utils.AssertTrue(expected[i] == actual[i]);\n    }\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc StringsMadeUpOfStrings(strings []string, substrings []string) []string {\n\t// Write your code here.\n\treturn []string{}\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(s2 * m + s1 * n^2) time | O(s2 * m + s1 * n) space - where s2 is the number\n// of substrings, m is the length of the longest substring, s1 is the\n// number of strings, and n is the length of the longest string\nfunc StringsMadeUpOfStrings(strings []string, substrings []string) []string {\n\ttrie := NewTrie()\n\tfor _, substring := range substrings {\n\t\ttrie.Insert(substring)\n\t}\n\n\tsolutions := make([]string, 0)\n\tfor _, str := range strings {\n\t\tif isMadeUpOfStrings(str, 0, trie, make(map[int]bool)) {\n\t\t\tsolutions = append(solutions, str)\n\t\t}\n\t}\n\n\treturn solutions\n}\n\ntype TrieNode struct {\n\tchildren      map[rune]*TrieNode\n\tisEndOfString bool\n}\n\ntype Trie struct {\n\troot *TrieNode\n}\n\nfunc NewTrie() *Trie {\n\treturn &Trie{root: &TrieNode{children: make(map[rune]*TrieNode), isEndOfString: false}}\n}\n\nfunc (t *Trie) Insert(str string) {\n\tcurrentTrieNode := t.root\n\tfor _, char := range str {\n\t\tif _, ok := currentTrieNode.children[char]; !ok {\n\t\t\tcurrentTrieNode.children[char] = &TrieNode{children: make(map[rune]*TrieNode), isEndOfString: false}\n\t\t}\n\t\tcurrentTrieNode = currentTrieNode.children[char]\n\t}\n\tcurrentTrieNode.isEndOfString = true\n}\n\nfunc isMadeUpOfStrings(str string, startIdx int, trie *Trie, memo map[int]bool) bool {\n\tif startIdx == len(str) {\n\t\treturn true\n\t}\n\tif val, ok := memo[startIdx]; ok {\n\t\treturn val\n\t}\n\n\tcurrentTrieNode := trie.root\n\tfor currentCharacterIdx := startIdx; currentCharacterIdx < len(str); currentCharacterIdx++ {\n\t\tcurrentCharacter := rune(str[currentCharacterIdx])\n\t\tif _, ok := currentTrieNode.children[currentCharacter]; !ok {\n\t\t\tbreak\n\t\t}\n\n\t\tcurrentTrieNode = currentTrieNode.children[currentCharacter]\n\t\tif currentTrieNode.isEndOfString && isMadeUpOfStrings(str, currentCharacterIdx+1, trie, memo) {\n\t\t\tmemo[startIdx] = true\n\t\t\treturn true\n\t\t}\n\t}\n\n\tmemo[startIdx] = false\n\treturn false\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tstrings := []string{\"bar\", \"are\", \"foo\", \"ba\", \"b\", \"barely\"}\n\tsubstrings := []string{\"b\", \"a\", \"r\", \"ba\", \"ar\", \"bar\"}\n\texpected := []string{\"bar\", \"ba\", \"b\"}\n\tactual := StringsMadeUpOfStrings(strings, substrings)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tstrings := []string{\"bar\", \"are\", \"foo\", \"ba\", \"b\", \"barely\"}\n\tsubstrings := []string{\"b\", \"a\", \"r\", \"ba\", \"ar\", \"bar\"}\n\texpected := []string{\"bar\", \"ba\", \"b\"}\n\tactual := StringsMadeUpOfStrings(strings, substrings)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public String[] stringsMadeUpOfStrings(\n    String[] strings, String[] substrings\n  ) {\n    // Write your code here.\n    return new String[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(s2 * m + s1 * n^2) time | O(s2 * m + s1 * n) space - where s2 is the\n  // number of substrings, m is the length of the longest substring, s1 is the\n  // number of strings, and n is the length of the longest string\n  public String[] stringsMadeUpOfStrings(\n    String[] strings, String[] substrings\n  ) {\n    Trie trie = new Trie();\n    for (String substring : substrings) {\n      trie.insert(substring);\n    }\n\n    ArrayList<String> solutions = new ArrayList<String>();\n    for (String string : strings) {\n      if (isMadeUpOfStrings(string, 0, trie, new HashMap<Integer, Boolean>())) {\n        solutions.add(string);\n      }\n    }\n\n    return solutions.toArray(new String[solutions.size()]);\n  }\n\n  static boolean isMadeUpOfStrings(\n    String string, int startIdx, Trie trie, HashMap<Integer, Boolean> memo\n  ) {\n    if (startIdx == string.length()) {\n      return true;\n    }\n    if (memo.containsKey(startIdx)) {\n      return memo.get(startIdx);\n    }\n\n    TrieNode currentTrieNode = trie.root;\n    for (int currentCharacterIdx = startIdx;\n         currentCharacterIdx < string.length();\n         currentCharacterIdx++) {\n      Character currentCharacter = string.charAt(currentCharacterIdx);\n      if (!currentTrieNode.children.containsKey(currentCharacter)) {\n        break;\n      }\n\n      currentTrieNode = currentTrieNode.children.get(currentCharacter);\n      if (currentTrieNode.isEndOfString && isMadeUpOfStrings(string, currentCharacterIdx + 1, trie, memo)) {\n        memo.put(startIdx, true);\n        return true;\n      }\n    }\n\n    memo.put(startIdx, false);\n    return false;\n  }\n\n  static class TrieNode {\n    Map<Character, TrieNode> children = new HashMap<Character, TrieNode>();\n    boolean isEndOfString = false;\n  }\n\n  static class Trie {\n    TrieNode root = new TrieNode();\n\n    public void insert(String word) {\n      TrieNode trieNode = root;\n      for (char character : word.toCharArray()) {\n        if (trieNode.children.get(character) == null) {\n          trieNode.children.put(character, new TrieNode());\n        }\n        trieNode = trieNode.children.get(character);\n      }\n      trieNode.isEndOfString = true;\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    String[] strings = new String[] {\"bar\", \"are\", \"foo\", \"ba\", \"b\", \"barely\"};\n    String[] substrings = new String[] {\"b\", \"a\", \"r\", \"ba\", \"ar\", \"bar\"};\n    String[] expected = new String[] {\"bar\", \"ba\", \"b\"};\n    String[] actual = new Program().stringsMadeUpOfStrings(strings, substrings);\n    Utils.assertTrue(expected.length == actual.length);\n\n    for (int i = 0; i < expected.length; i++) {\n      Utils.assertTrue(expected[i] == actual[i]);\n    }\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    String[] strings = new String[] {\"bar\", \"are\", \"foo\", \"ba\", \"b\", \"barely\"};\n    String[] substrings = new String[] {\"b\", \"a\", \"r\", \"ba\", \"ar\", \"bar\"};\n    String[] expected = new String[] {\"bar\", \"ba\", \"b\"};\n    String[] actual = new Program().stringsMadeUpOfStrings(strings, substrings);\n    Utils.assertTrue(expected.length == actual.length);\n\n    for (int i = 0; i < expected.length; i++) {\n      Utils.assertTrue(expected[i] == actual[i]);\n    }\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function stringsMadeUpOfStrings(strings, substrings) {\n  // Write your code here.\n  return [];\n}\n\n// Do not edit the line below.\nexports.stringsMadeUpOfStrings = stringsMadeUpOfStrings;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(s2 * m + s1 * n^2) time | O(s2 * m + s1 * n) space - where s2 is the number\n// of substrings, m is the length of the longest substring, s1 is the\n// number of strings, and n is the length of the longest string\nfunction stringsMadeUpOfStrings(strings, substrings) {\n  const trie = new Trie();\n  for (const substring of substrings) {\n    trie.insert(substring);\n  }\n\n  const solutions = [];\n  for (const string of strings) {\n    if (isMadeUpOfStrings(string, 0, trie, {})) {\n      solutions.push(string);\n    }\n  }\n\n  return solutions;\n}\n\nfunction isMadeUpOfStrings(string, startIdx, trie, memo) {\n  if (startIdx === string.length) return true;\n  if (startIdx in memo) return memo[startIdx];\n\n  let currentTrieNode = trie.root;\n  for (\n    let currentCharacterIdx = startIdx;\n    currentCharacterIdx < string.length;\n    currentCharacterIdx++\n  ) {\n    const currentCharacter = string[currentCharacterIdx];\n    if (!(currentCharacter in currentTrieNode)) break;\n\n    currentTrieNode = currentTrieNode[currentCharacter];\n    if (\n      currentTrieNode.isEndOfString &&\n      isMadeUpOfStrings(string, currentCharacterIdx + 1, trie, memo)\n    ) {\n      memo[startIdx] = true;\n      return true;\n    }\n  }\n\n  memo[startIdx] = false;\n  return false;\n}\n\nclass Trie {\n  constructor() {\n    this.root = {isEndOfString: false};\n  }\n\n  insert(string) {\n    let currentTrieNode = this.root;\n    for (let i = 0; i < string.length; i++) {\n      if (!(string[i] in currentTrieNode)) {\n        currentTrieNode[string[i]] = {isEndOfString: false};\n      }\n      currentTrieNode = currentTrieNode[string[i]];\n    }\n    currentTrieNode.isEndOfString = true;\n  }\n}\n\n// Do not edit the line below.\nexports.stringsMadeUpOfStrings = stringsMadeUpOfStrings;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const strings = ['bar', 'are', 'foo', 'ba', 'b', 'barely'];\n  const substrings = ['b', 'a', 'r', 'ba', 'ar', 'bar'];\n  const expected = ['bar', 'ba', 'b'];\n  const actual = program.stringsMadeUpOfStrings(strings, substrings);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const strings = ['bar', 'are', 'foo', 'ba', 'b', 'barely'];\n  const substrings = ['b', 'a', 'r', 'ba', 'ar', 'bar'];\n  const expected = ['bar', 'ba', 'b'];\n  const actual = program.stringsMadeUpOfStrings(strings, substrings);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun stringsMadeUpOfStrings(strings: MutableList<String>, substrings: MutableList<String>): MutableList<String> {\n    // Write your code here.\n    return mutableListOf()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(s2 * m + s1 * n^2) time | O(s2 * m + s1 * n) space - where s2 is the number\n// of substrings, m is the length of the longest substring, s1 is the\n// number of strings, and n is the length of the longest string\nfun stringsMadeUpOfStrings(\n    strings: MutableList<String>,\n    substrings: MutableList<String>,\n): MutableList<String> {\n    val trie = Trie()\n    for (substring in substrings) {\n        trie.insert(substring)\n    }\n\n    val solutions = mutableListOf<String>()\n    for (string in strings) {\n        if (isMadeUpOfStrings(string, 0, trie, mutableMapOf<Int, Boolean>())) {\n            solutions.add(string)\n        }\n    }\n\n    return solutions\n}\n\nfun isMadeUpOfStrings(string: String, startIdx: Int, trie: Trie, memo: MutableMap<Int, Boolean>): Boolean {\n    if (startIdx == string.length) return true\n    if (startIdx in memo) return memo[startIdx]!!\n\n    var currentTrieNode = trie.root\n    for (currentCharacterIdx in startIdx until string.length) {\n        val currentCharacter = string[currentCharacterIdx]\n        if (!(currentCharacter in currentTrieNode.children)) break\n\n        currentTrieNode = currentTrieNode.children[currentCharacter]!!\n        if (currentTrieNode.isEndOfString && isMadeUpOfStrings(string, currentCharacterIdx + 1, trie, memo)) {\n            memo[startIdx] = true\n            return true\n        }\n    }\n\n    memo[startIdx] = false\n    return false\n}\n\ndata class TrieNode(\n    val children: MutableMap<Char, TrieNode> = mutableMapOf(),\n    var isEndOfString: Boolean = false,\n)\n\nclass Trie {\n    val root = TrieNode()\n\n    fun insert(string: String) {\n        var currentTrieNode = this.root\n        for (i in 0 until string.length) {\n            if (!(string[i] in currentTrieNode.children)) {\n                currentTrieNode.children[string[i]] = TrieNode()\n            }\n            currentTrieNode = currentTrieNode.children[string[i]]!!\n        }\n        currentTrieNode.isEndOfString = true\n    }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.stringsMadeUpOfStrings\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val strings = mutableListOf(\"bar\", \"are\", \"foo\", \"ba\", \"b\", \"barely\")\n        val substrings = mutableListOf(\"b\", \"a\", \"r\", \"ba\", \"ar\", \"bar\")\n        val expected = mutableListOf(\"bar\", \"ba\", \"b\")\n        val output = stringsMadeUpOfStrings(strings, substrings)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.stringsMadeUpOfStrings\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val strings = mutableListOf(\"bar\", \"are\", \"foo\", \"ba\", \"b\", \"barely\")\n        val substrings = mutableListOf(\"b\", \"a\", \"r\", \"ba\", \"ar\", \"bar\")\n        val expected = mutableListOf(\"bar\", \"ba\", \"b\")\n        val output = stringsMadeUpOfStrings(strings, substrings)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def stringsMadeUpOfStrings(strings, substrings):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(s2 * m + s1 * n^2) time | O(s2 * m + s1 * n) space - where s2 is the number\n# of substrings, m is the length of the longest substring, s1 is the\n# number of strings, and n is the length of the longest string\ndef stringsMadeUpOfStrings(strings, substrings):\n    trie = Trie()\n    for substring in substrings:\n        trie.insert(substring)\n\n    solutions = []\n    for string in strings:\n        if isMadeUpOfStrings(string, 0, trie, {}):\n            solutions.append(string)\n\n    return solutions\n\n\ndef isMadeUpOfStrings(string, startIdx, trie, memo):\n    if startIdx == len(string):\n        return True\n    if startIdx in memo:\n        return memo[startIdx]\n\n    currentTrieNode = trie.root\n    for currentCharacterIdx in range(startIdx, len(string)):\n        currentCharacter = string[currentCharacterIdx]\n        if currentCharacter not in currentTrieNode:\n            break\n\n        currentTrieNode = currentTrieNode[currentCharacter]\n        if currentTrieNode[\"isEndOfString\"] and isMadeUpOfStrings(\n            string, currentCharacterIdx + 1, trie, memo\n        ):\n            memo[startIdx] = True\n            return True\n\n    memo[startIdx] = False\n    return False\n\n\nclass Trie:\n    def __init__(self):\n        self.root = {\"isEndOfString\": False}\n\n    def insert(self, string):\n        currentTrieNode = self.root\n        for i in range(len(string)):\n            if string[i] not in currentTrieNode:\n                currentTrieNode[string[i]] = {\"isEndOfString\": False}\n            currentTrieNode = currentTrieNode[string[i]]\n        currentTrieNode[\"isEndOfString\"] = True\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        strings = [\"bar\", \"are\", \"foo\", \"ba\", \"b\", \"barely\"]\n        substrings = [\"b\", \"a\", \"r\", \"ba\", \"ar\", \"bar\"]\n        expected = [\"bar\", \"ba\", \"b\"]\n        actual = program.stringsMadeUpOfStrings(strings, substrings)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        strings = [\"bar\", \"are\", \"foo\", \"ba\", \"b\", \"barely\"]\n        substrings = [\"b\", \"a\", \"r\", \"ba\", \"ar\", \"bar\"]\n        expected = [\"bar\", \"ba\", \"b\"]\n        actual = program.stringsMadeUpOfStrings(strings, substrings)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def stringsMadeUpOfStrings(strings, substrings)\n        # Write your code here.\n        return []\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def stringsMadeUpOfStrings(strings, substrings)\n        # Write your code here.\n        return []\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.stringsMadeUpOfStrings\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.stringsMadeUpOfStrings\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func stringsMadeUpOfStrings(_ strings: [String], _ substrings: [String]) -> [String] {\n    // Write your code here.\n    return [String]()\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(s2 * m + s1 * n^2) time | O(s2 * m + s1 * n) space - where s2 is the number\n  // of substrings, m is the length of the longest substring, s1 is the\n  // number of strings, and n is the length of the longest string\n  func stringsMadeUpOfStrings(_ strings: [String], _ substrings: [String]) -> [String] {\n    let trie = Trie()\n    for substring in substrings {\n      trie.insert(substring)\n    }\n\n    var solutions: [String] = []\n    for str in strings {\n      var memo = [Int: Bool]()\n      if isMadeUpOfStrings(str, 0, trie, &memo) {\n        solutions.append(str)\n      }\n    }\n\n    return solutions\n  }\n\n  class TrieNode {\n    var children: [Character: TrieNode]\n    var isEndOfString: Bool\n\n    init() {\n      children = [:]\n      isEndOfString = false\n    }\n  }\n\n  class Trie {\n    var root: TrieNode\n\n    init() {\n      root = TrieNode()\n    }\n\n    func insert(_ string: String) {\n      var currentTrieNode = root\n      for char in string {\n        if currentTrieNode.children[char] == nil {\n          currentTrieNode.children[char] = TrieNode()\n        }\n        currentTrieNode = currentTrieNode.children[char]!\n      }\n      currentTrieNode.isEndOfString = true\n    }\n  }\n\n  func isMadeUpOfStrings(_ string: String, _ startIdx: Int, _ trie: Trie, _ memo: inout [Int: Bool]) -> Bool {\n    if startIdx == string.count {\n      return true\n    }\n    if let val = memo[startIdx] {\n      return val\n    }\n\n    var currentTrieNode = trie.root\n    let strArray = Array(string)\n\n    for currentCharacterIdx in startIdx ..< strArray.count {\n      let currentCharacter = strArray[currentCharacterIdx]\n      if currentTrieNode.children[currentCharacter] == nil {\n        break\n      }\n\n      currentTrieNode = currentTrieNode.children[currentCharacter]!\n      if currentTrieNode.isEndOfString, isMadeUpOfStrings(string, currentCharacterIdx + 1, trie, &memo) {\n        memo[startIdx] = true\n        return true\n      }\n    }\n\n    memo[startIdx] = false\n    return false\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var strings = [\"bar\", \"are\", \"foo\", \"ba\", \"b\", \"barely\"]\n      var substrings = [\"b\", \"a\", \"r\", \"ba\", \"ar\", \"bar\"]\n      var expected = [\"bar\", \"ba\", \"b\"]\n      var actual = Program().stringsMadeUpOfStrings(strings, substrings)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var strings = [\"bar\", \"are\", \"foo\", \"ba\", \"b\", \"barely\"]\n      var substrings = [\"b\", \"a\", \"r\", \"ba\", \"ar\", \"bar\"]\n      var expected = [\"bar\", \"ba\", \"b\"]\n      var actual = Program().stringsMadeUpOfStrings(strings, substrings)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function stringsMadeUpOfStrings(strings: string[], substrings: string[]) {\n  // Write your code here.\n  return [];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(s2 * m + s1 * n^2) time | O(s2 * m + s1 * n) space - where s2 is the number\n// of substrings, m is the length of the longest substring, s1 is the\n// number of strings, and n is the length of the longest string\nexport function stringsMadeUpOfStrings(strings: string[], substrings: string[]) {\n  const trie = new Trie();\n  for (const substring of substrings) {\n    trie.insert(substring);\n  }\n\n  const solutions: string[] = [];\n  for (const string of strings) {\n    if (isMadeUpOfStrings(string, 0, trie, {})) {\n      solutions.push(string);\n    }\n  }\n\n  return solutions;\n}\n\nfunction isMadeUpOfStrings(\n  string: string,\n  startIdx: number,\n  trie: Trie,\n  memo: Record<number, boolean>,\n) {\n  if (startIdx === string.length) return true;\n  if (startIdx in memo) return memo[startIdx];\n\n  let currentTrieNode = trie.root;\n  for (\n    let currentCharacterIdx = startIdx;\n    currentCharacterIdx < string.length;\n    currentCharacterIdx++\n  ) {\n    const currentCharacter = string[currentCharacterIdx];\n    if (!(currentCharacter in currentTrieNode.children)) break;\n\n    currentTrieNode = currentTrieNode.children[currentCharacter];\n    if (\n      currentTrieNode.isEndOfString &&\n      isMadeUpOfStrings(string, currentCharacterIdx + 1, trie, memo)\n    ) {\n      memo[startIdx] = true;\n      return true;\n    }\n  }\n\n  memo[startIdx] = false;\n  return false;\n}\n\ninterface TrieNode {\n  children: Record<string, TrieNode>;\n  isEndOfString: boolean;\n}\n\nclass Trie {\n  root: TrieNode;\n\n  constructor() {\n    this.root = {children: {}, isEndOfString: false};\n  }\n\n  insert(string: string) {\n    let currentTrieNode = this.root;\n    for (let i = 0; i < string.length; i++) {\n      if (!(string[i] in currentTrieNode.children)) {\n        currentTrieNode.children[string[i]] = {children: {}, isEndOfString: false};\n      }\n      currentTrieNode = currentTrieNode.children[string[i]];\n    }\n    currentTrieNode.isEndOfString = true;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const strings = ['bar', 'are', 'foo', 'ba', 'b', 'barely'];\n  const substrings = ['b', 'a', 'r', 'ba', 'ar', 'bar'];\n  const expected = ['bar', 'ba', 'b'];\n  const actual = program.stringsMadeUpOfStrings(strings, substrings);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const strings = ['bar', 'are', 'foo', 'ba', 'b', 'barely'];\n  const substrings = ['b', 'a', 'r', 'ba', 'ar', 'bar'];\n  const expected = ['bar', 'ba', 'b'];\n  const actual = program.stringsMadeUpOfStrings(strings, substrings);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "strings",
+            "example": [
+                "foobar"
+            ],
+            "schema": {
+                "items": {
+                    "minLength": 1,
+                    "type": "string"
+                },
+                "type": "array"
+            }
+        },
+        {
+            "name": "substrings",
+            "example": [
+                "foo",
+                "bar"
+            ],
+            "schema": {
+                "items": {
+                    "minLength": 1,
+                    "type": "string"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "strings": [
+                "foobar"
+            ],
+            "substrings": [
+                "foo",
+                "bar"
+            ]
+        },
+        {
+            "strings": [
+                "foo"
+            ],
+            "substrings": [
+                "foo"
+            ]
+        },
+        {
+            "strings": [
+                "foobar"
+            ],
+            "substrings": [
+                "foo",
+                "baz"
+            ]
+        },
+        {
+            "strings": [
+                "baz"
+            ],
+            "substrings": [
+                "b",
+                "a",
+                "z"
+            ]
+        },
+        {
+            "strings": [
+                "algoexpert"
+            ],
+            "substrings": [
+                "algo",
+                "pert",
+                "ex"
+            ]
+        },
+        {
+            "strings": [
+                "bar"
+            ],
+            "substrings": [
+                "barely"
+            ]
+        },
+        {
+            "strings": [
+                "bar"
+            ],
+            "substrings": [
+                "b",
+                "a",
+                "r",
+                "ba",
+                "ar"
+            ]
+        },
+        {
+            "strings": [
+                "bar"
+            ],
+            "substrings": [
+                "b",
+                "a",
+                "r",
+                "ba",
+                "ar",
+                "bar"
+            ]
+        },
+        {
+            "strings": [
+                "bar",
+                "are",
+                "foo",
+                "ba",
+                "b",
+                "barely"
+            ],
+            "substrings": [
+                "b",
+                "a",
+                "r",
+                "ba",
+                "ar",
+                "bar"
+            ]
+        },
+        {
+            "strings": [
+                "barbar",
+                "algoexpert",
+                "frontendexpert"
+            ],
+            "substrings": [
+                "algo",
+                "bar",
+                "expert",
+                "end",
+                "front"
+            ]
+        },
+        {
+            "strings": [
+                "foo123",
+                "bar$%"
+            ],
+            "substrings": [
+                "foo",
+                "123",
+                "bar",
+                "$%"
+            ]
+        },
+        {
+            "strings": [
+                "foo123",
+                "bar$%"
+            ],
+            "substrings": [
+                "123",
+                "foo",
+                "bar"
+            ]
+        },
+        {
+            "strings": [
+                "foobarfoobar"
+            ],
+            "substrings": [
+                "foo",
+                "bar"
+            ]
+        },
+        {
+            "strings": [
+                "foobarfoobar",
+                "foo",
+                "bar",
+                "barfoobar",
+                "fobaro",
+                "foobaro"
+            ],
+            "substrings": [
+                "foo",
+                "bar"
+            ]
+        },
+        {
+            "strings": [
+                "foo",
+                "bar",
+                "baz",
+                "qux",
+                "quux"
+            ],
+            "substrings": [
+                "foo",
+                "ba",
+                "qu",
+                "ux"
+            ]
+        },
+        {
+            "strings": [
+                "foofoo",
+                "barbar",
+                "bazbaz",
+                "foobaz"
+            ],
+            "substrings": [
+                "foo",
+                "bar",
+                "baz"
+            ]
+        },
+        {
+            "strings": [
+                "foo",
+                "bar",
+                "baz",
+                "qux",
+                "quux",
+                "foobar"
+            ],
+            "substrings": [
+                "foo",
+                "ba",
+                "qux"
+            ]
+        },
+        {
+            "strings": [
+                "foobarbaz",
+                "bazbarfoo",
+                "foobaz",
+                "quxquux",
+                "quuxqux"
+            ],
+            "substrings": [
+                "foo",
+                "ba",
+                "bar",
+                "baz",
+                "qux",
+                "qu"
+            ]
+        },
+        {
+            "strings": [
+                "java",
+                "javascript",
+                "python",
+                "ruby",
+                "c",
+                "cplusplus",
+                "assembly"
+            ],
+            "substrings": [
+                "ja",
+                "script",
+                "py",
+                "thon",
+                "ruby",
+                "c",
+                "plus",
+                "va",
+                "assembly"
+            ]
+        },
+        {
+            "strings": [
+                "java",
+                "javascript",
+                "python",
+                "ruby",
+                "c",
+                "cplusplus",
+                "assembly"
+            ],
+            "substrings": [
+                "ja",
+                "py",
+                "thone",
+                "ruby",
+                "c",
+                "minus",
+                "va",
+                "assembler"
+            ]
+        },
+        {
+            "strings": [
+                "linkedlist",
+                "binarysearchtree",
+                "depthfirstsearch",
+                "breadthfirstsearch",
+                "quicksort"
+            ],
+            "substrings": [
+                "linked",
+                "list",
+                "binary",
+                "search",
+                "tree",
+                "depth",
+                "first",
+                "breadth",
+                "quick",
+                "sort"
+            ]
+        },
+        {
+            "strings": [
+                "linkedlist",
+                "binarysearchtree",
+                "depthfirstsearch",
+                "breadthfirstsearch",
+                "quicksort"
+            ],
+            "substrings": [
+                "so",
+                "se",
+                "rt",
+                "arch",
+                "tre",
+                "e",
+                "binary",
+                "depth",
+                "link",
+                "ed",
+                "list",
+                "first"
+            ]
+        },
+        {
+            "strings": [
+                "linkedlist",
+                "binarysearchtree",
+                "depthfirstsearch",
+                "breadthfirstsearch",
+                "quicksort"
+            ],
+            "substrings": [
+                "so",
+                "se",
+                "rt",
+                "arch",
+                "tre",
+                "binary",
+                "depth",
+                "link",
+                "list",
+                "first"
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "strings": [
+                "foobar"
+            ],
+            "substrings": [
+                "foo",
+                "bar"
+            ]
+        },
+        {
+            "strings": [
+                "foo"
+            ],
+            "substrings": [
+                "foo"
+            ]
+        },
+        {
+            "strings": [
+                "foobar"
+            ],
+            "substrings": [
+                "foo",
+                "baz"
+            ]
+        },
+        {
+            "strings": [
+                "baz"
+            ],
+            "substrings": [
+                "b",
+                "a",
+                "z"
+            ]
+        },
+        {
+            "strings": [
+                "algoexpert"
+            ],
+            "substrings": [
+                "algo",
+                "pert",
+                "ex"
+            ]
+        },
+        {
+            "strings": [
+                "bar"
+            ],
+            "substrings": [
+                "barely"
+            ]
+        },
+        {
+            "strings": [
+                "bar"
+            ],
+            "substrings": [
+                "b",
+                "a",
+                "r",
+                "ba",
+                "ar"
+            ]
+        },
+        {
+            "strings": [
+                "bar"
+            ],
+            "substrings": [
+                "b",
+                "a",
+                "r",
+                "ba",
+                "ar",
+                "bar"
+            ]
+        },
+        {
+            "strings": [
+                "bar",
+                "are",
+                "foo",
+                "ba",
+                "b",
+                "barely"
+            ],
+            "substrings": [
+                "b",
+                "a",
+                "r",
+                "ba",
+                "ar",
+                "bar"
+            ]
+        },
+        {
+            "strings": [
+                "barbar",
+                "algoexpert",
+                "frontendexpert"
+            ],
+            "substrings": [
+                "algo",
+                "bar",
+                "expert",
+                "end",
+                "front"
+            ]
+        },
+        {
+            "strings": [
+                "foo123",
+                "bar$%"
+            ],
+            "substrings": [
+                "foo",
+                "123",
+                "bar",
+                "$%"
+            ]
+        },
+        {
+            "strings": [
+                "foo123",
+                "bar$%"
+            ],
+            "substrings": [
+                "123",
+                "foo",
+                "bar"
+            ]
+        },
+        {
+            "strings": [
+                "foobarfoobar"
+            ],
+            "substrings": [
+                "foo",
+                "bar"
+            ]
+        },
+        {
+            "strings": [
+                "foobarfoobar",
+                "foo",
+                "bar",
+                "barfoobar",
+                "fobaro",
+                "foobaro"
+            ],
+            "substrings": [
+                "foo",
+                "bar"
+            ]
+        },
+        {
+            "strings": [
+                "foo",
+                "bar",
+                "baz",
+                "qux",
+                "quux"
+            ],
+            "substrings": [
+                "foo",
+                "ba",
+                "qu",
+                "ux"
+            ]
+        },
+        {
+            "strings": [
+                "foofoo",
+                "barbar",
+                "bazbaz",
+                "foobaz"
+            ],
+            "substrings": [
+                "foo",
+                "bar",
+                "baz"
+            ]
+        },
+        {
+            "strings": [
+                "foo",
+                "bar",
+                "baz",
+                "qux",
+                "quux",
+                "foobar"
+            ],
+            "substrings": [
+                "foo",
+                "ba",
+                "qux"
+            ]
+        },
+        {
+            "strings": [
+                "foobarbaz",
+                "bazbarfoo",
+                "foobaz",
+                "quxquux",
+                "quuxqux"
+            ],
+            "substrings": [
+                "foo",
+                "ba",
+                "bar",
+                "baz",
+                "qux",
+                "qu"
+            ]
+        },
+        {
+            "strings": [
+                "java",
+                "javascript",
+                "python",
+                "ruby",
+                "c",
+                "cplusplus",
+                "assembly"
+            ],
+            "substrings": [
+                "ja",
+                "script",
+                "py",
+                "thon",
+                "ruby",
+                "c",
+                "plus",
+                "va",
+                "assembly"
+            ]
+        },
+        {
+            "strings": [
+                "java",
+                "javascript",
+                "python",
+                "ruby",
+                "c",
+                "cplusplus",
+                "assembly"
+            ],
+            "substrings": [
+                "ja",
+                "py",
+                "thone",
+                "ruby",
+                "c",
+                "minus",
+                "va",
+                "assembler"
+            ]
+        },
+        {
+            "strings": [
+                "linkedlist",
+                "binarysearchtree",
+                "depthfirstsearch",
+                "breadthfirstsearch",
+                "quicksort"
+            ],
+            "substrings": [
+                "linked",
+                "list",
+                "binary",
+                "search",
+                "tree",
+                "depth",
+                "first",
+                "breadth",
+                "quick",
+                "sort"
+            ]
+        },
+        {
+            "strings": [
+                "linkedlist",
+                "binarysearchtree",
+                "depthfirstsearch",
+                "breadthfirstsearch",
+                "quicksort"
+            ],
+            "substrings": [
+                "so",
+                "se",
+                "rt",
+                "arch",
+                "tre",
+                "e",
+                "binary",
+                "depth",
+                "link",
+                "ed",
+                "list",
+                "first"
+            ]
+        },
+        {
+            "strings": [
+                "linkedlist",
+                "binarysearchtree",
+                "depthfirstsearch",
+                "breadthfirstsearch",
+                "quicksort"
+            ],
+            "substrings": [
+                "so",
+                "se",
+                "rt",
+                "arch",
+                "tre",
+                "binary",
+                "depth",
+                "link",
+                "list",
+                "first"
+            ]
+        }
+    ],
+    "changelog": []
+}

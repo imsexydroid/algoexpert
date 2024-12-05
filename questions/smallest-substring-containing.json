@@ -1,0 +1,308 @@
+{
+    "uid": "smallest-substring-containing",
+    "testStrategy": "JSON",
+    "name": "Smallest Substring Containing",
+    "version": 0,
+    "releaseDate": "2019-11-21T00:00:00Z",
+    "category": "Strings",
+    "difficulty": 4,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 5502,
+        "failureCount": 1926
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "374398372",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Clement Mihailescu",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1549
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  You're given two non-empty strings: a big string and a small string. Write a\n  function that returns the smallest substring in the big string that contains\n  all of the small string's characters.\n</p>\n<p>\n  Note that:\n</p>\n<ul>\n  <li>\n    The substring can contain other characters not found in the small string.\n  </li>\n  <li>\n    The characters in the substring don't have to be in the same order as they\n    appear in the small string.\n  </li>\n  <li>\n    If the small string has duplicate characters, the substring has to contain\n    those duplicate characters (it can also contain more, but not fewer).\n  </li>\n</ul>\n<p>\n  You can assume that there will only be one relevant smallest substring.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">bigString</span> = \"abcd$ef$axb$c$\"\n<span class=\"CodeEditor-promptParameter\">smallString</span> = \"$$abf\"\n</pre>\n<h3>Sample Output</h3>\n<pre>\n\"f$axb$\"\n</pre>\n</div>",
+    "hints": [
+        "<p>\nTry storing all of the small string's character counts in a hash table where each character maps to the number of times that it appears in the small string.\n</p>\n",
+        "\n<p>\nTry using two pointers (a left pointer and a right pointer) to traverse through the big string. How can this help you find the relevant smallest substring?\n</p>\n",
+        "\n<p>\nWith the two pointers mentioned in Hint #2, move the right pointer to the right in the big string, keeping track of all the characters you visit in a hash table identical to the one mentioned in Hint #1, until you've found all of the characters contained in the small string. At that point, move the left pointer to the right in the big string, keeping track of all the characters you \"lose\", and stop once you no longer have all of the small string's characters in between the left and right pointers. Then, repeat the process by moving the right pointer forward and implementing the same logic described in this Hint.\n</p>"
+    ],
+    "spaceTime": "O(b + s) time | O(b + s) space - where b is the length of the big input string and s is the length of the small input string",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nstring smallestSubstringContaining(string bigString, string smallString) {\n  // Write your code here.\n  return \"\";\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <climits>\n#include <unordered_map>\n#include <vector>\n\nusing namespace std;\n\nstring smallestSubstringContaining(string bigString, string smallString);\nunordered_map<char, int> getCharCounts(string str);\nvector<int> getSubstringBounds(\n  string str, unordered_map<char, int> targetCharCounts\n);\nvector<int> getCloserBounds(int idx1, int idx2, int idx3, int idx4);\nstring getStringFromBounds(string str, vector<int> bounds);\nvoid increaseCharCount(char c, unordered_map<char, int>& charCounts);\nvoid decreaseCharCount(char c, unordered_map<char, int>& charCounts);\n\n// O(b + s) time | O(b + s) space - where b is the length of the big\n// input string and s is the length of the small input string\nstring smallestSubstringContaining(string bigString, string smallString) {\n  unordered_map<char, int> targetCharCounts = getCharCounts(smallString);\n  vector<int> substringBounds = getSubstringBounds(bigString, targetCharCounts);\n  return getStringFromBounds(bigString, substringBounds);\n}\n\nunordered_map<char, int> getCharCounts(string str) {\n  unordered_map<char, int> charCounts;\n  for (auto c : str) {\n    increaseCharCount(c, charCounts);\n  }\n  return charCounts;\n}\n\nvector<int> getSubstringBounds(\n  string str, unordered_map<char, int> targetCharCounts\n) {\n  vector<int> substringBounds = {0, INT_MAX};\n  unordered_map<char, int> substringCharCounts;\n  int numUniqueChars = targetCharCounts.size();\n  int numUniqueCharsDone = 0;\n  int leftIdx = 0;\n  int rightIdx = 0;\n  // Move the rightIdx to the right in the string until you've counted\n  // all of the target characters enough times.\n  while (rightIdx < str.size()) {\n    char rightChar = str[rightIdx];\n    if (targetCharCounts.find(rightChar) == targetCharCounts.end()) {\n      rightIdx++;\n      continue;\n    }\n    increaseCharCount(rightChar, substringCharCounts);\n    if (substringCharCounts[rightChar] == targetCharCounts[rightChar]) {\n      numUniqueCharsDone++;\n    }\n    // Move the leftIdx to the right in the string until you no longer\n    // have enough of the target characters in between the leftIdx and\n    // the rightIdx. Update the substringBounds accordingly.\n    while (numUniqueCharsDone == numUniqueChars && leftIdx <= rightIdx) {\n      substringBounds = getCloserBounds(\n        leftIdx, rightIdx, substringBounds[0], substringBounds[1]\n      );\n      char leftChar = str[leftIdx];\n      if (targetCharCounts.find(leftChar) == targetCharCounts.end()) {\n        leftIdx++;\n        continue;\n      }\n      if (substringCharCounts[leftChar] == targetCharCounts[leftChar]) {\n        numUniqueCharsDone--;\n      }\n      decreaseCharCount(leftChar, substringCharCounts);\n      leftIdx++;\n    }\n    rightIdx++;\n  }\n  return substringBounds;\n}\n\nvector<int> getCloserBounds(int idx1, int idx2, int idx3, int idx4) {\n  return idx2 - idx1 < idx4 - idx3 ? vector<int>{idx1, idx2}\n                                   : vector<int>{idx3, idx4};\n}\n\nstring getStringFromBounds(string str, vector<int> bounds) {\n  int start = bounds[0];\n  int end = bounds[1];\n  if (end == INT_MAX) return \"\";\n  return str.substr(start, end - start + 1);\n}\n\nvoid increaseCharCount(char c, unordered_map<char, int>& charCounts) {\n  if (charCounts.find(c) == charCounts.end()) {\n    charCounts[c] = 1;\n  } else {\n    charCounts[c]++;\n  }\n}\n\nvoid decreaseCharCount(char c, unordered_map<char, int>& charCounts) {\n  charCounts[c]--;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      string bigString = \"abcd$ef$axb$c$\";\n      string smallString = \"$$abf\";\n      string expected = \"f$axb$\";\n      assert(smallestSubstringContaining(bigString, smallString) == expected);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      string bigString = \"abcd$ef$axb$c$\";\n      string smallString = \"$$abf\";\n      string expected = \"f$axb$\";\n      assert(smallestSubstringContaining(bigString, smallString) == expected);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public static string SmallestSubstringContaining(\n    string bigstring, string smallstring\n  ) {\n    // Write your code here.\n    return \"\";\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\nusing System.Collections.Generic;\n\npublic class Program {\n  // O(b + s) time | O(b + s) space - where b is the length of the big\n  // input string and s is the length of the small input string\n  public static string SmallestSubstringContaining(\n    string bigstring, string smallstring\n  ) {\n    Dictionary<char, int> targetCharCounts = getCharCounts(smallstring);\n    List<int> substringBounds = getSubstringBounds(bigstring, targetCharCounts);\n    return getstringFromBounds(bigstring, substringBounds);\n  }\n\n  public static Dictionary<char, int> getCharCounts(string str) {\n    Dictionary<char, int> charCounts = new Dictionary<char, int>();\n    for (int i = 0; i < str.Length; i++) {\n      increaseCharCount(str[i], charCounts);\n    }\n    return charCounts;\n  }\n\n  public static List<int> getSubstringBounds(\n    string str, Dictionary<char, int> targetCharCounts\n  ) {\n    List<int> substringBounds = new List<int>() { 0, Int32.MaxValue };\n    Dictionary<char, int> substringCharCounts = new Dictionary<char, int>();\n    int numUniqueChars = targetCharCounts.Count;\n    int numUniqueCharsDone = 0;\n    int leftIdx = 0;\n    int rightIdx = 0;\n    // Move the rightIdx to the right in the string until you've counted\n    // all of the target characters enough times.\n    while (rightIdx < str.Length) {\n      char rightChar = str[rightIdx];\n      if (!targetCharCounts.ContainsKey(rightChar)) {\n        rightIdx++;\n        continue;\n      }\n      increaseCharCount(rightChar, substringCharCounts);\n      if (substringCharCounts[rightChar] == targetCharCounts[rightChar]) {\n        numUniqueCharsDone++;\n      }\n      // Move the leftIdx to the right in the string until you no longer\n      // have enough of the target characters in between the leftIdx and\n      // the rightIdx. Update the substringBounds accordingly.\n      while (numUniqueCharsDone == numUniqueChars && leftIdx <= rightIdx) {\n        substringBounds = getCloserBounds(\n          leftIdx, rightIdx, substringBounds[0], substringBounds[1]\n        );\n        char leftChar = str[leftIdx];\n        if (!targetCharCounts.ContainsKey(leftChar)) {\n          leftIdx++;\n          continue;\n        }\n        if (substringCharCounts[leftChar] == targetCharCounts[leftChar]) {\n          numUniqueCharsDone--;\n        }\n        decreaseCharCount(leftChar, substringCharCounts);\n        leftIdx++;\n      }\n      rightIdx++;\n    }\n    return substringBounds;\n  }\n\n  public static List<int> getCloserBounds(\n    int idx1, int idx2, int idx3, int idx4\n  ) {\n    return idx2 - idx1 < idx4 - idx3 ? new List<int>() { idx1, idx2 }\n                                     : new List<int>() { idx3, idx4 };\n  }\n\n  public static string getstringFromBounds(string str, List<int> bounds) {\n    int start = bounds[0];\n    int end = bounds[1];\n    if (end == Int32.MaxValue) return \"\";\n    return str.Substring(start, end + 1 - start);\n  }\n\n  public static void increaseCharCount(\n    char c, Dictionary<char, int> charCounts\n  ) {\n    if (!charCounts.ContainsKey(c)) {\n      charCounts[c] = 1;\n    } else {\n      charCounts[c] = charCounts[c] + 1;\n    }\n  }\n\n  public static void decreaseCharCount(\n    char c, Dictionary<char, int> charCounts\n  ) {\n    charCounts[c] = charCounts[c] - 1;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    string bigstring = \"abcd$ef$axb$c$\";\n    string smallstring = \"$$abf\";\n    string expected = \"f$axb$\";\n    Utils.AssertTrue(Program.SmallestSubstringContaining(bigstring, smallstring)\n                       .Equals(expected));\n  }\n}\n",
+            "unitTests": "public class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    string bigstring = \"abcd$ef$axb$c$\";\n    string smallstring = \"$$abf\";\n    string expected = \"f$axb$\";\n    Utils.AssertTrue(Program.SmallestSubstringContaining(bigstring, smallstring)\n                       .Equals(expected));\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc SmallestSubstringContaining(bigString, smallString string) string {\n\t// Write your code here.\n\treturn \"\"\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport \"math\"\n\n// O(b + s) time | O(b + s) space - where b is the length of the big\n// input string and s is the length of the small input string\nfunc SmallestSubstringContaining(bigString, smallString string) string {\n\ttargetCharCounts := getCharCounts(smallString)\n\tsubstringBounds := getSubstringBounds(bigString, targetCharCounts)\n\treturn getStringFromBounds(bigString, substringBounds)\n}\n\nfunc getCharCounts(str string) map[byte]int {\n\tcharCounts := map[byte]int{}\n\tfor _, char := range str {\n\t\tincreaseCharCount(byte(char), charCounts)\n\t}\n\treturn charCounts\n}\n\nfunc getSubstringBounds(str string, targetCharCounts map[byte]int) []int {\n\tsubstringBounds := []int{0, math.MaxInt32}\n\tsubstringCharCounts := map[byte]int{}\n\tnumUniqueChars := len(targetCharCounts)\n\tnumUniqueCharsDone := 0\n\tleftIdx := 0\n\trightIdx := 0\n\n\t// Move the rightIdx to the right in the string until you've counted\n\t// all of the target characters enough times.\n\tfor rightIdx < len(str) {\n\t\trightChar := str[rightIdx]\n\t\tif _, found := targetCharCounts[rightChar]; !found {\n\t\t\trightIdx++\n\t\t\tcontinue\n\t\t}\n\t\tincreaseCharCount(rightChar, substringCharCounts)\n\t\tif substringCharCounts[rightChar] == targetCharCounts[rightChar] {\n\t\t\tnumUniqueCharsDone++\n\t\t}\n\n\t\t// Move the leftIdx to the right in the string until you no longer\n\t\t// have enough of the target characters in between the leftIdx and\n\t\t// the rightIdx. Update the substringBounds accordingly.\n\t\tfor numUniqueCharsDone == numUniqueChars && leftIdx <= rightIdx {\n\t\t\tsubstringBounds = getCloserBounds(\n\t\t\t\tleftIdx, rightIdx, substringBounds[0], substringBounds[1],\n\t\t\t)\n\t\t\tleftChar := str[leftIdx]\n\t\t\tif _, found := targetCharCounts[leftChar]; !found {\n\t\t\t\tleftIdx++\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tif substringCharCounts[leftChar] == targetCharCounts[leftChar] {\n\t\t\t\tnumUniqueCharsDone--\n\t\t\t}\n\t\t\tdecreaseCharCount(leftChar, substringCharCounts)\n\t\t\tleftIdx++\n\t\t}\n\t\trightIdx++\n\t}\n\treturn substringBounds\n}\n\nfunc getCloserBounds(idx1, idx2, idx3, idx4 int) []int {\n\tif idx2-idx1 < idx4-idx3 {\n\t\treturn []int{idx1, idx2}\n\t}\n\treturn []int{idx3, idx4}\n}\n\nfunc getStringFromBounds(str string, bounds []int) string {\n\tstart, end := bounds[0], bounds[1]\n\tif end == math.MaxInt32 {\n\t\treturn \"\"\n\t}\n\treturn str[start : end+1]\n}\n\nfunc increaseCharCount(char byte, charCounts map[byte]int) {\n\tcharCounts[char]++\n}\n\nfunc decreaseCharCount(char byte, charCounts map[byte]int) {\n\tcharCounts[char]--\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tbigString := \"abcd$ef$axb$c$\"\n\tsmallString := \"$$abf\"\n\texpected := \"f$axb$\"\n\trequire.Equal(t,\n\t\tSmallestSubstringContaining(bigString, smallString), expected,\n\t)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tbigString := \"abcd$ef$axb$c$\"\n\tsmallString := \"$$abf\"\n\texpected := \"f$axb$\"\n\trequire.Equal(t,\n\t\tSmallestSubstringContaining(bigString, smallString), expected,\n\t)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public static String smallestSubstringContaining(\n    String bigString, String smallString\n  ) {\n    // Write your code here.\n    return \"\";\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(b + s) time | O(b + s) space - where b is the length of the big\n  // input string and s is the length of the small input string\n  public static String smallestSubstringContaining(\n    String bigString, String smallString\n  ) {\n    Map<Character, Integer> targetCharCounts = getCharCounts(smallString);\n    List<Integer> substringBounds =\n      getSubstringBounds(bigString, targetCharCounts);\n    return getStringFromBounds(bigString, substringBounds);\n  }\n\n  public static Map<Character, Integer> getCharCounts(String string) {\n    Map<Character, Integer> charCounts = new HashMap<Character, Integer>();\n    for (int i = 0; i < string.length(); i++) {\n      increaseCharCount(string.charAt(i), charCounts);\n    }\n    return charCounts;\n  }\n\n  public static List<Integer> getSubstringBounds(\n    String string, Map<Character, Integer> targetCharCounts\n  ) {\n    List<Integer> substringBounds =\n      new ArrayList<Integer>(Arrays.asList(0, Integer.MAX_VALUE));\n    Map<Character, Integer> substringCharCounts =\n      new HashMap<Character, Integer>();\n    int numUniqueChars = targetCharCounts.size();\n    int numUniqueCharsDone = 0;\n    int leftIdx = 0;\n    int rightIdx = 0;\n    // Move the rightIdx to the right in the string until you've counted\n    // all of the target characters enough times.\n    while (rightIdx < string.length()) {\n      char rightChar = string.charAt(rightIdx);\n      if (!targetCharCounts.containsKey(rightChar)) {\n        rightIdx++;\n        continue;\n      }\n      increaseCharCount(rightChar, substringCharCounts);\n      if (substringCharCounts.get(rightChar).equals(\n            targetCharCounts.get(rightChar)\n          )) {\n        numUniqueCharsDone++;\n      }\n      // Move the leftIdx to the right in the string until you no longer\n      // have enough of the target characters in between the leftIdx and\n      // the rightIdx. Update the substringBounds accordingly.\n      while (numUniqueCharsDone == numUniqueChars && leftIdx <= rightIdx) {\n        substringBounds = getCloserBounds(\n          leftIdx, rightIdx, substringBounds.get(0), substringBounds.get(1)\n        );\n        char leftChar = string.charAt(leftIdx);\n        if (!targetCharCounts.containsKey(leftChar)) {\n          leftIdx++;\n          continue;\n        }\n        if (substringCharCounts.get(leftChar).equals(\n              targetCharCounts.get(leftChar)\n            )) {\n          numUniqueCharsDone--;\n        }\n        decreaseCharCount(leftChar, substringCharCounts);\n        leftIdx++;\n      }\n      rightIdx++;\n    }\n    return substringBounds;\n  }\n\n  public static List<Integer> getCloserBounds(\n    int idx1, int idx2, int idx3, int idx4\n  ) {\n    return idx2 - idx1 < idx4 - idx3\n      ? new ArrayList<Integer>(Arrays.asList(idx1, idx2))\n      : new ArrayList<Integer>(Arrays.asList(idx3, idx4));\n  }\n\n  public static String getStringFromBounds(\n    String string, List<Integer> bounds\n  ) {\n    int start = bounds.get(0);\n    int end = bounds.get(1);\n    if (end == Integer.MAX_VALUE) return \"\";\n    return string.substring(start, end + 1);\n  }\n\n  public static void increaseCharCount(\n    char c, Map<Character, Integer> charCounts\n  ) {\n    if (!charCounts.containsKey(c)) {\n      charCounts.put(c, 1);\n    } else {\n      charCounts.put(c, charCounts.get(c) + 1);\n    }\n  }\n\n  public static void decreaseCharCount(\n    char c, Map<Character, Integer> charCounts\n  ) {\n    charCounts.put(c, charCounts.get(c) - 1);\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    String bigString = \"abcd$ef$axb$c$\";\n    String smallString = \"$$abf\";\n    String expected = \"f$axb$\";\n    Utils.assertTrue(Program.smallestSubstringContaining(bigString, smallString)\n                       .equals(expected));\n  }\n}\n",
+            "unitTests": "class ProgramTest {\n  @Test\n  public void TestCase1() {\n    String bigString = \"abcd$ef$axb$c$\";\n    String smallString = \"$$abf\";\n    String expected = \"f$axb$\";\n    Utils.assertTrue(Program.smallestSubstringContaining(bigString, smallString)\n                       .equals(expected));\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function smallestSubstringContaining(bigString, smallString) {\n  // Write your code here.\n}\n\n// Do not edit the line below.\nexports.smallestSubstringContaining = smallestSubstringContaining;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(b + s) time | O(b + s) space - where b is the length of the big\n// input string and s is the length of the small input string\nfunction smallestSubstringContaining(bigString, smallString) {\n  const targetCharCounts = getCharCounts(smallString);\n  const substringBounds = getSubstringBounds(bigString, targetCharCounts);\n  return getStringFromBounds(bigString, substringBounds);\n}\n\nfunction getCharCounts(string) {\n  const charCounts = {};\n  for (const char of string) {\n    increaseCharCount(char, charCounts);\n  }\n  return charCounts;\n}\n\nfunction getSubstringBounds(string, targetCharCounts) {\n  let substringBounds = [0, Infinity];\n  const substringCharCounts = {};\n  const numUniqueChars = Object.keys(targetCharCounts).length;\n  let numUniqueCharsDone = 0;\n  let leftIdx = 0;\n  let rightIdx = 0;\n  // Move the rightIdx to the right in the string until you've counted\n  // all of the target characters enough times.\n  while (rightIdx < string.length) {\n    const rightChar = string[rightIdx];\n    if (!(rightChar in targetCharCounts)) {\n      rightIdx++;\n      continue;\n    }\n    increaseCharCount(rightChar, substringCharCounts);\n    if (substringCharCounts[rightChar] === targetCharCounts[rightChar]) {\n      numUniqueCharsDone++;\n    }\n    // Move the leftIdx to the right in the string until you no longer\n    // have enough of the target characters in between the leftIdx and\n    // the rightIdx. Update the substringBounds accordingly.\n    while (numUniqueCharsDone === numUniqueChars && leftIdx <= rightIdx) {\n      substringBounds = getCloserBounds(leftIdx, rightIdx, substringBounds[0], substringBounds[1]);\n      const leftChar = string[leftIdx];\n      if (!(leftChar in targetCharCounts)) {\n        leftIdx++;\n        continue;\n      }\n      if (substringCharCounts[leftChar] === targetCharCounts[leftChar]) {\n        numUniqueCharsDone--;\n      }\n      decreaseCharCount(leftChar, substringCharCounts);\n      leftIdx++;\n    }\n    rightIdx++;\n  }\n  return substringBounds;\n}\n\nfunction getCloserBounds(idx1, idx2, idx3, idx4) {\n  return idx2 - idx1 < idx4 - idx3 ? [idx1, idx2] : [idx3, idx4];\n}\n\nfunction getStringFromBounds(string, bounds) {\n  const [start, end] = bounds;\n  if (end === Infinity) return '';\n  return string.slice(start, end + 1);\n}\n\nfunction increaseCharCount(char, charCounts) {\n  charCounts[char] = (charCounts[char] || 0) + 1;\n}\n\nfunction decreaseCharCount(char, charCounts) {\n  charCounts[char]--;\n}\n\nexports.smallestSubstringContaining = smallestSubstringContaining;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const bigString = 'abcd$ef$axb$c$';\n  const smallString = '$$abf';\n  const expected = 'f$axb$';\n  chai.expect(program.smallestSubstringContaining(bigString, smallString)).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const bigString = 'abcd$ef$axb$c$';\n  const smallString = '$$abf';\n  const expected = 'f$axb$';\n  chai.expect(program.smallestSubstringContaining(bigString, smallString)).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun smallestSubstringContaining(bigString: String, smallString: String): String {\n    // Write your code here.\n    return \"\"\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(b + s) time | O(b + s) space - where b is the length of the big\n// input string and s is the length of the small input string\nfun smallestSubstringContaining(bigString: String, smallString: String): String {\n    val targetCharCounts = getCharCounts(smallString)\n    val substringBounds = getSubstringBounds(bigString, targetCharCounts)\n    return getStringFromBounds(bigString, substringBounds)\n}\n\nfun getCharCounts(string: String): MutableMap<Char, Int> {\n    val charCounts = mutableMapOf<Char, Int>()\n    for (char in string) {\n        increaseCharCount(char, charCounts)\n    }\n    return charCounts\n}\n\nfun getSubstringBounds(string: String, targetCharCounts: MutableMap<Char, Int>): Pair<Int, Int> {\n    var substringBounds = Pair(0, Int.MAX_VALUE)\n    val substringCharCounts = mutableMapOf<Char, Int>()\n    val numUniqueChars = targetCharCounts.count()\n    var numUniqueCharsDone = 0\n    var leftIdx = 0\n    var rightIdx = 0\n    // Move the rightIdx to the right in the string until you've counted\n    // all of the target characters enough times.\n    while (rightIdx < string.length) {\n        val rightChar = string[rightIdx]\n        if (!targetCharCounts.containsKey(rightChar)) {\n            rightIdx++\n            continue\n        }\n        increaseCharCount(rightChar, substringCharCounts)\n        if (substringCharCounts[rightChar] == targetCharCounts[rightChar]) {\n            numUniqueCharsDone++\n        }\n        // Move the leftIdx to the right in the string until you no longer\n        // have enough of the target characters in between the leftIdx and\n        // the rightIdx. Update the substringBounds accordingly.\n        while (numUniqueCharsDone == numUniqueChars && leftIdx <= rightIdx) {\n            substringBounds = getCloserBounds(leftIdx, rightIdx, substringBounds.first, substringBounds.second)\n            val leftChar = string[leftIdx]\n            if (!(leftChar in targetCharCounts)) {\n                leftIdx++\n                continue\n            }\n            if (substringCharCounts[leftChar] == targetCharCounts[leftChar]) {\n                numUniqueCharsDone--\n            }\n            decreaseCharCount(leftChar, substringCharCounts)\n            leftIdx++\n        }\n        rightIdx++\n    }\n    return substringBounds\n}\n\nfun getCloserBounds(idx1: Int, idx2: Int, idx3: Int, idx4: Int): Pair<Int, Int> {\n    return if (idx2 - idx1 < idx4 - idx3) Pair(idx1, idx2) else Pair(idx3, idx4)\n}\n\nfun getStringFromBounds(string: String, bounds: Pair<Int, Int>): String {\n    val (start, end) = bounds\n    if (end == Int.MAX_VALUE) return \"\"\n    return string.substring(start, end + 1)\n}\n\nfun increaseCharCount(char: Char, charCounts: MutableMap<Char, Int>) {\n    charCounts[char] = charCounts.getOrDefault(char, 0) + 1\n}\n\nfun decreaseCharCount(char: Char, charCounts: MutableMap<Char, Int>) {\n    charCounts[char] = charCounts.getOrDefault(char, 0) - 1\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.smallestSubstringContaining as smallestSubstringContaining\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val bigString = \"abcd\\$ef\\$axb\\$c\\$\"\n        val smallString = \"\\$\\$abf\"\n        val expected = \"f\\$axb\\$\"\n        assert(smallestSubstringContaining(bigString, smallString) == expected)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.smallestSubstringContaining as smallestSubstringContaining\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val bigString = \"abcd\\$ef\\$axb\\$c\\$\"\n        val smallString = \"\\$\\$abf\"\n        val expected = \"f\\$axb\\$\"\n        assert(smallestSubstringContaining(bigString, smallString) == expected)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def smallestSubstringContaining(bigString, smallString):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(b + s) time | O(b + s) space - where b is the length of the big\n# input string and s is the length of the small input string\ndef smallestSubstringContaining(bigString, smallString):\n    targetCharCounts = getCharCounts(smallString)\n    substringBounds = getSubstringBounds(bigString, targetCharCounts)\n    return getStringFromBounds(bigString, substringBounds)\n\n\ndef getCharCounts(string):\n    charCounts = {}\n    for char in string:\n        increaseCharCount(char, charCounts)\n    return charCounts\n\n\ndef getSubstringBounds(string, targetCharCounts):\n    substringBounds = [0, float(\"inf\")]\n    substringCharCounts = {}\n    numUniqueChars = len(targetCharCounts.keys())\n    numUniqueCharsDone = 0\n    leftIdx = 0\n    rightIdx = 0\n    # Move the rightIdx to the right in the string until you've counted\n    # all of the target characters enough times.\n    while rightIdx < len(string):\n        rightChar = string[rightIdx]\n        if rightChar not in targetCharCounts:\n            rightIdx += 1\n            continue\n        increaseCharCount(rightChar, substringCharCounts)\n        if substringCharCounts[rightChar] == targetCharCounts[rightChar]:\n            numUniqueCharsDone += 1\n        # Move the leftIdx to the right in the string until you no longer\n        # have enough of the target characters in between the leftIdx and\n        # the rightIdx. Update the substringBounds accordingly.\n        while numUniqueCharsDone == numUniqueChars and leftIdx <= rightIdx:\n            substringBounds = getCloserBounds(\n                leftIdx, rightIdx, substringBounds[0], substringBounds[1]\n            )\n            leftChar = string[leftIdx]\n            if leftChar not in targetCharCounts:\n                leftIdx += 1\n                continue\n            if substringCharCounts[leftChar] == targetCharCounts[leftChar]:\n                numUniqueCharsDone -= 1\n            decreaseCharCount(leftChar, substringCharCounts)\n            leftIdx += 1\n        rightIdx += 1\n    return substringBounds\n\n\ndef getCloserBounds(idx1, idx2, idx3, idx4):\n    return [idx1, idx2] if idx2 - idx1 < idx4 - idx3 else [idx3, idx4]\n\n\ndef getStringFromBounds(string, bounds):\n    start, end = bounds\n    if end == float(\"inf\"):\n        return \"\"\n    return string[start : end + 1]\n\n\ndef increaseCharCount(char, charCounts):\n    if char not in charCounts:\n        charCounts[char] = 0\n    charCounts[char] += 1\n\n\ndef decreaseCharCount(char, charCounts):\n    charCounts[char] -= 1\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        bigString = \"abcd$ef$axb$c$\"\n        smallString = \"$$abf\"\n        expected = \"f$axb$\"\n        self.assertEqual(program.smallestSubstringContaining(bigString, smallString), expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        bigString = \"abcd$ef$axb$c$\"\n        smallString = \"$$abf\"\n        expected = \"f$axb$\"\n        self.assertEqual(program.smallestSubstringContaining(bigString, smallString), expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  def smallestSubstringContaining(bigString, smallString)\n    # Write your code here.\n    return \"\"\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def smallestSubstringContaining(bigString, smallString)\n    # Write your code here.\n    return \"\"\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.smallestSubstringContaining\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.smallestSubstringContaining\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func smallestSubstringContaining(_ bigString: String, _ smallString: String) -> String {\n    // Write your code here.\n    return \"\"\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(b + s) time | O(b + s) space - where b is the length of the big\n  // input string and s is the length of the small input string\n  func smallestSubstringContaining(_ bigString: String, _ smallString: String) -> String {\n    let targetCharCounts = getCharCounts(smallString)\n    let substringBounds = getSubstringBounds(bigString, targetCharCounts)\n    return getStringFromBounds(bigString, substringBounds)\n  }\n\n  func getCharCounts(_ str: String) -> [Character: Int] {\n    var charCounts = [Character: Int]()\n    for char in str {\n      changeCharCount(char, &charCounts, 1)\n    }\n    return charCounts\n  }\n\n  func changeCharCount(_ char: Character, _ charCounts: inout [Character: Int], _ change: Int) {\n    if let count = charCounts[char] {\n      charCounts.updateValue(count + change, forKey: char)\n      return\n    }\n    charCounts[char] = change\n  }\n\n  func getSubstringBounds(_ str: String, _ targetCharCounts: [Character: Int]) -> [Int] {\n    var substringBounds = [0, Int.max]\n    var substringCharCounts = [Character: Int]()\n    var numUniqueChars = targetCharCounts.count\n    var numUniqueCharsDone = 0\n    var leftIdx = 0\n    var rightIdx = 0\n\n    // Move the rightIdx to the right in the string until you've counted\n    // all of the target characters enough times.\n    while rightIdx < str.length {\n      let rightStringIndex = str.index(str.startIndex, offsetBy: rightIdx)\n\n      let rightChar = str[rightStringIndex]\n      if targetCharCounts[rightChar] == nil {\n        rightIdx += 1\n        continue\n      }\n      changeCharCount(rightChar, &substringCharCounts, 1)\n      if substringCharCounts[rightChar] == targetCharCounts[rightChar] {\n        numUniqueCharsDone += 1\n      }\n\n      // Move the leftIdx to the right in the string until you no longer\n      // have enough of the target characters in between the leftIdx and\n      // the rightIdx. Update the substringBounds accordingly.\n      while numUniqueCharsDone == numUniqueChars, leftIdx <= rightIdx {\n        let leftStringIndex = str.index(str.startIndex, offsetBy: leftIdx)\n        substringBounds = getCloserBounds(leftIdx, rightIdx,\n                                          substringBounds[0], substringBounds[1])\n        let leftChar = str[leftStringIndex]\n        if substringCharCounts[leftChar] == nil {\n          leftIdx += 1\n          continue\n        }\n        if substringCharCounts[leftChar] == targetCharCounts[leftChar] {\n          numUniqueCharsDone -= 1\n        }\n        changeCharCount(leftChar, &substringCharCounts, -1)\n        leftIdx += 1\n      }\n      rightIdx += 1\n    }\n\n    return substringBounds\n  }\n\n  func getCloserBounds(_ idx1: Int, _ idx2: Int, _ idx3: Int, _ idx4: Int) -> [Int] {\n    if idx2 - idx1 < idx4 - idx3 {\n      return [idx1, idx2]\n    }\n    return [idx3, idx4]\n  }\n\n  func getStringFromBounds(_ str: String, _ bounds: [Int]) -> String {\n    let start = bounds[0]\n    let end = bounds[1]\n    if end == Int.max {\n      return \"\"\n    }\n\n    let startIdx = str.index(str.startIndex, offsetBy: start)\n    let endIdx = str.index(str.startIndex, offsetBy: end + 1)\n    let newStr = str[startIdx ..< endIdx]\n    return String(newStr)\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let bigString = \"abcd$ef$axb$c$\"\n      let smallString = \"$$abf\"\n      let expected = \"f$axb$\"\n      let output = program.smallestSubstringContaining(bigString, smallString)\n      try assertEqual(output, expected)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let bigString = \"abcd$ef$axb$c$\"\n      let smallString = \"$$abf\"\n      let expected = \"f$axb$\"\n      let output = program.smallestSubstringContaining(bigString, smallString)\n      try assertEqual(output, expected)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function smallestSubstringContaining(bigString: string, smallString: string) {\n  // Write your code here.\n  return '';\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\ninterface CharCounts {\n  [key: string]: number;\n}\n\ntype Bounds = [number, number];\n\n// O(b + s) time | O(b + s) space - where b is the length of the big\n// input string and s is the length of the small input string\nexport function smallestSubstringContaining(bigString: string, smallString: string) {\n  const targetCharCounts = getCharCounts(smallString);\n  const substringBounds = getSubstringBounds(bigString, targetCharCounts);\n  return getStringFromBounds(bigString, substringBounds);\n}\n\nfunction getCharCounts(string: string) {\n  const charCounts: CharCounts = {};\n  for (const char of string) {\n    increaseCharCount(char, charCounts);\n  }\n  return charCounts;\n}\n\nfunction getSubstringBounds(string: string, targetCharCounts: CharCounts) {\n  let substringBounds: Bounds = [0, Infinity];\n  const substringCharCounts: CharCounts = {};\n  const numUniqueChars = Object.keys(targetCharCounts).length;\n  let numUniqueCharsDone = 0;\n  let leftIdx = 0;\n  let rightIdx = 0;\n  // Move the rightIdx to the right in the string until you've counted\n  // all of the target characters enough times.\n  while (rightIdx < string.length) {\n    const rightChar = string[rightIdx];\n    if (!(rightChar in targetCharCounts)) {\n      rightIdx++;\n      continue;\n    }\n    increaseCharCount(rightChar, substringCharCounts);\n    if (substringCharCounts[rightChar] === targetCharCounts[rightChar]) {\n      numUniqueCharsDone++;\n    }\n    // Move the leftIdx to the right in the string until you no longer\n    // have enough of the target characters in between the leftIdx and\n    // the rightIdx. Update the substringBounds accordingly.\n    while (numUniqueCharsDone === numUniqueChars && leftIdx <= rightIdx) {\n      substringBounds = getCloserBounds(leftIdx, rightIdx, substringBounds[0], substringBounds[1]);\n      const leftChar = string[leftIdx];\n      if (!(leftChar in targetCharCounts)) {\n        leftIdx++;\n        continue;\n      }\n      if (substringCharCounts[leftChar] === targetCharCounts[leftChar]) {\n        numUniqueCharsDone--;\n      }\n      decreaseCharCount(leftChar, substringCharCounts);\n      leftIdx++;\n    }\n    rightIdx++;\n  }\n  return substringBounds;\n}\n\nfunction getCloserBounds(idx1: number, idx2: number, idx3: number, idx4: number): Bounds {\n  return idx2 - idx1 < idx4 - idx3 ? [idx1, idx2] : [idx3, idx4];\n}\n\nfunction getStringFromBounds(string: string, bounds: Bounds) {\n  const [start, end] = bounds;\n  if (end === Infinity) return '';\n  return string.slice(start, end + 1);\n}\n\nfunction increaseCharCount(char: string, charCounts: CharCounts) {\n  charCounts[char] = (charCounts[char] || 0) + 1;\n}\n\nfunction decreaseCharCount(char: string, charCounts: CharCounts) {\n  charCounts[char]--;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const bigString = 'abcd$ef$axb$c$';\n  const smallString = '$$abf';\n  const expected = 'f$axb$';\n  chai.expect(program.smallestSubstringContaining(bigString, smallString)).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const bigString = 'abcd$ef$axb$c$';\n  const smallString = '$$abf';\n  const expected = 'f$axb$';\n  chai.expect(program.smallestSubstringContaining(bigString, smallString)).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "bigString",
+            "example": "abcd$ef$axb$c$",
+            "schema": {
+                "minLength": 1,
+                "type": "string"
+            }
+        },
+        {
+            "name": "smallString",
+            "example": "$$abf",
+            "schema": {
+                "minLength": 1,
+                "type": "string"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "bigString": "abcd$ef$axb$c$",
+            "smallString": "$$abf"
+        },
+        {
+            "bigString": "abcdef",
+            "smallString": "fa"
+        },
+        {
+            "bigString": "abcdef",
+            "smallString": "d"
+        },
+        {
+            "bigString": "abcdefghijklmnopqrstuvwxyz",
+            "smallString": "aajjttwwxxzz"
+        },
+        {
+            "bigString": "abzacdwejxjftghiwjtklmnopqrstuvwxyz",
+            "smallString": "aajjttwwxxzz"
+        },
+        {
+            "bigString": "abzacdwejxjfxztghiwjtklmnopqrstuvwxyz",
+            "smallString": "aajjttwwxxzz"
+        },
+        {
+            "bigString": "aaaa+a$+aaa++$+++++++aaa",
+            "smallString": "a+$aaAaaaa$++"
+        },
+        {
+            "bigString": "a$fuu+afff+affaffa+a$Affab+a+a+$a$",
+            "smallString": "a+$aaAaaaa$++"
+        },
+        {
+            "bigString": "a$fuu+afff+affaffa+a$Affab+a+a+$a$bccgtt+aaaacA+++aaa$",
+            "smallString": "a+$aaAaaaa$++"
+        },
+        {
+            "bigString": "145624356128828193236336541277356789901",
+            "smallString": "123"
+        },
+        {
+            "bigString": "1456243561288281932363365412356789901!",
+            "smallString": "123!"
+        },
+        {
+            "bigString": "14562435612!88281932363365$412356789901",
+            "smallString": "$123!"
+        },
+        {
+            "bigString": "14562435612!88281932363365$412356789901",
+            "smallString": "#!123!"
+        },
+        {
+            "bigString": "14562435612!88281932363365$412356789901",
+            "smallString": "#!333333123!"
+        },
+        {
+            "bigString": "14562435612z!8828!193236!336!5$41!23!5!6789901#",
+            "smallString": "#!2z"
+        },
+        {
+            "bigString": "14562435612z!8828!193236!336!5$41!23!5!6789901#z2!",
+            "smallString": "#!2z"
+        }
+    ],
+    "jsonTests": [
+        {
+            "bigString": "abcd$ef$axb$c$",
+            "smallString": "$$abf"
+        },
+        {
+            "bigString": "abcdef",
+            "smallString": "fa"
+        },
+        {
+            "bigString": "abcdef",
+            "smallString": "d"
+        },
+        {
+            "bigString": "abcdefghijklmnopqrstuvwxyz",
+            "smallString": "aajjttwwxxzz"
+        },
+        {
+            "bigString": "abzacdwejxjftghiwjtklmnopqrstuvwxyz",
+            "smallString": "aajjttwwxxzz"
+        },
+        {
+            "bigString": "abzacdwejxjfxztghiwjtklmnopqrstuvwxyz",
+            "smallString": "aajjttwwxxzz"
+        },
+        {
+            "bigString": "aaaa+a$+aaa++$+++++++aaa",
+            "smallString": "a+$aaAaaaa$++"
+        },
+        {
+            "bigString": "a$fuu+afff+affaffa+a$Affab+a+a+$a$",
+            "smallString": "a+$aaAaaaa$++"
+        },
+        {
+            "bigString": "a$fuu+afff+affaffa+a$Affab+a+a+$a$bccgtt+aaaacA+++aaa$",
+            "smallString": "a+$aaAaaaa$++"
+        },
+        {
+            "bigString": "145624356128828193236336541277356789901",
+            "smallString": "123"
+        },
+        {
+            "bigString": "1456243561288281932363365412356789901!",
+            "smallString": "123!"
+        },
+        {
+            "bigString": "14562435612!88281932363365$412356789901",
+            "smallString": "$123!"
+        },
+        {
+            "bigString": "14562435612!88281932363365$412356789901",
+            "smallString": "#!123!"
+        },
+        {
+            "bigString": "14562435612!88281932363365$412356789901",
+            "smallString": "#!333333123!"
+        },
+        {
+            "bigString": "14562435612z!8828!193236!336!5$41!23!5!6789901#",
+            "smallString": "#!2z"
+        },
+        {
+            "bigString": "14562435612z!8828!193236!336!5$41!23!5!6789901#z2!",
+            "smallString": "#!2z"
+        }
+    ],
+    "changelog": []
+}

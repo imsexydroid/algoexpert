@@ -1,0 +1,1845 @@
+{
+    "uid": "search-in-sorted-matrix",
+    "testStrategy": "JSON",
+    "name": "Search In Sorted Matrix",
+    "version": 0,
+    "releaseDate": "2000-05-04T00:00:00Z",
+    "category": "Searching",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 27664,
+        "failureCount": 6828
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "241818616",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Clement Mihailescu",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 942
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  You're given a two-dimensional array (a matrix) of distinct integers and a\n  target integer. Each row in the matrix is sorted, and each column is also sorted; the\n  matrix doesn't necessarily have the same height and width.\n</p>\n<p>\n  Write a function that returns an array of the row and column indices of the\n  target integer if it's contained in the matrix, otherwise\n  <span>[-1, -1]</span>.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">matrix</span> = [\n  [1, 4, 7, 12, 15, 1000],\n  [2, 5, 19, 31, 32, 1001],\n  [3, 8, 24, 33, 35, 1002],\n  [40, 41, 42, 44, 45, 1003],\n  [99, 100, 103, 106, 128, 1004],\n]\n<span class=\"CodeEditor-promptParameter\">target</span> = 44\n</pre>\n<h3>Sample Output</h3>\n<pre>\n[3, 3]\n</pre>\n</div>",
+    "hints": [
+        "<p>\nPick any number in the matrix and compare it to the target number. If this number is bigger than the target number, what does that tell you about all of the other numbers in this number's row and this number's column? What about if this number is smaller than the target number?\n</p>\n",
+        "\n<p>\nTry starting at the top right corner of the matrix, comparing the number there to the target number, and using whatever you gathered from Hint #1 to figure out what number to compare next if the top right number isn't equal to the target number. Continue until you find the target number or until you get past the extremities of the matrix.\n</p>"
+    ],
+    "spaceTime": "O(n + m) time | O(1) space - where n is the length of the matrix's rows and m is the length of the matrix's columns",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\nusing namespace std;\n\nvector<int> searchInSortedMatrix(vector<vector<int>> matrix, int target) {\n  // Write your code here.\n  return {};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <vector>\nusing namespace std;\n\n// O(n + m) time | O(1) space\nvector<int> searchInSortedMatrix(vector<vector<int>> matrix, int target) {\n  int row = 0;\n  int col = matrix[0].size() - 1;\n  while (row < matrix.size() && col >= 0) {\n    if (matrix[row][col] > target) {\n      col--;\n    } else if (matrix[row][col] < target) {\n      row++;\n    } else {\n      return {row, col};\n    }\n  }\n  return {-1, -1};\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> matrix{\n        {1, 4, 7, 12, 15, 1000},\n        {2, 5, 19, 31, 32, 1001},\n        {3, 8, 24, 33, 35, 1002},\n        {40, 41, 42, 44, 45, 1003},\n        {99, 100, 103, 106, 128, 1004},\n      };\n      vector<int> expected{3, 3};\n      assert(searchInSortedMatrix(matrix, 44) == expected);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> matrix{\n        {1, 4, 7, 12, 15, 1000},\n        {2, 5, 19, 31, 32, 1001},\n        {3, 8, 24, 33, 35, 1002},\n        {40, 41, 42, 44, 45, 1003},\n        {99, 100, 103, 106, 128, 1004},\n      };\n      vector<int> expected{3, 3};\n      assert(searchInSortedMatrix(matrix, 44) == expected);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public static int[] SearchInSortedMatrix(int[,] matrix, int target) {\n    // Write your code here.\n    return new int[] { -1, -1 };\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npublic class Program {\n  // O(n + m) time | O(1) space\n  public static int[] SearchInSortedMatrix(int[,] matrix, int target) {\n    int row = 0;\n    int col = matrix.GetLength(1) - 1;\n    while (row < matrix.GetLength(0) && col >= 0) {\n      if (matrix[row, col] > target) {\n        col--;\n      } else if (matrix[row, col] < target) {\n        row++;\n      } else {\n        return new int[] { row, col };\n      }\n    }\n    return new int[] { -1, -1 };\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[,] matrix = {\n      { 1, 4, 7, 12, 15, 1000 },\n      { 2, 5, 19, 31, 32, 1001 },\n      { 3, 8, 24, 33, 35, 1002 },\n      { 40, 41, 42, 44, 45, 1003 },\n      { 99, 100, 103, 106, 128, 1004 },\n    };\n    int[] expected = { 3, 3 };\n    int[] output = Program.SearchInSortedMatrix(matrix, 44);\n    Utils.AssertTrue(compare(output, expected));\n  }\n\n  public bool compare(int[] arr1, int[] arr2) {\n    if (arr1.Length != arr2.Length) {\n      return false;\n    }\n    for (int i = 0; i < arr1.Length; i++) {\n      if (arr1[i] != arr2[i]) {\n        return false;\n      }\n    }\n    return true;\n  }\n}\n",
+            "unitTests": "public class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[,] matrix = {\n      { 1, 4, 7, 12, 15, 1000 },\n      { 2, 5, 19, 31, 32, 1001 },\n      { 3, 8, 24, 33, 35, 1002 },\n      { 40, 41, 42, 44, 45, 1003 },\n      { 99, 100, 103, 106, 128, 1004 },\n    };\n    int[] expected = { 3, 3 };\n    int[] output = Program.SearchInSortedMatrix(matrix, 44);\n    Utils.AssertTrue(compare(output, expected));\n  }\n\n  public bool compare(int[] arr1, int[] arr2) {\n    if (arr1.Length != arr2.Length) {\n      return false;\n    }\n    for (int i = 0; i < arr1.Length; i++) {\n      if (arr1[i] != arr2[i]) {\n        return false;\n      }\n    }\n    return true;\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc SearchInSortedMatrix(matrix [][]int, target int) []int {\n\t// Write your code here.\n\treturn nil\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n + m) time | O(1) space\nfunc SearchInSortedMatrix(matrix [][]int, target int) []int {\n\trow, col := 0, len(matrix[0])-1\n\tfor row < len(matrix) && col >= 0 {\n\t\tif matrix[row][col] > target {\n\t\t\tcol -= 1\n\t\t} else if matrix[row][col] < target {\n\t\t\trow += 1\n\t\t} else {\n\t\t\treturn []int{row, col}\n\t\t}\n\t}\n\treturn []int{-1, -1}\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tvar matrix = [][]int{\n\t\t{1, 4, 7, 12, 15, 1000},\n\t\t{2, 5, 19, 31, 32, 1001},\n\t\t{3, 8, 24, 33, 35, 1002},\n\t\t{40, 41, 42, 44, 45, 1003},\n\t\t{99, 100, 103, 106, 128, 1004},\n\t}\n\texpected := []int{3, 3}\n\toutput := SearchInSortedMatrix(matrix, 44)\n\trequire.Equal(t, expected, output)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tvar matrix = [][]int{\n\t\t{1, 4, 7, 12, 15, 1000},\n\t\t{2, 5, 19, 31, 32, 1001},\n\t\t{3, 8, 24, 33, 35, 1002},\n\t\t{40, 41, 42, 44, 45, 1003},\n\t\t{99, 100, 103, 106, 128, 1004},\n\t}\n\texpected := []int{3, 3}\n\toutput := SearchInSortedMatrix(matrix, 44)\n\trequire.Equal(t, expected, output)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public static int[] searchInSortedMatrix(int[][] matrix, int target) {\n    // Write your code here.\n    return new int[] {-1, -1};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n + m) time | O(1) space\n  public static int[] searchInSortedMatrix(int[][] matrix, int target) {\n    int row = 0;\n    int col = matrix[0].length - 1;\n    while (row < matrix.length && col >= 0) {\n      if (matrix[row][col] > target) {\n        col--;\n      } else if (matrix[row][col] < target) {\n        row++;\n      } else {\n        return new int[] {row, col};\n      }\n    }\n    return new int[] {-1, -1};\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[][] matrix = {\n      {1, 4, 7, 12, 15, 1000},\n      {2, 5, 19, 31, 32, 1001},\n      {3, 8, 24, 33, 35, 1002},\n      {40, 41, 42, 44, 45, 1003},\n      {99, 100, 103, 106, 128, 1004},\n    };\n    int[] expected = {3, 3};\n    int[] output = Program.searchInSortedMatrix(matrix, 44);\n    Utils.assertTrue(compare(output, expected));\n  }\n\n  public boolean compare(int[] arr1, int[] arr2) {\n    if (arr1.length != arr2.length) {\n      return false;\n    }\n    for (int i = 0; i < arr1.length; i++) {\n      if (arr1[i] != arr2[i]) {\n        return false;\n      }\n    }\n    return true;\n  }\n}\n",
+            "unitTests": "class ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[][] matrix = {\n      {1, 4, 7, 12, 15, 1000},\n      {2, 5, 19, 31, 32, 1001},\n      {3, 8, 24, 33, 35, 1002},\n      {40, 41, 42, 44, 45, 1003},\n      {99, 100, 103, 106, 128, 1004},\n    };\n    int[] expected = {3, 3};\n    int[] output = Program.searchInSortedMatrix(matrix, 44);\n    Utils.assertTrue(compare(output, expected));\n  }\n\n  public boolean compare(int[] arr1, int[] arr2) {\n    if (arr1.length != arr2.length) {\n      return false;\n    }\n    for (int i = 0; i < arr1.length; i++) {\n      if (arr1[i] != arr2[i]) {\n        return false;\n      }\n    }\n    return true;\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function searchInSortedMatrix(matrix, target) {\n  // Write your code here.\n}\n\n// Do not edit the line below.\nexports.searchInSortedMatrix = searchInSortedMatrix;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n + m) time | O(1) space\nfunction searchInSortedMatrix(matrix, target) {\n  let row = 0;\n  let col = matrix[0].length - 1;\n  while (row < matrix.length && col >= 0) {\n    if (matrix[row][col] > target) {\n      col--;\n    } else if (matrix[row][col] < target) {\n      row++;\n    } else {\n      return [row, col];\n    }\n  }\n  return [-1, -1];\n}\n\nexports.searchInSortedMatrix = searchInSortedMatrix;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const matrix = [\n    [1, 4, 7, 12, 15, 1000],\n    [2, 5, 19, 31, 32, 1001],\n    [3, 8, 24, 33, 35, 1002],\n    [40, 41, 42, 44, 45, 1003],\n    [99, 100, 103, 106, 128, 1004],\n  ];\n  chai.expect(program.searchInSortedMatrix(matrix, 44)).to.deep.equal([3, 3]);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const matrix = [\n    [1, 4, 7, 12, 15, 1000],\n    [2, 5, 19, 31, 32, 1001],\n    [3, 8, 24, 33, 35, 1002],\n    [40, 41, 42, 44, 45, 1003],\n    [99, 100, 103, 106, 128, 1004],\n  ];\n  chai.expect(program.searchInSortedMatrix(matrix, 44)).to.deep.equal([3, 3]);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun searchInSortedMatrix(matrix: List<List<Int>>, target: Int): Pair<Int, Int> {\n    // Write your code here.\n    return Pair(-1, -1)\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n + m) time | O(1) space\nfun searchInSortedMatrix(matrix: List<List<Int>>, target: Int): Pair<Int, Int> {\n    var row = 0\n    var col = matrix[0].size - 1\n    while (row < matrix.size && col >= 0) {\n        if (matrix[row][col] > target) {\n            col--\n        } else if (matrix[row][col] < target) {\n            row++\n        } else {\n            return Pair(row, col)\n        }\n    }\n    return Pair(-1, -1)\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.searchInSortedMatrix\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val matrix = listOf(\n            listOf(1, 4, 7, 12, 15, 1000),\n            listOf(2, 5, 19, 31, 32, 1001),\n            listOf(3, 8, 24, 33, 35, 1002),\n            listOf(40, 41, 42, 44, 45, 1003),\n            listOf(99, 100, 103, 106, 128, 1004),\n        )\n        val expected = Pair(3, 3)\n        val output = searchInSortedMatrix(matrix, 44)\n        assert(expected.equals(output))\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.searchInSortedMatrix\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val matrix = listOf(\n            listOf(1, 4, 7, 12, 15, 1000),\n            listOf(2, 5, 19, 31, 32, 1001),\n            listOf(3, 8, 24, 33, 35, 1002),\n            listOf(40, 41, 42, 44, 45, 1003),\n            listOf(99, 100, 103, 106, 128, 1004),\n        )\n        val expected = Pair(3, 3)\n        val output = searchInSortedMatrix(matrix, 44)\n        assert(expected.equals(output))\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def searchInSortedMatrix(matrix, target):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n + m) time | O(1) space\ndef searchInSortedMatrix(matrix, target):\n    row = 0\n    col = len(matrix[0]) - 1\n    while row < len(matrix) and col >= 0:\n        if matrix[row][col] > target:\n            col -= 1\n        elif matrix[row][col] < target:\n            row += 1\n        else:\n            return [row, col]\n    return [-1, -1]\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        matrix = [\n            [1, 4, 7, 12, 15, 1000],\n            [2, 5, 19, 31, 32, 1001],\n            [3, 8, 24, 33, 35, 1002],\n            [40, 41, 42, 44, 45, 1003],\n            [99, 100, 103, 106, 128, 1004],\n        ]\n        actual = program.searchInSortedMatrix(matrix, 44)\n        self.assertEqual(actual, [3, 3])\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        matrix = [\n            [1, 4, 7, 12, 15, 1000],\n            [2, 5, 19, 31, 32, 1001],\n            [3, 8, 24, 33, 35, 1002],\n            [40, 41, 42, 44, 45, 1003],\n            [99, 100, 103, 106, 128, 1004],\n        ]\n        actual = program.searchInSortedMatrix(matrix, 44)\n        self.assertEqual(actual, [3, 3])\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  def searchInSortedMatrix(matrix, target)\n    # Write your code here.\n    return []\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def searchInSortedMatrix(matrix, target)\n    # Write your code here.\n    return []\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.searchInSortedMatrix\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.searchInSortedMatrix\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func searchInSortedMatrix(matrix: [[Int]], target: Int) -> [Int] {\n    // Write your code here.\n    return []\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n + m) time | O(1) space\n  func searchInSortedMatrix(matrix: [[Int]], target: Int) -> [Int] {\n    var row = 0\n    var column = matrix[0].count - 1\n\n    while row < matrix.count, column >= 0 {\n      if matrix[row][column] > target {\n        column = column - 1\n      } else if matrix[row][column] < target {\n        row = row + 1\n      } else {\n        return [row, column]\n      }\n    }\n\n    return [-1, -1]\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var matrix =\n        [\n          [1, 4, 7, 12, 15, 1000],\n          [2, 5, 19, 31, 32, 1001],\n          [3, 8, 24, 33, 35, 1002],\n          [40, 41, 42, 44, 45, 1003],\n          [99, 100, 103, 106, 128, 1004],\n        ]\n      try assertEqual([3, 3], program.searchInSortedMatrix(matrix: matrix, target: 44))\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var matrix =\n        [\n          [1, 4, 7, 12, 15, 1000],\n          [2, 5, 19, 31, 32, 1001],\n          [3, 8, 24, 33, 35, 1002],\n          [40, 41, 42, 44, 45, 1003],\n          [99, 100, 103, 106, 128, 1004],\n        ]\n      try assertEqual([3, 3], program.searchInSortedMatrix(matrix: matrix, target: 44))\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "type Range = [number, number];\n\nexport function searchInSortedMatrix(matrix: number[][], target: number): Range {\n  // Write your code here.\n  return [-1, -1];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\ntype Range = [number, number];\n\n// O(n + m) time | O(1) space\nexport function searchInSortedMatrix(matrix: number[][], target: number): Range {\n  let row = 0;\n  let col = matrix[0].length - 1;\n  while (row < matrix.length && col >= 0) {\n    if (matrix[row][col] > target) {\n      col--;\n    } else if (matrix[row][col] < target) {\n      row++;\n    } else {\n      return [row, col];\n    }\n  }\n  return [-1, -1];\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const matrix = [\n    [1, 4, 7, 12, 15, 1000],\n    [2, 5, 19, 31, 32, 1001],\n    [3, 8, 24, 33, 35, 1002],\n    [40, 41, 42, 44, 45, 1003],\n    [99, 100, 103, 106, 128, 1004],\n  ];\n  chai.expect(program.searchInSortedMatrix(matrix, 44)).to.deep.equal([3, 3]);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const matrix = [\n    [1, 4, 7, 12, 15, 1000],\n    [2, 5, 19, 31, 32, 1001],\n    [3, 8, 24, 33, 35, 1002],\n    [40, 41, 42, 44, 45, 1003],\n    [99, 100, 103, 106, 128, 1004],\n  ];\n  chai.expect(program.searchInSortedMatrix(matrix, 44)).to.deep.equal([3, 3]);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "matrix",
+            "example": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "schema": {
+                "items": {
+                    "items": {
+                        "type": "integer",
+                        "uniqueItems": true
+                    },
+                    "type": "array"
+                },
+                "type": "array"
+            }
+        },
+        {
+            "name": "target",
+            "example": 44,
+            "schema": {
+                "type": "integer"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 44
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 1
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 2
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 4
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 15
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 12
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 32
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 99
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 100
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 40
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 128
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 106
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 45
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 24
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 43
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": -1
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 1000
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 1004
+        }
+    ],
+    "jsonTests": [
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 44
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 1
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 2
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 4
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 15
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 12
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 32
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 99
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 100
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 40
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 128
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 106
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 45
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 24
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 43
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": -1
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 1000
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7,
+                    12,
+                    15,
+                    1000
+                ],
+                [
+                    2,
+                    5,
+                    19,
+                    31,
+                    32,
+                    1001
+                ],
+                [
+                    3,
+                    8,
+                    24,
+                    33,
+                    35,
+                    1002
+                ],
+                [
+                    40,
+                    41,
+                    42,
+                    44,
+                    45,
+                    1003
+                ],
+                [
+                    99,
+                    100,
+                    103,
+                    106,
+                    128,
+                    1004
+                ]
+            ],
+            "target": 1004
+        }
+    ],
+    "changelog": []
+}

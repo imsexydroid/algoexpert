@@ -1,0 +1,314 @@
+{
+    "uid": "staircase-traversal",
+    "testStrategy": "JSON",
+    "name": "Staircase Traversal",
+    "version": 0,
+    "releaseDate": "2021-02-08T00:00:00Z",
+    "category": "Recursion",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 18451,
+        "failureCount": 4538
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "509186811",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Tim Ruscica",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 2118
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  You're given two positive integers representing the height of a staircase and\n  the maximum number of steps that you can advance up the staircase at a time.\n  Write a function that returns the number of ways in which you can climb the\n  staircase.\n</p>\n<p>\n  For example, if you were given a staircase of <span>height = 3</span> and\n  <span>maxSteps = 2</span> you could climb the staircase in 3 ways. You could\n  take <b>1 step, 1 step, then 1 step</b>, you could also take\n  <b>1 step, then 2 steps</b>, and you could take <b>2 steps, then 1 step</b>.\n</p>\n<p>Note that <span>maxSteps &lt;= height</span> will always be true.</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">height</span> = 4\n<span class=\"CodeEditor-promptParameter\">maxSteps</span> = 2\n</pre>\n<h3>Sample Output</h3>\n<pre>\n5\n<span class=\"CodeEditor-promptComment\">// You can climb the staircase in the following ways: </span>\n<span class=\"CodeEditor-promptComment\">// 1, 1, 1, 1</span>\n<span class=\"CodeEditor-promptComment\">// 1, 1, 2</span>\n<span class=\"CodeEditor-promptComment\">// 1, 2, 1</span>\n<span class=\"CodeEditor-promptComment\">// 2, 1, 1</span>\n<span class=\"CodeEditor-promptComment\">// 2, 2</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  If you can advance <span>2</span> steps at a time, how many ways can you reach\n  a staircase of height <span>1</span> and of height <span>2</span>? Think\n  recursively.\n</p>\n",
+        "\n<p>\n  Continuing from Hint #1, if you know the number of ways to climb a staircase\n  of height <span>1</span> and of height <span>2</span>, how many ways are there\n  to climb a staircase of height <span>3</span> (assuming the same max steps of\n  <span>2</span>)?\n</p>\n",
+        "\n<p>\n  The number of ways to climb a staircase of height <span>k</span> with a max\n  number of steps <span>s</span> is:\n  <span>numWays[k - 1] + numWays[k - 2] + ... + numWays[k - s]</span>. This is\n  because if you can advance between <span>1</span> and <span>s</span> steps,\n  then from each step <span>k - 1, k - 2, ..., k - s</span>, you can directly\n  advance to the top of a staircase of height <span>k</span>. By adding the\n  number of ways to reach all steps that you can directly advance to the top\n  step from, you determine how many ways there are to reach the top step.\n</p>"
+    ],
+    "spaceTime": "O(n) time | O(n) space - where n is the height of the staircase",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nint staircaseTraversal(int height, int maxSteps) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\nusing namespace std;\n\nint numberOfWaysToTop(int height, int maxSteps);\n\n// O(k^n) time | O(n) space - where n is the height of the staircase and k is\n// the number of allowed steps\nint staircaseTraversal(int height, int maxSteps) {\n  return numberOfWaysToTop(height, maxSteps);\n}\n\nint numberOfWaysToTop(int height, int maxSteps) {\n  if (height <= 1) return 1;\n\n  int numberOfWays = 0;\n  for (int step = 1; step < min(maxSteps, height) + 1; step++) {\n    numberOfWays += numberOfWaysToTop(height - step, maxSteps);\n  }\n\n  return numberOfWays;\n}",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n#include <unordered_map>\nusing namespace std;\n\nint numberOfWaysToTop(\n  int height, int maxSteps, unordered_map<int, int>& memoize\n);\n\n// O(n * k) time | O(n) space - where n is the height of the staircase and k is\n// the number of allowed steps\nint staircaseTraversal(int height, int maxSteps) {\n  unordered_map<int, int> memoize = {{0, 1}, {1, 1}};\n  return numberOfWaysToTop(height, maxSteps, memoize);\n}\n\nint numberOfWaysToTop(\n  int height, int maxSteps, unordered_map<int, int>& memoize\n) {\n  if (memoize.find(height) != memoize.end()) return memoize[height];\n\n  int numberOfWays = 0;\n  for (int step = 1; step < min(maxSteps, height) + 1; step++) {\n    numberOfWays += numberOfWaysToTop(height - step, maxSteps, memoize);\n  }\n\n  memoize[height] = numberOfWays;\n\n  return numberOfWays;\n}",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <vector>\nusing namespace std;\n\n// O(n * k) time | O(n) space - where n is the height of the staircase and k is\n// the number of allowed steps\nint staircaseTraversal(int height, int maxSteps) {\n  vector<int> waysToTop(height + 1, 0);\n  waysToTop[0] = 1;\n  waysToTop[1] = 1;\n\n  for (int currentHeight = 2; currentHeight < height + 1; currentHeight++) {\n    int step = 1;\n    while (step <= maxSteps && step <= currentHeight) {\n      waysToTop[currentHeight] =\n        waysToTop[currentHeight] + waysToTop[currentHeight - step];\n      step++;\n    }\n  }\n\n  return waysToTop[height];\n}",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <vector>\nusing namespace std;\n\n// O(n) time | O(n) space - where n is the height of the staircase\nint staircaseTraversal(int height, int maxSteps) {\n  int currentNumberOfWays = 0;\n  vector<int> waysToTop = {1};\n\n  for (int currentHeight = 1; currentHeight < height + 1; currentHeight++) {\n    int startOfWindow = currentHeight - maxSteps - 1;\n    int endOfWindow = currentHeight - 1;\n    if (startOfWindow >= 0) currentNumberOfWays -= waysToTop[startOfWindow];\n\n    currentNumberOfWays += waysToTop[endOfWindow];\n    waysToTop.push_back(currentNumberOfWays);\n  }\n\n  return waysToTop[height];\n}"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      auto stairs = 4;\n      auto maxSteps = 2;\n      auto expected = 5;\n      auto actual = staircaseTraversal(stairs, maxSteps);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      auto stairs = 4;\n      auto maxSteps = 2;\n      auto expected = 5;\n      auto actual = staircaseTraversal(stairs, maxSteps);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int StaircaseTraversal(int height, int maxSteps) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(k^n) time | O(n) space - where n is the height of the staircase and k is\n  // the number of allowed steps\n  public int StaircaseTraversal(int height, int maxSteps) {\n    return numberOfWaysToTop(height, maxSteps);\n  }\n\n  public int numberOfWaysToTop(int height, int maxSteps) {\n    if (height <= 1) {\n      return 1;\n    }\n\n    int numberOfWays = 0;\n    for (int step = 1; step < Math.Min(maxSteps, height) + 1; step++) {\n      numberOfWays += numberOfWaysToTop(height - step, maxSteps);\n    }\n\n    return numberOfWays;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n * k) time | O(n) space - where n is the height of the staircase and k\n  // is the number of allowed steps\n  public int StaircaseTraversal(int height, int maxSteps) {\n    Dictionary<int, int> memoize = new Dictionary<int, int>();\n    memoize[0] = 1;\n    memoize[1] = 1;\n    return numberOfWaysToTop(height, maxSteps, memoize);\n  }\n\n  public int numberOfWaysToTop(\n    int height, int maxSteps, Dictionary<int, int> memoize\n  ) {\n    if (memoize.ContainsKey(height)) {\n      return memoize[height];\n    }\n\n    int numberOfWays = 0;\n    for (int step = 1; step < Math.Min(maxSteps, height) + 1; step++) {\n      numberOfWays += numberOfWaysToTop(height - step, maxSteps, memoize);\n    }\n\n    memoize[height] = numberOfWays;\n\n    return numberOfWays;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(n * k) time | O(n) space - where n is the height of the staircase and k\n  // is the number of allowed steps\n  public int StaircaseTraversal(int height, int maxSteps) {\n    int[] waysToTop = new int[height + 1];\n    waysToTop[0] = 1;\n    waysToTop[1] = 1;\n\n    for (int currentHeight = 2; currentHeight < height + 1; currentHeight++) {\n      int step = 1;\n      while (step <= maxSteps && step <= currentHeight) {\n        waysToTop[currentHeight] =\n          waysToTop[currentHeight] + waysToTop[currentHeight - step];\n        step += 1;\n      }\n    }\n\n    return waysToTop[height];\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n) time | O(n) space - where n is the height of the staircase\n  public int StaircaseTraversal(int height, int maxSteps) {\n    int currentNumberOfWays = 0;\n    List<int> waysToTop = new List<int>();\n    waysToTop.Add(1);\n\n    for (int currentHeight = 1; currentHeight < height + 1; currentHeight++) {\n      int startOfWindow = currentHeight - maxSteps - 1;\n      int endOfWindow = currentHeight - 1;\n\n      if (startOfWindow >= 0) {\n        currentNumberOfWays -= waysToTop[startOfWindow];\n      }\n\n      currentNumberOfWays += waysToTop[endOfWindow];\n      waysToTop.Add(currentNumberOfWays);\n    }\n\n    return waysToTop[height];\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int stairs = 4;\n    int maxSteps = 2;\n    int expected = 5;\n    int actual = new Program().StaircaseTraversal(stairs, maxSteps);\n    Utils.AssertTrue(expected == actual);\n  }\n}",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int stairs = 4;\n    int maxSteps = 2;\n    int expected = 5;\n    int actual = new Program().StaircaseTraversal(stairs, maxSteps);\n    Utils.AssertTrue(expected == actual);\n  }\n}"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc StaircaseTraversal(height int, maxSteps int) int {\n\t// Write your code here.\n\treturn -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(k^n) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\nfunc StaircaseTraversal(height int, maxSteps int) int {\n\treturn numberOfWaysToTop(height, maxSteps)\n}\n\nfunc numberOfWaysToTop(height int, maxSteps int) int {\n\tif height <= 1 {\n\t\treturn 1\n\t}\n\n\tvar numberOfWays = 0\n\tfor step := 1; step < min(maxSteps, height)+1; step++ {\n\t\tnumberOfWays += numberOfWaysToTop(height-step, maxSteps)\n\t}\n\n\treturn numberOfWays\n}\n\nfunc min(a, b int) int {\n\tif a < b {\n\t\treturn a\n\t}\n\treturn b\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n * k) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\nfunc StaircaseTraversal(height int, maxSteps int) int {\n\treturn numberOfWaysToTop(height, maxSteps, map[int]int{0: 1, 1: 1})\n}\n\nfunc numberOfWaysToTop(height int, maxSteps int, memoize map[int]int) int {\n\tif ways, found := memoize[height]; found {\n\t\treturn ways\n\t}\n\n\tvar numberOfWays = 0\n\tfor step := 1; step < min(maxSteps, height)+1; step++ {\n\t\tnumberOfWays += numberOfWaysToTop(height-step, maxSteps, memoize)\n\t}\n\tmemoize[height] = numberOfWays\n\n\treturn numberOfWays\n}\n\nfunc min(a, b int) int {\n\tif a < b {\n\t\treturn a\n\t}\n\treturn b\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n * k) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\nfunc StaircaseTraversal(height int, maxSteps int) int {\n\twaysToTop := make([]int, height+1)\n\twaysToTop[0] = 1\n\twaysToTop[1] = 1\n\n\tfor currentHeight := 2; currentHeight < height+1; currentHeight++ {\n\t\tvar step = 1\n\t\tfor step <= maxSteps && step <= currentHeight {\n\t\t\twaysToTop[currentHeight] = waysToTop[currentHeight] + waysToTop[currentHeight-step]\n\t\t\tstep += 1\n\t\t}\n\t}\n\n\treturn waysToTop[height]\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n) time | O(n) space - where n is the height of the staircase\nfunc StaircaseTraversal(height int, maxSteps int) int {\n\tcurrentNumberOfWays := 0\n\twaysToTop := []int{1}\n\n\tfor currentHeight := 1; currentHeight < height+1; currentHeight++ {\n\t\tstartOfWindow := currentHeight - maxSteps - 1\n\t\tendOfWindow := currentHeight - 1\n\t\tif startOfWindow >= 0 {\n\t\t\tcurrentNumberOfWays -= waysToTop[startOfWindow]\n\t\t}\n\n\t\tcurrentNumberOfWays += waysToTop[endOfWindow]\n\t\twaysToTop = append(waysToTop, currentNumberOfWays)\n\t}\n\n\treturn waysToTop[height]\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tstairs := 4\n\tmaxSteps := 2\n\texpected := 5\n\tactual := StaircaseTraversal(stairs, maxSteps)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tstairs := 4\n\tmaxSteps := 2\n\texpected := 5\n\tactual := StaircaseTraversal(stairs, maxSteps)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int staircaseTraversal(int height, int maxSteps) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(k^n) time | O(n) space - where n is the height of the staircase and k is\n  // the number of allowed steps\n  public int staircaseTraversal(int height, int maxSteps) {\n    return numberOfWaysToTop(height, maxSteps);\n  }\n\n  public int numberOfWaysToTop(int height, int maxSteps) {\n    if (height <= 1) {\n      return 1;\n    }\n\n    int numberOfWays = 0;\n    for (int step = 1; step < Math.min(maxSteps, height) + 1; step++) {\n      numberOfWays += numberOfWaysToTop(height - step, maxSteps);\n    }\n\n    return numberOfWays;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n * k) time | O(n) space - where n is the height of the staircase and k\n  // is the number of allowed steps\n  public int staircaseTraversal(int height, int maxSteps) {\n    HashMap<Integer, Integer> memoize = new HashMap<Integer, Integer>();\n    memoize.put(0, 1);\n    memoize.put(1, 1);\n    return numberOfWaysToTop(height, maxSteps, memoize);\n  }\n\n  public int numberOfWaysToTop(\n    int height, int maxSteps, HashMap<Integer, Integer> memoize\n  ) {\n    if (memoize.containsKey(height)) {\n      return memoize.get(height);\n    }\n\n    int numberOfWays = 0;\n    for (int step = 1; step < Math.min(maxSteps, height) + 1; step++) {\n      numberOfWays += numberOfWaysToTop(height - step, maxSteps, memoize);\n    }\n\n    memoize.put(height, numberOfWays);\n\n    return numberOfWays;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n * k) time | O(n) space - where n is the height of the staircase and k\n  // is the number of allowed steps\n  public int staircaseTraversal(int height, int maxSteps) {\n    int[] waysToTop = new int[height + 1];\n    waysToTop[0] = 1;\n    waysToTop[1] = 1;\n\n    for (int currentHeight = 2; currentHeight < height + 1; currentHeight++) {\n      int step = 1;\n      while (step <= maxSteps && step <= currentHeight) {\n        waysToTop[currentHeight] =\n          waysToTop[currentHeight] + waysToTop[currentHeight - step];\n        step += 1;\n      }\n    }\n\n    return waysToTop[height];\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n) time | O(n) space - where n is the height of the staircase\n  public int staircaseTraversal(int height, int maxSteps) {\n    int currentNumberOfWays = 0;\n    ArrayList<Integer> waysToTop = new ArrayList<Integer>();\n    waysToTop.add(1);\n\n    for (int currentHeight = 1; currentHeight < height + 1; currentHeight++) {\n      int startOfWindow = currentHeight - maxSteps - 1;\n      int endOfWindow = currentHeight - 1;\n\n      if (startOfWindow >= 0) {\n        currentNumberOfWays -= waysToTop.get(startOfWindow);\n      }\n\n      currentNumberOfWays += waysToTop.get(endOfWindow);\n      waysToTop.add(currentNumberOfWays);\n    }\n\n    return waysToTop.get(height);\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int stairs = 4;\n    int maxSteps = 2;\n    int expected = 5;\n    int actual = new Program().staircaseTraversal(stairs, maxSteps);\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int stairs = 4;\n    int maxSteps = 2;\n    int expected = 5;\n    int actual = new Program().staircaseTraversal(stairs, maxSteps);\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function staircaseTraversal(height, maxSteps) {\n  // Write your code here.\n  return -1;\n}\n\n// Do not edit the line below.\nexports.staircaseTraversal = staircaseTraversal;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(k^n) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\nfunction staircaseTraversal(height, maxSteps) {\n  return numberOfWaysToTop(height, maxSteps);\n}\n\nfunction numberOfWaysToTop(height, maxSteps) {\n  if (height <= 1) return 1;\n\n  let numberOfWays = 0;\n  for (let step = 1; step < Math.min(maxSteps, height) + 1; step++) {\n    numberOfWays += numberOfWaysToTop(height - step, maxSteps);\n  }\n\n  return numberOfWays;\n}\n\n// Do not edit the line below.\nexports.staircaseTraversal = staircaseTraversal;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * k) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\nfunction staircaseTraversal(height, maxSteps) {\n  return numberOfWaysToTop(height, maxSteps, {0: 1, 1: 1});\n}\n\nfunction numberOfWaysToTop(height, maxSteps, memoize) {\n  if (height in memoize) return memoize[height];\n\n  let numberOfWays = 0;\n  for (let step = 1; step < Math.min(maxSteps, height) + 1; step++) {\n    numberOfWays += numberOfWaysToTop(height - step, maxSteps, memoize);\n  }\n\n  memoize[height] = numberOfWays;\n\n  return numberOfWays;\n}\n\n// Do not edit the line below.\nexports.staircaseTraversal = staircaseTraversal;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * k) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\nfunction staircaseTraversal(height, maxSteps) {\n  const waysToTop = new Array(height + 1).fill(0);\n  waysToTop[0] = 1;\n  waysToTop[1] = 1;\n\n  for (let currentHeight = 2; currentHeight < height + 1; currentHeight++) {\n    let step = 1;\n    while (step <= maxSteps && step <= currentHeight) {\n      waysToTop[currentHeight] = waysToTop[currentHeight] + waysToTop[currentHeight - step];\n      step++;\n    }\n  }\n\n  return waysToTop[height];\n}\n\n// Do not edit the line below.\nexports.staircaseTraversal = staircaseTraversal;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space - where n is the height of the staircase\nfunction staircaseTraversal(height, maxSteps) {\n  let currentNumberOfWays = 0;\n  const waysToTop = [1];\n\n  for (let currentHeight = 1; currentHeight < height + 1; currentHeight++) {\n    const startOfWindow = currentHeight - maxSteps - 1;\n    const endOfWindow = currentHeight - 1;\n    if (startOfWindow >= 0) currentNumberOfWays -= waysToTop[startOfWindow];\n\n    currentNumberOfWays += waysToTop[endOfWindow];\n    waysToTop.push(currentNumberOfWays);\n  }\n\n  return waysToTop[height];\n}\n\n// Do not edit the line below.\nexports.staircaseTraversal = staircaseTraversal;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const stairs = 4;\n  const maxSteps = 2;\n  const expected = 5;\n  const actual = program.staircaseTraversal(stairs, maxSteps);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const stairs = 4;\n  const maxSteps = 2;\n  const expected = 5;\n  const actual = program.staircaseTraversal(stairs, maxSteps);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun staircaseTraversal(height: Int, maxSteps: Int): Int {\n    // Write your code here.\n    return -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.min\n\n// O(k^n) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\nfun staircaseTraversal(height: Int, maxSteps: Int): Int {\n    return numberOfWaysToTop(height, maxSteps)\n}\n\nfun numberOfWaysToTop(height: Int, maxSteps: Int): Int {\n    if (height <= 1) return 1\n\n    var numberOfWays = 0\n    for (step in 1 until min(maxSteps, height) + 1) {\n        numberOfWays += numberOfWaysToTop(height - step, maxSteps)\n    }\n\n    return numberOfWays\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.min\n\n// O(n * k) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\nfun staircaseTraversal(height: Int, maxSteps: Int): Int {\n    return numberOfWaysToTop(height, maxSteps, mutableMapOf(0 to 1, 1 to 1))\n}\n\nfun numberOfWaysToTop(height: Int, maxSteps: Int, memoize: MutableMap<Int, Int>): Int {\n    if (height in memoize) return memoize[height]!!\n\n    var numberOfWays = 0\n    for (step in 1 until min(maxSteps, height) + 1) {\n        numberOfWays += numberOfWaysToTop(height - step, maxSteps, memoize)\n    }\n\n    memoize[height] = numberOfWays\n\n    return numberOfWays\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n * k) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\nfun staircaseTraversal(height: Int, maxSteps: Int): Int {\n    val waysToTop = MutableList(height + 1) { 0 }\n    waysToTop[0] = 1\n    waysToTop[1] = 1\n\n    for (currentHeight in 2 until height + 1) {\n        var step = 1\n        while (step <= maxSteps && step <= currentHeight) {\n            waysToTop[currentHeight] = waysToTop[currentHeight] + waysToTop[currentHeight - step]\n            step += 1\n        }\n    }\n\n    return waysToTop[height]\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n) time | O(n) space - where n is the height of the staircase\nfun staircaseTraversal(height: Int, maxSteps: Int): Int {\n    var currentNumberOfWays = 0\n    val waysToTop = mutableListOf(1)\n\n    for (currentHeight in 1 until height + 1) {\n        val startOfWindow = currentHeight - maxSteps - 1\n        val endOfWindow = currentHeight - 1\n        if (startOfWindow >= 0) currentNumberOfWays -= waysToTop[startOfWindow]\n\n        currentNumberOfWays += waysToTop[endOfWindow]\n        waysToTop.add(currentNumberOfWays)\n    }\n\n    return waysToTop[height]\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.staircaseTraversal\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val stairs = 4\n        val maxSteps = 2\n        val expected = 5\n        val output = staircaseTraversal(stairs, maxSteps)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.staircaseTraversal\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val stairs = 4\n        val maxSteps = 2\n        val expected = 5\n        val output = staircaseTraversal(stairs, maxSteps)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def staircaseTraversal(height, maxSteps):\n    # Write your code here.\n    return -1\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(k^n) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\ndef staircaseTraversal(height, maxSteps):\n    return numberOfWaysToTop(height, maxSteps)\n\n\ndef numberOfWaysToTop(height, maxSteps):\n    if height <= 1:\n        return 1\n\n    numberOfWays = 0\n    for step in range(1, min(maxSteps, height) + 1):\n        numberOfWays += numberOfWaysToTop(height - step, maxSteps)\n\n    return numberOfWays\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n * k) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\ndef staircaseTraversal(height, maxSteps):\n    return numberOfWaysToTop(height, maxSteps, {0: 1, 1: 1})\n\n\ndef numberOfWaysToTop(height, maxSteps, memoize):\n    if height in memoize:\n        return memoize[height]\n\n    numberOfWays = 0\n    for step in range(1, min(maxSteps, height) + 1):\n        numberOfWays += numberOfWaysToTop(height - step, maxSteps, memoize)\n\n    memoize[height] = numberOfWays\n\n    return numberOfWays\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n * k) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\ndef staircaseTraversal(height, maxSteps):\n    waysToTop = [0 for _ in range(height + 1)]\n    waysToTop[0] = 1\n    waysToTop[1] = 1\n\n    for currentHeight in range(2, height + 1):\n        step = 1\n        while step <= maxSteps and step <= currentHeight:\n            waysToTop[currentHeight] = waysToTop[currentHeight] + waysToTop[currentHeight - step]\n            step += 1\n\n    return waysToTop[height]\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(n) space - where n is the height of the staircase\ndef staircaseTraversal(height, maxSteps):\n    currentNumberOfWays = 0\n    waysToTop = [1]\n\n    for currentHeight in range(1, height + 1):\n        startOfWindow = currentHeight - maxSteps - 1\n        endOfWindow = currentHeight - 1\n        if startOfWindow >= 0:\n            currentNumberOfWays -= waysToTop[startOfWindow]\n\n        currentNumberOfWays += waysToTop[endOfWindow]\n        waysToTop.append(currentNumberOfWays)\n\n    return waysToTop[height]\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        stairs = 4\n        maxSteps = 2\n        expected = 5\n        actual = program.staircaseTraversal(stairs, maxSteps)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        stairs = 4\n        maxSteps = 2\n        expected = 5\n        actual = program.staircaseTraversal(stairs, maxSteps)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "class Program\n  def staircaseTraversal(height, maxSteps)\n    # Write your code here.\n    return -1\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def staircaseTraversal(height, maxSteps)\n    # Write your code here.\n    return -1\n  end\nend\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def staircaseTraversal(height, maxSteps)\n    # Write your code here.\n    return -1\n  end\nend\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def staircaseTraversal(height, maxSteps)\n    # Write your code here.\n    return -1\n  end\nend\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def staircaseTraversal(height, maxSteps)\n    # Write your code here.\n    return -1\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.staircaseTraversal\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.staircaseTraversal\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func staircaseTraversal(_ height: Int, _ maxSteps: Int) -> Int {\n    // Write your code here.\n    return -1\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(k^n) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\n  func staircaseTraversal(_ height: Int, _ maxSteps: Int) -> Int {\n    return numberOfWaysToTop(height, maxSteps)\n  }\n\n  func numberOfWaysToTop(_ height: Int, _ maxSteps: Int) -> Int {\n    if height <= 1 {\n      return 1\n    }\n\n    var numberOfWays = 0\n    for step in stride(from: 1, to: min(maxSteps, height) + 1, by: 1) {\n      numberOfWays += numberOfWaysToTop(height - step, maxSteps)\n    }\n\n    return numberOfWays\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n * k) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\n  func staircaseTraversal(_ height: Int, _ maxSteps: Int) -> Int {\n    var memoize = [0: 1, 1: 1]\n    return numberOfWaysToTop(height, maxSteps, &memoize)\n  }\n\n  func numberOfWaysToTop(_ height: Int, _ maxSteps: Int, _ memoize: inout [Int: Int]) -> Int {\n    if memoize[height] != nil {\n      return memoize[height]!\n    }\n\n    var numberOfWays = 0\n    for step in stride(from: 1, to: min(maxSteps, height) + 1, by: 1) {\n      numberOfWays += numberOfWaysToTop(height - step, maxSteps, &memoize)\n    }\n    memoize[height] = numberOfWays\n\n    return numberOfWays\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n * k) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\n  func staircaseTraversal(_ height: Int, _ maxSteps: Int) -> Int {\n    var waysToTop = Array(repeating: 0, count: height + 1)\n    waysToTop[0] = 1\n    waysToTop[1] = 1\n\n    for currentHeight in stride(from: 2, to: height + 1, by: 1) {\n      var step = 1\n      while step <= maxSteps, step <= currentHeight {\n        waysToTop[currentHeight] = waysToTop[currentHeight] + waysToTop[currentHeight - step]\n        step += 1\n      }\n    }\n\n    return waysToTop[height]\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(n) space - where n is the height of the staircase\n  func staircaseTraversal(_ height: Int, _ maxSteps: Int) -> Int {\n    var currentNumberOfWays = 0\n    var waysToTop = [1]\n\n    for currentHeight in stride(from: 1, to: height + 1, by: 1) {\n      let startOfWindow = currentHeight - maxSteps - 1\n      let endOfWindow = currentHeight - 1\n      if startOfWindow >= 0 {\n        currentNumberOfWays -= waysToTop[startOfWindow]\n      }\n\n      currentNumberOfWays += waysToTop[endOfWindow]\n      waysToTop.append(currentNumberOfWays)\n    }\n\n    return waysToTop[height]\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let stairs = 4\n      let maxSteps = 2\n      let expected = 5\n      var actual = Program().staircaseTraversal(stairs, maxSteps)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let stairs = 4\n      let maxSteps = 2\n      let expected = 5\n      var actual = Program().staircaseTraversal(stairs, maxSteps)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function staircaseTraversal(height: number, maxSteps: number) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(k^n) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\nexport function staircaseTraversal(height: number, maxSteps: number) {\n  return numberOfWaysToTop(height, maxSteps);\n}\n\nfunction numberOfWaysToTop(height: number, maxSteps: number) {\n  if (height <= 1) return 1;\n\n  let numberOfWays = 0;\n  for (let step = 1; step < Math.min(maxSteps, height) + 1; step++) {\n    numberOfWays += numberOfWaysToTop(height - step, maxSteps);\n  }\n\n  return numberOfWays;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * k) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\nexport function staircaseTraversal(height: number, maxSteps: number) {\n  return numberOfWaysToTop(height, maxSteps, {0: 1, 1: 1});\n}\n\nfunction numberOfWaysToTop(height: number, maxSteps: number, memoize: {[height: number]: number}) {\n  if (height in memoize) return memoize[height];\n\n  let numberOfWays = 0;\n  for (let step = 1; step < Math.min(maxSteps, height) + 1; step++) {\n    numberOfWays += numberOfWaysToTop(height - step, maxSteps, memoize);\n  }\n\n  memoize[height] = numberOfWays;\n\n  return numberOfWays;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * k) time | O(n) space - where n is the height of the staircase and k is the number of allowed steps\nexport function staircaseTraversal(height: number, maxSteps: number) {\n  const waysToTop = new Array(height + 1).fill(0);\n  waysToTop[0] = 1;\n  waysToTop[1] = 1;\n\n  for (let currentHeight = 2; currentHeight < height + 1; currentHeight++) {\n    let step = 1;\n    while (step <= maxSteps && step <= currentHeight) {\n      waysToTop[currentHeight] = waysToTop[currentHeight] + waysToTop[currentHeight - step];\n      step++;\n    }\n  }\n\n  return waysToTop[height];\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space - where n is the height of the staircase\nexport function staircaseTraversal(height: number, maxSteps: number) {\n  let currentNumberOfWays = 0;\n  const waysToTop = [1];\n\n  for (let currentHeight = 1; currentHeight < height + 1; currentHeight++) {\n    const startOfWindow = currentHeight - maxSteps - 1;\n    const endOfWindow = currentHeight - 1;\n    if (startOfWindow >= 0) currentNumberOfWays -= waysToTop[startOfWindow];\n\n    currentNumberOfWays += waysToTop[endOfWindow];\n    waysToTop.push(currentNumberOfWays);\n  }\n\n  return waysToTop[height];\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const stairs = 4;\n  const maxSteps = 2;\n  const expected = 5;\n  const actual = program.staircaseTraversal(stairs, maxSteps);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const stairs = 4;\n  const maxSteps = 2;\n  const expected = 5;\n  const actual = program.staircaseTraversal(stairs, maxSteps);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "height",
+            "example": 4,
+            "schema": {
+                "minimum": 1,
+                "type": "integer"
+            }
+        },
+        {
+            "name": "maxSteps",
+            "example": 2,
+            "schema": {
+                "minimum": 1,
+                "type": "integer"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "height": 4,
+            "maxSteps": 2
+        },
+        {
+            "height": 10,
+            "maxSteps": 1
+        },
+        {
+            "height": 10,
+            "maxSteps": 2
+        },
+        {
+            "height": 4,
+            "maxSteps": 3
+        },
+        {
+            "height": 1,
+            "maxSteps": 1
+        },
+        {
+            "height": 5,
+            "maxSteps": 2
+        },
+        {
+            "height": 4,
+            "maxSteps": 4
+        },
+        {
+            "height": 6,
+            "maxSteps": 2
+        },
+        {
+            "height": 100,
+            "maxSteps": 1
+        },
+        {
+            "height": 15,
+            "maxSteps": 5
+        },
+        {
+            "height": 7,
+            "maxSteps": 2
+        },
+        {
+            "height": 6,
+            "maxSteps": 3
+        },
+        {
+            "height": 3,
+            "maxSteps": 2
+        }
+    ],
+    "jsonTests": [
+        {
+            "height": 4,
+            "maxSteps": 2
+        },
+        {
+            "height": 10,
+            "maxSteps": 1
+        },
+        {
+            "height": 10,
+            "maxSteps": 2
+        },
+        {
+            "height": 4,
+            "maxSteps": 3
+        },
+        {
+            "height": 1,
+            "maxSteps": 1
+        },
+        {
+            "height": 5,
+            "maxSteps": 2
+        },
+        {
+            "height": 4,
+            "maxSteps": 4
+        },
+        {
+            "height": 6,
+            "maxSteps": 2
+        },
+        {
+            "height": 100,
+            "maxSteps": 1
+        },
+        {
+            "height": 15,
+            "maxSteps": 5
+        },
+        {
+            "height": 7,
+            "maxSteps": 2
+        },
+        {
+            "height": 6,
+            "maxSteps": 3
+        },
+        {
+            "height": 3,
+            "maxSteps": 2
+        }
+    ],
+    "changelog": []
+}

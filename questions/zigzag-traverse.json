@@ -1,0 +1,814 @@
+{
+    "uid": "zigzag-traverse",
+    "testStrategy": "JSON",
+    "name": "Zigzag Traverse",
+    "version": 0,
+    "releaseDate": "2019-09-01T00:00:00Z",
+    "category": "Arrays",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 15836,
+        "failureCount": 4584
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "354934984",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Clement Mihailescu",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1261
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Write a function that takes in an n x m two-dimensional array (that can be\n  square-shaped when n == m) and returns a one-dimensional array of all the\n  array's elements in zigzag order.\n</p>\n<p>\n  Zigzag order starts at the top left corner of the two-dimensional array, goes\n  down by one element, and proceeds in a zigzag pattern all the way to the\n  bottom right corner.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">array</span> = [\n  [1,  3,  4, 10],\n  [2,  5,  9, 11],\n  [6,  8, 12, 15],\n  [7, 13, 14, 16],\n]\n</pre>\n<h3>Sample Output</h3>\n<pre>\n[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]\n</pre>\n</div>",
+    "hints": [
+        "<p>\nDon't overthink this question by trying to come up with a clever way of getting the zigzag order. Think about the simplest checks that need to be made to decide when and how to change direction throughout the zigzag traversal.\n</p>\n",
+        "\n<p>\nStarting at the top left corner, iterate through the two-dimensional array by keeping track of the direction that you're moving in (up or down). If you're moving up, you know that you need to move in an up-right pattern and that you need to handle the case where you hit the top or the right borders of the array. If you're moving down, you know that you need to move in a down-left pattern and that you need to handle the case where you hit the left or the bottom borders of the array.\n</p>\n",
+        "\n<p>\nWhen going up, if you hit the right border, you'll have to go down one element; if you hit the top border, you'll have to go right one element. Similarly, when going down, if you hit the left border, you'll have to go down one element; if you hit the bottom border, you'll have to go right one element.\n</p>"
+    ],
+    "spaceTime": "O(n) time | O(n) space - where n is the total number of elements in the two-dimensional array",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\n\nusing namespace std;\n\nvector<int> zigzagTraverse(vector<vector<int>> array) {\n  // Write your code here.\n  return {};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <vector>\n\nusing namespace std;\n\nbool isOutOfBounds(int row, int col, int height, int width);\n\n// O(n) time | O(n) space - where n is the total number of elements in the\n// two-dimensional array\nvector<int> zigzagTraverse(vector<vector<int>> array) {\n  int height = array.size() - 1;\n  int width = array[0].size() - 1;\n  vector<int> result = {};\n  int row = 0;\n  int col = 0;\n  bool goingDown = true;\n  while (!isOutOfBounds(row, col, height, width)) {\n    result.push_back(array[row][col]);\n    if (goingDown) {\n      if (col == 0 || row == height) {\n        goingDown = false;\n        if (row == height) {\n          col++;\n        } else {\n          row++;\n        }\n      } else {\n        row++;\n        col--;\n      }\n    } else {\n      if (row == 0 || col == width) {\n        goingDown = true;\n        if (col == width) {\n          row++;\n        } else {\n          col++;\n        }\n      } else {\n        row--;\n        col++;\n      }\n    }\n  }\n  return result;\n}\n\nbool isOutOfBounds(int row, int col, int height, int width) {\n  return row < 0 || row > height || col < 0 || col > width;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> test = {\n        {1, 3, 4, 10}, {2, 5, 9, 11}, {6, 8, 12, 15}, {7, 13, 14, 16}};\n      vector<int> expected = {\n        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};\n      assert(zigzagTraverse(test) == expected);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> test = {\n        {1, 3, 4, 10}, {2, 5, 9, 11}, {6, 8, 12, 15}, {7, 13, 14, 16}};\n      vector<int> expected = {\n        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};\n      assert(zigzagTraverse(test) == expected);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\nusing System.Collections.Generic;\n\npublic class Program {\n  public static List<int> ZigzagTraverse(List<List<int> > array) {\n    // Write your code here.\n    return new List<int>();\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\n\n// O(n) time | O(n) space - where n is the total number of elements in the\n// two-dimensional array\npublic class Program {\n  public static List<int> ZigzagTraverse(List<List<int> > array) {\n    int height = array.Count - 1;\n    int width = array[0].Count - 1;\n    List<int> result = new List<int>();\n    int row = 0;\n    int col = 0;\n    bool goingDown = true;\n    while (!isOutOfBounds(row, col, height, width)) {\n      result.Add(array[row][col]);\n      if (goingDown) {\n        if (col == 0 || row == height) {\n          goingDown = false;\n          if (row == height) {\n            col++;\n          } else {\n            row++;\n          }\n        } else {\n          row++;\n          col--;\n        }\n      } else {\n        if (row == 0 || col == width) {\n          goingDown = true;\n          if (col == width) {\n            row++;\n          } else {\n            col++;\n          }\n        } else {\n          row--;\n          col++;\n        }\n      }\n    }\n    return result;\n  }\n\n  public static bool isOutOfBounds(int row, int col, int height, int width) {\n    return row < 0 || row > height || col < 0 || col > width;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System.Linq;\nusing System.Collections.Generic;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    List<List<int> > test = new List<List<int> >();\n    test.Add(new List<int>() { 1, 3, 4, 10 });\n    test.Add(new List<int>() { 2, 5, 9, 11 });\n    test.Add(new List<int>() { 6, 8, 12, 15 });\n    test.Add(new List<int>() { 7, 13, 14, 16 });\n    List<int> expected =\n      new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };\n    Utils.AssertTrue(Program.ZigzagTraverse(test).SequenceEqual(expected));\n  }\n}\n",
+            "unitTests": "using System.Linq;\nusing System.Collections.Generic;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    List<List<int> > test = new List<List<int> >();\n    test.Add(new List<int>() { 1, 3, 4, 10 });\n    test.Add(new List<int>() { 2, 5, 9, 11 });\n    test.Add(new List<int>() { 6, 8, 12, 15 });\n    test.Add(new List<int>() { 7, 13, 14, 16 });\n    List<int> expected =\n      new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };\n    Utils.AssertTrue(Program.ZigzagTraverse(test).SequenceEqual(expected));\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc ZigzagTraverse(array [][]int) []int {\n\t// Write your code here.\n\treturn nil\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n) time | O(n) space - where n is the total number of elements in the two-dimensional array\nfunc ZigzagTraverse(array [][]int) []int {\n\tif len(array) == 0 {\n\t\treturn []int{}\n\t}\n\n\theight := len(array) - 1\n\twidth := len(array[0]) - 1\n\tresult := []int{}\n\trow := 0\n\tcol := 0\n\tgoingDown := true\n\tfor !isOutOfBounds(row, col, height, width) {\n\t\tresult = append(result, array[row][col])\n\t\tif goingDown {\n\t\t\tif col == 0 || row == height {\n\t\t\t\tgoingDown = false\n\t\t\t\tif row == height {\n\t\t\t\t\tcol++\n\t\t\t\t} else {\n\t\t\t\t\trow++\n\t\t\t\t}\n\t\t\t} else {\n\t\t\t\trow++\n\t\t\t\tcol--\n\t\t\t}\n\t\t} else {\n\t\t\tif row == 0 || col == width {\n\t\t\t\tgoingDown = true\n\t\t\t\tif col == width {\n\t\t\t\t\trow++\n\t\t\t\t} else {\n\t\t\t\t\tcol++\n\t\t\t\t}\n\t\t\t} else {\n\t\t\t\trow--\n\t\t\t\tcol++\n\t\t\t}\n\t\t}\n\t}\n\treturn result\n}\n\nfunc isOutOfBounds(row, col, height, width int) bool {\n\treturn row < 0 || row > height || col < 0 || col > width\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := [][]int{\n\t\t{1, 3, 4, 10},\n\t\t{2, 5, 9, 11},\n\t\t{6, 8, 12, 15},\n\t\t{7, 13, 14, 16},\n\t}\n\texpected := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}\n\toutput := ZigzagTraverse(input)\n\trequire.Equal(t, expected, output)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := [][]int{\n\t\t{1, 3, 4, 10},\n\t\t{2, 5, 9, 11},\n\t\t{6, 8, 12, 15},\n\t\t{7, 13, 14, 16},\n\t}\n\texpected := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}\n\toutput := ZigzagTraverse(input)\n\trequire.Equal(t, expected, output)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public static List<Integer> zigzagTraverse(List<List<Integer>> array) {\n    // Write your code here.\n    return new ArrayList<Integer>();\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\n// O(n) time | O(n) space - where n is the total number of elements in the\n// two-dimensional array\nclass Program {\n  public static List<Integer> zigzagTraverse(List<List<Integer>> array) {\n    int height = array.size() - 1;\n    int width = array.get(0).size() - 1;\n    List<Integer> result = new ArrayList<Integer>();\n    int row = 0;\n    int col = 0;\n    boolean goingDown = true;\n    while (!isOutOfBounds(row, col, height, width)) {\n      result.add(array.get(row).get(col));\n      if (goingDown) {\n        if (col == 0 || row == height) {\n          goingDown = false;\n          if (row == height) {\n            col++;\n          } else {\n            row++;\n          }\n        } else {\n          row++;\n          col--;\n        }\n      } else {\n        if (row == 0 || col == width) {\n          goingDown = true;\n          if (col == width) {\n            row++;\n          } else {\n            col++;\n          }\n        } else {\n          row--;\n          col++;\n        }\n      }\n    }\n    return result;\n  }\n\n  public static boolean isOutOfBounds(int row, int col, int height, int width) {\n    return row < 0 || row > height || col < 0 || col > width;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    List<List<Integer>> test = new ArrayList<List<Integer>>();\n    test.add(new ArrayList<Integer>(Arrays.asList(1, 3, 4, 10)));\n    test.add(new ArrayList<Integer>(Arrays.asList(2, 5, 9, 11)));\n    test.add(new ArrayList<Integer>(Arrays.asList(6, 8, 12, 15)));\n    test.add(new ArrayList<Integer>(Arrays.asList(7, 13, 14, 16)));\n    List<Integer> expected = new ArrayList<Integer>(\n      Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)\n    );\n    Utils.assertTrue(Program.zigzagTraverse(test).equals(expected));\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    List<List<Integer>> test = new ArrayList<List<Integer>>();\n    test.add(new ArrayList<Integer>(Arrays.asList(1, 3, 4, 10)));\n    test.add(new ArrayList<Integer>(Arrays.asList(2, 5, 9, 11)));\n    test.add(new ArrayList<Integer>(Arrays.asList(6, 8, 12, 15)));\n    test.add(new ArrayList<Integer>(Arrays.asList(7, 13, 14, 16)));\n    List<Integer> expected = new ArrayList<Integer>(\n      Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)\n    );\n    Utils.assertTrue(Program.zigzagTraverse(test).equals(expected));\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function zigzagTraverse(array) {\n  // Write your code here.\n}\n\n// Do not edit the line below.\nexports.zigzagTraverse = zigzagTraverse;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space - where n is the total number of elements in the two-dimensional array\nfunction zigzagTraverse(array) {\n  const height = array.length - 1;\n  const width = array[0].length - 1;\n  const result = [];\n  let row = 0;\n  let col = 0;\n  let goingDown = true;\n  while (!isOutOfBounds(row, col, height, width)) {\n    result.push(array[row][col]);\n    if (goingDown) {\n      if (col === 0 || row === height) {\n        goingDown = false;\n        if (row === height) {\n          col++;\n        } else {\n          row++;\n        }\n      } else {\n        row++;\n        col--;\n      }\n    } else {\n      if (row === 0 || col === width) {\n        goingDown = true;\n        if (col === width) {\n          row++;\n        } else {\n          col++;\n        }\n      } else {\n        row--;\n        col++;\n      }\n    }\n  }\n  return result;\n}\n\nfunction isOutOfBounds(row, col, height, width) {\n  return row < 0 || row > height || col < 0 || col > width;\n}\n\nexports.zigzagTraverse = zigzagTraverse;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const test = [\n    [1, 3, 4, 10],\n    [2, 5, 9, 11],\n    [6, 8, 12, 15],\n    [7, 13, 14, 16],\n  ];\n  chai\n    .expect(program.zigzagTraverse(test))\n    .to.deep.equal([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const test = [\n    [1, 3, 4, 10],\n    [2, 5, 9, 11],\n    [6, 8, 12, 15],\n    [7, 13, 14, 16],\n  ];\n  chai\n    .expect(program.zigzagTraverse(test))\n    .to.deep.equal([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun zigzagTraverse(array: List<List<Int>>): List<Int> {\n    // Write your code here.\n    return listOf<Int>()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n) time | O(n) space - where n is the total number of elements in the two-dimensional array\nfun zigzagTraverse(array: List<List<Int>>): List<Int> {\n    val height = array.size - 1\n    val width = array[0].size - 1\n    val result = mutableListOf<Int>()\n    var row = 0\n    var col = 0\n    var goingDown = true\n    while (!isOutOfBounds(row, col, height, width)) {\n        result.add(array[row][col])\n        if (goingDown) {\n            if (col == 0 || row == height) {\n                goingDown = false\n                if (row == height) {\n                    col++\n                } else {\n                    row++\n                }\n            } else {\n                row++\n                col--\n            }\n        } else {\n            if (row == 0 || col == width) {\n                goingDown = true\n                if (col == width) {\n                    row++\n                } else {\n                    col++\n                }\n            } else {\n                row--\n                col++\n            }\n        }\n    }\n    return result\n}\n\nfun isOutOfBounds(row: Int, col: Int, height: Int, width: Int): Boolean {\n    return row < 0 || row > height || col < 0 || col > width\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.zigzagTraverse as zigzagTraverse\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val array = listOf(\n            listOf(1, 3, 4, 10),\n            listOf(2, 5, 9, 11),\n            listOf(6, 8, 12, 15),\n            listOf(7, 13, 14, 16),\n        )\n        val output = zigzagTraverse(array)\n        val expected = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)\n        assert(output.equals(expected))\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.zigzagTraverse as zigzagTraverse\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val array = listOf(\n            listOf(1, 3, 4, 10),\n            listOf(2, 5, 9, 11),\n            listOf(6, 8, 12, 15),\n            listOf(7, 13, 14, 16),\n        )\n        val output = zigzagTraverse(array)\n        val expected = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)\n        assert(output.equals(expected))\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def zigzagTraverse(array):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(n) space - where n is the total number of elements in the two-dimensional array\ndef zigzagTraverse(array):\n    height = len(array) - 1\n    width = len(array[0]) - 1\n    result = []\n    row, col = 0, 0\n    goingDown = True\n    while not isOutOfBounds(row, col, height, width):\n        result.append(array[row][col])\n        if goingDown:\n            if col == 0 or row == height:\n                goingDown = False\n                if row == height:\n                    col += 1\n                else:\n                    row += 1\n            else:\n                row += 1\n                col -= 1\n        else:\n            if row == 0 or col == width:\n                goingDown = True\n                if col == width:\n                    row += 1\n                else:\n                    col += 1\n            else:\n                row -= 1\n                col += 1\n    return result\n\n\ndef isOutOfBounds(row, col, height, width):\n    return row < 0 or row > height or col < 0 or col > width\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        test = [[1, 3, 4, 10], [2, 5, 9, 11], [6, 8, 12, 15], [7, 13, 14, 16]]\n        self.assertEqual(\n            program.zigzagTraverse(test), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]\n        )\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        test = [[1, 3, 4, 10], [2, 5, 9, 11], [6, 8, 12, 15], [7, 13, 14, 16]]\n        self.assertEqual(\n            program.zigzagTraverse(test), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]\n        )\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  def zigzagTraverse(array)\n    # Write your code here.\n    return []\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def zigzagTraverse(array)\n    # Write your code here.\n    return []\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.zigzagTraverse\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.zigzagTraverse\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func zigZagTraverse(array: [[Int]]) -> [Int] {\n    // Write your code here.\n    return []\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(n) space\n  func zigZagTraverse(array: [[Int]]) -> [Int] {\n    var result = [Int]()\n\n    var goingDown = true\n    var currentRow = 0\n    var currentColumn = 0\n\n    while currentRow < array.count, currentColumn < array[0].count {\n      result.append(array[currentRow][currentColumn])\n\n      if goingDown {\n        if currentColumn == 0 || currentRow == array.count - 1 {\n          goingDown = false\n          if currentRow == array.count - 1 {\n            currentColumn += 1\n          } else {\n            currentRow += 1\n          }\n        } else {\n          currentRow += 1\n          currentColumn -= 1\n        }\n      } else {\n        if currentRow == 0 || currentColumn == array[0].count - 1 {\n          goingDown = true\n          if currentColumn == array[0].count - 1 {\n            currentRow += 1\n          } else {\n            currentColumn += 1\n          }\n        } else {\n          currentRow -= 1\n          currentColumn += 1\n        }\n      }\n    }\n\n    return result\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let test = [\n        [1, 3, 4, 10],\n        [2, 5, 9, 11],\n        [6, 8, 12, 15],\n        [7, 13, 14, 16],\n      ]\n      try assertEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], program.zigZagTraverse(array: test))\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let test = [\n        [1, 3, 4, 10],\n        [2, 5, 9, 11],\n        [6, 8, 12, 15],\n        [7, 13, 14, 16],\n      ]\n      try assertEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], program.zigZagTraverse(array: test))\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function zigzagTraverse(array: number[][]) {\n  // Write your code here.\n  return [-1];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space - where n is the total number of elements in the two-dimensional array\nexport function zigzagTraverse(array: number[][]) {\n  const height = array.length - 1;\n  const width = array[0].length - 1;\n  const result = [];\n  let row = 0;\n  let col = 0;\n  let goingDown = true;\n  while (!isOutOfBounds(row, col, height, width)) {\n    result.push(array[row][col]);\n    if (goingDown) {\n      if (col === 0 || row === height) {\n        goingDown = false;\n        if (row === height) {\n          col++;\n        } else {\n          row++;\n        }\n      } else {\n        row++;\n        col--;\n      }\n    } else {\n      if (row === 0 || col === width) {\n        goingDown = true;\n        if (col === width) {\n          row++;\n        } else {\n          col++;\n        }\n      } else {\n        row--;\n        col++;\n      }\n    }\n  }\n  return result;\n}\n\nfunction isOutOfBounds(row: number, col: number, height: number, width: number) {\n  return row < 0 || row > height || col < 0 || col > width;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const test = [\n    [1, 3, 4, 10],\n    [2, 5, 9, 11],\n    [6, 8, 12, 15],\n    [7, 13, 14, 16],\n  ];\n  chai\n    .expect(program.zigzagTraverse(test))\n    .to.deep.equal([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const test = [\n    [1, 3, 4, 10],\n    [2, 5, 9, 11],\n    [6, 8, 12, 15],\n    [7, 13, 14, 16],\n  ];\n  chai\n    .expect(program.zigzagTraverse(test))\n    .to.deep.equal([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "array",
+            "example": [
+                [
+                    1,
+                    3,
+                    4,
+                    10
+                ],
+                [
+                    2,
+                    5,
+                    9,
+                    11
+                ],
+                [
+                    6,
+                    8,
+                    12,
+                    15
+                ],
+                [
+                    7,
+                    13,
+                    14,
+                    16
+                ]
+            ],
+            "schema": {
+                "items": {
+                    "items": {
+                        "type": "integer"
+                    },
+                    "type": "array"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "array": [
+                [
+                    1,
+                    3,
+                    4,
+                    10
+                ],
+                [
+                    2,
+                    5,
+                    9,
+                    11
+                ],
+                [
+                    6,
+                    8,
+                    12,
+                    15
+                ],
+                [
+                    7,
+                    13,
+                    14,
+                    16
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1
+                ],
+                [
+                    2
+                ],
+                [
+                    3
+                ],
+                [
+                    4
+                ],
+                [
+                    5
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1,
+                    3
+                ],
+                [
+                    2,
+                    4
+                ],
+                [
+                    5,
+                    7
+                ],
+                [
+                    6,
+                    8
+                ],
+                [
+                    9,
+                    10
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1,
+                    3,
+                    4,
+                    7,
+                    8
+                ],
+                [
+                    2,
+                    5,
+                    6,
+                    9,
+                    10
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1,
+                    3,
+                    4,
+                    10,
+                    11
+                ],
+                [
+                    2,
+                    5,
+                    9,
+                    12,
+                    19
+                ],
+                [
+                    6,
+                    8,
+                    13,
+                    18,
+                    20
+                ],
+                [
+                    7,
+                    14,
+                    17,
+                    21,
+                    24
+                ],
+                [
+                    15,
+                    16,
+                    22,
+                    23,
+                    25
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1,
+                    3,
+                    4,
+                    10,
+                    11,
+                    20
+                ],
+                [
+                    2,
+                    5,
+                    9,
+                    12,
+                    19,
+                    21
+                ],
+                [
+                    6,
+                    8,
+                    13,
+                    18,
+                    22,
+                    27
+                ],
+                [
+                    7,
+                    14,
+                    17,
+                    23,
+                    26,
+                    28
+                ],
+                [
+                    15,
+                    16,
+                    24,
+                    25,
+                    29,
+                    30
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1,
+                    3,
+                    4,
+                    10,
+                    11
+                ],
+                [
+                    2,
+                    5,
+                    9,
+                    12,
+                    20
+                ],
+                [
+                    6,
+                    8,
+                    13,
+                    19,
+                    21
+                ],
+                [
+                    7,
+                    14,
+                    18,
+                    22,
+                    27
+                ],
+                [
+                    15,
+                    17,
+                    23,
+                    26,
+                    28
+                ],
+                [
+                    16,
+                    24,
+                    25,
+                    29,
+                    30
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1,
+                    21,
+                    -3,
+                    4,
+                    15,
+                    6,
+                    -7,
+                    88,
+                    9
+                ],
+                [
+                    10,
+                    11,
+                    112,
+                    12,
+                    20,
+                    -1,
+                    -2,
+                    -3,
+                    -4
+                ],
+                [
+                    6,
+                    8,
+                    113,
+                    19,
+                    21,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    7,
+                    2,
+                    18,
+                    22,
+                    -27,
+                    12,
+                    32,
+                    -111,
+                    66
+                ],
+                [
+                    15,
+                    17,
+                    23,
+                    226,
+                    28,
+                    -28,
+                    -226,
+                    -23,
+                    -17
+                ],
+                [
+                    16,
+                    24,
+                    27,
+                    299,
+                    30,
+                    29,
+                    32,
+                    31,
+                    88
+                ]
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "array": [
+                [
+                    1,
+                    3,
+                    4,
+                    10
+                ],
+                [
+                    2,
+                    5,
+                    9,
+                    11
+                ],
+                [
+                    6,
+                    8,
+                    12,
+                    15
+                ],
+                [
+                    7,
+                    13,
+                    14,
+                    16
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1
+                ],
+                [
+                    2
+                ],
+                [
+                    3
+                ],
+                [
+                    4
+                ],
+                [
+                    5
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1,
+                    3
+                ],
+                [
+                    2,
+                    4
+                ],
+                [
+                    5,
+                    7
+                ],
+                [
+                    6,
+                    8
+                ],
+                [
+                    9,
+                    10
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1,
+                    3,
+                    4,
+                    7,
+                    8
+                ],
+                [
+                    2,
+                    5,
+                    6,
+                    9,
+                    10
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1,
+                    3,
+                    4,
+                    10,
+                    11
+                ],
+                [
+                    2,
+                    5,
+                    9,
+                    12,
+                    19
+                ],
+                [
+                    6,
+                    8,
+                    13,
+                    18,
+                    20
+                ],
+                [
+                    7,
+                    14,
+                    17,
+                    21,
+                    24
+                ],
+                [
+                    15,
+                    16,
+                    22,
+                    23,
+                    25
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1,
+                    3,
+                    4,
+                    10,
+                    11,
+                    20
+                ],
+                [
+                    2,
+                    5,
+                    9,
+                    12,
+                    19,
+                    21
+                ],
+                [
+                    6,
+                    8,
+                    13,
+                    18,
+                    22,
+                    27
+                ],
+                [
+                    7,
+                    14,
+                    17,
+                    23,
+                    26,
+                    28
+                ],
+                [
+                    15,
+                    16,
+                    24,
+                    25,
+                    29,
+                    30
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1,
+                    3,
+                    4,
+                    10,
+                    11
+                ],
+                [
+                    2,
+                    5,
+                    9,
+                    12,
+                    20
+                ],
+                [
+                    6,
+                    8,
+                    13,
+                    19,
+                    21
+                ],
+                [
+                    7,
+                    14,
+                    18,
+                    22,
+                    27
+                ],
+                [
+                    15,
+                    17,
+                    23,
+                    26,
+                    28
+                ],
+                [
+                    16,
+                    24,
+                    25,
+                    29,
+                    30
+                ]
+            ]
+        },
+        {
+            "array": [
+                [
+                    1,
+                    21,
+                    -3,
+                    4,
+                    15,
+                    6,
+                    -7,
+                    88,
+                    9
+                ],
+                [
+                    10,
+                    11,
+                    112,
+                    12,
+                    20,
+                    -1,
+                    -2,
+                    -3,
+                    -4
+                ],
+                [
+                    6,
+                    8,
+                    113,
+                    19,
+                    21,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    7,
+                    2,
+                    18,
+                    22,
+                    -27,
+                    12,
+                    32,
+                    -111,
+                    66
+                ],
+                [
+                    15,
+                    17,
+                    23,
+                    226,
+                    28,
+                    -28,
+                    -226,
+                    -23,
+                    -17
+                ],
+                [
+                    16,
+                    24,
+                    27,
+                    299,
+                    30,
+                    29,
+                    32,
+                    31,
+                    88
+                ]
+            ]
+        }
+    ],
+    "changelog": []
+}

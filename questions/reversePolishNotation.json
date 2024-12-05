@@ -1,0 +1,646 @@
+{
+    "uid": "reversePolishNotation",
+    "testStrategy": "JSON",
+    "name": "Reverse Polish Notation",
+    "version": 0,
+    "releaseDate": "2023-04-08T00:00:00Z",
+    "category": "Stacks",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 2940,
+        "failureCount": 303
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "783490656",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 526
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    You're given a list of string <span>tokens</span> representing a mathematical\n    expression using Reverse Polish Notation. Reverse Polish Notation is a\n    notation where operators come after operands, instead of between them. For\n    example <span>2 4 +</span> would evaluate to <span>6</span>.\n  </p>\n\n  <p>\n    Parenthesis are always implicit in Reverse Polish Notation, meaning an\n    expression is evaluated from left to right. All of the operators for this\n    problem take two operands, which will always be the two values immediately\n    preceding the operator. For example, <span>18 4 - 7 /</span> would\n    evaluate to <span>((18 - 4) / 7)</span> or <span>2</span>.\n  </p>\n\n  <p>\n    Write a function that takes this list of <span>tokens</span> and returns\n    the result. Your function should support four operators: <span>+</span>,\n    <span>-</span>, <span>*</span>, and <span>/</span> for addition,\n    subtraction, multiplication, and division respectively.\n  </p>\n\n  <p>\n    Division should always be treated as integer division, rounding towards\n    zero. For example, <span>3 / 2</span> evaluates to <span>1</span> and\n    <span>-3 / 2</span> evaluates to <span>-1</span>. You can assume the\n    input will always be valid Reverse Polish Notation, and it will always\n    result in a valid number. Your code should not edit this input list.\n  </p>\n<h3>Sample Input</h3>\n<pre><span class=\"CodeEditor-promptParameter\">tokens</span> = [\"50\", \"3\", \"17\", \"+\", \"2\", \"-\", \"/\"]\n</pre>\n<h3>Sample Output</h3>\n<pre>\n2 <span class=\"CodeEditor-promptComment\">// (50 / ((3 + 17) - 2)))</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  Operators always operate on the two previous values. Is there a data\n  structure that would assist in finding the two most recent values?\n</p>\n",
+        "\n<p>\n  It can be helpful to create a stack that contains all of the previously\n  found or calculated values.\n</p>"
+    ],
+    "spaceTime": "O(n) time | O(n) space - where n is the number of tokens",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nint reversePolishNotation(vector<string> tokens) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <stack>\n\nusing namespace std;\n\n// O(n) time | O(n) space - where n is the number of tokens\nint reversePolishNotation(vector<string> tokens) {\n  stack<int> stack;\n\n  for (auto const& token : tokens) {\n    if (token == \"+\") {\n      int firstNum = stack.top();\n      stack.pop();\n      int secondNum = stack.top();\n      stack.pop();\n      stack.push(firstNum + secondNum);\n    } else if (token == \"-\") {\n      int firstNum = stack.top();\n      stack.pop();\n      int secondNum = stack.top();\n      stack.pop();\n      stack.push(secondNum - firstNum);\n    } else if (token == \"*\") {\n      int firstNum = stack.top();\n      stack.pop();\n      int secondNum = stack.top();\n      stack.pop();\n      stack.push(firstNum * secondNum);\n    } else if (token == \"/\") {\n      int firstNum = stack.top();\n      stack.pop();\n      int secondNum = stack.top();\n      stack.pop();\n      stack.push(secondNum / firstNum);\n    } else {\n      stack.push(stoi(token));\n    }\n  }\n\n  return stack.top();\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<string> input = {\"3\", \"2\", \"+\", \"7\", \"*\"};\n      int expected = 35;\n      auto actual = reversePolishNotation(input);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<string> input = {\"3\", \"2\", \"+\", \"7\", \"*\"};\n      int expected = 35;\n      auto actual = reversePolishNotation(input);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int ReversePolishNotation(string[] tokens) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n) time | O(n) space - where n is the number of tokens\n  public int ReversePolishNotation(string[] tokens) {\n    Stack<int> stack = new Stack<int>();\n\n    foreach (var token in tokens) {\n      if (token.Equals(\"+\")) {\n        stack.Push(stack.Pop() + stack.Pop());\n      } else if (token.Equals(\"-\")) {\n        int firstNum = stack.Pop();\n        stack.Push(stack.Pop() - firstNum);\n      } else if (token.Equals(\"*\")) {\n        stack.Push(stack.Pop() * stack.Pop());\n      } else if (token.Equals(\"/\")) {\n        int firstNum = stack.Pop();\n        stack.Push(stack.Pop() / firstNum);\n      } else {\n        stack.Push(Int32.Parse(token));\n      }\n    }\n    return stack.Pop();\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    var input = new string[] { \"3\", \"2\", \"+\", \"7\", \"*\" };\n    var expected = 35;\n    var actual = new Program().ReversePolishNotation(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    var input = new string[] { \"3\", \"2\", \"+\", \"7\", \"*\" };\n    var expected = 35;\n    var actual = new Program().ReversePolishNotation(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc ReversePolishNotation(tokens []string) int {\n\t// Write your code here.\n\treturn -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport \"strconv\"\n\n// O(n) time | O(n) space - where n is the number of tokens\nfunc ReversePolishNotation(tokens []string) int {\n\tstack := make([]int, 0)\n\n\tfor _, token := range tokens {\n\t\tif token == \"+\" {\n\t\t\tresult := popStack(&stack) + popStack(&stack)\n\t\t\tstack = append(stack, result)\n\t\t} else if token == \"-\" {\n\t\t\tfirstNum := popStack(&stack)\n\t\t\tresult := popStack(&stack) - firstNum\n\t\t\tstack = append(stack, result)\n\t\t} else if token == \"*\" {\n\t\t\tresult := popStack(&stack) * popStack(&stack)\n\t\t\tstack = append(stack, result)\n\t\t} else if token == \"/\" {\n\t\t\tfirstNum := popStack(&stack)\n\t\t\tresult := popStack(&stack) / firstNum\n\t\t\tstack = append(stack, result)\n\t\t} else {\n\t\t\tn, _ := strconv.Atoi(token)\n\t\t\tstack = append(stack, n)\n\t\t}\n\t}\n\treturn stack[len(stack)-1]\n}\n\nfunc popStack(stack *[]int) int {\n\tvar n int\n\tn, *stack = (*stack)[len(*stack)-1], (*stack)[:len(*stack)-1]\n\treturn n\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []string{\"3\", \"2\", \"+\", \"7\", \"*\"}\n\texpected := 35\n\tactual := ReversePolishNotation(input)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []string{\"3\", \"2\", \"+\", \"7\", \"*\"}\n\texpected := 35\n\tactual := ReversePolishNotation(input)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int reversePolishNotation(String[] tokens) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n) time | O(n) space - where n is the number of tokens\n  public int reversePolishNotation(String[] tokens) {\n    Stack<Integer> stack = new Stack<Integer>();\n\n    for (String token : tokens) {\n      if (token.equals(\"+\")) {\n        stack.add(stack.pop() + stack.pop());\n      } else if (token.equals(\"-\")) {\n        int firstNum = (stack.pop());\n        stack.add(stack.pop() - firstNum);\n      } else if (token.equals(\"*\")) {\n        stack.add(stack.pop() * stack.pop());\n      } else if (token.equals(\"/\")) {\n        int firstNum = stack.pop();\n        stack.add(stack.pop() / firstNum);\n      } else {\n        stack.add(Integer.parseInt(token));\n      }\n    }\n    return stack.pop();\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var input = new String[] {\"3\", \"2\", \"+\", \"7\", \"*\"};\n    var expected = 35;\n    var actual = new Program().reversePolishNotation(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var input = new String[] {\"3\", \"2\", \"+\", \"7\", \"*\"};\n    var expected = 35;\n    var actual = new Program().reversePolishNotation(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function reversePolishNotation(tokens) {\n  // Write your code here.\n  return -1;\n}\n\n// Do not edit the line below.\nexports.reversePolishNotation = reversePolishNotation;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space - where n is the number of tokens\nfunction reversePolishNotation(tokens) {\n  const stack = [];\n\n  for (const token of tokens) {\n    if (token === '+') {\n      stack.push(stack.pop() + stack.pop());\n    } else if (token === '-') {\n      const firstNum = stack.pop();\n      stack.push(stack.pop() - firstNum);\n    } else if (token === '*') {\n      stack.push(stack.pop() * stack.pop());\n    } else if (token === '/') {\n      const firstNum = stack.pop();\n      stack.push(Math.trunc(stack.pop() / firstNum));\n    } else {\n      stack.push(parseInt(token));\n    }\n  }\n\n  return stack.pop();\n}\n\n// Do not edit the line below.\nexports.reversePolishNotation = reversePolishNotation;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = ['3', '2', '+', '7', '*'];\n  const expected = 35;\n  const actual = program.reversePolishNotation(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = ['3', '2', '+', '7', '*'];\n  const expected = 35;\n  const actual = program.reversePolishNotation(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun reversePolishNotation(tokens: MutableList<String>): Int {\n    // Write your code here.\n    return -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport java.util.Stack\n\n// O(n) time | O(n) space - where n is the number of tokens\nfun reversePolishNotation(tokens: MutableList<String>): Int {\n    val stack = Stack<Int>()\n\n    for (token in tokens) {\n        if (token == \"+\") {\n            stack.push(stack.pop()!! + stack.pop()!!)\n        } else if (token == \"-\") {\n            val firstNum = stack.pop()!!\n            stack.push(stack.pop()!! - firstNum)\n        } else if (token == \"*\") {\n            stack.push(stack.pop()!! * stack.pop()!!)\n        } else if (token == \"/\") {\n            val firstNum = stack.pop()!!\n            stack.push(stack.pop()!! / firstNum)\n        } else {\n            stack.push(token.toInt())\n        }\n    }\n\n    return stack.pop()\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.reversePolishNotation\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(\"3\", \"2\", \"+\", \"7\", \"*\")\n        val expected = 35\n        val output = reversePolishNotation(input)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.reversePolishNotation\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(\"3\", \"2\", \"+\", \"7\", \"*\")\n        val expected = 35\n        val output = reversePolishNotation(input)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def reversePolishNotation(tokens):\n    # Write your code here.\n    return -1\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(n) space - where n is the number of tokens\ndef reversePolishNotation(tokens):\n    stack = []\n\n    for token in tokens:\n        if token == \"+\":\n            stack.append(stack.pop() + stack.pop())\n        elif token == \"-\":\n            firstNum = stack.pop()\n            stack.append(stack.pop() - firstNum)\n        elif token == \"*\":\n            stack.append(stack.pop() * stack.pop())\n        elif token == \"/\":\n            firstNum = stack.pop()\n            stack.append(int(stack.pop() / firstNum))\n        else:\n            stack.append(int(token))\n\n    return stack.pop()\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [\"3\", \"2\", \"+\", \"7\", \"*\"]\n        expected = 35\n        actual = program.reversePolishNotation(input)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [\"3\", \"2\", \"+\", \"7\", \"*\"]\n        expected = 35\n        actual = program.reversePolishNotation(input)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def reversePolishNotation(tokens)\n        # Write your code here.\n        return -1\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def reversePolishNotation(tokens)\n        # Write your code here.\n        return -1\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.reversePolishNotation\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.reversePolishNotation\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func reversePolishNotation(_ tokens: [String]) -> Int {\n    // Write your code here.\n    return -1\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(n) space - where n is the number of tokens\n  func reversePolishNotation(_ tokens: [String]) -> Int {\n    var stack = [Int]()\n\n    for token in tokens {\n      if token == \"+\" {\n        let result = stack.removeLast() + stack.removeLast()\n        stack.append(result)\n      } else if token == \"-\" {\n        let firstNum = stack.removeLast()\n        let result = stack.removeLast() - firstNum\n        stack.append(result)\n      } else if token == \"*\" {\n        let result = stack.removeLast() * stack.removeLast()\n        stack.append(result)\n      } else if token == \"/\" {\n        let firstNum = stack.removeLast()\n        let result = stack.removeLast() / firstNum\n        stack.append(result)\n      } else {\n        stack.append(Int(token)!)\n      }\n    }\n    return stack.removeLast()\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var input = [\"3\", \"2\", \"+\", \"7\", \"*\"]\n      var expected = 35\n      var actual = Program().reversePolishNotation(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var input = [\"3\", \"2\", \"+\", \"7\", \"*\"]\n      var expected = 35\n      var actual = Program().reversePolishNotation(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function reversePolishNotation(tokens: string[]) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space - where n is the number of tokens\nexport function reversePolishNotation(tokens: string[]) {\n  const stack: number[] = [];\n\n  for (const token of tokens) {\n    if (token === '+') {\n      stack.push(stack.pop()! + stack.pop()!);\n    } else if (token === '-') {\n      const firstNum = stack.pop()!;\n      stack.push(stack.pop()! - firstNum);\n    } else if (token === '*') {\n      stack.push(stack.pop()! * stack.pop()!);\n    } else if (token === '/') {\n      const firstNum = stack.pop()!;\n      stack.push(Math.trunc(stack.pop()! / firstNum));\n    } else {\n      stack.push(parseInt(token));\n    }\n  }\n\n  return stack.pop();\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = ['3', '2', '+', '7', '*'];\n  const expected = 35;\n  const actual = program.reversePolishNotation(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = ['3', '2', '+', '7', '*'];\n  const expected = 35;\n  const actual = program.reversePolishNotation(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "tokens",
+            "example": [
+                "10"
+            ],
+            "schema": {
+                "items": {
+                    "type": "string"
+                },
+                "minimum": 1,
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "tokens": [
+                "10"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "5",
+                "+"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "5",
+                "-"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "5",
+                "/"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "5",
+                "*"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "-5",
+                "*"
+            ]
+        },
+        {
+            "tokens": [
+                "-10",
+                "5",
+                "*"
+            ]
+        },
+        {
+            "tokens": [
+                "-10",
+                "-5",
+                "*"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "-5",
+                "/"
+            ]
+        },
+        {
+            "tokens": [
+                "-10",
+                "5",
+                "/"
+            ]
+        },
+        {
+            "tokens": [
+                "-10",
+                "-5",
+                "/"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "3",
+                "/"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "-3",
+                "/"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "-5",
+                "+"
+            ]
+        },
+        {
+            "tokens": [
+                "-10",
+                "5",
+                "+"
+            ]
+        },
+        {
+            "tokens": [
+                "-10",
+                "-5",
+                "+"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "-5",
+                "-"
+            ]
+        },
+        {
+            "tokens": [
+                "-10",
+                "5",
+                "-"
+            ]
+        },
+        {
+            "tokens": [
+                "-10",
+                "-5",
+                "-"
+            ]
+        },
+        {
+            "tokens": [
+                "3",
+                "2",
+                "+",
+                "7",
+                "*"
+            ]
+        },
+        {
+            "tokens": [
+                "4",
+                "2",
+                "/",
+                "7",
+                "-"
+            ]
+        },
+        {
+            "tokens": [
+                "3",
+                "4",
+                "+",
+                "2",
+                "/",
+                "4",
+                "-"
+            ]
+        },
+        {
+            "tokens": [
+                "4",
+                "-7",
+                "2",
+                "6",
+                "+",
+                "10",
+                "-",
+                "/",
+                "*",
+                "2",
+                "+",
+                "3",
+                "*"
+            ]
+        },
+        {
+            "tokens": [
+                "4",
+                "-7",
+                "2",
+                "6",
+                "+",
+                "10",
+                "-",
+                "/",
+                "*",
+                "2",
+                "+",
+                "3",
+                "*",
+                "0",
+                "*"
+            ]
+        },
+        {
+            "tokens": [
+                "50",
+                "3",
+                "17",
+                "+",
+                "2",
+                "-",
+                "/"
+            ]
+        },
+        {
+            "tokens": [
+                "0",
+                "3",
+                "17",
+                "+",
+                "2",
+                "-",
+                "/"
+            ]
+        },
+        {
+            "tokens": [
+                "0",
+                "3",
+                "17",
+                "+",
+                "2",
+                "-",
+                "/",
+                "2",
+                "-",
+                "7",
+                "10",
+                "+",
+                "*"
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "tokens": [
+                "10"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "5",
+                "+"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "5",
+                "-"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "5",
+                "/"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "5",
+                "*"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "-5",
+                "*"
+            ]
+        },
+        {
+            "tokens": [
+                "-10",
+                "5",
+                "*"
+            ]
+        },
+        {
+            "tokens": [
+                "-10",
+                "-5",
+                "*"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "-5",
+                "/"
+            ]
+        },
+        {
+            "tokens": [
+                "-10",
+                "5",
+                "/"
+            ]
+        },
+        {
+            "tokens": [
+                "-10",
+                "-5",
+                "/"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "3",
+                "/"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "-3",
+                "/"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "-5",
+                "+"
+            ]
+        },
+        {
+            "tokens": [
+                "-10",
+                "5",
+                "+"
+            ]
+        },
+        {
+            "tokens": [
+                "-10",
+                "-5",
+                "+"
+            ]
+        },
+        {
+            "tokens": [
+                "10",
+                "-5",
+                "-"
+            ]
+        },
+        {
+            "tokens": [
+                "-10",
+                "5",
+                "-"
+            ]
+        },
+        {
+            "tokens": [
+                "-10",
+                "-5",
+                "-"
+            ]
+        },
+        {
+            "tokens": [
+                "3",
+                "2",
+                "+",
+                "7",
+                "*"
+            ]
+        },
+        {
+            "tokens": [
+                "4",
+                "2",
+                "/",
+                "7",
+                "-"
+            ]
+        },
+        {
+            "tokens": [
+                "3",
+                "4",
+                "+",
+                "2",
+                "/",
+                "4",
+                "-"
+            ]
+        },
+        {
+            "tokens": [
+                "4",
+                "-7",
+                "2",
+                "6",
+                "+",
+                "10",
+                "-",
+                "/",
+                "*",
+                "2",
+                "+",
+                "3",
+                "*"
+            ]
+        },
+        {
+            "tokens": [
+                "4",
+                "-7",
+                "2",
+                "6",
+                "+",
+                "10",
+                "-",
+                "/",
+                "*",
+                "2",
+                "+",
+                "3",
+                "*",
+                "0",
+                "*"
+            ]
+        },
+        {
+            "tokens": [
+                "50",
+                "3",
+                "17",
+                "+",
+                "2",
+                "-",
+                "/"
+            ]
+        },
+        {
+            "tokens": [
+                "0",
+                "3",
+                "17",
+                "+",
+                "2",
+                "-",
+                "/"
+            ]
+        },
+        {
+            "tokens": [
+                "0",
+                "3",
+                "17",
+                "+",
+                "2",
+                "-",
+                "/",
+                "2",
+                "-",
+                "7",
+                "10",
+                "+",
+                "*"
+            ]
+        }
+    ],
+    "changelog": []
+}

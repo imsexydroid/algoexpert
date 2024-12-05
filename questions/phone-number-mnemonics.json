@@ -1,0 +1,244 @@
+{
+    "uid": "phone-number-mnemonics",
+    "testStrategy": "JSON",
+    "name": "Phone Number Mnemonics",
+    "version": 0,
+    "releaseDate": "2021-01-19T00:00:00Z",
+    "category": "Recursion",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 16662,
+        "failureCount": 3816
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "499295958",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Tim Ruscica",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1814
+    },
+    "prompt": "<div class=\"html\">\n<p>If you open the keypad of your mobile phone, it'll likely look like this:</p>\n<pre>\n   ----- ----- -----\n  |     |     |     |\n  |  1  |  2  |  3  |\n  |     | abc | def |\n   ----- ----- -----\n  |     |     |     |\n  |  4  |  5  |  6  |\n  | ghi | jkl | mno |\n   ----- ----- -----\n  |     |     |     |\n  |  7  |  8  |  9  |\n  | pqrs| tuv | wxyz|\n   ----- ----- -----\n        |     |\n        |  0  |\n        |     |\n         -----\n</pre>\n<p>\n  Almost every digit is associated with some letters in the alphabet; this\n  allows certain phone numbers to spell out actual words. For example, the phone\n  number <span>8464747328</span> can be written as <span>timisgreat</span>;\n  similarly, the phone number <span>2686463</span> can be written as\n  <span>antoine</span> or as <span>ant6463</span>.\n</p>\n<p>\n  It's important to note that a phone number doesn't represent a single sequence\n  of letters, but rather multiple combinations of letters. For instance, the\n  digit <span>2</span> can represent three different letters (a, b, and c).\n</p>\n<p>\n  A mnemonic is defined as a pattern of letters, ideas, or associations that\n  assist in remembering something. Companies oftentimes use a mnemonic for their\n  phone number to make it easier to remember.\n</p>\n<p>\n  Given a stringified phone number of any non-zero length, write a function that\n  returns all mnemonics for this phone number, in any order.\n</p>\n<p>\n  For this problem, a valid mnemonic may only contain letters and the digits\n  <span>0</span> and <span>1</span>. In other words, if a digit is able to be\n  represented by a letter, then it must be. Digits <span>0</span> and\n  <span>1</span> are the only two digits that don't have letter representations\n  on the keypad.\n</p>\n<p>\n  Note that you should rely on the keypad illustrated above for digit-letter\n  associations.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">phoneNumber</span> = \"1905\"\n</pre>\n<h3>Sample Output</h3>\n<pre>\n[\n  \"1w0j\",\n  \"1w0k\",\n  \"1w0l\",\n  \"1x0j\",\n  \"1x0k\",\n  \"1x0l\",\n  \"1y0j\",\n  \"1y0k\",\n  \"1y0l\",\n  \"1z0j\",\n  \"1z0k\",\n  \"1z0l\",\n]\n<span class=\"CodeEditor-promptComment\">// The mnemonics could be ordered differently.</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\nThe first thing you'll need to do is create a mapping from digits to letters. You can do this by creating a hash table mapping all string digits to lists of their respective characters.\n</p>\n",
+        "\n<p>\nThis problem can be solved fairly easily using recursion. Try generating all characters for the first digit in the phone number one at a time, and for each character, recursively performing the same action on the the next digit, and then on the digit after that, and so on and so forth until you've done so for all digits in the phone number.\n</p>\n",
+        "\n<p>\nYou can recursively generate characters one digit at a time and store the intermediate results in a array. Once you've reached the last digit in the phone number, you can add the currently generated mnemonic (stored in the previously mentioned array) to a final array that stores all the results.\n</p>"
+    ],
+    "spaceTime": "O(4^n * n) time | O(4^n * n) space - where n is the length of the phone number",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\nusing namespace std;\n\nvector<string> phoneNumberMnemonics(string phoneNumber) {\n  // Write your code here.\n  return {phoneNumber};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <numeric>\n#include <unordered_map>\n#include <vector>\nusing namespace std;\n\nvoid phoneNumberMnemonicsHelper(\n  int idx,\n  string phoneNumber,\n  vector<char>& currentMnemonic,\n  vector<string>& mnemonicsFound\n);\nunordered_map<int, vector<char>> DIGIT_LETTERS{\n  {0, {'0'}},\n  {1, {'1'}},\n  {2, {'a', 'b', 'c'}},\n  {3, {'d', 'e', 'f'}},\n  {4, {'g', 'h', 'i'}},\n  {5, {'j', 'k', 'l'}},\n  {6, {'m', 'n', 'o'}},\n  {7, {'p', 'q', 'r', 's'}},\n  {8, {'t', 'u', 'v'}},\n  {9, {'w', 'x', 'y', 'z'}}};\n\n// O(4^n * n) time | O(4^n * n) space - where\n// n is the length of the phone number\nvector<string> phoneNumberMnemonics(string phoneNumber) {\n  vector<char> currentMnemonic(phoneNumber.size(), '0');\n  vector<string> mnemonicsFound;\n  cout << (int)'4' << endl;\n  phoneNumberMnemonicsHelper(0, phoneNumber, currentMnemonic, mnemonicsFound);\n  return mnemonicsFound;\n}\n\nvoid phoneNumberMnemonicsHelper(\n  int idx,\n  string phoneNumber,\n  vector<char>& currentMnemonic,\n  vector<string>& mnemonicsFound\n) {\n  if (idx == phoneNumber.size()) {\n    string mnemonic =\n      accumulate(currentMnemonic.begin(), currentMnemonic.end(), string{});\n    mnemonicsFound.push_back(mnemonic);\n  } else {\n    int digit = phoneNumber[idx] - '0';\n    vector<char> letters = DIGIT_LETTERS[digit];\n    for (auto letter : letters) {\n      currentMnemonic[idx] = letter;\n      phoneNumberMnemonicsHelper(\n        idx + 1, phoneNumber, currentMnemonic, mnemonicsFound\n      );\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      string phoneNumber = \"1905\";\n      vector<string> expected = {\n        \"1w0j\",\n        \"1w0k\",\n        \"1w0l\",\n        \"1x0j\",\n        \"1x0k\",\n        \"1x0l\",\n        \"1y0j\",\n        \"1y0k\",\n        \"1y0l\",\n        \"1z0j\",\n        \"1z0k\",\n        \"1z0l\"};\n      auto actual = phoneNumberMnemonics(phoneNumber);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      string phoneNumber = \"1905\";\n      vector<string> expected = {\n        \"1w0j\",\n        \"1w0k\",\n        \"1w0l\",\n        \"1x0j\",\n        \"1x0k\",\n        \"1x0l\",\n        \"1y0j\",\n        \"1y0k\",\n        \"1y0l\",\n        \"1z0j\",\n        \"1z0k\",\n        \"1z0l\"};\n      auto actual = phoneNumberMnemonics(phoneNumber);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System.Collections.Generic;\nusing System;\n\npublic class Program {\n  public List<string> PhoneNumberMnemonics(string phoneNumber) {\n    // Write your code here.\n    return new List<string>();\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  public static Dictionary<char, string[]> DIGIT_LETTERS =\n    new Dictionary<char, string[]> {\n      { '0', new string[] { \"0\" } },\n      { '1', new string[] { \"1\" } },\n      { '2', new string[] { \"a\", \"b\", \"c\" } },\n      { '3', new string[] { \"d\", \"e\", \"f\" } },\n      { '4', new string[] { \"g\", \"h\", \"i\" } },\n      { '5', new string[] { \"j\", \"k\", \"l\" } },\n      { '6', new string[] { \"m\", \"n\", \"o\" } },\n      { '7', new string[] { \"p\", \"q\", \"r\", \"s\" } },\n      { '8', new string[] { \"t\", \"u\", \"v\" } },\n      { '9', new string[] { \"w\", \"x\", \"y\", \"z\" } }\n    };\n\n  // O(4^n * n) time | O(4^n * n) space - where\n  // n is the length of the phone number\n  public List<string> PhoneNumberMnemonics(string phoneNumber) {\n    string[] currentMnemonic = new string[phoneNumber.Length];\n    Array.Fill(currentMnemonic, \"0\");\n\n    List<string> mnemonicsFound = new List<string>();\n    PhoneNumberMnemonicsHelper(0, phoneNumber, currentMnemonic, mnemonicsFound);\n    return mnemonicsFound;\n  }\n\n  public void PhoneNumberMnemonicsHelper(\n    int idx,\n    string phoneNumber,\n    string[] currentMnemonic,\n    List<string> mnemonicsFound\n  ) {\n    if (idx == phoneNumber.Length) {\n      string mnemonic = String.Join(\"\", currentMnemonic);\n      mnemonicsFound.Add(mnemonic);\n    } else {\n      char digit = phoneNumber[idx];\n      string[] letters = DIGIT_LETTERS[digit];\n      foreach (var letter in letters) {\n        currentMnemonic[idx] = letter;\n        PhoneNumberMnemonicsHelper(\n          idx + 1, phoneNumber, currentMnemonic, mnemonicsFound\n        );\n      }\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System.Collections.Generic;\nusing System.Linq;\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    string phoneNumber = \"1905\";\n    string[] expectedValues = new string[] {\n      \"1w0j\",\n      \"1w0k\",\n      \"1w0l\",\n      \"1x0j\",\n      \"1x0k\",\n      \"1x0l\",\n      \"1y0j\",\n      \"1y0k\",\n      \"1y0l\",\n      \"1z0j\",\n      \"1z0k\",\n      \"1z0l\"\n    };\n    List<string> expected = new List<string>();\n    for (int i = 0; i < expectedValues.Length; i++) {\n      expected.Add(expectedValues[i]);\n    }\n    var actual = new Program().PhoneNumberMnemonics(phoneNumber);\n    Utils.AssertTrue(Enumerable.SequenceEqual(expected, actual));\n  }\n}\n",
+            "unitTests": "using System.Collections.Generic;\nusing System.Linq;\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    string phoneNumber = \"1905\";\n    string[] expectedValues = new string[] {\n      \"1w0j\",\n      \"1w0k\",\n      \"1w0l\",\n      \"1x0j\",\n      \"1x0k\",\n      \"1x0l\",\n      \"1y0j\",\n      \"1y0k\",\n      \"1y0l\",\n      \"1z0j\",\n      \"1z0k\",\n      \"1z0l\"\n    };\n    List<string> expected = new List<string>();\n    for (int i = 0; i < expectedValues.Length; i++) {\n      expected.Add(expectedValues[i]);\n    }\n    var actual = new Program().PhoneNumberMnemonics(phoneNumber);\n    Utils.AssertTrue(Enumerable.SequenceEqual(expected, actual));\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc PhoneNumberMnemonics(phoneNumber string) []string {\n\t// Write your code here.\n\treturn nil\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(4^n * n) time | O(4^n * n) space - where\n// n is the length of the phone number\nfunc PhoneNumberMnemonics(phoneNumber string) []string {\n\tcurrentMnemonic := make([]byte, len(phoneNumber))\n\tfor i := range currentMnemonic {\n\t\tcurrentMnemonic[i] = '0'\n\t}\n\tmnemonicsFound := make([]string, 0)\n\n\tphoneNumberMnemonicsHelper(0, phoneNumber, currentMnemonic, &mnemonicsFound)\n\treturn mnemonicsFound\n}\n\nfunc phoneNumberMnemonicsHelper(idx int, phoneNumber string, currentMnemonic []byte, mnemonicsFound *[]string) {\n\tif idx == len(phoneNumber) {\n\t\tmnemonic := string(currentMnemonic)\n\t\t*mnemonicsFound = append(*mnemonicsFound, mnemonic)\n\t} else {\n\t\tdigit := phoneNumber[idx]\n\t\tletters := DigitLetters[digit]\n\t\tfor _, letter := range letters {\n\t\t\tcurrentMnemonic[idx] = letter\n\t\t\tphoneNumberMnemonicsHelper(idx+1, phoneNumber, currentMnemonic, mnemonicsFound)\n\t\t}\n\t}\n}\n\nvar DigitLetters = map[byte][]byte{\n\t'0': {'0'},\n\t'1': {'1'},\n\t'2': {'a', 'b', 'c'},\n\t'3': {'d', 'e', 'f'},\n\t'4': {'g', 'h', 'i'},\n\t'5': {'j', 'k', 'l'},\n\t'6': {'m', 'n', 'o'},\n\t'7': {'p', 'q', 'r', 's'},\n\t'8': {'t', 'u', 'v'},\n\t'9': {'w', 'x', 'y', 'z'},\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tphoneNumber := \"1905\"\n\texpected := []string{\n\t\t\"1w0j\",\n\t\t\"1w0k\",\n\t\t\"1w0l\",\n\t\t\"1x0j\",\n\t\t\"1x0k\",\n\t\t\"1x0l\",\n\t\t\"1y0j\",\n\t\t\"1y0k\",\n\t\t\"1y0l\",\n\t\t\"1z0j\",\n\t\t\"1z0k\",\n\t\t\"1z0l\",\n\t}\n\tactual := PhoneNumberMnemonics(phoneNumber)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tphoneNumber := \"1905\"\n\texpected := []string{\n\t\t\"1w0j\",\n\t\t\"1w0k\",\n\t\t\"1w0l\",\n\t\t\"1x0j\",\n\t\t\"1x0k\",\n\t\t\"1x0l\",\n\t\t\"1y0j\",\n\t\t\"1y0k\",\n\t\t\"1y0l\",\n\t\t\"1z0j\",\n\t\t\"1z0k\",\n\t\t\"1z0l\",\n\t}\n\tactual := PhoneNumberMnemonics(phoneNumber)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public ArrayList<String> phoneNumberMnemonics(String phoneNumber) {\n    // Write your code here.\n    return new ArrayList<String>();\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  public static Map<Character, String[]> DIGIT_LETTERS =\n    new HashMap<Character, String[]>();\n\n  static {\n    DIGIT_LETTERS.put('0', new String[] {\"0\"});\n    DIGIT_LETTERS.put('1', new String[] {\"1\"});\n    DIGIT_LETTERS.put('2', new String[] {\"a\", \"b\", \"c\"});\n    DIGIT_LETTERS.put('3', new String[] {\"d\", \"e\", \"f\"});\n    DIGIT_LETTERS.put('4', new String[] {\"g\", \"h\", \"i\"});\n    DIGIT_LETTERS.put('5', new String[] {\"j\", \"k\", \"l\"});\n    DIGIT_LETTERS.put('6', new String[] {\"m\", \"n\", \"o\"});\n    DIGIT_LETTERS.put('7', new String[] {\"p\", \"q\", \"r\", \"s\"});\n    DIGIT_LETTERS.put('8', new String[] {\"t\", \"u\", \"v\"});\n    DIGIT_LETTERS.put('9', new String[] {\"w\", \"x\", \"y\", \"z\"});\n  }\n\n  // O(4^n * n) time | O(4^n * n) space - where\n  // n is the length of the phone number\n  public ArrayList<String> phoneNumberMnemonics(String phoneNumber) {\n    String[] currentMnemonic = new String[phoneNumber.length()];\n    Arrays.fill(currentMnemonic, \"0\");\n\n    ArrayList<String> mnemonicsFound = new ArrayList<String>();\n    phoneNumberMnemonicsHelper(0, phoneNumber, currentMnemonic, mnemonicsFound);\n    return mnemonicsFound;\n  }\n\n  public void phoneNumberMnemonicsHelper(\n    int idx,\n    String phoneNumber,\n    String[] currentMnemonic,\n    ArrayList<String> mnemonicsFound\n  ) {\n    if (idx == phoneNumber.length()) {\n      String mnemonic = String.join(\"\", currentMnemonic);\n      mnemonicsFound.add(mnemonic);\n    } else {\n      char digit = phoneNumber.charAt(idx);\n      String[] letters = DIGIT_LETTERS.get(digit);\n      for (String letter : letters) {\n        currentMnemonic[idx] = letter;\n        phoneNumberMnemonicsHelper(\n          idx + 1, phoneNumber, currentMnemonic, mnemonicsFound\n        );\n      }\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    String phoneNumber = \"1905\";\n    String[] expectedValues = new String[] {\n      \"1w0j\",\n      \"1w0k\",\n      \"1w0l\",\n      \"1x0j\",\n      \"1x0k\",\n      \"1x0l\",\n      \"1y0j\",\n      \"1y0k\",\n      \"1y0l\",\n      \"1z0j\",\n      \"1z0k\",\n      \"1z0l\"};\n    ArrayList<String> expected = new ArrayList<String>();\n    for (int i = 0; i < expectedValues.length; i++) {\n      expected.add(expectedValues[i]);\n    }\n    var actual = new Program().phoneNumberMnemonics(phoneNumber);\n    Utils.assertTrue(expected.equals(actual));\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    String phoneNumber = \"1905\";\n    String[] expectedValues = new String[] {\n      \"1w0j\",\n      \"1w0k\",\n      \"1w0l\",\n      \"1x0j\",\n      \"1x0k\",\n      \"1x0l\",\n      \"1y0j\",\n      \"1y0k\",\n      \"1y0l\",\n      \"1z0j\",\n      \"1z0k\",\n      \"1z0l\"};\n    ArrayList<String> expected = new ArrayList<String>();\n    for (int i = 0; i < expectedValues.length; i++) {\n      expected.add(expectedValues[i]);\n    }\n    var actual = new Program().phoneNumberMnemonics(phoneNumber);\n    Utils.assertTrue(expected.equals(actual));\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function phoneNumberMnemonics(phoneNumber) {\n  // Write your code here.\n  return [];\n}\n\n// Do not edit the line below.\nexports.phoneNumberMnemonics = phoneNumberMnemonics;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(4^n * n) time | O(4^n * n) space - where\n// n is the length of the phone number\nfunction phoneNumberMnemonics(phoneNumber) {\n  const currentMnemonic = new Array(phoneNumber.length).fill('0');\n  const mnemonicsFound = [];\n\n  phoneNumberMnemonicsHelper(0, phoneNumber, currentMnemonic, mnemonicsFound);\n  return mnemonicsFound;\n}\n\nfunction phoneNumberMnemonicsHelper(idx, phoneNumber, currentMnemonic, mnemonicsFound) {\n  if (idx === phoneNumber.length) {\n    const mnemonic = currentMnemonic.join('');\n    mnemonicsFound.push(mnemonic);\n  } else {\n    const digit = phoneNumber[idx];\n    const letters = DIGIT_LETTERS[digit];\n    for (const letter of letters) {\n      currentMnemonic[idx] = letter;\n      phoneNumberMnemonicsHelper(idx + 1, phoneNumber, currentMnemonic, mnemonicsFound);\n    }\n  }\n}\n\nconst DIGIT_LETTERS = {\n  0: ['0'],\n  1: ['1'],\n  2: ['a', 'b', 'c'],\n  3: ['d', 'e', 'f'],\n  4: ['g', 'h', 'i'],\n  5: ['j', 'k', 'l'],\n  6: ['m', 'n', 'o'],\n  7: ['p', 'q', 'r', 's'],\n  8: ['t', 'u', 'v'],\n  9: ['w', 'x', 'y', 'z'],\n};\n\n// Do not edit the line below.\nexports.phoneNumberMnemonics = phoneNumberMnemonics;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const phoneNumber = '1905';\n  const expected = [\n    '1w0j',\n    '1w0k',\n    '1w0l',\n    '1x0j',\n    '1x0k',\n    '1x0l',\n    '1y0j',\n    '1y0k',\n    '1y0l',\n    '1z0j',\n    '1z0k',\n    '1z0l',\n  ];\n  const actual = program.phoneNumberMnemonics(phoneNumber);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const phoneNumber = '1905';\n  const expected = [\n    '1w0j',\n    '1w0k',\n    '1w0l',\n    '1x0j',\n    '1x0k',\n    '1x0l',\n    '1y0j',\n    '1y0k',\n    '1y0l',\n    '1z0j',\n    '1z0k',\n    '1z0l',\n  ];\n  const actual = program.phoneNumberMnemonics(phoneNumber);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun phoneNumberMnemonics(phoneNumber: String): List<String> {\n    // Write your code here.\n    return listOf()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(4^n * n) time | O(4^n * n) space - where\n// n is the length of the phone number\nfun phoneNumberMnemonics(phoneNumber: String): List<String> {\n    val currentMnemonic = MutableList(phoneNumber.length) { '0' }\n    val mnemonicsFound = mutableListOf<String>()\n\n    phoneNumberMnemonicsHelper(0, phoneNumber, currentMnemonic, mnemonicsFound)\n    return mnemonicsFound\n}\n\nfun phoneNumberMnemonicsHelper(idx: Int, phoneNumber: String, currentMnemonic: MutableList<Char>, mnemonicsFound: MutableList<String>) {\n    if (idx == phoneNumber.length) {\n        val mnemonic = currentMnemonic.joinToString(\"\")\n        mnemonicsFound.add(mnemonic)\n    } else {\n        val digit = phoneNumber[idx]\n        val letters = DIGIT_LETTERS[digit]!!\n        for (letter in letters) {\n            currentMnemonic[idx] = letter\n            phoneNumberMnemonicsHelper(idx + 1, phoneNumber, currentMnemonic, mnemonicsFound)\n        }\n    }\n}\n\nval DIGIT_LETTERS = mutableMapOf(\n    '0' to listOf('0'),\n    '1' to listOf('1'),\n    '2' to listOf('a', 'b', 'c'),\n    '3' to listOf('d', 'e', 'f'),\n    '4' to listOf('g', 'h', 'i'),\n    '5' to listOf('j', 'k', 'l'),\n    '6' to listOf('m', 'n', 'o'),\n    '7' to listOf('p', 'q', 'r', 's'),\n    '8' to listOf('t', 'u', 'v'),\n    '9' to listOf('w', 'x', 'y', 'z'),\n)\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.phoneNumberMnemonics\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val phoneNumber = \"1905\"\n        val expected = listOf(\n            \"1w0j\",\n            \"1w0k\",\n            \"1w0l\",\n            \"1x0j\",\n            \"1x0k\",\n            \"1x0l\",\n            \"1y0j\",\n            \"1y0k\",\n            \"1y0l\",\n            \"1z0j\",\n            \"1z0k\",\n            \"1z0l\",\n        )\n        val output = phoneNumberMnemonics(phoneNumber)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.phoneNumberMnemonics\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val phoneNumber = \"1905\"\n        val expected = listOf(\n            \"1w0j\",\n            \"1w0k\",\n            \"1w0l\",\n            \"1x0j\",\n            \"1x0k\",\n            \"1x0l\",\n            \"1y0j\",\n            \"1y0k\",\n            \"1y0l\",\n            \"1z0j\",\n            \"1z0k\",\n            \"1z0l\",\n        )\n        val output = phoneNumberMnemonics(phoneNumber)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def phoneNumberMnemonics(phoneNumber):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(4^n * n) time | O(4^n * n) space - where\n# n is the length of the phone number\ndef phoneNumberMnemonics(phoneNumber):\n    currentMnemonic = [\"0\"] * len(phoneNumber)\n    mnemonicsFound = []\n\n    phoneNumberMnemonicsHelper(0, phoneNumber, currentMnemonic, mnemonicsFound)\n    return mnemonicsFound\n\n\ndef phoneNumberMnemonicsHelper(idx, phoneNumber, currentMnemonic, mnemonicsFound):\n    if idx == len(phoneNumber):\n        mnemonic = \"\".join(currentMnemonic)\n        mnemonicsFound.append(mnemonic)\n    else:\n        digit = phoneNumber[idx]\n        letters = DIGIT_LETTERS[digit]\n        for letter in letters:\n            currentMnemonic[idx] = letter\n            phoneNumberMnemonicsHelper(idx + 1, phoneNumber, currentMnemonic, mnemonicsFound)\n\n\nDIGIT_LETTERS = {\n    \"0\": [\"0\"],\n    \"1\": [\"1\"],\n    \"2\": [\"a\", \"b\", \"c\"],\n    \"3\": [\"d\", \"e\", \"f\"],\n    \"4\": [\"g\", \"h\", \"i\"],\n    \"5\": [\"j\", \"k\", \"l\"],\n    \"6\": [\"m\", \"n\", \"o\"],\n    \"7\": [\"p\", \"q\", \"r\", \"s\"],\n    \"8\": [\"t\", \"u\", \"v\"],\n    \"9\": [\"w\", \"x\", \"y\", \"z\"],\n}\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        phoneNumber = \"1905\"\n        expected = [\n            \"1w0j\",\n            \"1w0k\",\n            \"1w0l\",\n            \"1x0j\",\n            \"1x0k\",\n            \"1x0l\",\n            \"1y0j\",\n            \"1y0k\",\n            \"1y0l\",\n            \"1z0j\",\n            \"1z0k\",\n            \"1z0l\",\n        ]\n        actual = program.phoneNumberMnemonics(phoneNumber)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        phoneNumber = \"1905\"\n        expected = [\n            \"1w0j\",\n            \"1w0k\",\n            \"1w0l\",\n            \"1x0j\",\n            \"1x0k\",\n            \"1x0l\",\n            \"1y0j\",\n            \"1y0k\",\n            \"1y0l\",\n            \"1z0j\",\n            \"1z0k\",\n            \"1z0l\",\n        ]\n        actual = program.phoneNumberMnemonics(phoneNumber)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  def phoneNumberMnemonics(phoneNumber)\n    # Write your code here.\n    return []\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def phoneNumberMnemonics(phoneNumber)\n    # Write your code here.\n    return []\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.phoneNumberMnemonics\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.phoneNumberMnemonics\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func phoneNumberMnemonics(_ phoneNumber: String) -> [String] {\n    // Write your code here.\n    return [String]()\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(4^n * n) time | O(4^n * n) space - where\n  // n is the length of the phone number\n  func phoneNumberMnemonics(_ phoneNumber: String) -> [String] {\n    var currentMnemonic = Array(repeating: Character(\"0\"), count: phoneNumber.count)\n    var mnemonicsFound = [String]()\n    var indexedPhoneNumber = Array(phoneNumber)\n\n    phoneNumberMnemonicsHelper(0, &indexedPhoneNumber, &currentMnemonic, &mnemonicsFound)\n    return mnemonicsFound\n  }\n\n  func phoneNumberMnemonicsHelper(_ idx: Int, _ phoneNumber: inout [Character], _ currentMnemonic: inout [Character],\n                                  _ mnemonicsFound: inout [String])\n  {\n    if idx == phoneNumber.count {\n      let mnemonic = String(currentMnemonic)\n      mnemonicsFound.append(mnemonic)\n    } else {\n      let digit = phoneNumber[idx]\n      let letters = DigitLetters[digit]!\n      for letter in letters {\n        currentMnemonic[idx] = letter\n        phoneNumberMnemonicsHelper(idx + 1, &phoneNumber, &currentMnemonic, &mnemonicsFound)\n      }\n    }\n  }\n\n  let DigitLetters: [Character: [Character]] = [\n    \"0\": [\"0\"],\n    \"1\": [\"1\"],\n    \"2\": [\"a\", \"b\", \"c\"],\n    \"3\": [\"d\", \"e\", \"f\"],\n    \"4\": [\"g\", \"h\", \"i\"],\n    \"5\": [\"j\", \"k\", \"l\"],\n    \"6\": [\"m\", \"n\", \"o\"],\n    \"7\": [\"p\", \"q\", \"r\", \"s\"],\n    \"8\": [\"t\", \"u\", \"v\"],\n    \"9\": [\"w\", \"x\", \"y\", \"z\"],\n  ]\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let phoneNumber = \"1905\"\n      let expected = [\n        \"1w0j\",\n        \"1w0k\",\n        \"1w0l\",\n        \"1x0j\",\n        \"1x0k\",\n        \"1x0l\",\n        \"1y0j\",\n        \"1y0k\",\n        \"1y0l\",\n        \"1z0j\",\n        \"1z0k\",\n        \"1z0l\",\n      ]\n      var actual = Program().phoneNumberMnemonics(phoneNumber)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let phoneNumber = \"1905\"\n      let expected = [\n        \"1w0j\",\n        \"1w0k\",\n        \"1w0l\",\n        \"1x0j\",\n        \"1x0k\",\n        \"1x0l\",\n        \"1y0j\",\n        \"1y0k\",\n        \"1y0l\",\n        \"1z0j\",\n        \"1z0k\",\n        \"1z0l\",\n      ]\n      var actual = Program().phoneNumberMnemonics(phoneNumber)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function phoneNumberMnemonics(phoneNumber: string) {\n  // Write your code here.\n  return [phoneNumber];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(4^n * n) time | O(4^n * n) space - where\n// n is the length of the phone number\nexport function phoneNumberMnemonics(phoneNumber: string) {\n  const currentMnemonic = new Array(phoneNumber.length).fill('0');\n  const mnemonicsFound: string[] = [];\n\n  phoneNumberMnemonicsHelper(0, phoneNumber, currentMnemonic, mnemonicsFound);\n  return mnemonicsFound;\n}\n\nfunction phoneNumberMnemonicsHelper(\n  idx: number,\n  phoneNumber: string,\n  currentMnemonic: string[],\n  mnemonicsFound: string[],\n) {\n  if (idx === phoneNumber.length) {\n    const mnemonic = currentMnemonic.join('');\n    mnemonicsFound.push(mnemonic);\n  } else {\n    const digit = phoneNumber[idx];\n    const letters = DIGIT_LETTERS[digit];\n    for (const letter of letters) {\n      currentMnemonic[idx] = letter;\n      phoneNumberMnemonicsHelper(idx + 1, phoneNumber, currentMnemonic, mnemonicsFound);\n    }\n  }\n}\n\nconst DIGIT_LETTERS: {[digit: string]: string[]} = {\n  0: ['0'],\n  1: ['1'],\n  2: ['a', 'b', 'c'],\n  3: ['d', 'e', 'f'],\n  4: ['g', 'h', 'i'],\n  5: ['j', 'k', 'l'],\n  6: ['m', 'n', 'o'],\n  7: ['p', 'q', 'r', 's'],\n  8: ['t', 'u', 'v'],\n  9: ['w', 'x', 'y', 'z'],\n};\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const phoneNumber = '1905';\n  const expected = [\n    '1w0j',\n    '1w0k',\n    '1w0l',\n    '1x0j',\n    '1x0k',\n    '1x0l',\n    '1y0j',\n    '1y0k',\n    '1y0l',\n    '1z0j',\n    '1z0k',\n    '1z0l',\n  ];\n  const actual = program.phoneNumberMnemonics(phoneNumber);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const phoneNumber = '1905';\n  const expected = [\n    '1w0j',\n    '1w0k',\n    '1w0l',\n    '1x0j',\n    '1x0k',\n    '1x0l',\n    '1y0j',\n    '1y0k',\n    '1y0l',\n    '1z0j',\n    '1z0k',\n    '1z0l',\n  ];\n  const actual = program.phoneNumberMnemonics(phoneNumber);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "phoneNumber",
+            "example": "1905",
+            "schema": {
+                "minLength": 1,
+                "type": "string"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "phoneNumber": "1905"
+        },
+        {
+            "phoneNumber": "1111"
+        },
+        {
+            "phoneNumber": "002"
+        },
+        {
+            "phoneNumber": "444"
+        },
+        {
+            "phoneNumber": "9056661234"
+        },
+        {
+            "phoneNumber": "4163420000"
+        },
+        {
+            "phoneNumber": "1"
+        },
+        {
+            "phoneNumber": "0"
+        },
+        {
+            "phoneNumber": "23"
+        },
+        {
+            "phoneNumber": "1212"
+        },
+        {
+            "phoneNumber": "97"
+        },
+        {
+            "phoneNumber": "980016"
+        }
+    ],
+    "jsonTests": [
+        {
+            "phoneNumber": "1905"
+        },
+        {
+            "phoneNumber": "1111"
+        },
+        {
+            "phoneNumber": "002"
+        },
+        {
+            "phoneNumber": "444"
+        },
+        {
+            "phoneNumber": "9056661234"
+        },
+        {
+            "phoneNumber": "4163420000"
+        },
+        {
+            "phoneNumber": "1"
+        },
+        {
+            "phoneNumber": "0"
+        },
+        {
+            "phoneNumber": "23"
+        },
+        {
+            "phoneNumber": "1212"
+        },
+        {
+            "phoneNumber": "97"
+        },
+        {
+            "phoneNumber": "980016"
+        }
+    ],
+    "changelog": []
+}

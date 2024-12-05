@@ -1,0 +1,579 @@
+{
+    "uid": "two-colorable",
+    "testStrategy": "JSON",
+    "name": "Two-Colorable",
+    "version": 0,
+    "releaseDate": "2022-12-15T00:00:00Z",
+    "category": "Graphs",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 3720,
+        "failureCount": 281
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "756911133",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 673
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    You're given a list of <span>edges</span> representing a connected,\n    unweighted, undirected graph with at least one node. Write a function that\n    returns a boolean representing whether the given graph is two-colorable.\n  </p>\n\n  <p>\n    A graph is two-colorable (also called bipartite) if all of the nodes can\n    be assigned one of two colors such that no nodes of the same color are\n    connected by an edge.\n  </p>\n\n  <p>\n    The given list is what's called an adjacency list, and it represents a graph.\n    The number of vertices in the graph is equal to the length of\n    <span>edges</span>, where each index <span>i</span> in\n    <span>edges</span> contains vertex <span>i</span>'s siblings, in no\n    particular order. Each individual edge is represented by a positive integer\n    that denotes an index in the list that this vertex is connected to. Note that\n    this graph is undirected, meaning that if a vertex appears in the edge list\n    of another vertex, then the inverse will also be true.\n  </p>\n  <p>\n    Also note that this graph may contain self-loops. A self-loop is an edge that\n    has the same destination and origin; in other words, it's an edge that\n    connects a vertex to itself. Any self-loop should make a graph not\n    2-colorable.\n  </p>\n<h3>Sample Input</h3>\n<pre><span class=\"CodeEditor-promptParameter\">edges</span> = [\n  [1, 2],\n  [0, 2],\n  [0, 1]\n]\n</pre>\n<h3>Sample Output</h3>\n<pre>\nFalse <span class=\"CodeEditor-promptComment\">// Nodes 1 and 2 must be different colors than node 0.\n// However, nodes 1 and 2 are also connected, meaning they must also have different colors,\n// which is impossible with only 2 available colors.\n</span>\n</pre>",
+    "hints": [
+        "<p>\n  Try starting by choosing a random node and assigning it a color. From here,\n  can you tell what colors any other nodes must have?\n</p>\n",
+        "\n<p>\n  From a given node, assign each sibling node the opposite color, then continue\n  through the graph using BFS or DFS.\n</p>\n",
+        "\n<p>\n  If you ever encounter a sibling that is already marked as the wrong color, then\n  there cannot be a solution.\n</p>"
+    ],
+    "spaceTime": "O(v + e) time | O(v) space - where v is the number of vertices and e is the number of edges in the graph",
+    "notes": "<div class=\"html\">\n  <p>\n    There's a typo in the code walkthrough of the video explanation, at 12:38. \n    In order to process the connections of the current node, the loop should\n    be over <span>edges[node]</span> rather than simply <span>edges</span>.\n    Therefore, the line should be <span>for connection in edges[node]</span>.\n  </p>\n</div>",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nbool twoColorable(vector<vector<int>> edges) {\n  // Write your code here.\n  return false;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <stack>\nusing namespace std;\n\n// O(v + e) time | O(v) space - where v is the number of\n// vertices and e is the number of edges in the graph\nbool twoColorable(vector<vector<int>> edges) {\n  vector<int> colors(edges.size(), 0);\n  colors[0] = 1;\n  stack<int> stack;\n  stack.push(0);\n\n  while (stack.size() > 0) {\n    int node = stack.top();\n    stack.pop();\n    for (int connection : edges[node]) {\n      if (colors[connection] == 0) {\n        colors[connection] = colors[node] == 1 ? 2 : 1;\n        stack.push(connection);\n      } else if (colors[connection] == colors[node]) {\n        return false;\n      }\n    }\n  }\n\n  return true;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> input = {{1}, {0}};\n      auto expected = true;\n      auto actual = twoColorable(input);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> input = {{1}, {0}};\n      auto expected = true;\n      auto actual = twoColorable(input);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public bool TwoColorable(int[][] edges) {\n    // Write your code here.\n    return false;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  public bool TwoColorable(int[][] edges) {\n    int[] colors = new int[edges.Length];\n    colors[0] = 1;\n    Stack<int> stack = new Stack<int>();\n    stack.Push(0);\n\n    while (stack.Count > 0) {\n      int node = stack.Pop();\n      foreach (var connection in edges[node]) {\n        if (colors[connection] == 0) {\n          colors[connection] = colors[node] == 1 ? 2 : 1;\n          stack.Push(connection);\n        } else if (colors[connection] == colors[node]) {\n          return false;\n        }\n      }\n    }\n    return true;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[][] input = new int[][] { new int[] { 1 }, new int[] { 0 } };\n    var expected = true;\n    var actual = new Program().TwoColorable(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[][] input = new int[][] { new int[] { 1 }, new int[] { 0 } };\n    var expected = true;\n    var actual = new Program().TwoColorable(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc TwoColorable(edges [][]int) bool {\n\t// Write your code here.\n\treturn false\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(v + e) time | O(v) space - where v is the number of\n// vertices and e is the number of edges in the graph\nfunc TwoColorable(edges [][]int) bool {\n\tcolors := map[int]bool{\n\t\t0: true,\n\t}\n\tstack := []int{0}\n\n\tfor len(stack) > 0 {\n\t\tvar node int\n\t\tnode, stack = stack[len(stack)-1], stack[:len(stack)-1]\n\t\tfor _, connection := range edges[node] {\n\t\t\tif _, colorFound := colors[connection]; !colorFound {\n\t\t\t\tcolors[connection] = !colors[node]\n\t\t\t\tstack = append(stack, connection)\n\t\t\t} else if colors[connection] == colors[node] {\n\t\t\t\treturn false\n\t\t\t}\n\t\t}\n\t}\n\treturn true\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := [][]int{{1}, {0}}\n\texpected := true\n\tactual := TwoColorable(input)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := [][]int{{1}, {0}}\n\texpected := true\n\tactual := TwoColorable(input)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public boolean twoColorable(int[][] edges) {\n    // Write your code here.\n    return false;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(v + e) time | O(v) space - where v is the number of\n  // vertices and e is the number of edges in the graph\n  public boolean twoColorable(int[][] edges) {\n    int[] colors = new int[edges.length];\n    colors[0] = 1;\n    Stack<Integer> stack = new Stack<Integer>();\n    stack.push(0);\n\n    while (stack.size() > 0) {\n      int node = stack.pop();\n      for (int connection : edges[node]) {\n        if (colors[connection] == 0) {\n          colors[connection] = colors[node] == 1 ? 2 : 1;\n          stack.push(connection);\n        } else if (colors[connection] == colors[node]) {\n          return false;\n        }\n      }\n    }\n    return true;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[][] input = new int[][] {{1}, {0}};\n    var expected = true;\n    var actual = new Program().twoColorable(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[][] input = new int[][] {{1}, {0}};\n    var expected = true;\n    var actual = new Program().twoColorable(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function twoColorable(edges) {\n  // Write your code here.\n  return false;\n}\n\n// Do not edit the line below.\nexports.twoColorable = twoColorable;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(v + e) time | O(v) space - where v is the number of\n// vertices and e is the number of edges in the graph\nfunction twoColorable(edges) {\n  const colors = edges.map(_ => null);\n  colors[0] = true;\n  const stack = [0];\n\n  while (stack.length > 0) {\n    const node = stack.pop();\n    for (const connection of edges[node]) {\n      if (colors[connection] === null) {\n        colors[connection] = !colors[node];\n        stack.push(connection);\n      } else if (colors[connection] === colors[node]) {\n        return false;\n      }\n    }\n  }\n\n  return true;\n}\n\n// Do not edit the line below.\nexports.twoColorable = twoColorable;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [[1], [0]];\n  const expected = true;\n  const actual = program.twoColorable(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [[1], [0]];\n  const expected = true;\n  const actual = program.twoColorable(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun twoColorable(edges: List<List<Int>>): Boolean {\n    // Write your code here.\n    return false\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport java.util.Stack\n\n// O(v + e) time | O(v) space - where v is the number of\n// vertices and e is the number of edges in the graph\nfun twoColorable(edges: List<List<Int>>): Boolean {\n    val colors = MutableList<Boolean?>(edges.size) { null }\n    colors[0] = true\n    val stack = Stack<Int>()\n    stack.add(0)\n\n    while (stack.size > 0) {\n        val node = stack.pop()\n        for (connection in edges[node]) {\n            if (colors[connection] == null) {\n                colors[connection] = !colors[node]!!\n                stack.add(connection)\n            } else if (colors[connection] == colors[node]) {\n                return false\n            }\n        }\n    }\n\n    return true\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.twoColorable\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(listOf(1), listOf(0))\n        val expected = true\n        val output = twoColorable(input)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.twoColorable\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(listOf(1), listOf(0))\n        val expected = true\n        val output = twoColorable(input)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def twoColorable(edges):\n    # Write your code here.\n    return False\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(v + e) time | O(v) space - where v is the number of\n# vertices and e is the number of edges in the graph\ndef twoColorable(edges):\n    colors = [None for _ in edges]\n    colors[0] = True\n    stack = [0]\n\n    while len(stack) > 0:\n        node = stack.pop()\n        for connection in edges[node]:\n            if colors[connection] is None:\n                colors[connection] = not colors[node]\n                stack.append(connection)\n            elif colors[connection] == colors[node]:\n                return False\n\n    return True\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [[1], [0]]\n        expected = True\n        actual = program.twoColorable(input)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [[1], [0]]\n        expected = True\n        actual = program.twoColorable(input)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def twoColorable(edges)\n        # Write your code here.\n        return false\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def twoColorable(edges)\n        # Write your code here.\n        return false\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.twoColorable\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.twoColorable\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func twoColorable(_ edges: [[Int]]) -> Bool {\n    // Write your code here.\n    return false\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(v + e) time | O(v) space - where v is the number of\n  // vertices and e is the number of edges in the graph\n  func twoColorable(_ edges: [[Int]]) -> Bool {\n    var colors: [Int: Bool] = [\n      0: true,\n    ]\n    var stack = [0]\n\n    while stack.count > 0 {\n      let node = stack.popLast()!\n      for connection in edges[node] {\n        if colors[connection] == nil {\n          colors[connection] = !colors[node]!\n          stack.append(connection)\n        } else if colors[connection] == colors[node] {\n          return false\n        }\n      }\n    }\n    return true\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var input = [[1], [0]]\n      var expected = true\n      var actual = Program().twoColorable(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var input = [[1], [0]]\n      var expected = true\n      var actual = Program().twoColorable(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function twoColorable(edges: number[][]) {\n  // Write your code here.\n  return false;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(v + e) time | O(v) space - where v is the number of\n// vertices and e is the number of edges in the graph\nexport function twoColorable(edges: number[][]) {\n  const colors: Array<null | boolean> = edges.map(_ => null);\n  colors[0] = true;\n  const stack = [0];\n\n  while (stack.length > 0) {\n    const node = stack.pop()!;\n    for (const connection of edges[node]) {\n      if (colors[connection] === null) {\n        colors[connection] = !colors[node];\n        stack.push(connection);\n      } else if (colors[connection] === colors[node]) {\n        return false;\n      }\n    }\n  }\n\n  return true;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [[1], [0]];\n  const expected = true;\n  const actual = program.twoColorable(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [[1], [0]];\n  const expected = true;\n  const actual = program.twoColorable(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "edges",
+            "example": [
+                [
+                    1
+                ],
+                [
+                    0
+                ]
+            ],
+            "schema": {
+                "items": {
+                    "items": {
+                        "type": "integer"
+                    },
+                    "type": "array"
+                },
+                "minItems": 1,
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "edges": [
+                [
+                    1
+                ],
+                [
+                    0
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    0
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    0,
+                    2
+                ],
+                [
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1
+                ],
+                [
+                    0,
+                    2
+                ],
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    0
+                ],
+                [
+                    0
+                ],
+                [
+                    0
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    0,
+                    2
+                ],
+                [
+                    0,
+                    1
+                ],
+                [
+                    0
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    0,
+                    2,
+                    3
+                ],
+                [
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    2
+                ],
+                [
+                    2,
+                    3
+                ],
+                [
+                    0,
+                    1
+                ],
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    0,
+                    2,
+                    3
+                ],
+                [
+                    0,
+                    1,
+                    3
+                ],
+                [
+                    1,
+                    2
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    4
+                ],
+                [
+                    0,
+                    2,
+                    3
+                ],
+                [
+                    1,
+                    3,
+                    4
+                ],
+                [
+                    1,
+                    2
+                ],
+                [
+                    0,
+                    2
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    4
+                ],
+                [
+                    0,
+                    2,
+                    3
+                ],
+                [
+                    1,
+                    4
+                ],
+                [
+                    1
+                ],
+                [
+                    0,
+                    2
+                ]
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "edges": [
+                [
+                    1
+                ],
+                [
+                    0
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    0
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    0,
+                    2
+                ],
+                [
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1
+                ],
+                [
+                    0,
+                    2
+                ],
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    0
+                ],
+                [
+                    0
+                ],
+                [
+                    0
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    0,
+                    2
+                ],
+                [
+                    0,
+                    1
+                ],
+                [
+                    0
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    0,
+                    2,
+                    3
+                ],
+                [
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    2
+                ],
+                [
+                    2,
+                    3
+                ],
+                [
+                    0,
+                    1
+                ],
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    0,
+                    2,
+                    3
+                ],
+                [
+                    0,
+                    1,
+                    3
+                ],
+                [
+                    1,
+                    2
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    4
+                ],
+                [
+                    0,
+                    2,
+                    3
+                ],
+                [
+                    1,
+                    3,
+                    4
+                ],
+                [
+                    1,
+                    2
+                ],
+                [
+                    0,
+                    2
+                ]
+            ]
+        },
+        {
+            "edges": [
+                [
+                    1,
+                    4
+                ],
+                [
+                    0,
+                    2,
+                    3
+                ],
+                [
+                    1,
+                    4
+                ],
+                [
+                    1
+                ],
+                [
+                    0,
+                    2
+                ]
+            ]
+        }
+    ],
+    "changelog": []
+}

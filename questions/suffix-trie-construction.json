@@ -1,0 +1,809 @@
+{
+    "uid": "suffix-trie-construction",
+    "testStrategy": "JSON",
+    "name": "Suffix Trie Construction",
+    "version": 0,
+    "releaseDate": "2000-05-04T00:00:00Z",
+    "category": "Tries",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 16917,
+        "failureCount": 4708
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "243526904",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Clement Mihailescu",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1426
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Write a <span>SuffixTrie</span> class for a Suffix-Trie-like data structure.\n  The class should have a <span>root</span> property set to be the root node of\n  the trie and should support:\n</p>\n<ul>\n  <li>\n    Creating the trie from a string; this will be done by calling the\n    <span>populateSuffixTrieFrom</span> method upon class instantiation, which\n    should populate the <span>root</span> of the class.\n  </li>\n  <li>Searching for strings in the trie.</li>\n</ul>\n<p>\n  Note that every string added to the trie should end with the special\n  <span>endSymbol</span> character: <span>\"*\"</span>.\n</p>\n<p>\n  If you're unfamiliar with Suffix Tries, we recommend watching the\n  Conceptual Overview section of this question's video explanation before\n  starting to code.\n</p>\n<h3>Sample Input (for creation)</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">string</span> = \"babc\"\n</pre>\n<h3>Sample Output (for creation)</h3>\n<pre>\n<span class=\"CodeEditor-promptComment\">The structure below is the root of the trie.</span>\n{\n  \"c\": {\"*\": true},\n  \"b\": {\n    \"c\": {\"*\": true},\n    \"a\": {\"b\": {\"c\": {\"*\": true}}},\n  },\n  \"a\": {\"b\": {\"c\": {\"*\": true}}},\n}\n</pre>\n<h3>\n  Sample Input (for searching in the suffix trie above)\n</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">string</span> = \"abc\"\n</pre>\n<h3>\n  Sample Output (for searching in the suffix trie above)\n</h3>\n<pre>\ntrue\n</pre>\n</div>",
+    "hints": [
+        "<p>\nBuilding a suffix-trie-like data structure consists of essentially storing every suffix of a given string in a trie. To do so, iterate through the input string one character at a time and insert every substring starting at each character and ending at the end of the string into the trie.\n</p>\n",
+        "\n<p>\nTo insert a string into the trie, start by adding the first character of the string into the root node of the trie and mapping it to an empty hash table if it isn't already there. Then, iterate through the rest of the string inserting each of the remaining characters into the previous character's corresponding node (or hash table) in the trie, making sure to add an endSymbol \"*\" at the end.\n</p>\n",
+        "\n<p>\nSearching the trie for a specific string should follow a nearly identical logic to the one used to add a string in the trie.\n</p>"
+    ],
+    "spaceTime": "Creation: O(n^2) time | O(n^2) space - where n is the length of the input string\nSearching: O(m) time | O(1) space - where m is the length of the input string",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <unordered_map>\nusing namespace std;\n\n// Do not edit the class below except for the\n// populateSuffixTrieFrom and contains methods.\n// Feel free to add new properties and methods\n// to the class.\nclass TrieNode {\n public:\n  unordered_map<char, TrieNode*> children;\n};\n\nclass SuffixTrie {\n public:\n  TrieNode* root;\n  char endSymbol;\n\n  SuffixTrie(string str) {\n    this->root = new TrieNode();\n    this->endSymbol = '*';\n    this->populateSuffixTrieFrom(str);\n  }\n\n  void populateSuffixTrieFrom(string str) {\n    // Write your code here.\n  }\n\n  bool contains(string str) {\n    // Write your code here.\n    return false;\n  }\n};\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <unordered_map>\nusing namespace std;\n\nclass TrieNode {\n public:\n  unordered_map<char, TrieNode*> children;\n};\n\nclass SuffixTrie {\n public:\n  TrieNode* root;\n  char endSymbol;\n\n  SuffixTrie(string str) {\n    this->root = new TrieNode();\n    this->endSymbol = '*';\n    this->populateSuffixTrieFrom(str);\n  }\n\n  // O(n^2) time | O(n^2) space\n  void populateSuffixTrieFrom(string str) {\n    for (int i = 0; i < str.length(); i++) {\n      this->insertSubstringStartingAt(i, str);\n    }\n  }\n\n  void insertSubstringStartingAt(int i, string str) {\n    TrieNode* node = this->root;\n    for (int j = i; j < str.length(); j++) {\n      char letter = str[j];\n      if (node->children.find(letter) == node->children.end()) {\n        TrieNode* newNode = new TrieNode();\n        node->children.insert({letter, newNode});\n      }\n      node = node->children[letter];\n    }\n    node->children.insert({this->endSymbol, nullptr});\n  }\n\n  // O(m) time | O(1) space\n  bool contains(string str) {\n    TrieNode* node = this->root;\n    for (char letter : str) {\n      if (node->children.find(letter) == node->children.end()) {\n        return false;\n      }\n      node = node->children[letter];\n    }\n    return node->children.find(this->endSymbol) != node->children.end();\n  }\n};\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      string word1 = \"babc\";\n      SuffixTrie actual(word1);\n      assert(actual.contains(\"abc\") == true);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      string word1 = \"babc\";\n      SuffixTrie actual(word1);\n      assert(actual.contains(\"abc\") == true);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\nusing System.Collections.Generic;\n\npublic class Program {\n  // Do not edit the class below except for the\n  // PopulateSuffixTrieFrom and Contains methods.\n  // Feel free to add new properties and methods\n  // to the class.\n  public class TrieNode {\n    public Dictionary<char, TrieNode> Children =\n      new Dictionary<char, TrieNode>();\n  }\n\n  public class SuffixTrie {\n    public TrieNode root = new TrieNode();\n    public char endSymbol = '*';\n\n    public SuffixTrie(string str) {\n      PopulateSuffixTrieFrom(str);\n    }\n\n    public void PopulateSuffixTrieFrom(string str) {\n      // Write your code here.\n    }\n\n    public bool Contains(string str) {\n      // Write your code here.\n      return false;\n    }\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\n\npublic class Program {\n  public class TrieNode {\n    public Dictionary<char, TrieNode> Children =\n      new Dictionary<char, TrieNode>();\n  }\n\n  public class SuffixTrie {\n    public TrieNode root = new TrieNode();\n    public char endSymbol = '*';\n\n    public SuffixTrie(string str) {\n      PopulateSuffixTrieFrom(str);\n    }\n\n    // O(n^2) time | O(n^2) space\n    public void PopulateSuffixTrieFrom(string str) {\n      for (int i = 0; i < str.Length; i++) {\n        insertSubstringStartingAt(i, str);\n      }\n    }\n\n    public void insertSubstringStartingAt(int i, string str) {\n      TrieNode node = root;\n      for (int j = i; j < str.Length; j++) {\n        char letter = str[j];\n        if (!node.Children.ContainsKey(letter)) {\n          TrieNode newNode = new TrieNode();\n          node.Children.Add(letter, newNode);\n        }\n        node = node.Children[letter];\n      }\n      node.Children[endSymbol] = null;\n    }\n\n    // O(m) time | O(1) space\n    public bool Contains(string str) {\n      TrieNode node = root;\n      for (int i = 0; i < str.Length; i++) {\n        char letter = str[i];\n        if (!node.Children.ContainsKey(letter)) {\n          return false;\n        }\n        node = node.Children[letter];\n      }\n      return node.Children.ContainsKey(endSymbol);\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System.Linq;\nusing System.Collections.Generic;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    Program.SuffixTrie trie = new Program.SuffixTrie(\"babc\");\n    Utils.AssertTrue(trie.Contains(\"abc\"));\n  }\n}\n",
+            "unitTests": "using System.Linq;\nusing System.Collections.Generic;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    Program.SuffixTrie trie = new Program.SuffixTrie(\"babc\");\n    Utils.AssertTrue(trie.Contains(\"abc\"));\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\n// Do not edit the class below except for the\n// PopulateSuffixTrieFrom and Contains methods.\n// Feel free to add new properties and methods\n// to the class.\ntype SuffixTrie map[byte]SuffixTrie\n\n// Feel free to add to this function.\nfunc NewSuffixTrie() SuffixTrie {\n\ttrie := SuffixTrie{}\n\treturn trie\n}\n\nfunc (trie SuffixTrie) PopulateSuffixTrieFrom(str string) {\n\t// Write your code here.\n}\n\nfunc (trie SuffixTrie) Contains(str string) bool {\n\t// Write your code here.\n\treturn false\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\ntype SuffixTrie map[byte]SuffixTrie\n\nfunc NewSuffixTrie() SuffixTrie {\n\ttrie := SuffixTrie{}\n\treturn trie\n}\n\n// O(n^2) time | O(n^2) space\nfunc (trie SuffixTrie) PopulateSuffixTrieFrom(str string) {\n\tfor i := range str {\n\t\tnode := trie\n\t\tfor j := i; j < len(str); j++ {\n\t\t\tletter := str[j]\n\t\t\tif _, found := node[letter]; !found {\n\t\t\t\tnode[letter] = NewSuffixTrie()\n\t\t\t}\n\t\t\tnode = node[letter]\n\t\t}\n\t\tnode['*'] = nil\n\t}\n}\n\n// O(m) time | O(1) space\nfunc (trie SuffixTrie) Contains(str string) bool {\n\tnode := trie\n\tfor i := 0; i < len(str); i++ {\n\t\tletter := str[i]\n\t\tif _, found := node[letter]; !found {\n\t\t\treturn false\n\t\t}\n\t\tnode = node[letter]\n\t}\n\t_, found := node['*']\n\treturn found\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport \"github.com/stretchr/testify/require\"\n\nfunc (trie SuffixTrie) Equals(other SuffixTrie) bool {\n\tif len(trie) != len(other) {\n\t\treturn false\n\t}\n\tfor key, child := range trie {\n\t\totherchild, found := other[key]\n\t\tif !found {\n\t\t\treturn false\n\t\t} else if child != nil && !child.Equals(otherchild) {\n\t\t\treturn false\n\t\t}\n\t}\n\treturn true\n}\n\nfunc TrieFromString(str string) SuffixTrie {\n\ttrie := SuffixTrie{}\n\ttrie.PopulateSuffixTrieFrom(str)\n\treturn trie\n}\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\ttrie := TrieFromString(\"babc\")\n\texpected := SuffixTrie{\n\t\t'c': {'*': nil},\n\t\t'b': {\n\t\t\t'c': {'*': nil},\n\t\t\t'a': {'b': {'c': {'*': nil}}},\n\t\t},\n\t\t'a': {'b': {'c': {'*': nil}}},\n\t}\n\trequire.True(t, trie.Equals(expected))\n\trequire.True(t, trie.Contains(\"abc\"))\n}\n",
+            "unitTests": "package main\n\nimport \"github.com/stretchr/testify/require\"\n\nfunc (trie SuffixTrie) Equals(other SuffixTrie) bool {\n\tif len(trie) != len(other) {\n\t\treturn false\n\t}\n\tfor key, child := range trie {\n\t\totherchild, found := other[key]\n\t\tif !found {\n\t\t\treturn false\n\t\t} else if child != nil && !child.Equals(otherchild) {\n\t\t\treturn false\n\t\t}\n\t}\n\treturn true\n}\n\nfunc TrieFromString(str string) SuffixTrie {\n\ttrie := SuffixTrie{}\n\ttrie.PopulateSuffixTrieFrom(str)\n\treturn trie\n}\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\ttrie := TrieFromString(\"babc\")\n\texpected := SuffixTrie{\n\t\t'c': {'*': nil},\n\t\t'b': {\n\t\t\t'c': {'*': nil},\n\t\t\t'a': {'b': {'c': {'*': nil}}},\n\t\t},\n\t\t'a': {'b': {'c': {'*': nil}}},\n\t}\n\trequire.True(t, trie.Equals(expected))\n\trequire.True(t, trie.Contains(\"abc\"))\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  // Do not edit the class below except for the\n  // populateSuffixTrieFrom and contains methods.\n  // Feel free to add new properties and methods\n  // to the class.\n  static class TrieNode {\n    Map<Character, TrieNode> children = new HashMap<Character, TrieNode>();\n  }\n\n  static class SuffixTrie {\n    TrieNode root = new TrieNode();\n    char endSymbol = '*';\n\n    public SuffixTrie(String str) {\n      populateSuffixTrieFrom(str);\n    }\n\n    public void populateSuffixTrieFrom(String str) {\n      // Write your code here.\n    }\n\n    public boolean contains(String str) {\n      // Write your code here.\n      return false;\n    }\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  static class TrieNode {\n    Map<Character, TrieNode> children = new HashMap<Character, TrieNode>();\n  }\n\n  static class SuffixTrie {\n    TrieNode root = new TrieNode();\n    char endSymbol = '*';\n\n    public SuffixTrie(String str) {\n      populateSuffixTrieFrom(str);\n    }\n\n    // O(n^2) time | O(n^2) space\n    public void populateSuffixTrieFrom(String str) {\n      for (int i = 0; i < str.length(); i++) {\n        insertSubstringStartingAt(i, str);\n      }\n    }\n\n    public void insertSubstringStartingAt(int i, String str) {\n      TrieNode node = root;\n      for (int j = i; j < str.length(); j++) {\n        char letter = str.charAt(j);\n        if (!node.children.containsKey(letter)) {\n          TrieNode newNode = new TrieNode();\n          node.children.put(letter, newNode);\n        }\n        node = node.children.get(letter);\n      }\n      node.children.put(endSymbol, null);\n    }\n\n    // O(m) time | O(1) space\n    public boolean contains(String str) {\n      TrieNode node = root;\n      for (int i = 0; i < str.length(); i++) {\n        char letter = str.charAt(i);\n        if (!node.children.containsKey(letter)) {\n          return false;\n        }\n        node = node.children.get(letter);\n      }\n      return node.children.containsKey(endSymbol);\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var trie = new Program.SuffixTrie(\"babc\");\n    Utils.assertTrue(trie.contains(\"abc\"));\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var trie = new Program.SuffixTrie(\"babc\");\n    Utils.assertTrue(trie.contains(\"abc\"));\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "// Do not edit the class below except for the\n// populateSuffixTrieFrom and contains methods.\n// Feel free to add new properties and methods\n// to the class.\nclass SuffixTrie {\n  constructor(string) {\n    this.root = {};\n    this.endSymbol = '*';\n    this.populateSuffixTrieFrom(string);\n  }\n\n  populateSuffixTrieFrom(string) {\n    // Write your code here.\n  }\n\n  contains(string) {\n    // Write your code here.\n  }\n}\n\n// Do not edit the line below.\nexports.SuffixTrie = SuffixTrie;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass SuffixTrie {\n  constructor(string) {\n    this.root = {};\n    this.endSymbol = '*';\n    this.populateSuffixTrieFrom(string);\n  }\n\n  // O(n^2) time | O(n^2) space\n  populateSuffixTrieFrom(string) {\n    for (let i = 0; i < string.length; i++) {\n      this.insertSubstringStartingAt(i, string);\n    }\n  }\n\n  insertSubstringStartingAt(i, string) {\n    let node = this.root;\n    for (let j = i; j < string.length; j++) {\n      const letter = string[j];\n      if (!(letter in node)) node[letter] = {};\n      node = node[letter];\n    }\n    node[this.endSymbol] = true;\n  }\n\n  // O(m) time | O(1) space\n  contains(string) {\n    let node = this.root;\n    for (const letter of string) {\n      if (!(letter in node)) return false;\n      node = node[letter];\n    }\n    return this.endSymbol in node;\n  }\n}\n\nexports.SuffixTrie = SuffixTrie;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const trie = new program.SuffixTrie('babc');\n  const expected = {\n    c: {'*': true},\n    b: {\n      c: {'*': true},\n      a: {b: {c: {'*': true}}},\n    },\n    a: {b: {c: {'*': true}}},\n  };\n  chai.expect(trie.root).to.deep.equal(expected);\n  chai.expect(trie.contains('abc')).to.deep.equal(true);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const trie = new program.SuffixTrie('babc');\n  const expected = {\n    c: {'*': true},\n    b: {\n      c: {'*': true},\n      a: {b: {c: {'*': true}}},\n    },\n    a: {b: {c: {'*': true}}},\n  };\n  chai.expect(trie.root).to.deep.equal(expected);\n  chai.expect(trie.contains('abc')).to.deep.equal(true);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\ndata class TrieNode(\n    val children: MutableMap<Char, TrieNode> = mutableMapOf<Char, TrieNode>(),\n)\n\nclass SuffixTrie(str: String) {\n    val endSymbol = '*'\n    var root = TrieNode()\n\n    init { populate(str) }\n\n    fun populate(str: String) {\n        // Write your code here.\n    }\n\n    fun contains(str: String): Boolean {\n        // Write your code here.\n        return false\n    }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\ndata class TrieNode(\n    val children: MutableMap<Char, TrieNode> = mutableMapOf<Char, TrieNode>(),\n)\n\nclass SuffixTrie(str: String) {\n    val endSymbol = '*'\n    var root = TrieNode()\n\n    init { populate(str) }\n\n    // O(n^2) time | O(n^2) space\n    fun populate(str: String) {\n        for (i in 0 until str.length) {\n            insertSubstringStartingAt(i, str)\n        }\n    }\n\n    // O(m) time | O(1) space\n    fun contains(str: String): Boolean {\n        var node = this.root\n        for (letter in str) {\n            val child = node.children[letter]\n            if (child == null) return false\n            node = child\n        }\n        return node.children.containsKey(endSymbol)\n    }\n\n    fun insertSubstringStartingAt(i: Int, str: String) {\n        var node = root\n        for (j in i until str.length) {\n            val letter = str[j]\n            val child = node.children[letter]\n            if (child == null) {\n                val newNode = TrieNode()\n                node.children[letter] = newNode\n            }\n            node = node.children[letter]!!\n        }\n        node.children[endSymbol] = TrieNode()\n    }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.SuffixTrie\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val trie = SuffixTrie(\"babc\")\n        assert(trie.contains(\"abc\"))\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.SuffixTrie\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val trie = SuffixTrie(\"babc\")\n        assert(trie.contains(\"abc\"))\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "# Do not edit the class below except for the\n# populateSuffixTrieFrom and contains methods.\n# Feel free to add new properties and methods\n# to the class.\nclass SuffixTrie:\n    def __init__(self, string):\n        self.root = {}\n        self.endSymbol = \"*\"\n        self.populateSuffixTrieFrom(string)\n\n    def populateSuffixTrieFrom(self, string):\n        # Write your code here.\n        pass\n\n    def contains(self, string):\n        # Write your code here.\n        pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass SuffixTrie:\n    def __init__(self, string):\n        self.root = {}\n        self.endSymbol = \"*\"\n        self.populateSuffixTrieFrom(string)\n\n    # O(n^2) time | O(n^2) space\n    def populateSuffixTrieFrom(self, string):\n        for i in range(len(string)):\n            self.insertSubstringStartingAt(i, string)\n\n    def insertSubstringStartingAt(self, i, string):\n        node = self.root\n        for j in range(i, len(string)):\n            letter = string[j]\n            if letter not in node:\n                node[letter] = {}\n            node = node[letter]\n        node[self.endSymbol] = True\n\n    # O(m) time | O(1) space\n    def contains(self, string):\n        node = self.root\n        for letter in string:\n            if letter not in node:\n                return False\n            node = node[letter]\n        return self.endSymbol in node\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        trie = program.SuffixTrie(\"babc\")\n        expected = {\n            \"c\": {\"*\": True},\n            \"b\": {\"c\": {\"*\": True}, \"a\": {\"b\": {\"c\": {\"*\": True}}}},\n            \"a\": {\"b\": {\"c\": {\"*\": True}}},\n        }\n        self.assertEqual(trie.root, expected)\n        self.assertTrue(trie.contains(\"abc\"))\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        trie = program.SuffixTrie(\"babc\")\n        expected = {\n            \"c\": {\"*\": True},\n            \"b\": {\"c\": {\"*\": True}, \"a\": {\"b\": {\"c\": {\"*\": True}}}},\n            \"a\": {\"b\": {\"c\": {\"*\": True}}},\n        }\n        self.assertEqual(trie.root, expected)\n        self.assertTrue(trie.contains(\"abc\"))\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  def suffixTrie(n)\n    # Write your code here.\n    return -1\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def suffixTrie(n)\n    # Write your code here.\n    return -1\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.suffixTrie\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.suffixTrie\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  // Do not edit the class below except for the\n  // populateSuffixTrieFrom and contains methods.\n  // Feel free to add new properties and methods\n  // to the class.\n  class TrieNode {\n    var children: [String: Any] = [:]\n  }\n\n  class SuffixTrie {\n    var root = TrieNode()\n    let endSymbol = \"*\"\n\n    init(string: String) {\n      populateSuffixTrieFrom(string: string)\n    }\n\n    func populateSuffixTrieFrom(string: String) {\n      // Write your code here.\n    }\n\n    func contains(string: String) -> Bool {\n      // Write your code here.\n      return false\n    }\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  class TrieNode {\n    var children: [String: Any] = [:]\n  }\n\n  class SuffixTrie {\n    var root = TrieNode()\n    let endSymbol = \"*\"\n\n    init(string: String) {\n      populateSuffixTrieFrom(string: string)\n    }\n\n    // O(n^2) time | O(n^2) space\n    func populateSuffixTrieFrom(string: String) {\n      for i in 0 ..< string.count {\n        insertSubstringStartingAt(index: i, string: string, root: root)\n      }\n    }\n\n    func insertSubstringStartingAt(index: Int, string: String, root: TrieNode) {\n      var node = root\n\n      for j in index ..< string.count {\n        let jStringIndex = string.index(string.startIndex, offsetBy: j)\n        let jthCharacter = String(string[jStringIndex])\n\n        if !node.children.keys.contains(jthCharacter) {\n          node.children[jthCharacter] = TrieNode()\n        }\n\n        let nextNode = node.children[jthCharacter] as! TrieNode\n        node = nextNode\n      }\n\n      node.children[endSymbol] = true\n    }\n\n    // O(m) time | O(1) space\n    func contains(string: String) -> Bool {\n      var node = root\n\n      for character in string {\n        let stringifiedCharacter = String(character)\n\n        if !node.children.keys.contains(stringifiedCharacter) {\n          return false\n        }\n\n        let nextNode = node.children[stringifiedCharacter] as! TrieNode\n        node = nextNode\n      }\n\n      let reachedTheEnd = node.children[endSymbol] != nil\n      return reachedTheEnd\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws in\n      let trie = Program.SuffixTrie(string: \"babc\")\n      try assert(trie.contains(string: \"abc\"))\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws in\n      let trie = Program.SuffixTrie(string: \"babc\")\n      try assert(trie.contains(string: \"abc\"))\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "interface TrieNode {\n  [key: string]: TrieNode | boolean;\n}\n\n// Do not edit the class below except for the\n// populateSuffixTrieFrom and contains methods.\n// Feel free to add new properties and methods\n// to the class.\nexport class SuffixTrie {\n  root: TrieNode;\n  endSymbol: string;\n\n  constructor(string: string) {\n    this.root = {};\n    this.endSymbol = '*';\n    this.populateSuffixTrieFrom(string);\n  }\n\n  populateSuffixTrieFrom(string: string) {\n    // Write your code here.\n  }\n\n  contains(string: string) {\n    // Write your code here.\n    return false;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\ninterface TrieNode {\n  [key: string]: TrieNode | boolean;\n}\n\nexport class SuffixTrie {\n  root: TrieNode;\n  endSymbol: string;\n\n  constructor(string: string) {\n    this.root = {};\n    this.endSymbol = '*';\n    this.populateSuffixTrieFrom(string);\n  }\n\n  // O(n^2) time | O(n^2) space\n  populateSuffixTrieFrom(string: string) {\n    for (let i = 0; i < string.length; i++) {\n      this.insertSubstringStartingAt(i, string);\n    }\n  }\n\n  insertSubstringStartingAt(i: number, string: string) {\n    let node = this.root;\n    for (let j = i; j < string.length; j++) {\n      const letter = string[j];\n      if (!(letter in node)) node[letter] = {};\n      node = node[letter] as TrieNode;\n    }\n    node[this.endSymbol] = true;\n  }\n\n  // O(m) time | O(1) space\n  contains(string: string) {\n    let node = this.root;\n    for (const letter of string) {\n      if (!(letter in node)) return false;\n      node = node[letter] as TrieNode;\n    }\n    return this.endSymbol in node;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const trie = new program.SuffixTrie('babc');\n  const expected = {\n    c: {'*': true},\n    b: {\n      c: {'*': true},\n      a: {b: {c: {'*': true}}},\n    },\n    a: {b: {c: {'*': true}}},\n  };\n  chai.expect(trie.root).to.deep.equal(expected);\n  chai.expect(trie.contains('abc')).to.deep.equal(true);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const trie = new program.SuffixTrie('babc');\n  const expected = {\n    c: {'*': true},\n    b: {\n      c: {'*': true},\n      a: {b: {c: {'*': true}}},\n    },\n    a: {b: {c: {'*': true}}},\n  };\n  chai.expect(trie.root).to.deep.equal(expected);\n  chai.expect(trie.contains('abc')).to.deep.equal(true);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "string",
+            "example": "babc",
+            "schema": {
+                "type": "string"
+            }
+        },
+        {
+            "name": "classMethodsToCall",
+            "example": [
+                {
+                    "arguments": [
+                        "abc"
+                    ],
+                    "method": "contains"
+                }
+            ],
+            "schema": {
+                "description": "These methods will be called in the order that they appear in below\non a <span>SuffixTrie</span> built from the <span>string</span> and with their respective arguments.\n",
+                "items": {
+                    "properties": {
+                        "arguments": {
+                            "items": {
+                                "type": "string"
+                            },
+                            "maxItems": 1,
+                            "minItems": 1,
+                            "type": "array"
+                        },
+                        "method": {
+                            "enum": [
+                                "contains"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "method",
+                        "arguments"
+                    ],
+                    "type": "object"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        "abc"
+                    ],
+                    "method": "contains"
+                }
+            ],
+            "string": "babc"
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        "t"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "st"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "est"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "test"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "tes"
+                    ],
+                    "method": "contains"
+                }
+            ],
+            "string": "test"
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        "e"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "le"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "ble"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "ible"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "sible"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "isible"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "visible"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "nvisible"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "invisible"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "nvisibl"
+                    ],
+                    "method": "contains"
+                }
+            ],
+            "string": "invisible"
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        "9"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "89"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "789"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "6789"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "56789"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "456789"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "3456789"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "23456789"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "123456789"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "45567"
+                    ],
+                    "method": "contains"
+                }
+            ],
+            "string": "1234556789"
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        "t"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "st"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "est"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "test"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "ttest"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "sttest"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "esttest"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "testtest"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "tt"
+                    ],
+                    "method": "contains"
+                }
+            ],
+            "string": "testtest"
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        "t"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "tt"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "ttt"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "tttt"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "ttttt"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "tttttt"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "ttttttt"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "tttttttt"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "ttttttttt"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "vvv"
+                    ],
+                    "method": "contains"
+                }
+            ],
+            "string": "ttttttttt"
+        }
+    ],
+    "jsonTests": [
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        "abc"
+                    ],
+                    "method": "contains"
+                }
+            ],
+            "string": "babc"
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        "t"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "st"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "est"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "test"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "tes"
+                    ],
+                    "method": "contains"
+                }
+            ],
+            "string": "test"
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        "e"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "le"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "ble"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "ible"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "sible"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "isible"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "visible"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "nvisible"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "invisible"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "nvisibl"
+                    ],
+                    "method": "contains"
+                }
+            ],
+            "string": "invisible"
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        "9"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "89"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "789"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "6789"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "56789"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "456789"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "3456789"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "23456789"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "123456789"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "45567"
+                    ],
+                    "method": "contains"
+                }
+            ],
+            "string": "1234556789"
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        "t"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "st"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "est"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "test"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "ttest"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "sttest"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "esttest"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "testtest"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "tt"
+                    ],
+                    "method": "contains"
+                }
+            ],
+            "string": "testtest"
+        },
+        {
+            "classMethodsToCall": [
+                {
+                    "arguments": [
+                        "t"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "tt"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "ttt"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "tttt"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "ttttt"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "tttttt"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "ttttttt"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "tttttttt"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "ttttttttt"
+                    ],
+                    "method": "contains"
+                },
+                {
+                    "arguments": [
+                        "vvv"
+                    ],
+                    "method": "contains"
+                }
+            ],
+            "string": "ttttttttt"
+        }
+    ],
+    "changelog": []
+}

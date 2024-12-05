@@ -1,0 +1,712 @@
+{
+    "uid": "optimal-freelancing",
+    "testStrategy": "JSON",
+    "name": "Optimal Freelancing",
+    "version": 0,
+    "releaseDate": "2023-07-10T00:00:00Z",
+    "category": "Greedy Algorithms",
+    "difficulty": 1,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 5410,
+        "failureCount": 1614
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "832776363",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 487
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  <p>\n    You recently started freelance software development and have been offered\n    a variety of job opportunities. Each job has a deadline, meaning there is no\n    value in completing the work after the deadline. Additionally, each job\n    has an associated payment representing the profit for completing that job.\n    Given this information, write a function that returns the maximum profit that\n    can be obtained in a 7-day period.\n  </p>\n\n  <p>\n    Each job will take 1 full day to complete, and the deadline will be given\n    as the number of days left to complete the job. For example, if a job has a\n    deadline of 1, then it can only be completed if it is the first job worked\n    on. If a job has a deadline of 2, then it could be started on the first or\n    second day.\n  </p>\n\n  <p>\n    Note: There is no requirement to complete all of the jobs. Only one job can\n    be worked on at a time, meaning that in some scenarios it will be impossible\n    to complete them all.\n  </p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">jobs</span> = [\n  {\"deadline\": 1, \"payment\": 1},\n  {\"deadline\": 2, \"payment\": 1},\n  {\"deadline\": 2, \"payment\": 2}\n]\n</pre>\n<h3>Sample Output</h3>\n<pre>\n3 <span class=\"CodeEditor-promptComment\">// Job 0 would be completed first, followed by job 2. Job 1 is not completed.</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  A good approach to this problem is to first think about which jobs you know\n  you want to try to complete, and start by fitting them into a schedule. Next\n  you can consider the lower priority jobs.\n</p>\n",
+        "\n<p>\n  The jobs with the highest payments should be considered the highest priority\n  to fit into the schedule.\n</p>\n",
+        "\n<p>\n  When placing the next highest priority job in the schedule, always schedule\n  it for as late as possible in order to avoid gaps in the schedule.\n</p>"
+    ],
+    "spaceTime": "O(n * log(n)) time | O(1) space - where n is the number of jobs",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nint optimalFreelancing(vector<unordered_map<string, int>> jobs) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n#include <unordered_map>\n\nusing namespace std;\n\n// O(n * log(n)) time | O(1) space - where n is the number of jobs\nint optimalFreelancing(vector<unordered_map<string, int>> jobs) {\n  const int LENGTH_OF_WEEK = 7;\n  int profit = 0;\n\n  sort(jobs.begin(), jobs.end(), [](const auto& jobOne, const auto& jobTwo) {\n    return jobTwo.at(\"payment\") < jobOne.at(\"payment\");\n  });\n\n  vector<bool> timeline(LENGTH_OF_WEEK, false);\n\n  for (const auto& job : jobs) {\n    int maxTime = min(job.at(\"deadline\"), LENGTH_OF_WEEK);\n    for (int time = maxTime - 1; time >= 0; time--) {\n      if (!timeline[time]) {\n        timeline[time] = true;\n        profit += job.at(\"payment\");\n        break;\n      }\n    }\n  }\n  return profit;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<unordered_map<string, int>> jobs = {\n        {{\"deadline\", 1}, {\"payment\", 1}}};\n      auto expected = 1;\n      auto actual = optimalFreelancing(jobs);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<unordered_map<string, int>> jobs = {\n        {{\"deadline\", 1}, {\"payment\", 1}}};\n      auto expected = 1;\n      auto actual = optimalFreelancing(jobs);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System.Collections.Generic;\nusing System;\n\npublic class Program {\n  public int OptimalFreelancing(Dictionary<string, int>[] jobs) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n * log(n)) time | O(1) space - where n is the number of jobs\n  public int OptimalFreelancing(Dictionary<string, int>[] jobs) {\n    const int LENGTH_OF_WEEK = 7;\n    int profit = 0;\n    Array.Sort(\n      jobs,\n      Comparer<Dictionary<string, int> >.Create(\n        (jobOne, jobTwo) => jobTwo[\"payment\"].CompareTo(jobOne[\"payment\"])\n      )\n    );\n\n    bool[] timeline = new bool[LENGTH_OF_WEEK];\n\n    foreach (var job in jobs) {\n      int maxTime = Math.Min(job[\"deadline\"], LENGTH_OF_WEEK);\n      for (int time = maxTime - 1; time >= 0; time--) {\n        if (!timeline[time]) {\n          timeline[time] = true;\n          profit += job[\"payment\"];\n          break;\n        }\n      }\n    }\n\n    return profit;\n  }\n}"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System.Collections.Generic;\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    Dictionary<string, int>[] input = new Dictionary<string, int>[1];\n    Dictionary<string, int> job = new Dictionary<string, int>();\n    job[\"deadline\"] = 1;\n    job[\"payment\"] = 1;\n    input[0] = job;\n    var expected = 1;\n    var actual = new Program().OptimalFreelancing(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "using System.Collections.Generic;\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    Dictionary<string, int>[] input = new Dictionary<string, int>[1];\n    Dictionary<string, int> job = new Dictionary<string, int>();\n    job[\"deadline\"] = 1;\n    job[\"payment\"] = 1;\n    input[0] = job;\n    var expected = 1;\n    var actual = new Program().OptimalFreelancing(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc OptimalFreelancing(jobs []map[string]int) int {\n\t// Write your code here.\n\treturn -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport \"sort\"\n\nconst LENGTH_OF_WEEK = 7\n\n// O(n * log(n)) time | O(1) space - where n is the number of jobs\nfunc OptimalFreelancing(jobs []map[string]int) int {\n\tprofit := 0\n\n\tsort.Slice(jobs, func(i, j int) bool {\n\t\treturn jobs[j][\"payment\"] < jobs[i][\"payment\"]\n\t})\n\n\ttimeline := make([]bool, LENGTH_OF_WEEK)\n\tfor _, job := range jobs {\n\t\tmaxTime := min(job[\"deadline\"], LENGTH_OF_WEEK)\n\t\tfor time := maxTime - 1; time >= 0; time-- {\n\t\t\tif timeline[time] == false {\n\t\t\t\ttimeline[time] = true\n\t\t\t\tprofit += job[\"payment\"]\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t}\n\n\treturn profit\n}\n\nfunc min(a, b int) int {\n\tif a < b {\n\t\treturn a\n\t}\n\treturn b\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []map[string]int{\n\t\t{\"deadline\": 1, \"payment\": 1},\n\t}\n\texpected := 1\n\tactual := OptimalFreelancing(input)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []map[string]int{\n\t\t{\"deadline\": 1, \"payment\": 1},\n\t}\n\texpected := 1\n\tactual := OptimalFreelancing(input)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int optimalFreelancing(Map<String, Integer>[] jobs) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n * log(n)) time | O(1) space - where n is the number of jobs\n  public int optimalFreelancing(Map<String, Integer>[] jobs) {\n    final int LENGTH_OF_WEEK = 7;\n    int profit = 0;\n    Arrays.sort(jobs, new Comparator<Map<String, Integer>>() {\n      public int compare(\n        final Map<String, Integer> jobOne, final Map<String, Integer> jobTwo\n      ) {\n        return jobTwo.get(\"payment\").compareTo(jobOne.get(\"payment\"));\n      }\n    });\n\n    boolean[] timeline = new boolean[LENGTH_OF_WEEK];\n\n    for (Map<String, Integer> job : jobs) {\n      int maxTime = Math.min(job.get(\"deadline\"), LENGTH_OF_WEEK);\n      for (int time = maxTime - 1; time >= 0; time--) {\n        if (timeline[time] == false) {\n          timeline[time] = true;\n          profit += job.get(\"payment\");\n          break;\n        }\n      }\n    }\n    return profit;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    HashMap[] input = new HashMap[1];\n    HashMap<String, Integer> job = new HashMap<String, Integer>();\n    job.put(\"deadline\", 1);\n    job.put(\"payment\", 1);\n    input[0] = job;\n    var expected = 1;\n    var actual = new Program().optimalFreelancing(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    HashMap[] input = new HashMap[1];\n    HashMap<String, Integer> job = new HashMap<String, Integer>();\n    job.put(\"deadline\", 1);\n    job.put(\"payment\", 1);\n    input[0] = job;\n    var expected = 1;\n    var actual = new Program().optimalFreelancing(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function optimalFreelancing(jobs) {\n  // Write your code here.\n  return -1;\n}\n\n// Do not edit the line below.\nexports.optimalFreelancing = optimalFreelancing;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * log(n)) time | O(1) space - where n is the number of jobs\nfunction optimalFreelancing(jobs) {\n  const LENGTH_OF_WEEK = 7;\n  let profit = 0;\n  jobs.sort((jobA, jobB) => jobB.payment - jobA.payment);\n  const timeline = new Array(LENGTH_OF_WEEK).fill(false);\n  for (const job of jobs) {\n    const maxTime = Math.min(job.deadline, LENGTH_OF_WEEK);\n    for (let time = maxTime - 1; time >= 0; time--) {\n      if (timeline[time] === false) {\n        timeline[time] = true;\n        profit += job.payment;\n        break;\n      }\n    }\n  }\n  return profit;\n}\n\n// Do not edit the line below.\nexports.optimalFreelancing = optimalFreelancing;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [{deadline: 1, payment: 1}];\n  const expected = 1;\n  const actual = program.optimalFreelancing(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [{deadline: 1, payment: 1}];\n  const expected = 1;\n  const actual = program.optimalFreelancing(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun optimalFreelancing(jobs: MutableList<Map<String, Int>>): Int {\n    // Write your code here.\n    return -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.min\n\n// O(n * log(n)) time | O(1) space - where n is the number of jobs\nfun optimalFreelancing(jobs: MutableList<Map<String, Int>>): Int {\n    val LENGTH_OF_WEEK = 7\n    var profit = 0\n    jobs.sortWith(\n        Comparator<Map<String, Int>> { jobA, jobB ->\n            jobB[\"payment\"]!!.compareTo(\n                jobA[\"payment\"]!!,\n            )\n        },\n    )\n    val timeline = MutableList(LENGTH_OF_WEEK) { false }\n    for (job in jobs) {\n        val maxTime = min(job[\"deadline\"]!!, LENGTH_OF_WEEK)\n        for (time in maxTime - 1 downTo 0) {\n            if (timeline[time] == false) {\n                timeline[time] = true\n                profit += job[\"payment\"]!!\n                break\n            }\n        }\n    }\n    return profit\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.optimalFreelancing\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(mapOf(\"deadline\" to 1, \"payment\" to 1))\n        val expected = 1\n        val output = optimalFreelancing(input)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.optimalFreelancing\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(mapOf(\"deadline\" to 1, \"payment\" to 1))\n        val expected = 1\n        val output = optimalFreelancing(input)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def optimalFreelancing(jobs):\n    # Write your code here.\n    return -1\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n * log(n)) time | O(1) space - where n is the number of jobs\ndef optimalFreelancing(jobs):\n    LENGTH_OF_WEEK = 7\n    profit = 0\n    jobs.sort(key=lambda job: job[\"payment\"], reverse=True)\n    timeline = [False] * LENGTH_OF_WEEK\n    for job in jobs:\n        maxTime = min((job[\"deadline\"], LENGTH_OF_WEEK))\n        for time in reversed(range(maxTime)):\n            if timeline[time] == False:\n                timeline[time] = True\n                profit += job[\"payment\"]\n                break\n    return profit\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [{\"deadline\": 1, \"payment\": 1}]\n        expected = 1\n        actual = program.optimalFreelancing(input)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [{\"deadline\": 1, \"payment\": 1}]\n        expected = 1\n        actual = program.optimalFreelancing(input)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def optimalFreelancing(jobs)\n        # Write your code here.\n        return -1\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def optimalFreelancing(jobs)\n        # Write your code here.\n        return -1\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.optimalFreelancing\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.optimalFreelancing\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func optimalFreelancing(_ jobs: [[String: Int]]) -> Int {\n    // Write your code here.\n    return -1\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  func optimalFreelancing(_ jobs: [[String: Int]]) -> Int {\n    let LENGTH_OF_WEEK = 7\n    var profit = 0\n\n    let sortedJobs = jobs.sorted { $0[\"payment\"]! > $1[\"payment\"]! }\n\n    var timeline = Array(repeating: false, count: LENGTH_OF_WEEK)\n    for job in sortedJobs {\n      let maxTime = min(job[\"deadline\"]!, LENGTH_OF_WEEK)\n      for time in (0 ..< maxTime).reversed() {\n        if !timeline[time] {\n          timeline[time] = true\n          profit += job[\"payment\"]!\n          break\n        }\n      }\n    }\n\n    return profit\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var input: [[String: Int]] = [\n        [\"deadline\": 1, \"payment\": 1],\n      ]\n      var expected = 1\n      var actual = Program().optimalFreelancing(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var input: [[String: Int]] = [\n        [\"deadline\": 1, \"payment\": 1],\n      ]\n      var expected = 1\n      var actual = Program().optimalFreelancing(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function optimalFreelancing(jobs: Record<string, number>[]) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * log(n)) time | O(1) space - where n is the number of jobs\nexport function optimalFreelancing(jobs: Record<string, number>[]) {\n  const LENGTH_OF_WEEK = 7;\n  let profit = 0;\n  jobs.sort((jobA, jobB) => jobB.payment - jobA.payment);\n  const timeline = new Array(LENGTH_OF_WEEK).fill(false);\n  for (const job of jobs) {\n    const maxTime = Math.min(job.deadline, LENGTH_OF_WEEK);\n    for (let time = maxTime - 1; time >= 0; time--) {\n      if (timeline[time] === false) {\n        timeline[time] = true;\n        profit += job.payment;\n        break;\n      }\n    }\n  }\n  return profit;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [{deadline: 1, payment: 1}];\n  const expected = 1;\n  const actual = program.optimalFreelancing(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [{deadline: 1, payment: 1}];\n  const expected = 1;\n  const actual = program.optimalFreelancing(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "jobs",
+            "example": [],
+            "schema": {
+                "items": {
+                    "properties": {
+                        "deadline": {
+                            "type": "integer"
+                        },
+                        "payment": {
+                            "type": "integer"
+                        }
+                    },
+                    "required": [
+                        "deadline",
+                        "payment"
+                    ],
+                    "type": "object"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "jobs": []
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 1,
+                    "payment": 1
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 1,
+                    "payment": 2
+                },
+                {
+                    "deadline": 1,
+                    "payment": 1
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 1,
+                    "payment": 1
+                },
+                {
+                    "deadline": 1,
+                    "payment": 2
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 1,
+                    "payment": 1
+                },
+                {
+                    "deadline": 2,
+                    "payment": 1
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 1,
+                    "payment": 1
+                },
+                {
+                    "deadline": 2,
+                    "payment": 2
+                },
+                {
+                    "deadline": 2,
+                    "payment": 1
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 8,
+                    "payment": 3
+                },
+                {
+                    "deadline": 1,
+                    "payment": 1
+                },
+                {
+                    "deadline": 1,
+                    "payment": 2
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 2,
+                    "payment": 2
+                },
+                {
+                    "deadline": 4,
+                    "payment": 3
+                },
+                {
+                    "deadline": 5,
+                    "payment": 1
+                },
+                {
+                    "deadline": 7,
+                    "payment": 2
+                },
+                {
+                    "deadline": 3,
+                    "payment": 1
+                },
+                {
+                    "deadline": 3,
+                    "payment": 2
+                },
+                {
+                    "deadline": 1,
+                    "payment": 3
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 2,
+                    "payment": 1
+                },
+                {
+                    "deadline": 2,
+                    "payment": 2
+                },
+                {
+                    "deadline": 2,
+                    "payment": 3
+                },
+                {
+                    "deadline": 2,
+                    "payment": 4
+                },
+                {
+                    "deadline": 2,
+                    "payment": 5
+                },
+                {
+                    "deadline": 2,
+                    "payment": 6
+                },
+                {
+                    "deadline": 2,
+                    "payment": 7
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 8,
+                    "payment": 1
+                },
+                {
+                    "deadline": 6,
+                    "payment": 4
+                },
+                {
+                    "deadline": 1,
+                    "payment": 2
+                },
+                {
+                    "deadline": 1,
+                    "payment": 3
+                },
+                {
+                    "deadline": 2,
+                    "payment": 3
+                },
+                {
+                    "deadline": 5,
+                    "payment": 2
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 2,
+                    "payment": 1
+                },
+                {
+                    "deadline": 1,
+                    "payment": 4
+                },
+                {
+                    "deadline": 3,
+                    "payment": 2
+                },
+                {
+                    "deadline": 1,
+                    "payment": 3
+                },
+                {
+                    "deadline": 4,
+                    "payment": 3
+                },
+                {
+                    "deadline": 4,
+                    "payment": 2
+                },
+                {
+                    "deadline": 4,
+                    "payment": 1
+                },
+                {
+                    "deadline": 5,
+                    "payment": 4
+                },
+                {
+                    "deadline": 8,
+                    "payment": 1
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 10,
+                    "payment": 1
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 1,
+                    "payment": 1
+                },
+                {
+                    "deadline": 2,
+                    "payment": 1
+                },
+                {
+                    "deadline": 3,
+                    "payment": 1
+                },
+                {
+                    "deadline": 4,
+                    "payment": 1
+                },
+                {
+                    "deadline": 5,
+                    "payment": 1
+                },
+                {
+                    "deadline": 6,
+                    "payment": 1
+                },
+                {
+                    "deadline": 7,
+                    "payment": 1
+                },
+                {
+                    "deadline": 8,
+                    "payment": 1
+                },
+                {
+                    "deadline": 9,
+                    "payment": 1
+                },
+                {
+                    "deadline": 10,
+                    "payment": 1
+                }
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "jobs": []
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 1,
+                    "payment": 1
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 1,
+                    "payment": 2
+                },
+                {
+                    "deadline": 1,
+                    "payment": 1
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 1,
+                    "payment": 1
+                },
+                {
+                    "deadline": 1,
+                    "payment": 2
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 1,
+                    "payment": 1
+                },
+                {
+                    "deadline": 2,
+                    "payment": 1
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 1,
+                    "payment": 1
+                },
+                {
+                    "deadline": 2,
+                    "payment": 2
+                },
+                {
+                    "deadline": 2,
+                    "payment": 1
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 8,
+                    "payment": 3
+                },
+                {
+                    "deadline": 1,
+                    "payment": 1
+                },
+                {
+                    "deadline": 1,
+                    "payment": 2
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 2,
+                    "payment": 2
+                },
+                {
+                    "deadline": 4,
+                    "payment": 3
+                },
+                {
+                    "deadline": 5,
+                    "payment": 1
+                },
+                {
+                    "deadline": 7,
+                    "payment": 2
+                },
+                {
+                    "deadline": 3,
+                    "payment": 1
+                },
+                {
+                    "deadline": 3,
+                    "payment": 2
+                },
+                {
+                    "deadline": 1,
+                    "payment": 3
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 2,
+                    "payment": 1
+                },
+                {
+                    "deadline": 2,
+                    "payment": 2
+                },
+                {
+                    "deadline": 2,
+                    "payment": 3
+                },
+                {
+                    "deadline": 2,
+                    "payment": 4
+                },
+                {
+                    "deadline": 2,
+                    "payment": 5
+                },
+                {
+                    "deadline": 2,
+                    "payment": 6
+                },
+                {
+                    "deadline": 2,
+                    "payment": 7
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 8,
+                    "payment": 1
+                },
+                {
+                    "deadline": 6,
+                    "payment": 4
+                },
+                {
+                    "deadline": 1,
+                    "payment": 2
+                },
+                {
+                    "deadline": 1,
+                    "payment": 3
+                },
+                {
+                    "deadline": 2,
+                    "payment": 3
+                },
+                {
+                    "deadline": 5,
+                    "payment": 2
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 2,
+                    "payment": 1
+                },
+                {
+                    "deadline": 1,
+                    "payment": 4
+                },
+                {
+                    "deadline": 3,
+                    "payment": 2
+                },
+                {
+                    "deadline": 1,
+                    "payment": 3
+                },
+                {
+                    "deadline": 4,
+                    "payment": 3
+                },
+                {
+                    "deadline": 4,
+                    "payment": 2
+                },
+                {
+                    "deadline": 4,
+                    "payment": 1
+                },
+                {
+                    "deadline": 5,
+                    "payment": 4
+                },
+                {
+                    "deadline": 8,
+                    "payment": 1
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 10,
+                    "payment": 1
+                }
+            ]
+        },
+        {
+            "jobs": [
+                {
+                    "deadline": 1,
+                    "payment": 1
+                },
+                {
+                    "deadline": 2,
+                    "payment": 1
+                },
+                {
+                    "deadline": 3,
+                    "payment": 1
+                },
+                {
+                    "deadline": 4,
+                    "payment": 1
+                },
+                {
+                    "deadline": 5,
+                    "payment": 1
+                },
+                {
+                    "deadline": 6,
+                    "payment": 1
+                },
+                {
+                    "deadline": 7,
+                    "payment": 1
+                },
+                {
+                    "deadline": 8,
+                    "payment": 1
+                },
+                {
+                    "deadline": 9,
+                    "payment": 1
+                },
+                {
+                    "deadline": 10,
+                    "payment": 1
+                }
+            ]
+        }
+    ],
+    "changelog": []
+}

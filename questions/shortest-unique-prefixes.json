@@ -1,0 +1,448 @@
+{
+    "uid": "shortest-unique-prefixes",
+    "testStrategy": "JSON",
+    "name": "Shortest Unique Prefixes",
+    "version": 0,
+    "releaseDate": "2023-10-15T00:00:00Z",
+    "category": "Tries",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 512,
+        "failureCount": 14
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "843038878",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 752
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    You're given an array of unique strings. Write a function that returns an\n    array containing the shortest unique prefix for each string.\n  </p>\n\n  <p>\n    For example, given the strings <span>[\"algoexpert\", \"algorithm\"]</span>, the\n    shortest prefixes that uniquely identify each string are\n    <span>[\"algoe\", \"algor\"]</span>.\n  </p>\n\n  <p>\n    If a string <span>strA</span> is entirely contained in another string\n    <span>strB</span>, then there is no completely unique prefix for\n    <span>strA</span>, and thus its shortest unique prefix should be its entire\n    self. For example, given the strings <span>[\"food\", \"foodie\"]</span>, the\n    shortest prefixes to uniquely identify each string would be\n    <span>[\"food\", \"foodi\"]</span>. In this example, \"food\"'s shortest unique\n    prefix must be \"food\" (the entire string), since it's entirely contained in\n    \"foodie\". It follows that \"foodie\" can't have just \"food\" as its shortest\n    unique prefix.\n  </p>\n\n  <p>\n    Your function should return the prefixes in the corresponding order of the input\n    strings (i.e., the index of each prefix should be the same as the index of its corresponding\n    string).\n  </p>\n\n  <h3>Sample Input #1</h3>\n  <pre><span class=\"CodeEditor-promptParameter\">strings</span> = [\n  \"algoexpert\",\n  \"algorithm\",\n]</pre>\n  <h3>Sample Output #1</h3>\n  <pre>\n[\n  \"algoe\",\n  \"algor\"\n]</pre\n  >\n\n  <h3>Sample Input #2</h3>\n  <pre><span class=\"CodeEditor-promptParameter\">strings</span> = [\n  \"hello\",\n  \"world\",\n  \"he\",\n  \"foo\",\n  \"worldly\",\n  \"food\",\n  \"algoexpert\"\n]</pre>\n  <h3>Sample Output #2</h3>\n  <pre>\n[\n  \"hel\",\n  \"world\",\n  \"he\",\n  \"foo\",\n  \"worldl\",\n  \"food\",\n  \"a\"\n]</pre\n  >\n\n  <h3>Sample Input #3</h3>\n  <pre><span class=\"CodeEditor-promptParameter\">strings</span> = [\n  \"foo\",\n  \"food\",\n  \"foods\",\n  \"foodie\"\n]</pre>\n  <h3>Sample Output #3</h3>\n  <pre>\n[\n  \"foo\",\n  \"food\",\n  \"foods\",\n  \"foodi\"\n]</pre\n  >\n</div>",
+    "hints": [
+        "<p>\n  This problem requires organizing the strings based on their starting characters.\n  Is there a data structure that can help with this?\n</p>\n",
+        "\n<p>\n  Try first inserting all of the strings into a trie, then use that trie to find\n  the shortest unique prefix for each.\n</p>\n",
+        "\n<p>\n  In the trie, any node that we only ever see once is unique to a word. Try\n  keeping track of how many visits are made to each node. For each string, the\n  path to the shortest unique prefix ends when a node with only 1 visit is found.\n</p>"
+    ],
+    "spaceTime": "O(n * m) time | O(n * m) space - where n is the length of strings, and m is the length of the longest string",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nvector<string> shortestUniquePrefixes(vector<string> strings) {\n  // Write your code here.\n  return {};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <unordered_map>\n\nusing namespace std;\n\nclass TrieNode {\n public:\n  unordered_map<char, TrieNode*> children;\n  int count = 0;\n};\n\nclass Trie {\n public:\n  TrieNode* root = new TrieNode();\n\n  void insert(string str);\n};\n\nstring findUniquePrefix(string str, Trie& trie);\n\n// O(n * m) time | O(n * m) space - where n is the length of strings, and m\n// is the length of the longest string\nvector<string> shortestUniquePrefixes(vector<string> strings) {\n  Trie trie;\n  for (const string& str : strings) {\n    trie.insert(str);\n  }\n\n  vector<string> prefixes;\n  for (int idx = 0; idx < strings.size(); idx++) {\n    string uniquePrefix = findUniquePrefix(strings[idx], trie);\n    prefixes.push_back(uniquePrefix);\n  }\n\n  return prefixes;\n}\n\nstring findUniquePrefix(string str, Trie& trie) {\n  int currentStringIdx = 0;\n  TrieNode* currentTrieNode = trie.root;\n\n  while (currentStringIdx < str.length() - 1) {\n    char currentStringChar = str.at(currentStringIdx);\n    currentTrieNode = currentTrieNode->children[currentStringChar];\n    if (currentTrieNode->count == 1) break;\n    currentStringIdx++;\n  }\n\n  return str.substr(0, currentStringIdx + 1);\n}\n\nvoid Trie::insert(string str) {\n  TrieNode* currentTrieNode = root;\n  for (int idx = 0; idx < str.length(); idx++) {\n    char letter = str.at(idx);\n    if (currentTrieNode->children.find(letter) == currentTrieNode->children.end()) {\n      TrieNode* newNode = new TrieNode();\n      currentTrieNode->children[letter] = newNode;\n    }\n    currentTrieNode = currentTrieNode->children[letter];\n    currentTrieNode->count++;\n  }\n}"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<string> strings = {\n        \"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"};\n      vector<string> expected = {\"algoe\", \"algor\", \"f\", \"m\"};\n      auto actual = shortestUniquePrefixes(strings);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<string> strings = {\n        \"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"};\n      vector<string> expected = {\"algoe\", \"algor\", \"f\", \"m\"};\n      auto actual = shortestUniquePrefixes(strings);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public string[] ShortestUniquePrefixes(string[] strings) {\n    // Write your code here.\n    return new string[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n * m) time | O(n * m) space - where n is the length of strings, and m\n  // is the length of the longest string\n  public string[] ShortestUniquePrefixes(string[] strings) {\n    Trie trie = new Trie();\n    foreach (var str in strings) {\n      trie.insert(str);\n    }\n\n    string[] prefixes = new string[strings.Length];\n    for (int idx = 0; idx < strings.Length; idx++) {\n      string uniquePrefix = findUniquePrefix(strings[idx], trie);\n      prefixes[idx] = uniquePrefix;\n    }\n\n    return prefixes;\n  }\n\n  static string findUniquePrefix(string str, Trie trie) {\n    int currentstringIdx = 0;\n    TrieNode currentTrieNode = trie.root;\n\n    while (currentstringIdx < str.Length - 1) {\n      char currentstringChar = str[currentstringIdx];\n      currentTrieNode = currentTrieNode.children[currentstringChar];\n      if (currentTrieNode.count == 1) break;\n      currentstringIdx++;\n    }\n\n    return str.Substring(0, currentstringIdx + 1 - 0);\n  }\n\n  public class TrieNode {\n    public Dictionary<char, TrieNode> children =\n      new Dictionary<char, TrieNode>();\n    public int count = 0;\n  }\n\n  public class Trie {\n    public TrieNode root = new TrieNode();\n\n    public void insert(string str) {\n      TrieNode currentTrieNode = root;\n      for (int idx = 0; idx < str.Length; idx++) {\n        char letter = str[idx];\n        if (!currentTrieNode.children.ContainsKey(letter)) {\n          TrieNode newNode = new TrieNode();\n          currentTrieNode.children[letter] = newNode;\n        }\n        currentTrieNode = currentTrieNode.children[letter];\n        currentTrieNode.count++;\n      }\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    string[] strings =\n      new string[] { \"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\" };\n    string[] expected = new string[] { \"algoe\", \"algor\", \"f\", \"m\" };\n    string[] actual = new Program().ShortestUniquePrefixes(strings);\n    Utils.AssertTrue(expected.Length == actual.Length);\n    for (int idx = 0; idx < expected.Length; idx++) {\n      Utils.AssertTrue(expected[idx].Equals(actual[idx]));\n    }\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    string[] strings =\n      new string[] { \"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\" };\n    string[] expected = new string[] { \"algoe\", \"algor\", \"f\", \"m\" };\n    string[] actual = new Program().ShortestUniquePrefixes(strings);\n    Utils.AssertTrue(expected.Length == actual.Length);\n    for (int idx = 0; idx < expected.Length; idx++) {\n      Utils.AssertTrue(expected[idx].Equals(actual[idx]));\n    }\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc ShortestUniquePrefixes(strings []string) []string {\n\t// Write your code here.\n\treturn []string{}\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n * m) time | O(n * m) space - where n is the length of strings, and m\n// is the length of the longest string\nfunc ShortestUniquePrefixes(strings []string) []string {\n\ttrie := NewTrie()\n\tfor _, str := range strings {\n\t\ttrie.Insert(str)\n\t}\n\n\tprefixes := make([]string, 0)\n\tfor _, str := range strings {\n\t\tuniquePrefix := findUniquePrefix(str, trie)\n\t\tprefixes = append(prefixes, uniquePrefix)\n\t}\n\n\treturn prefixes\n}\n\nfunc findUniquePrefix(str string, trie *Trie) string {\n\tcurrentStringIdx := 0\n\tcurrentTrieNode := trie.root\n\n\tfor currentStringIdx < len(str)-1 {\n\t\tcurrentStringChar := str[currentStringIdx]\n\t\tcurrentTrieNode = currentTrieNode.children[currentStringChar]\n\t\tif currentTrieNode.count == 1 {\n\t\t\tbreak\n\t\t}\n\t\tcurrentStringIdx++\n\t}\n\n\treturn str[:currentStringIdx+1]\n}\n\ntype TrieNode struct {\n\tchildren map[byte]*TrieNode\n\tcount    int\n}\n\ntype Trie struct {\n\troot *TrieNode\n}\n\nfunc NewTrie() *Trie {\n\treturn &Trie{root: &TrieNode{children: make(map[byte]*TrieNode), count: 0}}\n}\n\nfunc (t *Trie) Insert(str string) {\n\tcurrentTrieNode := t.root\n\tfor i := 0; i < len(str); i++ {\n\t\tchar := str[i]\n\t\tif _, ok := currentTrieNode.children[char]; !ok {\n\t\t\tcurrentTrieNode.children[char] = &TrieNode{children: make(map[byte]*TrieNode), count: 0}\n\t\t}\n\t\tcurrentTrieNode = currentTrieNode.children[char]\n\t\tcurrentTrieNode.count++\n\t}\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tstrings := []string{\"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"}\n\texpected := []string{\"algoe\", \"algor\", \"f\", \"m\"}\n\tactual := ShortestUniquePrefixes(strings)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tstrings := []string{\"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"}\n\texpected := []string{\"algoe\", \"algor\", \"f\", \"m\"}\n\tactual := ShortestUniquePrefixes(strings)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public String[] shortestUniquePrefixes(String[] strings) {\n    // Write your code here.\n    return new String[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n * m) time | O(n * m) space - where n is the length of strings, and m\n  // is the length of the longest string\n  public String[] shortestUniquePrefixes(String[] strings) {\n    Trie trie = new Trie();\n    for (String str : strings) {\n      trie.insert(str);\n    }\n\n    String[] prefixes = new String[strings.length];\n    for (int idx = 0; idx < strings.length; idx++) {\n      String uniquePrefix = findUniquePrefix(strings[idx], trie);\n      prefixes[idx] = uniquePrefix;\n    }\n\n    return prefixes;\n  }\n\n  static String findUniquePrefix(String str, Trie trie) {\n    int currentStringIdx = 0;\n    TrieNode currentTrieNode = trie.root;\n\n    while (currentStringIdx < str.length() - 1) {\n      char currentStringChar = str.charAt(currentStringIdx);\n      currentTrieNode = currentTrieNode.children.get(currentStringChar);\n      if (currentTrieNode.count == 1) break;\n      currentStringIdx++;\n    }\n\n    return str.substring(0, currentStringIdx + 1);\n  }\n\n  static class TrieNode {\n    Map<Character, TrieNode> children = new HashMap<Character, TrieNode>();\n    int count = 0;\n  }\n\n  static class Trie {\n    TrieNode root = new TrieNode();\n\n    public void insert(String str) {\n      TrieNode currentTrieNode = root;\n      for (int idx = 0; idx < str.length(); idx++) {\n        char letter = str.charAt(idx);\n        if (!currentTrieNode.children.containsKey(letter)) {\n          TrieNode newNode = new TrieNode();\n          currentTrieNode.children.put(letter, newNode);\n        }\n        currentTrieNode = currentTrieNode.children.get(letter);\n        currentTrieNode.count++;\n      }\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    String[] strings =\n      new String[] {\"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"};\n    String[] expected = new String[] {\"algoe\", \"algor\", \"f\", \"m\"};\n    String[] actual = new Program().shortestUniquePrefixes(strings);\n    Utils.assertTrue(expected.length == actual.length);\n    for (int idx = 0; idx < expected.length; idx++) {\n      Utils.assertTrue(expected[idx].equals(actual[idx]));\n    }\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    String[] strings =\n      new String[] {\"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"};\n    String[] expected = new String[] {\"algoe\", \"algor\", \"f\", \"m\"};\n    String[] actual = new Program().shortestUniquePrefixes(strings);\n    Utils.assertTrue(expected.length == actual.length);\n    for (int idx = 0; idx < expected.length; idx++) {\n      Utils.assertTrue(expected[idx].equals(actual[idx]));\n    }\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function shortestUniquePrefixes(strings) {\n  // Write your code here.\n  return [];\n}\n\n// Do not edit the line below.\nexports.shortestUniquePrefixes = shortestUniquePrefixes;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * m) time | O(n * m) space - where n is the length of strings, and m\n// is the length of the longest string\nfunction shortestUniquePrefixes(strings) {\n  const trie = new Trie();\n  for (const string of strings) {\n    trie.insert(string);\n  }\n\n  const prefixes = [];\n  for (const string of strings) {\n    const uniquePrefix = findUniquePrefix(string, trie);\n    prefixes.push(uniquePrefix);\n  }\n\n  return prefixes;\n}\n\nfunction findUniquePrefix(string, trie) {\n  let currentStringIdx = 0;\n  let currentTrieNode = trie.root;\n\n  while (currentStringIdx < string.length - 1) {\n    const currentStringChar = string[currentStringIdx];\n    currentTrieNode = currentTrieNode[currentStringChar];\n    if (currentTrieNode.count === 1) break;\n    currentStringIdx++;\n  }\n\n  return string.slice(0, currentStringIdx + 1);\n}\n\nclass Trie {\n  constructor() {\n    this.root = {count: 0};\n  }\n\n  insert(string) {\n    let currentTrieNode = this.root;\n    for (let i = 0; i < string.length; i++) {\n      if (!(string[i] in currentTrieNode)) {\n        currentTrieNode[string[i]] = {count: 0};\n      }\n      currentTrieNode = currentTrieNode[string[i]];\n      currentTrieNode.count++;\n    }\n  }\n}\n\n// Do not edit the line below.\nexports.shortestUniquePrefixes = shortestUniquePrefixes;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const strings = ['algoexpert', 'algorithm', 'frontendexpert', 'mlexpert'];\n  const expected = ['algoe', 'algor', 'f', 'm'];\n  const actual = program.shortestUniquePrefixes(strings);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const strings = ['algoexpert', 'algorithm', 'frontendexpert', 'mlexpert'];\n  const expected = ['algoe', 'algor', 'f', 'm'];\n  const actual = program.shortestUniquePrefixes(strings);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun shortestUniquePrefixes(strings: MutableList<String>): MutableList<String> {\n    // Write your code here.\n    return mutableListOf()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n * m) time | O(n * m) space - where n is the length of strings, and m\n// is the length of the longest string\nfun shortestUniquePrefixes(strings: MutableList<String>): MutableList<String> {\n    val trie = Trie()\n    for (string in strings) {\n        trie.insert(string)\n    }\n\n    val prefixes = mutableListOf<String>()\n    for (string in strings) {\n        val uniquePrefix = findUniquePrefix(string, trie)\n        prefixes.add(uniquePrefix)\n    }\n\n    return prefixes\n}\n\nfun findUniquePrefix(string: String, trie: Trie): String {\n    var currentStringIdx = 0\n    var currentTrieNode = trie.root\n\n    while (currentStringIdx < string.length - 1) {\n        val currentStringChar = string[currentStringIdx]\n        currentTrieNode = currentTrieNode.children[currentStringChar]!!\n        if (currentTrieNode.count == 1) break\n        currentStringIdx += 1\n    }\n\n    return string.substring(0, currentStringIdx + 1)\n}\n\ndata class TrieNode(\n    val children: MutableMap<Char, TrieNode> = mutableMapOf(),\n    var count: Int = 0,\n)\n\nclass Trie {\n    val root = TrieNode()\n\n    fun insert(string: String) {\n        var currentTrieNode = this.root\n        for (i in 0 until string.length) {\n            if (!(string[i] in currentTrieNode.children)) {\n                currentTrieNode.children[string[i]] = TrieNode()\n            }\n            currentTrieNode = currentTrieNode.children[string[i]]!!\n            currentTrieNode.count += 1\n        }\n    }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.shortestUniquePrefixes\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val strings = mutableListOf(\"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\")\n        val expected = mutableListOf(\"algoe\", \"algor\", \"f\", \"m\")\n        val output = shortestUniquePrefixes(strings)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.shortestUniquePrefixes\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val strings = mutableListOf(\"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\")\n        val expected = mutableListOf(\"algoe\", \"algor\", \"f\", \"m\")\n        val output = shortestUniquePrefixes(strings)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def shortestUniquePrefixes(strings):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n * m) time | O(n * m) space - where n is the length of strings, and m\n# is the length of the longest string\ndef shortestUniquePrefixes(strings):\n    trie = Trie()\n    for string in strings:\n        trie.insert(string)\n\n    prefixes = []\n    for string in strings:\n        uniquePrefix = findUniquePrefix(string, trie)\n        prefixes.append(uniquePrefix)\n\n    return prefixes\n\n\ndef findUniquePrefix(string, trie):\n    currentStringIdx = 0\n    currentTrieNode = trie.root\n\n    while currentStringIdx < len(string) - 1:\n        currentStringChar = string[currentStringIdx]\n        currentTrieNode = currentTrieNode[currentStringChar]\n        if currentTrieNode[\"count\"] == 1:\n            break\n        currentStringIdx += 1\n\n    return string[0 : currentStringIdx + 1]\n\n\nclass Trie:\n    def __init__(self):\n        self.root = {\"count\": 0}\n\n    def insert(self, string):\n        currentTrieNode = self.root\n        for i in range(len(string)):\n            if string[i] not in currentTrieNode:\n                currentTrieNode[string[i]] = {\"count\": 0}\n            currentTrieNode = currentTrieNode[string[i]]\n            currentTrieNode[\"count\"] += 1\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        strings = [\"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"]\n        expected = [\"algoe\", \"algor\", \"f\", \"m\"]\n        actual = program.shortestUniquePrefixes(strings)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        strings = [\"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"]\n        expected = [\"algoe\", \"algor\", \"f\", \"m\"]\n        actual = program.shortestUniquePrefixes(strings)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def shortestUniquePrefixes(strings)\n        # Write your code here.\n        return []\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def shortestUniquePrefixes(strings)\n        # Write your code here.\n        return []\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.shortestUniquePrefixes\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.shortestUniquePrefixes\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func shortestUniquePrefixes(_ strings: [String]) -> [String] {\n    // Write your code here.\n    return [String]()\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n * m) time | O(n * m) space - where n is the length of strings, and m\n  // is the length of the longest string\n  func shortestUniquePrefixes(_ strings: [String]) -> [String] {\n    let trie = Trie()\n    for string in strings {\n      trie.insert(string)\n    }\n\n    var prefixes: [String] = []\n    for string in strings {\n      let uniquePrefix = findUniquePrefix(string, trie)\n      prefixes.append(uniquePrefix)\n    }\n\n    return prefixes\n  }\n\n  func findUniquePrefix(_ string: String, _ trie: Trie) -> String {\n    var currentStringIdx = 0\n    var currentTrieNode = trie.root\n\n    while currentStringIdx < string.count - 1 {\n      let currentStringChar = string[string.index(string.startIndex, offsetBy: currentStringIdx)]\n      currentTrieNode = currentTrieNode.children[currentStringChar]!\n      if currentTrieNode.count == 1 {\n        break\n      }\n      currentStringIdx += 1\n    }\n\n    return String(string.prefix(currentStringIdx + 1))\n  }\n\n  class TrieNode {\n    var children: [Character: TrieNode]\n    var count: Int\n\n    init() {\n      children = [:]\n      count = 0\n    }\n  }\n\n  class Trie {\n    var root: TrieNode\n\n    init() {\n      root = TrieNode()\n    }\n\n    func insert(_ string: String) {\n      var currentTrieNode = root\n      for char in string {\n        if currentTrieNode.children[char] == nil {\n          currentTrieNode.children[char] = TrieNode()\n        }\n        currentTrieNode = currentTrieNode.children[char]!\n        currentTrieNode.count += 1\n      }\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var strings = [\"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"]\n      var expected = [\"algoe\", \"algor\", \"f\", \"m\"]\n      var actual = Program().shortestUniquePrefixes(strings)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var strings = [\"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"]\n      var expected = [\"algoe\", \"algor\", \"f\", \"m\"]\n      var actual = Program().shortestUniquePrefixes(strings)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function shortestUniquePrefixes(strings: string[]) {\n  // Write your code here.\n  return [];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * m) time | O(n * m) space - where n is the length of strings, and m\n// is the length of the longest string\nexport function shortestUniquePrefixes(strings: string[]) {\n  const trie = new Trie();\n  for (const string of strings) {\n    trie.insert(string);\n  }\n\n  const prefixes: string[] = [];\n  for (const string of strings) {\n    const uniquePrefix = findUniquePrefix(string, trie);\n    prefixes.push(uniquePrefix);\n  }\n\n  return prefixes.slice();\n}\n\nfunction findUniquePrefix(string: string, trie: Trie) {\n  let currentStringIdx = 0;\n  let currentTrieNode = trie.root;\n\n  while (currentStringIdx < string.length - 1) {\n    const currentStringChar = string[currentStringIdx];\n    currentTrieNode = currentTrieNode.children[currentStringChar];\n    if (currentTrieNode.count === 1) break;\n    currentStringIdx++;\n  }\n\n  return string.slice(0, currentStringIdx + 1);\n}\n\ninterface TrieNode {\n  children: Record<string, TrieNode>;\n  count: number;\n}\n\nclass Trie {\n  root: TrieNode;\n\n  constructor() {\n    this.root = {children: {}, count: 0};\n  }\n\n  insert(string: string) {\n    let currentTrieNode = this.root;\n    for (let i = 0; i < string.length; i++) {\n      if (!(string[i] in currentTrieNode.children)) {\n        currentTrieNode.children[string[i]] = {children: {}, count: 0};\n      }\n      currentTrieNode = currentTrieNode.children[string[i]];\n      currentTrieNode.count++;\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const strings = ['algoexpert', 'algorithm', 'frontendexpert', 'mlexpert'];\n  const expected = ['algoe', 'algor', 'f', 'm'];\n  const actual = program.shortestUniquePrefixes(strings);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const strings = ['algoexpert', 'algorithm', 'frontendexpert', 'mlexpert'];\n  const expected = ['algoe', 'algor', 'f', 'm'];\n  const actual = program.shortestUniquePrefixes(strings);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "strings",
+            "example": [
+                "hello"
+            ],
+            "schema": {
+                "items": {
+                    "minLength": 1,
+                    "type": "string"
+                },
+                "minItems": 1,
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "strings": [
+                "hello"
+            ]
+        },
+        {
+            "strings": [
+                "hello",
+                "world"
+            ]
+        },
+        {
+            "strings": [
+                "algoexpert",
+                "algorithm",
+                "frontendexpert",
+                "mlexpert"
+            ]
+        },
+        {
+            "strings": [
+                "foo",
+                "food"
+            ]
+        },
+        {
+            "strings": [
+                "hello",
+                "world",
+                "he",
+                "foo",
+                "worldly",
+                "food",
+                "algoexpert"
+            ]
+        },
+        {
+            "strings": [
+                "foo",
+                "food",
+                "foods",
+                "foodie"
+            ]
+        },
+        {
+            "strings": [
+                "amazing",
+                "amaze",
+                "amazement",
+                "maze",
+                "may",
+                "apple"
+            ]
+        },
+        {
+            "strings": [
+                "aircraft",
+                "airplane",
+                "airy",
+                "plane",
+                "planter",
+                "plantation"
+            ]
+        },
+        {
+            "strings": [
+                "a",
+                "ab",
+                "abc",
+                "abcd",
+                "abcde",
+                "abcdef"
+            ]
+        },
+        {
+            "strings": [
+                "abcdef",
+                "abcde",
+                "abcd",
+                "abc",
+                "ab",
+                "a"
+            ]
+        },
+        {
+            "strings": [
+                "a",
+                "abc",
+                "abcdefg"
+            ]
+        },
+        {
+            "strings": [
+                "code",
+                "coder",
+                "program",
+                "programmer",
+                "coding",
+                "programming"
+            ]
+        },
+        {
+            "strings": [
+                "zig",
+                "zag",
+                "zap",
+                "zoo",
+                "zit"
+            ]
+        },
+        {
+            "strings": [
+                "swap",
+                "paws",
+                "print",
+                "swing",
+                "kayak",
+                "trie",
+                "tree",
+                "king",
+                "queen",
+                "quilt"
+            ]
+        },
+        {
+            "strings": [
+                "programmingexpert",
+                "programming",
+                "expert",
+                "frontendexpert",
+                "front",
+                "end",
+                "frontend"
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "strings": [
+                "hello"
+            ]
+        },
+        {
+            "strings": [
+                "hello",
+                "world"
+            ]
+        },
+        {
+            "strings": [
+                "algoexpert",
+                "algorithm",
+                "frontendexpert",
+                "mlexpert"
+            ]
+        },
+        {
+            "strings": [
+                "foo",
+                "food"
+            ]
+        },
+        {
+            "strings": [
+                "hello",
+                "world",
+                "he",
+                "foo",
+                "worldly",
+                "food",
+                "algoexpert"
+            ]
+        },
+        {
+            "strings": [
+                "foo",
+                "food",
+                "foods",
+                "foodie"
+            ]
+        },
+        {
+            "strings": [
+                "amazing",
+                "amaze",
+                "amazement",
+                "maze",
+                "may",
+                "apple"
+            ]
+        },
+        {
+            "strings": [
+                "aircraft",
+                "airplane",
+                "airy",
+                "plane",
+                "planter",
+                "plantation"
+            ]
+        },
+        {
+            "strings": [
+                "a",
+                "ab",
+                "abc",
+                "abcd",
+                "abcde",
+                "abcdef"
+            ]
+        },
+        {
+            "strings": [
+                "abcdef",
+                "abcde",
+                "abcd",
+                "abc",
+                "ab",
+                "a"
+            ]
+        },
+        {
+            "strings": [
+                "a",
+                "abc",
+                "abcdefg"
+            ]
+        },
+        {
+            "strings": [
+                "code",
+                "coder",
+                "program",
+                "programmer",
+                "coding",
+                "programming"
+            ]
+        },
+        {
+            "strings": [
+                "zig",
+                "zag",
+                "zap",
+                "zoo",
+                "zit"
+            ]
+        },
+        {
+            "strings": [
+                "swap",
+                "paws",
+                "print",
+                "swing",
+                "kayak",
+                "trie",
+                "tree",
+                "king",
+                "queen",
+                "quilt"
+            ]
+        },
+        {
+            "strings": [
+                "programmingexpert",
+                "programming",
+                "expert",
+                "frontendexpert",
+                "front",
+                "end",
+                "frontend"
+            ]
+        }
+    ],
+    "changelog": []
+}

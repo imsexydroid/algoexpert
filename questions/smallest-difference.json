@@ -1,0 +1,555 @@
+{
+    "uid": "smallest-difference",
+    "testStrategy": "JSON",
+    "name": "Smallest Difference",
+    "version": 0,
+    "releaseDate": "2000-05-04T00:00:00Z",
+    "category": "Arrays",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 77799,
+        "failureCount": 25727
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "226846336",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Clement Mihailescu",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 943
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Write a function that takes in two non-empty arrays of integers, finds the\n  pair of numbers (one from each array) whose absolute difference is closest to\n  zero, and returns an array containing these two numbers, with the number from\n  the first array in the first position.\n</p>\n<p>\n  Note that the absolute difference of two integers is the distance between\n  them on the real number line. For example, the absolute difference of -5 and 5\n  is 10, and the absolute difference of -5 and -4 is 1.\n</p>\n<p>\n  You can assume that there will only be one pair of numbers with the smallest\n  difference.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">arrayOne</span> = [-1, 5, 10, 20, 28, 3]\n<span class=\"CodeEditor-promptParameter\">arrayTwo</span> = [26, 134, 135, 15, 17]\n</pre>\n<h3>Sample Output</h3>\n<pre>[28, 26]</pre>\n</div>",
+    "hints": [
+        "<p>\nInstead of generating all possible pairs of numbers, try somehow only looking at pairs that you know could actually have the smallest difference. How can you accomplish this?\n</p>\n",
+        "\n<p>\nWould it help if the two arrays were sorted? If the arrays were sorted and you were looking at a given pair of numbers, could you efficiently find the next pair of numbers to look at? What are the runtime implications of sorting the arrays?\n</p>\n",
+        "\n<p>\nStart by sorting both arrays, as per Hint #2. Put a pointer at the beginning of both arrays and evaluate the absolute difference of the pointer-numbers. If the difference is equal to zero, then you've found the closest pair; otherwise, increment the pointer of the smaller of the two numbers to find a potentially better pair. Continue until you get a pair with a difference of zero or until one of the pointers gets out of range of its array.\n</p>"
+    ],
+    "spaceTime": "O(nlog(n) + mlog(m)) time | O(1) space - where n is the length of the first input array and m is the length of the second input array",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\nusing namespace std;\n\nvector<int> smallestDifference(vector<int> arrayOne, vector<int> arrayTwo) {\n  // Write your code here.\n  return {};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n#include <climits>\n#include <vector>\nusing namespace std;\n\n// O(nlog(n) + mlog(m)) time | O(1) space\nvector<int> smallestDifference(vector<int> arrayOne, vector<int> arrayTwo) {\n  sort(arrayOne.begin(), arrayOne.end());\n  sort(arrayTwo.begin(), arrayTwo.end());\n  int idxOne = 0;\n  int idxTwo = 0;\n  int smallest = INT_MAX;\n  int current = INT_MAX;\n  vector<int> smallestPair;\n  while (idxOne < arrayOne.size() && idxTwo < arrayTwo.size()) {\n    int firstNum = arrayOne[idxOne];\n    int secondNum = arrayTwo[idxTwo];\n    if (firstNum < secondNum) {\n      current = secondNum - firstNum;\n      idxOne++;\n    } else if (secondNum < firstNum) {\n      current = firstNum - secondNum;\n      idxTwo++;\n    } else {\n      return vector<int>{firstNum, secondNum};\n    }\n    if (smallest > current) {\n      smallest = current;\n      smallestPair = {firstNum, secondNum};\n    }\n  }\n  return smallestPair;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> expected{28, 26};\n      assert(\n        smallestDifference({-1, 5, 10, 20, 28, 3}, {26, 134, 135, 15, 17}) ==\n        expected\n      );\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> expected{28, 26};\n      assert(\n        smallestDifference({-1, 5, 10, 20, 28, 3}, {26, 134, 135, 15, 17}) ==\n        expected\n      );\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public static int[] SmallestDifference(int[] arrayOne, int[] arrayTwo) {\n    // Write your code here.\n    return new int[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(nlog(n) + mlog(m)) time | O(1) space\n  public static int[] SmallestDifference(int[] arrayOne, int[] arrayTwo) {\n    Array.Sort(arrayOne);\n    Array.Sort(arrayTwo);\n    int idxOne = 0;\n    int idxTwo = 0;\n    int smallest = Int32.MaxValue;\n    int current = Int32.MaxValue;\n    int[] smallestPair = new int[2];\n    while (idxOne < arrayOne.Length && idxTwo < arrayTwo.Length) {\n      int firstNum = arrayOne[idxOne];\n      int secondNum = arrayTwo[idxTwo];\n      if (firstNum < secondNum) {\n        current = secondNum - firstNum;\n        idxOne++;\n      } else if (secondNum < firstNum) {\n        current = firstNum - secondNum;\n        idxTwo++;\n      } else {\n        return new int[] { firstNum, secondNum };\n      }\n      if (smallest > current) {\n        smallest = current;\n        smallestPair = new int[] { firstNum, secondNum };\n      }\n    }\n    return smallestPair;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System.Linq;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] expected = { 28, 26 };\n    Utils.AssertTrue(Enumerable.SequenceEqual(\n      Program.SmallestDifference(\n        new int[] { -1, 5, 10, 20, 28, 3 }, new int[] { 26, 134, 135, 15, 17 }\n      ),\n      expected\n    ));\n  }\n}\n",
+            "unitTests": "using System.Linq;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] expected = { 28, 26 };\n    Utils.AssertTrue(Enumerable.SequenceEqual(\n      Program.SmallestDifference(\n        new int[] { -1, 5, 10, 20, 28, 3 }, new int[] { 26, 134, 135, 15, 17 }\n      ),\n      expected\n    ));\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc SmallestDifference(array1, array2 []int) []int {\n\t// Write your code here.\n\treturn nil\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport (\n\t\"math\"\n\t\"sort\"\n)\n\n// O(nlog(n) + mlog(m)) time | O(1) space\nfunc SmallestDifference(array1, array2 []int) []int {\n\tsort.Ints(array1)\n\tsort.Ints(array2)\n\tidxOne, idxTwo := 0, 0\n\tsmallest, current := math.MaxInt32, math.MaxInt32\n\tsmallestPair := []int{}\n\tfor idxOne < len(array1) && idxTwo < len(array2) {\n\t\tfirst, second := array1[idxOne], array2[idxTwo]\n\t\tif first < second {\n\t\t\tcurrent = second - first\n\t\t\tidxOne += 1\n\t\t} else if second < first {\n\t\t\tcurrent = first - second\n\t\t\tidxTwo += 1\n\t\t} else {\n\t\t\treturn []int{first, second}\n\t\t}\n\t\tif smallest > current {\n\t\t\tsmallest = current\n\t\t\tsmallestPair = []int{first, second}\n\t\t}\n\t}\n\treturn smallestPair\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\texpected := []int{28, 26}\n\toutput := SmallestDifference([]int{-1, 5, 10, 20, 28, 3}, []int{26, 134, 135, 15, 17})\n\trequire.Equal(t, expected, output)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\texpected := []int{28, 26}\n\toutput := SmallestDifference([]int{-1, 5, 10, 20, 28, 3}, []int{26, 134, 135, 15, 17})\n\trequire.Equal(t, expected, output)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public static int[] smallestDifference(int[] arrayOne, int[] arrayTwo) {\n    // Write your code here.\n    return new int[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.Arrays;\n\nclass Program {\n  // O(nlog(n) + mlog(m)) time | O(1) space\n  public static int[] smallestDifference(int[] arrayOne, int[] arrayTwo) {\n    Arrays.sort(arrayOne);\n    Arrays.sort(arrayTwo);\n    int idxOne = 0;\n    int idxTwo = 0;\n    int smallest = Integer.MAX_VALUE;\n    int current = Integer.MAX_VALUE;\n    int[] smallestPair = new int[2];\n    while (idxOne < arrayOne.length && idxTwo < arrayTwo.length) {\n      int firstNum = arrayOne[idxOne];\n      int secondNum = arrayTwo[idxTwo];\n      if (firstNum < secondNum) {\n        current = secondNum - firstNum;\n        idxOne++;\n      } else if (secondNum < firstNum) {\n        current = firstNum - secondNum;\n        idxTwo++;\n      } else {\n        return new int[] {firstNum, secondNum};\n      }\n      if (smallest > current) {\n        smallest = current;\n        smallestPair = new int[] {firstNum, secondNum};\n      }\n    }\n    return smallestPair;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.Arrays;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] expected = {28, 26};\n    Utils.assertTrue(Arrays.equals(\n      Program.smallestDifference(\n        new int[] {-1, 5, 10, 20, 28, 3}, new int[] {26, 134, 135, 15, 17}\n      ),\n      expected\n    ));\n  }\n}\n",
+            "unitTests": "import java.util.Arrays;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] expected = {28, 26};\n    Utils.assertTrue(Arrays.equals(\n      Program.smallestDifference(\n        new int[] {-1, 5, 10, 20, 28, 3}, new int[] {26, 134, 135, 15, 17}\n      ),\n      expected\n    ));\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function smallestDifference(arrayOne, arrayTwo) {\n  // Write your code here.\n}\n\n// Do not edit the line below.\nexports.smallestDifference = smallestDifference;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(nlog(n) + mlog(m)) time | O(1) space\nfunction smallestDifference(arrayOne, arrayTwo) {\n  arrayOne.sort((a, b) => a - b);\n  arrayTwo.sort((a, b) => a - b);\n  let idxOne = 0;\n  let idxTwo = 0;\n  let smallest = Infinity;\n  let current = Infinity;\n  let smallestPair = [];\n  while (idxOne < arrayOne.length && idxTwo < arrayTwo.length) {\n    let firstNum = arrayOne[idxOne];\n    let secondNum = arrayTwo[idxTwo];\n    if (firstNum < secondNum) {\n      current = secondNum - firstNum;\n      idxOne++;\n    } else if (secondNum < firstNum) {\n      current = firstNum - secondNum;\n      idxTwo++;\n    } else {\n      return [firstNum, secondNum];\n    }\n    if (smallest > current) {\n      smallest = current;\n      smallestPair = [firstNum, secondNum];\n    }\n  }\n  return smallestPair;\n}\n\nexports.smallestDifference = smallestDifference;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  chai\n    .expect(program.smallestDifference([-1, 5, 10, 20, 28, 3], [26, 134, 135, 15, 17]))\n    .to.deep.equal([28, 26]);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  chai\n    .expect(program.smallestDifference([-1, 5, 10, 20, 28, 3], [26, 134, 135, 15, 17]))\n    .to.deep.equal([28, 26]);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun smallestDifference(arrayOne: MutableList<Int>, arrayTwo: MutableList<Int>): List<Int> {\n    // Write your code here.\n    return listOf<Int>()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(nlog(n) + mlog(m)) time | O(1) space\nfun smallestDifference(arrayOne: MutableList<Int>, arrayTwo: MutableList<Int>): List<Int> {\n    arrayOne.sort()\n    arrayTwo.sort()\n    var idxOne = 0\n    var idxTwo = 0\n    var smallest = Int.MAX_VALUE\n    var current: Int\n    var smallestPair = listOf<Int>()\n    while (idxOne < arrayOne.size && idxTwo < arrayTwo.size) {\n        var firstNum = arrayOne[idxOne]\n        var secondNum = arrayTwo[idxTwo]\n        if (firstNum < secondNum) {\n            current = secondNum - firstNum\n            idxOne++\n        } else if (secondNum < firstNum) {\n            current = firstNum - secondNum\n            idxTwo++\n        } else {\n            return listOf<Int>(firstNum, secondNum)\n        }\n        if (smallest > current) {\n            smallest = current\n            smallestPair = listOf<Int>(firstNum, secondNum)\n        }\n    }\n    return smallestPair\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.smallestDifference as smallestDifference\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val arrayOne = mutableListOf<Int>(-1, 5, 10, 20, 28, 3)\n        val arrayTwo = mutableListOf<Int>(26, 134, 135, 15, 17)\n        val output = smallestDifference(arrayOne, arrayTwo)\n        val expected = listOf<Int>(28, 26)\n        assert(output.equals(expected))\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.smallestDifference as smallestDifference\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val arrayOne = mutableListOf<Int>(-1, 5, 10, 20, 28, 3)\n        val arrayTwo = mutableListOf<Int>(26, 134, 135, 15, 17)\n        val output = smallestDifference(arrayOne, arrayTwo)\n        val expected = listOf<Int>(28, 26)\n        assert(output.equals(expected))\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def smallestDifference(arrayOne, arrayTwo):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(nlog(n) + mlog(m)) time | O(1) space\ndef smallestDifference(arrayOne, arrayTwo):\n    arrayOne.sort()\n    arrayTwo.sort()\n    idxOne = 0\n    idxTwo = 0\n    smallest = float(\"inf\")\n    current = float(\"inf\")\n    smallestPair = []\n    while idxOne < len(arrayOne) and idxTwo < len(arrayTwo):\n        firstNum = arrayOne[idxOne]\n        secondNum = arrayTwo[idxTwo]\n        if firstNum < secondNum:\n            current = secondNum - firstNum\n            idxOne += 1\n        elif secondNum < firstNum:\n            current = firstNum - secondNum\n            idxTwo += 1\n        else:\n            return [firstNum, secondNum]\n        if smallest > current:\n            smallest = current\n            smallestPair = [firstNum, secondNum]\n    return smallestPair\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        self.assertEqual(\n            program.smallestDifference([-1, 5, 10, 20, 28, 3], [26, 134, 135, 15, 17]), [28, 26]\n        )\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        self.assertEqual(\n            program.smallestDifference([-1, 5, 10, 20, 28, 3], [26, 134, 135, 15, 17]), [28, 26]\n        )\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  def smallestDifference(arrayOne, arrayTwo)\n    # Write your code here.\n    return []\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def smallestDifference(arrayOne, arrayTwo)\n    # Write your code here.\n    return []\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.smallestDifference\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.smallestDifference\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func smallestDifference(arrayOne: inout [Int], arrayTwo: inout [Int]) -> [Int] {\n    // Write your code here.\n    return []\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  func smallestDifference(arrayOne: inout [Int], arrayTwo: inout [Int]) -> [Int] {\n    arrayOne.sort()\n    arrayTwo.sort()\n\n    var idxOne = 0\n    var idxTwo = 0\n\n    var current = Int.max\n    var smallest = Int.max\n\n    var smallestPair: [Int] = []\n\n    while idxOne < arrayOne.count, idxTwo < arrayTwo.count {\n      let firstNum = arrayOne[idxOne]\n      let secondNum = arrayTwo[idxTwo]\n\n      if firstNum < secondNum {\n        current = secondNum - firstNum\n        idxOne = idxOne + 1\n      } else if firstNum > secondNum {\n        current = firstNum - secondNum\n        idxTwo = idxTwo + 1\n      } else {\n        return [firstNum, secondNum]\n      }\n\n      if smallest > current {\n        smallest = current\n        smallestPair = [firstNum, secondNum]\n      }\n    }\n\n    return smallestPair\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var firstArray = [-1, 5, 10, 20, 28, 3]\n      var secondArray = [26, 134, 135, 15, 17]\n      let difference = program.smallestDifference(arrayOne: &firstArray, arrayTwo: &secondArray)\n      try assertEqual([28, 26], difference)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    let program = Program()\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var firstArray = [-1, 5, 10, 20, 28, 3]\n      var secondArray = [26, 134, 135, 15, 17]\n      let difference = program.smallestDifference(arrayOne: &firstArray, arrayTwo: &secondArray)\n      try assertEqual([28, 26], difference)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function smallestDifference(arrayOne: number[], arrayTwo: number[]) {\n  // Write your code here.\n  return [-1, -1];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(nlog(n) + mlog(m)) time | O(1) space\nexport function smallestDifference(arrayOne: number[], arrayTwo: number[]) {\n  arrayOne.sort((a, b) => a - b);\n  arrayTwo.sort((a, b) => a - b);\n  let idxOne = 0;\n  let idxTwo = 0;\n  let smallest = Infinity;\n  let current = Infinity;\n  let smallestPair: number[] = [];\n  while (idxOne < arrayOne.length && idxTwo < arrayTwo.length) {\n    let firstNum = arrayOne[idxOne];\n    let secondNum = arrayTwo[idxTwo];\n    if (firstNum < secondNum) {\n      current = secondNum - firstNum;\n      idxOne++;\n    } else if (secondNum < firstNum) {\n      current = firstNum - secondNum;\n      idxTwo++;\n    } else {\n      return [firstNum, secondNum];\n    }\n    if (smallest > current) {\n      smallest = current;\n      smallestPair = [firstNum, secondNum];\n    }\n  }\n  return smallestPair;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  chai\n    .expect(program.smallestDifference([-1, 5, 10, 20, 28, 3], [26, 134, 135, 15, 17]))\n    .to.deep.equal([28, 26]);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  chai\n    .expect(program.smallestDifference([-1, 5, 10, 20, 28, 3], [26, 134, 135, 15, 17]))\n    .to.deep.equal([28, 26]);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "arrayOne",
+            "example": [
+                -1,
+                5,
+                10,
+                20,
+                28,
+                3
+            ],
+            "schema": {
+                "items": {
+                    "type": "integer"
+                },
+                "minItems": 1,
+                "type": "array"
+            }
+        },
+        {
+            "name": "arrayTwo",
+            "example": [
+                26,
+                134,
+                135,
+                15,
+                17
+            ],
+            "schema": {
+                "items": {
+                    "type": "integer"
+                },
+                "minItems": 1,
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "arrayOne": [
+                -1,
+                5,
+                10,
+                20,
+                28,
+                3
+            ],
+            "arrayTwo": [
+                26,
+                134,
+                135,
+                15,
+                17
+            ]
+        },
+        {
+            "arrayOne": [
+                -1,
+                5,
+                10,
+                20,
+                3
+            ],
+            "arrayTwo": [
+                26,
+                134,
+                135,
+                15,
+                17
+            ]
+        },
+        {
+            "arrayOne": [
+                10,
+                0,
+                20,
+                25
+            ],
+            "arrayTwo": [
+                1005,
+                1006,
+                1014,
+                1032,
+                1031
+            ]
+        },
+        {
+            "arrayOne": [
+                10,
+                0,
+                20,
+                25,
+                2200
+            ],
+            "arrayTwo": [
+                1005,
+                1006,
+                1014,
+                1032,
+                1031
+            ]
+        },
+        {
+            "arrayOne": [
+                10,
+                0,
+                20,
+                25,
+                2000
+            ],
+            "arrayTwo": [
+                1005,
+                1006,
+                1014,
+                1032,
+                1031
+            ]
+        },
+        {
+            "arrayOne": [
+                240,
+                124,
+                86,
+                111,
+                2,
+                84,
+                954,
+                27,
+                89
+            ],
+            "arrayTwo": [
+                1,
+                3,
+                954,
+                19,
+                8
+            ]
+        },
+        {
+            "arrayOne": [
+                0,
+                20
+            ],
+            "arrayTwo": [
+                21,
+                -2
+            ]
+        },
+        {
+            "arrayOne": [
+                10,
+                1000
+            ],
+            "arrayTwo": [
+                -1441,
+                -124,
+                -25,
+                1014,
+                1500,
+                660,
+                410,
+                245,
+                530
+            ]
+        },
+        {
+            "arrayOne": [
+                10,
+                1000,
+                9124,
+                2142,
+                59,
+                24,
+                596,
+                591,
+                124,
+                -123
+            ],
+            "arrayTwo": [
+                -1441,
+                -124,
+                -25,
+                1014,
+                1500,
+                660,
+                410,
+                245,
+                530
+            ]
+        },
+        {
+            "arrayOne": [
+                10,
+                1000,
+                9124,
+                2142,
+                59,
+                24,
+                596,
+                591,
+                124,
+                -123,
+                530
+            ],
+            "arrayTwo": [
+                -1441,
+                -124,
+                -25,
+                1014,
+                1500,
+                660,
+                410,
+                245,
+                530
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "arrayOne": [
+                -1,
+                5,
+                10,
+                20,
+                28,
+                3
+            ],
+            "arrayTwo": [
+                26,
+                134,
+                135,
+                15,
+                17
+            ]
+        },
+        {
+            "arrayOne": [
+                -1,
+                5,
+                10,
+                20,
+                3
+            ],
+            "arrayTwo": [
+                26,
+                134,
+                135,
+                15,
+                17
+            ]
+        },
+        {
+            "arrayOne": [
+                10,
+                0,
+                20,
+                25
+            ],
+            "arrayTwo": [
+                1005,
+                1006,
+                1014,
+                1032,
+                1031
+            ]
+        },
+        {
+            "arrayOne": [
+                10,
+                0,
+                20,
+                25,
+                2200
+            ],
+            "arrayTwo": [
+                1005,
+                1006,
+                1014,
+                1032,
+                1031
+            ]
+        },
+        {
+            "arrayOne": [
+                10,
+                0,
+                20,
+                25,
+                2000
+            ],
+            "arrayTwo": [
+                1005,
+                1006,
+                1014,
+                1032,
+                1031
+            ]
+        },
+        {
+            "arrayOne": [
+                240,
+                124,
+                86,
+                111,
+                2,
+                84,
+                954,
+                27,
+                89
+            ],
+            "arrayTwo": [
+                1,
+                3,
+                954,
+                19,
+                8
+            ]
+        },
+        {
+            "arrayOne": [
+                0,
+                20
+            ],
+            "arrayTwo": [
+                21,
+                -2
+            ]
+        },
+        {
+            "arrayOne": [
+                10,
+                1000
+            ],
+            "arrayTwo": [
+                -1441,
+                -124,
+                -25,
+                1014,
+                1500,
+                660,
+                410,
+                245,
+                530
+            ]
+        },
+        {
+            "arrayOne": [
+                10,
+                1000,
+                9124,
+                2142,
+                59,
+                24,
+                596,
+                591,
+                124,
+                -123
+            ],
+            "arrayTwo": [
+                -1441,
+                -124,
+                -25,
+                1014,
+                1500,
+                660,
+                410,
+                245,
+                530
+            ]
+        },
+        {
+            "arrayOne": [
+                10,
+                1000,
+                9124,
+                2142,
+                59,
+                24,
+                596,
+                591,
+                124,
+                -123,
+                530
+            ],
+            "arrayTwo": [
+                -1441,
+                -124,
+                -25,
+                1014,
+                1500,
+                660,
+                410,
+                245,
+                530
+            ]
+        }
+    ],
+    "changelog": []
+}

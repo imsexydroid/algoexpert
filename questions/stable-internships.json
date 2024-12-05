@@ -1,0 +1,982 @@
+{
+    "uid": "stable-internships",
+    "testStrategy": "JSON",
+    "name": "Stable internships",
+    "version": 0,
+    "releaseDate": "2022-12-15T00:00:00Z",
+    "category": "Famous Algorithms",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 2277,
+        "failureCount": 533
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "769676944",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1119
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  A company has hired N interns to each join one of N different teams. Each\n  intern has ranked their preferences for which teams they wish to join, and\n  each team has ranked their preferences for which interns they prefer.\n</p>\n<p>\n  Given these preferences, assign 1 intern to each team. These assignments\n  should be \"stable,\" meaning that there is no unmatched pair of an intern and a\n  team such that both that intern and that team would prefer they be matched\n  with each other.\n</p>\n<p>\n  In the case there are multiple valid stable matchings, the solution that is\n  most optimal for the interns should be chosen (i.e. every intern should be\n  matched with the best team possible for them).\n</p>\n<p>\n  Your function should take in 2 2-dimensional lists, one for interns and\n  one for teams. Each inner list represents a single intern or team's preferences,\n  ranked from most preferable to least preferable. These lists will always be\n  of length N, with integers as elements. Each of these integers corresponds\n  to the index of the team/intern being ranked. Your function should return a\n  2-dimensional list of matchings in no particular order. Each matching should\n  be in the format [internIndex, teamIndex].\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">interns</span> = [\n  [0, 1, 2],\n  [1, 0, 2],\n  [1, 2, 0]\n]\n</pre>\n<pre>\n<span class=\"CodeEditor-promptParameter\">teams</span> = [\n  [2, 1, 0],\n  [1, 2, 0],\n  [0, 2, 1]\n]\n</pre>\n<h3>Sample Output</h3>\n<pre>\n<span class=\"CodeEditor-promptComment\">// This is the most optimal solution for interns</span>\n[\n  [0, 0],\n  [1, 1],\n  [2, 2]\n]\n</pre>\n\n<pre>\n<span class=\"CodeEditor-promptComment\">// This is also a stable matching, but it is suboptimal for the interns\n// because interns 0 and 2 could have been given better team matchings</span>\n[\n  [2, 0],\n  [1, 1],\n  [0, 2]\n]\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  Try starting out by solving the most basic version of this problem. What would\n  you do if every intern had a unique first choice?\n</p>\n",
+        "\n<p>\n  If two interns had the same first choice, how can you decide which intern\n  gets that team to keep the matchings stable?\n</p>\n",
+        "\n<p>\n  To optimize performance, it might be helpful to first convert the input into\n  a different data structure.\n</p>"
+    ],
+    "spaceTime": "O(n^2) time | O(n^2) space - where n is the number of interns",
+    "notes": "<div class=\"html\">\n  <p>\n    There's a typo in the code walkthrough of the video explanation, at 20:33. \n    In order to access the array indicies in a Python <span>for</span> loop, the array needs\n    to be wrapped in a call to <span>enumerate</span>. Therefore, the line should be\n    <span>for i, internNum in enumerate(team)</span>.\n  </p>\n</div>",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nvector<vector<int>> stableInternships(\n  vector<vector<int>> interns, vector<vector<int>> teams\n) {\n  // Write your code here.\n  return {};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <stack>\n#include <unordered_map>\nusing namespace std;\n\n// O(n^2) time | O(n^2) space - where n is the number of interns and teams\nvector<vector<int>> stableInternships(\n  vector<vector<int>> interns, vector<vector<int>> teams\n) {\n  unordered_map<int, int> chosenInterns;\n  stack<int> freeInterns;\n  for (int i = 0; i < interns.size(); i++) {\n    freeInterns.push(i);\n  }\n  vector<int> currentInternChoices(interns.size(), 0);\n\n  vector<unordered_map<int, int>> teamMaps;\n  for (vector<int> team : teams) {\n    unordered_map<int, int> rank;\n    for (int i = 0; i < teams.size(); i++) {\n      rank[team[i]] = i;\n    }\n    teamMaps.push_back(rank);\n  }\n\n  while (!freeInterns.empty()) {\n    int internNum = freeInterns.top();\n    freeInterns.pop();\n\n    vector<int> intern = interns[internNum];\n    int teamPreference = intern[currentInternChoices[internNum]];\n    currentInternChoices[internNum]++;\n\n    if (chosenInterns.find(teamPreference) == chosenInterns.end()) {\n      chosenInterns[teamPreference] = internNum;\n      continue;\n    }\n\n    int previousIntern = chosenInterns[teamPreference];\n    int previousInternRank = teamMaps[teamPreference][previousIntern];\n    int currentInternRank = teamMaps[teamPreference][internNum];\n\n    if (currentInternRank < previousInternRank) {\n      freeInterns.push(previousIntern);\n      chosenInterns[teamPreference] = internNum;\n    } else {\n      freeInterns.push(internNum);\n    }\n  }\n\n  vector<vector<int>> matches;\n  for (auto chosenIntern : chosenInterns) {\n    matches.push_back({chosenIntern.second, chosenIntern.first});\n  }\n  return matches;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> interns = {{0, 1}, {1, 0}};\n      vector<vector<int>> teams = {{1, 0}, {1, 0}};\n      vector<vector<int>> expected = {{0, 0}, {1, 1}};\n      auto actual = stableInternships(interns, teams);\n\n      assert(expected.size() == actual.size());\n\n      for (auto match : expected) {\n        bool containsMatch = false;\n        for (auto actualMatch : actual) {\n          if (actualMatch[0] == match[0] && actualMatch[1] == match[1]) {\n            containsMatch = true;\n          }\n        }\n        assert(containsMatch);\n      }\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> interns = {{0, 1}, {1, 0}};\n      vector<vector<int>> teams = {{1, 0}, {1, 0}};\n      vector<vector<int>> expected = {{0, 0}, {1, 1}};\n      auto actual = stableInternships(interns, teams);\n\n      assert(expected.size() == actual.size());\n\n      for (auto match : expected) {\n        bool containsMatch = false;\n        for (auto actualMatch : actual) {\n          if (actualMatch[0] == match[0] && actualMatch[1] == match[1]) {\n            containsMatch = true;\n          }\n        }\n        assert(containsMatch);\n      }\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int[][] StableInternships(int[][] interns, int[][] teams) {\n    // Write your code here.\n    return new int[][] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n^2) time | O(n^2) space - where n is the number of interns and teams\n  public int[][] StableInternships(int[][] interns, int[][] teams) {\n    Dictionary<int, int> chosenInterns = new Dictionary<int, int>();\n    Stack<int> freeInterns = new Stack<int>();\n    for (int i = 0; i < interns.Length; i++) {\n      freeInterns.Push(i);\n    }\n    int[] currentInternChoices = new int[interns.Length];\n\n    List<Dictionary<int, int> > teamDictionarys =\n      new List<Dictionary<int, int> >();\n    foreach (var team in teams) {\n      Dictionary<int, int> rank = new Dictionary<int, int>();\n      for (int i = 0; i < team.Length; i++) {\n        rank[team[i]] = i;\n      }\n      teamDictionarys.Add(rank);\n    }\n\n    while (freeInterns.Count != 0) {\n      int internNum = freeInterns.Pop();\n\n      int[] intern = interns[internNum];\n      int teamPreference = intern[currentInternChoices[internNum]];\n      currentInternChoices[internNum]++;\n\n      if (!chosenInterns.ContainsKey(teamPreference)) {\n        chosenInterns[teamPreference] = internNum;\n        continue;\n      }\n\n      int previousIntern = chosenInterns[teamPreference];\n      int previousInternRank = teamDictionarys[teamPreference][previousIntern];\n      int currentInternRank = teamDictionarys[teamPreference][internNum];\n\n      if (currentInternRank < previousInternRank) {\n        freeInterns.Push(previousIntern);\n        chosenInterns[teamPreference] = internNum;\n      } else {\n        freeInterns.Push(internNum);\n      }\n    }\n\n    int[][] matches = new int [interns.Length][];\n    int index = 0;\n    foreach (var chosenIntern in chosenInterns) {\n      matches[index] = new int[] { chosenIntern.Value, chosenIntern.Key };\n      index++;\n    }\n    return matches;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[][] interns = new int[][] { new int[] { 0, 1 }, new int[] { 1, 0 } };\n    int[][] teams = new int[][] { new int[] { 1, 0 }, new int[] { 1, 0 } };\n    int[][] expected = new int[][] { new int[] { 0, 0 }, new int[] { 1, 1 } };\n    var actual = new Program().StableInternships(interns, teams);\n\n    Utils.AssertTrue(expected.Length == actual.Length);\n\n    foreach (var match in expected) {\n      bool containsMatch = false;\n      foreach (var actualMatch in actual) {\n        if (actualMatch[0] == match[0] && actualMatch[1] == match[1]) {\n          containsMatch = true;\n        }\n      }\n      Utils.AssertTrue(containsMatch);\n    }\n  }\n}",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[][] interns = new int[][] { new int[] { 0, 1 }, new int[] { 1, 0 } };\n    int[][] teams = new int[][] { new int[] { 1, 0 }, new int[] { 1, 0 } };\n    int[][] expected = new int[][] { new int[] { 0, 0 }, new int[] { 1, 1 } };\n    var actual = new Program().StableInternships(interns, teams);\n\n    Utils.AssertTrue(expected.Length == actual.Length);\n\n    foreach (var match in expected) {\n      bool containsMatch = false;\n      foreach (var actualMatch in actual) {\n        if (actualMatch[0] == match[0] && actualMatch[1] == match[1]) {\n          containsMatch = true;\n        }\n      }\n      Utils.AssertTrue(containsMatch);\n    }\n  }\n}"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc StableInternships(interns [][]int, teams [][]int) [][]int {\n\t// Write your code here.\n\treturn [][]int{}\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n^2) time | O(n^2) space - where n is the number of interns and teams\nfunc StableInternships(interns [][]int, teams [][]int) [][]int {\n\tchosenInterns := map[int]int{}\n\tfreeInterns := make([]int, len(interns))\n\tfor i := range interns {\n\t\tfreeInterns[i] = i\n\t}\n\tcurrentInternChoices := make([]int, len(interns))\n\n\tteamMaps := []map[int]int{}\n\tfor _, team := range teams {\n\t\trank := map[int]int{}\n\t\tfor i, internNum := range team {\n\t\t\trank[internNum] = i\n\t\t}\n\t\tteamMaps = append(teamMaps, rank)\n\t}\n\n\tfor len(freeInterns) > 0 {\n\t\tvar internNum int\n\t\tinternNum, freeInterns = freeInterns[len(freeInterns)-1], freeInterns[:len(freeInterns)-1]\n\n\t\tintern := interns[internNum]\n\t\tteamPreference := intern[currentInternChoices[internNum]]\n\t\tcurrentInternChoices[internNum] += 1\n\n\t\tif _, found := chosenInterns[teamPreference]; !found {\n\t\t\tchosenInterns[teamPreference] = internNum\n\t\t\tcontinue\n\t\t}\n\n\t\tpreviousIntern := chosenInterns[teamPreference]\n\t\tpreviousInternRank := teamMaps[teamPreference][previousIntern]\n\t\tcurrentInternRank := teamMaps[teamPreference][internNum]\n\n\t\tif currentInternRank < previousInternRank {\n\t\t\tfreeInterns = append(freeInterns, previousIntern)\n\t\t\tchosenInterns[teamPreference] = internNum\n\t\t} else {\n\t\t\tfreeInterns = append(freeInterns, internNum)\n\t\t}\n\t}\n\n\tmatches := [][]int{}\n\tfor teamNum, internNum := range chosenInterns {\n\t\tmatches = append(matches, []int{internNum, teamNum})\n\t}\n\treturn matches\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"testing\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc compareResults(t *testing.T, actual, expected [][]int) {\n\tt.Helper()\n\n\trequire.Equal(t, len(actual), len(expected))\n\tfor _, expectedItem := range expected {\n\t\tcontainsMatch := false\n\t\tfor _, actualItem := range actual {\n\t\t\tif actualItem[0] == expectedItem[0] && actualItem[1] == expectedItem[1] {\n\t\t\t\tcontainsMatch = true\n\t\t\t}\n\t\t}\n\t\trequire.True(t, containsMatch)\n\t}\n}\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinterns := [][]int{{0, 1}, {1, 0}}\n\tteams := [][]int{{1, 0}, {1, 0}}\n\texpected := [][]int{{0, 0}, {1, 1}}\n\tactual := StableInternships(interns, teams)\n\tcompareResults(t, actual, expected)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"testing\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc compareResults(t *testing.T, actual, expected [][]int) {\n\tt.Helper()\n\n\trequire.Equal(t, len(actual), len(expected))\n\tfor _, expectedItem := range expected {\n\t\tcontainsMatch := false\n\t\tfor _, actualItem := range actual {\n\t\t\tif actualItem[0] == expectedItem[0] && actualItem[1] == expectedItem[1] {\n\t\t\t\tcontainsMatch = true\n\t\t\t}\n\t\t}\n\t\trequire.True(t, containsMatch)\n\t}\n}\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinterns := [][]int{{0, 1}, {1, 0}}\n\tteams := [][]int{{1, 0}, {1, 0}}\n\texpected := [][]int{{0, 0}, {1, 1}}\n\tactual := StableInternships(interns, teams)\n\tcompareResults(t, actual, expected)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int[][] stableInternships(int[][] interns, int[][] teams) {\n    // Write your code here.\n    return new int[][] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n^2) time | O(n^2) space - where n is the number of interns and teams\n  public int[][] stableInternships(int[][] interns, int[][] teams) {\n    HashMap<Integer, Integer> chosenInterns = new HashMap<Integer, Integer>();\n    Stack<Integer> freeInterns = new Stack<Integer>();\n    for (int i = 0; i < interns.length; i++) {\n      freeInterns.push(i);\n    }\n    int[] currentInternChoices = new int[interns.length];\n\n    List<HashMap<Integer, Integer>> teamMaps =\n      new ArrayList<HashMap<Integer, Integer>>();\n    for (int[] team : teams) {\n      HashMap<Integer, Integer> rank = new HashMap<Integer, Integer>();\n      for (int i = 0; i < team.length; i++) {\n        rank.put(team[i], i);\n      }\n      teamMaps.add(rank);\n    }\n\n    while (!freeInterns.isEmpty()) {\n      int internNum = freeInterns.pop();\n\n      int[] intern = interns[internNum];\n      int teamPreference = intern[currentInternChoices[internNum]];\n      currentInternChoices[internNum]++;\n\n      if (!chosenInterns.containsKey(teamPreference)) {\n        chosenInterns.put(teamPreference, internNum);\n        continue;\n      }\n\n      int previousIntern = chosenInterns.get(teamPreference);\n      int previousInternRank = teamMaps.get(teamPreference).get(previousIntern);\n      int currentInternRank = teamMaps.get(teamPreference).get(internNum);\n\n      if (currentInternRank < previousInternRank) {\n        freeInterns.push(previousIntern);\n        chosenInterns.put(teamPreference, internNum);\n      } else {\n        freeInterns.push(internNum);\n      }\n    }\n\n    int[][] matches = new int[interns.length][2];\n    int index = 0;\n    for (Map.Entry<Integer, Integer> chosenIntern : chosenInterns.entrySet()) {\n      matches[index] =\n        new int[] {chosenIntern.getValue(), chosenIntern.getKey()};\n      index++;\n    }\n    return matches;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[][] interns = new int[][] {{0, 1}, {1, 0}};\n    int[][] teams = new int[][] {{1, 0}, {1, 0}};\n    int[][] expected = new int[][] {{0, 0}, {1, 1}};\n    var actual = new Program().stableInternships(interns, teams);\n    Utils.assertTrue(expected.length == actual.length);\n\n    for (int[] match : expected) {\n      boolean containsMatch = false;\n      for (int[] actualMatch : actual) {\n        if (actualMatch[0] == match[0] && actualMatch[1] == match[1]) {\n          containsMatch = true;\n        }\n      }\n      Utils.assertTrue(containsMatch);\n    }\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[][] interns = new int[][] {{0, 1}, {1, 0}};\n    int[][] teams = new int[][] {{1, 0}, {1, 0}};\n    int[][] expected = new int[][] {{0, 0}, {1, 1}};\n    var actual = new Program().stableInternships(interns, teams);\n    Utils.assertTrue(expected.length == actual.length);\n\n    for (int[] match : expected) {\n      boolean containsMatch = false;\n      for (int[] actualMatch : actual) {\n        if (actualMatch[0] == match[0] && actualMatch[1] == match[1]) {\n          containsMatch = true;\n        }\n      }\n      Utils.assertTrue(containsMatch);\n    }\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function stableInternships(interns, teams) {\n  // Write your code here.\n  return [];\n}\n\n// Do not edit the line below.\nexports.stableInternships = stableInternships;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^2) time | O(n^2) space - where n is the number of interns and teams\nfunction stableInternships(interns, teams) {\n  const chosenInterns = {};\n  const freeInterns = interns.map((_, i) => i);\n  const currentInternChoices = new Array(interns.length).fill(0);\n\n  const teamMaps = [];\n  for (const team of teams) {\n    const rank = {};\n    team.forEach((internNum, i) => {\n      rank[internNum] = i;\n    });\n    teamMaps.push(rank);\n  }\n\n  while (freeInterns.length > 0) {\n    const internNum = freeInterns.pop();\n\n    const intern = interns[internNum];\n    const teamPreference = intern[currentInternChoices[internNum]];\n    currentInternChoices[internNum] += 1;\n\n    if (!(teamPreference in chosenInterns)) {\n      chosenInterns[teamPreference] = internNum;\n      continue;\n    }\n\n    const previousIntern = chosenInterns[teamPreference];\n    const previousInternRank = teamMaps[teamPreference][previousIntern];\n    const currentInternRank = teamMaps[teamPreference][internNum];\n\n    if (currentInternRank < previousInternRank) {\n      freeInterns.push(previousIntern);\n      chosenInterns[teamPreference] = internNum;\n    } else {\n      freeInterns.push(internNum);\n    }\n  }\n\n  const matches = Object.entries(chosenInterns).map(([teamNum, internNum]) => [\n    internNum,\n    parseInt(teamNum),\n  ]);\n  return matches;\n}\n\n// Do not edit the line below.\nexports.stableInternships = stableInternships;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const interns = [\n    [0, 1],\n    [1, 0],\n  ];\n  const teams = [\n    [1, 0],\n    [1, 0],\n  ];\n  const expected = [\n    [0, 0],\n    [1, 1],\n  ];\n  const actual = program.stableInternships(interns, teams);\n  chai.expect(actual.length).to.deep.equal(expected.length);\n\n  for (const match of expected) {\n    let containsMatch = false;\n    for (const actualMatch of actual) {\n      if (actualMatch[0] === match[0] && actualMatch[1] === match[1]) {\n        containsMatch = true;\n      }\n    }\n    chai.expect(containsMatch).to.deep.equal(true);\n  }\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const interns = [\n    [0, 1],\n    [1, 0],\n  ];\n  const teams = [\n    [1, 0],\n    [1, 0],\n  ];\n  const expected = [\n    [0, 0],\n    [1, 1],\n  ];\n  const actual = program.stableInternships(interns, teams);\n  chai.expect(actual.length).to.deep.equal(expected.length);\n\n  for (const match of expected) {\n    let containsMatch = false;\n    for (const actualMatch of actual) {\n      if (actualMatch[0] === match[0] && actualMatch[1] === match[1]) {\n        containsMatch = true;\n      }\n    }\n    chai.expect(containsMatch).to.deep.equal(true);\n  }\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun stableInternships(interns: List<List<Int>>, teams: List<List<Int>>): List<List<Int>> {\n    // Write your code here.\n    return mutableListOf()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n^2) time | O(n^2) space - where n is the number of interns and teams\nfun stableInternships(interns: List<List<Int>>, teams: List<List<Int>>): List<List<Int>> {\n    val chosenInterns = mutableMapOf<Int, Int>()\n    val freeInterns = MutableList(interns.size) { it }\n    val currentInternChoices = MutableList(interns.size) { 0 }\n\n    val teamMaps = mutableListOf<MutableMap<Int, Int>>()\n    for (team in teams) {\n        val rank = mutableMapOf<Int, Int>()\n        for (i in 0 until team.size) {\n            val internNum = team[i]\n            rank[internNum] = i\n        }\n        teamMaps.add(rank)\n    }\n\n    while (freeInterns.size > 0) {\n        val internNum = freeInterns.removeAt(freeInterns.size - 1)!!\n\n        val intern = interns[internNum]\n        val teamPreference = intern[currentInternChoices[internNum]]\n        currentInternChoices[internNum] += 1\n\n        if (!(teamPreference in chosenInterns)) {\n            chosenInterns[teamPreference] = internNum\n            continue\n        }\n\n        val previousIntern = chosenInterns[teamPreference]!!\n        val previousInternRank = teamMaps[teamPreference][previousIntern]!!\n        val currentInternRank = teamMaps[teamPreference][internNum]!!\n\n        if (currentInternRank < previousInternRank) {\n            freeInterns.add(previousIntern)\n            chosenInterns[teamPreference] = internNum\n        } else {\n            freeInterns.add(internNum)\n        }\n    }\n\n    val matches = mutableListOf<List<Int>>()\n    for ((teamNum, internNum) in chosenInterns) {\n        matches.add(listOf(internNum, teamNum))\n    }\n    return matches\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.stableInternships\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val interns = listOf(listOf(0, 1), listOf(1, 0))\n        val teams = listOf(listOf(1, 0), listOf(1, 0))\n        val expected = listOf(listOf(0, 0), listOf(1, 1))\n        val actual = stableInternships(interns, teams)\n        assert(actual.size == expected.size)\n\n        for (match in expected) {\n            var containsMatch = false\n            for (actualMatch in actual) {\n                if (actualMatch[0] === match[0] && actualMatch[1] === match[1]) {\n                    containsMatch = true\n                }\n            }\n            assert(containsMatch == true)\n        }\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.stableInternships\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val interns = listOf(listOf(0, 1), listOf(1, 0))\n        val teams = listOf(listOf(1, 0), listOf(1, 0))\n        val expected = listOf(listOf(0, 0), listOf(1, 1))\n        val actual = stableInternships(interns, teams)\n        assert(actual.size == expected.size)\n\n        for (match in expected) {\n            var containsMatch = false\n            for (actualMatch in actual) {\n                if (actualMatch[0] === match[0] && actualMatch[1] === match[1]) {\n                    containsMatch = true\n                }\n            }\n            assert(containsMatch == true)\n        }\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def stableInternships(interns, teams):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n^2) time | O(n^2) space - where n is the number of interns and teams\ndef stableInternships(interns, teams):\n    chosenInterns = {}\n    freeInterns = list(range(len(interns)))\n    currentInternChoices = [0] * len(interns)\n\n    teamMaps = []\n    for team in teams:\n        rank = {}\n        for i, internNum in enumerate(team):\n            rank[internNum] = i\n        teamMaps.append(rank)\n\n    while len(freeInterns) > 0:\n        internNum = freeInterns.pop()\n\n        intern = interns[internNum]\n        teamPreference = intern[currentInternChoices[internNum]]\n        currentInternChoices[internNum] += 1\n\n        if teamPreference not in chosenInterns:\n            chosenInterns[teamPreference] = internNum\n            continue\n\n        previousIntern = chosenInterns[teamPreference]\n        previousInternRank = teamMaps[teamPreference][previousIntern]\n        currentInternRank = teamMaps[teamPreference][internNum]\n\n        if currentInternRank < previousInternRank:\n            freeInterns.append(previousIntern)\n            chosenInterns[teamPreference] = internNum\n        else:\n            freeInterns.append(internNum)\n\n    matches = [[internNum, teamNum] for teamNum, internNum in chosenInterns.items()]\n    return matches\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        interns = [[0, 1], [1, 0]]\n        teams = [[1, 0], [1, 0]]\n        expected = [[0, 0], [1, 1]]\n        actual = program.stableInternships(interns, teams)\n        self.assertTrue(len(actual) == len(expected))\n\n        for match in expected:\n            containsMatch = False\n            for actualMatch in actual:\n                if actualMatch[0] == match[0] and actualMatch[1] == match[1]:\n                    containsMatch = True\n            self.assertTrue(containsMatch)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        interns = [[0, 1], [1, 0]]\n        teams = [[1, 0], [1, 0]]\n        expected = [[0, 0], [1, 1]]\n        actual = program.stableInternships(interns, teams)\n        self.assertTrue(len(actual) == len(expected))\n\n        for match in expected:\n            containsMatch = False\n            for actualMatch in actual:\n                if actualMatch[0] == match[0] and actualMatch[1] == match[1]:\n                    containsMatch = True\n            self.assertTrue(containsMatch)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def stableInternships(interns, teams)\n        # Write your code here.\n        return []\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def stableInternships(interns, teams)\n        # Write your code here.\n        return []\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.stableInternships\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.stableInternships\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func stableInternships(_ interns: [[Int]], _ teams: [[Int]]) -> [[Int]] {\n    // Write your code here.\n    return [[Int]]()\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n^2) time | O(n^2) space - where n is the number of interns and teams\n  func stableInternships(_ interns: [[Int]], _ teams: [[Int]]) -> [[Int]] {\n    var chosenInterns = [Int: Int]()\n    var freeInterns = [Int](repeating: 0, count: interns.count)\n    for i in 0 ..< freeInterns.count {\n      freeInterns[i] = i\n    }\n    var currentInternChoices = [Int](repeating: 0, count: interns.count)\n\n    var teamMaps = [[Int: Int]]()\n    for team in teams {\n      var rank = [Int: Int]()\n      for (index, internNum) in team.enumerated() {\n        rank[internNum] = index\n      }\n      teamMaps.append(rank)\n    }\n\n    while freeInterns.count > 0 {\n      let internNum = freeInterns.popLast()!\n\n      let intern = interns[internNum]\n      let teamPreference = intern[currentInternChoices[internNum]]\n      currentInternChoices[internNum] += 1\n\n      if chosenInterns[teamPreference] == nil {\n        chosenInterns[teamPreference] = internNum\n        continue\n      }\n\n      let previousIntern = chosenInterns[teamPreference]!\n      let previousInternRank = teamMaps[teamPreference][previousIntern]!\n      let currentInternRank = teamMaps[teamPreference][internNum]!\n\n      if currentInternRank < previousInternRank {\n        freeInterns.append(previousIntern)\n        chosenInterns[teamPreference] = internNum\n      } else {\n        freeInterns.append(internNum)\n      }\n    }\n\n    var matches = [[Int]]()\n    for (teamNum, internNum) in chosenInterns {\n      matches.append([internNum, teamNum])\n    }\n    return matches\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var interns = [[0, 1], [1, 0]]\n      var teams = [[1, 0], [1, 0]]\n      var expected = [[0, 0], [1, 1]]\n      var actual = Program().stableInternships(interns, teams)\n\n      try assertEqual(expected.count, actual.count)\n      for expectedItem in expected {\n        var containsMatch = false\n        for actualItem in actual {\n\t\t\t    if actualItem[0] == expectedItem[0] && actualItem[1] == expectedItem[1] {\n\t\t\t    \tcontainsMatch = true\n\t\t\t    }\n        }\n        try assertEqual(true, containsMatch)\n      }\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var interns = [[0, 1], [1, 0]]\n      var teams = [[1, 0], [1, 0]]\n      var expected = [[0, 0], [1, 1]]\n      var actual = Program().stableInternships(interns, teams)\n\n      try assertEqual(expected.count, actual.count)\n      for expectedItem in expected {\n        var containsMatch = false\n        for actualItem in actual {\n\t\t\t    if actualItem[0] == expectedItem[0] && actualItem[1] == expectedItem[1] {\n\t\t\t    \tcontainsMatch = true\n\t\t\t    }\n        }\n        try assertEqual(true, containsMatch)\n      }\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function stableInternships(interns: number[][], teams: number[][]) {\n  // Write your code here.\n  return [];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^2) time | O(n^2) space - where n is the number of interns and teams\nexport function stableInternships(interns: number[][], teams: number[][]) {\n  const chosenInterns: Record<number, number> = {};\n  const freeInterns = interns.map((_, i) => i);\n  const currentInternChoices = new Array(interns.length).fill(0);\n\n  const teamMaps: Record<number, number>[] = [];\n  for (const team of teams) {\n    const rank: Record<number, number> = {};\n    team.forEach((internNum, i) => {\n      rank[internNum] = i;\n    });\n    teamMaps.push(rank);\n  }\n\n  while (freeInterns.length > 0) {\n    const internNum = freeInterns.pop()!;\n\n    const intern = interns[internNum];\n    const teamPreference = intern[currentInternChoices[internNum]];\n    currentInternChoices[internNum] += 1;\n\n    if (!(teamPreference in chosenInterns)) {\n      chosenInterns[teamPreference] = internNum;\n      continue;\n    }\n\n    const previousIntern = chosenInterns[teamPreference];\n    const previousInternRank = teamMaps[teamPreference][previousIntern];\n    const currentInternRank = teamMaps[teamPreference][internNum];\n\n    if (currentInternRank < previousInternRank) {\n      freeInterns.push(previousIntern);\n      chosenInterns[teamPreference] = internNum;\n    } else {\n      freeInterns.push(internNum);\n    }\n  }\n\n  const matches = Object.entries(chosenInterns).map(([teamNum, internNum]) => [\n    internNum,\n    parseInt(teamNum),\n  ]);\n  return matches;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const interns = [\n    [0, 1],\n    [1, 0],\n  ];\n  const teams = [\n    [1, 0],\n    [1, 0],\n  ];\n  const expected = [\n    [0, 0],\n    [1, 1],\n  ];\n  const actual = program.stableInternships(interns, teams);\n  chai.expect(actual.length).to.deep.equal(expected.length);\n\n  for (const match of expected) {\n    let containsMatch = false;\n    for (const actualMatch of actual) {\n      if (actualMatch[0] === match[0] && actualMatch[1] === match[1]) {\n        containsMatch = true;\n      }\n    }\n    chai.expect(containsMatch).to.deep.equal(true);\n  }\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const interns = [\n    [0, 1],\n    [1, 0],\n  ];\n  const teams = [\n    [1, 0],\n    [1, 0],\n  ];\n  const expected = [\n    [0, 0],\n    [1, 1],\n  ];\n  const actual = program.stableInternships(interns, teams);\n  chai.expect(actual.length).to.deep.equal(expected.length);\n\n  for (const match of expected) {\n    let containsMatch = false;\n    for (const actualMatch of actual) {\n      if (actualMatch[0] === match[0] && actualMatch[1] === match[1]) {\n        containsMatch = true;\n      }\n    }\n    chai.expect(containsMatch).to.deep.equal(true);\n  }\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "interns",
+            "example": [],
+            "schema": {
+                "items": {
+                    "items": {
+                        "type": "integer"
+                    },
+                    "type": "array"
+                },
+                "type": "array"
+            }
+        },
+        {
+            "name": "teams",
+            "example": [],
+            "schema": {
+                "items": {
+                    "items": {
+                        "type": "integer"
+                    },
+                    "type": "array"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "interns": [],
+            "teams": []
+        },
+        {
+            "interns": [
+                [
+                    0
+                ]
+            ],
+            "teams": [
+                [
+                    0
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0
+                ]
+            ],
+            "teams": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1
+                ]
+            ],
+            "teams": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1
+                ]
+            ],
+            "teams": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0
+                ]
+            ],
+            "teams": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1
+                ]
+            ],
+            "teams": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1,
+                    2
+                ],
+                [
+                    2,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    2,
+                    0
+                ]
+            ],
+            "teams": [
+                [
+                    2,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    2
+                ],
+                [
+                    0,
+                    2,
+                    1
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1,
+                    2
+                ],
+                [
+                    0,
+                    2,
+                    1
+                ],
+                [
+                    1,
+                    2,
+                    0
+                ]
+            ],
+            "teams": [
+                [
+                    2,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    2
+                ],
+                [
+                    0,
+                    2,
+                    1
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1,
+                    2
+                ],
+                [
+                    0,
+                    1,
+                    2
+                ],
+                [
+                    0,
+                    1,
+                    2
+                ]
+            ],
+            "teams": [
+                [
+                    2,
+                    1,
+                    0
+                ],
+                [
+                    2,
+                    1,
+                    0
+                ],
+                [
+                    2,
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    2,
+                    1,
+                    3,
+                    0
+                ],
+                [
+                    0,
+                    2,
+                    3,
+                    1
+                ],
+                [
+                    3,
+                    1,
+                    0,
+                    2
+                ]
+            ],
+            "teams": [
+                [
+                    1,
+                    3,
+                    2,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    1,
+                    2,
+                    3,
+                    0
+                ],
+                [
+                    3,
+                    0,
+                    2,
+                    1
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    0,
+                    1,
+                    3,
+                    2
+                ],
+                [
+                    0,
+                    2,
+                    3,
+                    1
+                ],
+                [
+                    0,
+                    2,
+                    3,
+                    1
+                ]
+            ],
+            "teams": [
+                [
+                    1,
+                    3,
+                    2,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    1,
+                    2,
+                    3,
+                    0
+                ],
+                [
+                    3,
+                    0,
+                    2,
+                    1
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    0,
+                    1,
+                    3,
+                    2
+                ],
+                [
+                    0,
+                    2,
+                    3,
+                    1
+                ],
+                [
+                    0,
+                    2,
+                    3,
+                    1
+                ]
+            ],
+            "teams": [
+                [
+                    1,
+                    3,
+                    2,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    1,
+                    3,
+                    2,
+                    0
+                ],
+                [
+                    3,
+                    0,
+                    2,
+                    1
+                ]
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "interns": [],
+            "teams": []
+        },
+        {
+            "interns": [
+                [
+                    0
+                ]
+            ],
+            "teams": [
+                [
+                    0
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0
+                ]
+            ],
+            "teams": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1
+                ]
+            ],
+            "teams": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1
+                ]
+            ],
+            "teams": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0
+                ]
+            ],
+            "teams": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1
+                ]
+            ],
+            "teams": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1,
+                    2
+                ],
+                [
+                    2,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    2,
+                    0
+                ]
+            ],
+            "teams": [
+                [
+                    2,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    2
+                ],
+                [
+                    0,
+                    2,
+                    1
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1,
+                    2
+                ],
+                [
+                    0,
+                    2,
+                    1
+                ],
+                [
+                    1,
+                    2,
+                    0
+                ]
+            ],
+            "teams": [
+                [
+                    2,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    2
+                ],
+                [
+                    0,
+                    2,
+                    1
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1,
+                    2
+                ],
+                [
+                    0,
+                    1,
+                    2
+                ],
+                [
+                    0,
+                    1,
+                    2
+                ]
+            ],
+            "teams": [
+                [
+                    2,
+                    1,
+                    0
+                ],
+                [
+                    2,
+                    1,
+                    0
+                ],
+                [
+                    2,
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    2,
+                    1,
+                    3,
+                    0
+                ],
+                [
+                    0,
+                    2,
+                    3,
+                    1
+                ],
+                [
+                    3,
+                    1,
+                    0,
+                    2
+                ]
+            ],
+            "teams": [
+                [
+                    1,
+                    3,
+                    2,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    1,
+                    2,
+                    3,
+                    0
+                ],
+                [
+                    3,
+                    0,
+                    2,
+                    1
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    0,
+                    1,
+                    3,
+                    2
+                ],
+                [
+                    0,
+                    2,
+                    3,
+                    1
+                ],
+                [
+                    0,
+                    2,
+                    3,
+                    1
+                ]
+            ],
+            "teams": [
+                [
+                    1,
+                    3,
+                    2,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    1,
+                    2,
+                    3,
+                    0
+                ],
+                [
+                    3,
+                    0,
+                    2,
+                    1
+                ]
+            ]
+        },
+        {
+            "interns": [
+                [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    0,
+                    1,
+                    3,
+                    2
+                ],
+                [
+                    0,
+                    2,
+                    3,
+                    1
+                ],
+                [
+                    0,
+                    2,
+                    3,
+                    1
+                ]
+            ],
+            "teams": [
+                [
+                    1,
+                    3,
+                    2,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    1,
+                    3,
+                    2,
+                    0
+                ],
+                [
+                    3,
+                    0,
+                    2,
+                    1
+                ]
+            ]
+        }
+    ],
+    "changelog": []
+}

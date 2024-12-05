@@ -1,0 +1,659 @@
+{
+    "uid": "transpose-matrix",
+    "testStrategy": "JSON",
+    "name": "Transpose Matrix",
+    "version": 0,
+    "releaseDate": "2023-06-02T00:00:00Z",
+    "category": "Arrays",
+    "difficulty": 1,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 15607,
+        "failureCount": 2083
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "807734070",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 447
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    You're given a 2D array of integers <span>matrix</span>. Write a function\n    that returns the transpose of the matrix.\n  </p>\n\n  <p>\n    The transpose of a matrix is a flipped version of the original matrix across\n    its main diagonal (which runs from top-left to bottom-right); it switches\n    the row and column indices of the original matrix.\n  </p>\n\n  <p>\n    You can assume the input matrix always has at least 1 value; however its\n    width and height are not necessarily the same.\n  </p>\n\n  <h3>Sample Input #1</h3>\n  <pre><span class=\"CodeEditor-promptParameter\">matrix</span> = [\n  [1, 2],\n]</pre>\n  <h3>Sample Output # 1</h3>\n  <pre>\n[\n  [1],\n  [2]\n]</pre\n  >\n\n  <h3>Sample Input #2</h3>\n  <pre><span class=\"CodeEditor-promptParameter\">matrix</span> = [\n  [1, 2],\n  [3, 4],\n  [5, 6]\n]</pre>\n  <h3>Sample Output #2</h3>\n  <pre>\n[\n  [1, 3, 5],\n  [2, 4, 6]\n]</pre\n  >\n\n  <h3>Sample Input #3</h3>\n  <pre><span class=\"CodeEditor-promptParameter\">matrix</span> = [\n  [1, 2, 3],\n  [4, 5, 6],\n  [7, 8, 9]\n]</pre>\n  <h3>Sample Output #3</h3>\n  <pre>\n[\n  [1, 4, 7],\n  [2, 5, 8],\n  [3, 6, 9]\n]</pre\n  >\n</div>",
+    "hints": [
+        "<p>\n  The row and column indices of each entry in the matrix should be flipped.\n  For example, the value at <span>matrix[1][2]</span> will be at\n  <span>matrix[2][1]</span> in the transpose of the matrix.\n</p>\n",
+        "\n<p>\n  Each column in the matrix should be become a row in the transpose of the\n  matrix. Each row in the matrix should become a column in the transpose\n  of the matrix.\n</p>\n",
+        "\n<p>\n  Try iterating one column at a time, and with each column, create a row of the\n  values to add to the transpose of the matrix.\n</p>"
+    ],
+    "spaceTime": "O(w * h) time | O(w * h) space - where w is the width of the matrix and h is the height",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nvector<vector<int>> transposeMatrix(vector<vector<int>> matrix) {\n  // Write your code here.\n  return {};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing namespace std;\n\n// O(w * h) time | O(w * h) space - where w is the\n// width of the matrix and h is the height\nvector<vector<int>> transposeMatrix(vector<vector<int>> matrix) {\n  vector<vector<int>> transposedMatrix;\n  for (int col = 0; col < matrix[0].size(); col++) {\n    vector<int> newRow;\n    for (int row = 0; row < matrix.size(); row++) {\n      newRow.push_back(matrix[row][col]);\n    }\n    transposedMatrix.push_back(newRow);\n  }\n  return transposedMatrix;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> input = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};\n      vector<vector<int>> expected = {{1, 4, 7}, {2, 5, 8}, {3, 6, 9}};\n      auto actual = transposeMatrix(input);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> input = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};\n      vector<vector<int>> expected = {{1, 4, 7}, {2, 5, 8}, {3, 6, 9}};\n      auto actual = transposeMatrix(input);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int[,] TransposeMatrix(int[,] matrix) {\n    // Write your code here.\n    return new int[,] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(w * h) time | O(w * h) space - where w is the\n  // width of the matrix and h is the height\n  public int[,] TransposeMatrix(int[,] matrix) {\n    int[,] transposedMatrix = new int[matrix.GetLength(1), matrix.GetLength(0)];\n    for (int col = 0; col < matrix.GetLength(1); col++) {\n      for (int row = 0; row < matrix.GetLength(0); row++) {\n        transposedMatrix[col, row] = matrix[row, col];\n      }\n    }\n    return transposedMatrix;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[,] input = new int[3, 3] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };\n    int[,] expected = new int[3, 3] { { 1, 4, 7 }, { 2, 5, 8 }, { 3, 6, 9 } };\n    int[,] actual = new Program().TransposeMatrix(input);\n    Utils.AssertTrue(expected.Length == actual.Length);\n    for (int i = 0; i < expected.GetLength(0); i++) {\n      for (int j = 0; j < expected.GetLength(1); j++) {\n        Utils.AssertTrue(expected[i, j] == actual[i, j]);\n      }\n    }\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[,] input = new int[3, 3] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };\n    int[,] expected = new int[3, 3] { { 1, 4, 7 }, { 2, 5, 8 }, { 3, 6, 9 } };\n    int[,] actual = new Program().TransposeMatrix(input);\n    Utils.AssertTrue(expected.Length == actual.Length);\n    for (int i = 0; i < expected.GetLength(0); i++) {\n      for (int j = 0; j < expected.GetLength(1); j++) {\n        Utils.AssertTrue(expected[i, j] == actual[i, j]);\n      }\n    }\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc TransposeMatrix(matrix [][]int) [][]int {\n\t// Write your code here.\n\treturn [][]int{}\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(w * h) time | O(w * h) space - where w is the\n// width of the matrix and h is the height\nfunc TransposeMatrix(matrix [][]int) [][]int {\n\ttransposedMatrix := make([][]int, len(matrix[0]))\n\tfor col := 0; col < len(matrix[0]); col++ {\n\t\tnewRow := make([]int, len(matrix))\n\t\tfor row := 0; row < len(matrix); row++ {\n\t\t\tnewRow[row] = matrix[row][col]\n\t\t}\n\t\ttransposedMatrix[col] = newRow\n\t}\n\treturn transposedMatrix\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := [][]int{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}\n\texpected := [][]int{{1, 4, 7}, {2, 5, 8}, {3, 6, 9}}\n\tactual := TransposeMatrix(input)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := [][]int{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}\n\texpected := [][]int{{1, 4, 7}, {2, 5, 8}, {3, 6, 9}}\n\tactual := TransposeMatrix(input)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int[][] transposeMatrix(int[][] matrix) {\n    // Write your code here.\n    return new int[][] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(w * h) time | O(w * h) space - where w is the\n  // width of the matrix and h is the height\n  public int[][] transposeMatrix(int[][] matrix) {\n    int[][] transposedMatrix = new int[matrix[0].length][matrix.length];\n    for (int col = 0; col < matrix[0].length; col++) {\n      for (int row = 0; row < matrix.length; row++) {\n        transposedMatrix[col][row] = matrix[row][col];\n      }\n    }\n    return transposedMatrix;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[][] input = new int[][] {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};\n    int[][] expected = new int[][] {{1, 4, 7}, {2, 5, 8}, {3, 6, 9}};\n    int[][] actual = new Program().transposeMatrix(input);\n    Utils.assertTrue(expected.length == actual.length);\n    for (int i = 0; i < expected.length; i++) {\n      for (int j = 0; j < expected[i].length; j++) {\n        Utils.assertTrue(expected[i][j] == actual[i][j]);\n      }\n    }\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[][] input = new int[][] {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};\n    int[][] expected = new int[][] {{1, 4, 7}, {2, 5, 8}, {3, 6, 9}};\n    int[][] actual = new Program().transposeMatrix(input);\n    Utils.assertTrue(expected.length == actual.length);\n    for (int i = 0; i < expected.length; i++) {\n      for (int j = 0; j < expected[i].length; j++) {\n        Utils.assertTrue(expected[i][j] == actual[i][j]);\n      }\n    }\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function transposeMatrix(matrix) {\n  // Write your code here.\n  return [];\n}\n\n// Do not edit the line below.\nexports.transposeMatrix = transposeMatrix;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(w * h) time | O(w * h) space - where w is the\n// width of the matrix and h is the height\nfunction transposeMatrix(matrix) {\n  const transposedMatrix = [];\n  for (let col = 0; col < matrix[0].length; col++) {\n    const newRow = [];\n    for (let row = 0; row < matrix.length; row++) {\n      newRow.push(matrix[row][col]);\n    }\n    transposedMatrix.push(newRow);\n  }\n  return transposedMatrix;\n}\n\n// Do not edit the line below.\nexports.transposeMatrix = transposeMatrix;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [\n    [1, 2, 3],\n    [4, 5, 6],\n    [7, 8, 9],\n  ];\n  const expected = [\n    [1, 4, 7],\n    [2, 5, 8],\n    [3, 6, 9],\n  ];\n  const actual = program.transposeMatrix(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [\n    [1, 2, 3],\n    [4, 5, 6],\n    [7, 8, 9],\n  ];\n  const expected = [\n    [1, 4, 7],\n    [2, 5, 8],\n    [3, 6, 9],\n  ];\n  const actual = program.transposeMatrix(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun transposeMatrix(matrix: MutableList<MutableList<Int>>): MutableList<MutableList<Int>> {\n    // Write your code here.\n    return mutableListOf()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(w * h) time | O(w * h) space - where w is the\n// width of the matrix and h is the height\nfun transposeMatrix(matrix: MutableList<MutableList<Int>>): MutableList<MutableList<Int>> {\n    val transposedMatrix = mutableListOf<MutableList<Int>>()\n    for (col in 0 until matrix[0].size) {\n        val newRow = mutableListOf<Int>()\n        for (row in 0 until matrix.size) {\n            newRow.add(matrix[row][col])\n        }\n        transposedMatrix.add(newRow)\n    }\n    return transposedMatrix\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.transposeMatrix\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(\n            mutableListOf(1, 2, 3),\n            mutableListOf(4, 5, 6),\n            mutableListOf(7, 8, 9),\n        )\n        val expected = mutableListOf(\n            mutableListOf(1, 4, 7),\n            mutableListOf(2, 5, 8),\n            mutableListOf(3, 6, 9),\n        )\n        val output = transposeMatrix(input)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.transposeMatrix\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(\n            mutableListOf(1, 2, 3),\n            mutableListOf(4, 5, 6),\n            mutableListOf(7, 8, 9),\n        )\n        val expected = mutableListOf(\n            mutableListOf(1, 4, 7),\n            mutableListOf(2, 5, 8),\n            mutableListOf(3, 6, 9),\n        )\n        val output = transposeMatrix(input)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def transposeMatrix(matrix):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(w * h) time | O(w * h) space - where w is the\n# width of the matrix and h is the height\ndef transposeMatrix(matrix):\n    transposedMatrix = []\n    for col in range(len(matrix[0])):\n        newRow = []\n        for row in range(len(matrix)):\n            newRow.append(matrix[row][col])\n        transposedMatrix.append(newRow)\n    return transposedMatrix\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]\n        expected = [[1, 4, 7], [2, 5, 8], [3, 6, 9]]\n        actual = program.transposeMatrix(input)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]\n        expected = [[1, 4, 7], [2, 5, 8], [3, 6, 9]]\n        actual = program.transposeMatrix(input)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def transposeMatrix(matrix)\n        # Write your code here.\n        return []\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def transposeMatrix(matrix)\n        # Write your code here.\n        return []\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.transposeMatrix\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.transposeMatrix\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func transposeMatrix(_ matrix: [[Int]]) -> [[Int]] {\n    // Write your code here.\n    return [[Int]]()\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(w * h) time | O(w * h) space - where w is the\n  // width of the matrix and h is the height\n  func transposeMatrix(_ matrix: [[Int]]) -> [[Int]] {\n    var transposedMatrix = [[Int]]()\n    for col in 0 ..< matrix[0].count {\n      var newRow = [Int]()\n      for row in 0 ..< matrix.count {\n        newRow.append(matrix[row][col])\n      }\n      transposedMatrix.append(newRow)\n    }\n    return transposedMatrix\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var input = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]\n      var expected = [[1, 4, 7], [2, 5, 8], [3, 6, 9]]\n      var actual = Program().transposeMatrix(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var input = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]\n      var expected = [[1, 4, 7], [2, 5, 8], [3, 6, 9]]\n      var actual = Program().transposeMatrix(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function transposeMatrix(matrix: number[][]) {\n  // Write your code here.\n  return [];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(w * h) time | O(w * h) space - where w is the\n// width of the matrix and h is the height\nexport function transposeMatrix(matrix: number[][]) {\n  const transposedMatrix: number[][] = [];\n  for (let col = 0; col < matrix[0].length; col++) {\n    const newRow: number[] = [];\n    for (let row = 0; row < matrix.length; row++) {\n      newRow.push(matrix[row][col]);\n    }\n    transposedMatrix.push(newRow);\n  }\n  return transposedMatrix;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [\n    [1, 2, 3],\n    [4, 5, 6],\n    [7, 8, 9],\n  ];\n  const expected = [\n    [1, 4, 7],\n    [2, 5, 8],\n    [3, 6, 9],\n  ];\n  const actual = program.transposeMatrix(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [\n    [1, 2, 3],\n    [4, 5, 6],\n    [7, 8, 9],\n  ];\n  const expected = [\n    [1, 4, 7],\n    [2, 5, 8],\n    [3, 6, 9],\n  ];\n  const actual = program.transposeMatrix(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "matrix",
+            "example": [
+                [
+                    1
+                ]
+            ],
+            "schema": {
+                "items": {
+                    "items": {
+                        "type": "integer"
+                    },
+                    "type": "array"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "matrix": [
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1
+                ],
+                [
+                    -1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    2,
+                    3
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1
+                ],
+                [
+                    2
+                ],
+                [
+                    3
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    4,
+                    5,
+                    6
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4
+                ],
+                [
+                    2,
+                    5
+                ],
+                [
+                    3,
+                    6
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    -7,
+                    -7
+                ],
+                [
+                    100,
+                    12
+                ],
+                [
+                    -33,
+                    17
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    4,
+                    5,
+                    6
+                ],
+                [
+                    7,
+                    8,
+                    9
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7
+                ],
+                [
+                    2,
+                    5,
+                    8
+                ],
+                [
+                    3,
+                    6,
+                    9
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    5,
+                    6,
+                    3,
+                    -3,
+                    12
+                ],
+                [
+                    -3,
+                    6,
+                    5,
+                    2,
+                    -1
+                ],
+                [
+                    0,
+                    0,
+                    3,
+                    12,
+                    3
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    -1,
+                    -2,
+                    -3
+                ],
+                [
+                    4,
+                    5,
+                    6,
+                    7
+                ],
+                [
+                    2,
+                    3,
+                    -2,
+                    -3
+                ],
+                [
+                    42,
+                    100,
+                    30,
+                    -42
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1234,
+                    6935,
+                    4205
+                ],
+                [
+                    -23459,
+                    314159,
+                    0
+                ],
+                [
+                    100,
+                    3,
+                    987654
+                ]
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "matrix": [
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1
+                ],
+                [
+                    -1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    2,
+                    3
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1
+                ],
+                [
+                    2
+                ],
+                [
+                    3
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    4,
+                    5,
+                    6
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4
+                ],
+                [
+                    2,
+                    5
+                ],
+                [
+                    3,
+                    6
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    -7,
+                    -7
+                ],
+                [
+                    100,
+                    12
+                ],
+                [
+                    -33,
+                    17
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    4,
+                    5,
+                    6
+                ],
+                [
+                    7,
+                    8,
+                    9
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    4,
+                    7
+                ],
+                [
+                    2,
+                    5,
+                    8
+                ],
+                [
+                    3,
+                    6,
+                    9
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    5,
+                    6,
+                    3,
+                    -3,
+                    12
+                ],
+                [
+                    -3,
+                    6,
+                    5,
+                    2,
+                    -1
+                ],
+                [
+                    0,
+                    0,
+                    3,
+                    12,
+                    3
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    -1,
+                    -2,
+                    -3
+                ],
+                [
+                    4,
+                    5,
+                    6,
+                    7
+                ],
+                [
+                    2,
+                    3,
+                    -2,
+                    -3
+                ],
+                [
+                    42,
+                    100,
+                    30,
+                    -42
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1234,
+                    6935,
+                    4205
+                ],
+                [
+                    -23459,
+                    314159,
+                    0
+                ],
+                [
+                    100,
+                    3,
+                    987654
+                ]
+            ]
+        }
+    ],
+    "changelog": []
+}

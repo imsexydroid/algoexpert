@@ -1,0 +1,520 @@
+{
+    "uid": "sort-k-sorted-array",
+    "testStrategy": "JSON",
+    "name": "Sort K-Sorted Array",
+    "version": 0,
+    "releaseDate": "2021-01-19T00:00:00Z",
+    "category": "Heaps",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 7110,
+        "failureCount": 1856
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "499044841",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Tim Ruscica",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1383
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Write a function that takes in a non-negative integer k and a k-sorted array\n  of integers and returns the sorted version of the array. Your function can\n  either sort the array in place or create an entirely new array.\n</p>\n<p>\n  A k-sorted array is a partially sorted array in which all elements are at most\n  k positions away from their sorted position. For example, the array\n  <span>[3, 1, 2, 2]</span> is k-sorted with <span>k = 3</span>, because each\n  element in the array is at most 3 positions away from its sorted position.\n</p>\n<p>\n  Note that you're expected to come up with an algorithm that can sort the\n  k-sorted array faster than in O(nlog(n)) time.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">array</span> = [3, 2, 1, 5, 4, 7, 6, 5]\n<span class=\"CodeEditor-promptParameter\">k</span> = 3\n</pre>\n<h3>Sample Output</h3>\n<pre>\n[1, 2, 3, 4, 5, 5, 6, 7]\n</pre>\n</div>",
+    "hints": [
+        "<p>\nWhat does the k parameter tell you? How can you use it to come up with an algorithm that runs in O(nlog(k))?\n</p>\n",
+        "\n<p>\nSince the input array is k-sorted, try repeatedly sorting k elements at a time and inserting the minimum element of all those k elements into its final sorted position in the array.\n</p>\n",
+        "\n<p>\nWhat auxiliary data structure would be helpful to quickly determine the minimum element of k elements?\n</p>\n",
+        "\n<p>\nAs you iterate through the array, use a min-heap to keep track of the most recent k elements. At each iteration, remove the minimum value from the heap, insert it into its final sorted position in the array, and add the current element in the array to the heap. Continue this process until the heap is empty.\n</p>"
+    ],
+    "spaceTime": "O(nlog(k)) time | O(k) space - where n is the number of elements in the array and k is how far away elements are from their sorted position",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "\n#include <vector>\nusing namespace std;\n\nvector<int> sortKSortedArray(vector<int> array, int k) {\n  // Write your code here.\n  return array;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\n#include <algorithm>\n#include <vector>\nusing namespace std;\n\nclass MinHeap {\n public:\n  vector<int> heap;\n\n  MinHeap(vector<int> array) { heap = buildHeap(array); }\n\n  bool isEmpty() { return heap.size() == 0; }\n\n  vector<int> buildHeap(vector<int> array) {\n    int firstParentIdx = (array.size() - 2) / 2;\n    for (int currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {\n      siftDown(currentIdx, array.size() - 1, array);\n    }\n    return array;\n  }\n\n  void siftDown(int currentIdx, int endIdx, vector<int>& heap) {\n    int childOneIdx = currentIdx * 2 + 1;\n    while (childOneIdx <= endIdx) {\n      int childTwoIdx = currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;\n      int idxToSwap;\n      if (childTwoIdx != -1 && heap[childTwoIdx] < heap[childOneIdx]) {\n        idxToSwap = childTwoIdx;\n      } else {\n        idxToSwap = childOneIdx;\n      }\n      if (heap[idxToSwap] < heap[currentIdx]) {\n        swap(currentIdx, idxToSwap, heap);\n        currentIdx = idxToSwap;\n        childOneIdx = currentIdx * 2 + 1;\n      } else {\n        return;\n      }\n    }\n  }\n\n  void siftUp(int currentIdx, vector<int>& heap) {\n    int parentIdx = (currentIdx - 1) / 2;\n    while (currentIdx > 0 && heap[currentIdx] < heap[parentIdx]) {\n      swap(currentIdx, parentIdx, heap);\n      currentIdx = parentIdx;\n      parentIdx = (currentIdx - 1) / 2;\n    }\n  }\n\n  int peek() { return heap[0]; }\n\n  int remove() {\n    swap(0, heap.size() - 1, heap);\n    int valueToRemove = heap.back();\n    heap.pop_back();\n    siftDown(0, heap.size() - 1, heap);\n    return valueToRemove;\n  }\n\n  void insert(int value) {\n    heap.push_back(value);\n    siftUp(heap.size() - 1, heap);\n  }\n\n  void swap(int i, int j, vector<int>& heap) {\n    int temp = heap[j];\n    heap[j] = heap[i];\n    heap[i] = temp;\n  }\n};\n\n// O(nlog(k)) time | O(k) space - where n is the number\n// of elements in the array and k is how far away elements\n// are from their sorted position\nvector<int> sortKSortedArray(vector<int> array, int k) {\n  vector<int> minHeapInputArray(\n    array.begin(), array.begin() + min(k + 1, (int)array.size())\n  );\n  auto minHeapWithKElements = new MinHeap(minHeapInputArray);\n\n  int nextIndexToInsertElement = 0;\n  for (int idx = k + 1; idx < array.size(); idx++) {\n    auto minElement = minHeapWithKElements->remove();\n    array[nextIndexToInsertElement] = minElement;\n    nextIndexToInsertElement++;\n\n    auto currentElement = array[idx];\n    minHeapWithKElements->insert(currentElement);\n  }\n\n  while (!minHeapWithKElements->isEmpty()) {\n    auto minElement = minHeapWithKElements->remove();\n    array[nextIndexToInsertElement] = minElement;\n    nextIndexToInsertElement++;\n  }\n\n  return array;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input = {3, 2, 1, 5, 4, 7, 6, 5};\n      int k = 3;\n      vector<int> expected = {1, 2, 3, 4, 5, 5, 6, 7};\n      auto actual = sortKSortedArray(input, k);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input = {3, 2, 1, 5, 4, 7, 6, 5};\n      int k = 3;\n      vector<int> expected = {1, 2, 3, 4, 5, 5, 6, 7};\n      auto actual = sortKSortedArray(input, k);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int[] SortKSortedArray(int[] array, int k) {\n    // Write your code here.\n    return new int[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(nlog(k)) time | O(k) space - where n is the number\n  // of elements in the array and k is how far away elements\n  // are from their sorted position\n  public int[] SortKSortedArray(int[] array, int k) {\n    List<int> heapValues = new List<int>();\n    for (int i = 0; i < Math.Min(k + 1, array.Length); i++)\n      heapValues.Add(array[i]);\n\n    MinHeap minHeapWithKElements = new MinHeap(heapValues);\n\n    int nextIndexToInsertElement = 0;\n    for (int idx = k + 1; idx < array.Length; idx++) {\n      int minElement = minHeapWithKElements.remove();\n      array[nextIndexToInsertElement] = minElement;\n      nextIndexToInsertElement += 1;\n\n      int currentElement = array[idx];\n      minHeapWithKElements.insert(currentElement);\n    }\n\n    while (!minHeapWithKElements.isEmpty()) {\n      int minElement = minHeapWithKElements.remove();\n      array[nextIndexToInsertElement] = minElement;\n      nextIndexToInsertElement += 1;\n    }\n\n    return array;\n  }\n\n  public class MinHeap {\n    List<int> heap = new List<int>();\n\n    public MinHeap(List<int> array) {\n      heap = buildHeap(array);\n    }\n\n    // O(n) time | O(1) space\n    public List<int> buildHeap(List<int> array) {\n      int firstParentIdx = (array.Count - 2) / 2;\n      for (int currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {\n        siftDown(currentIdx, array.Count - 1, array);\n      }\n      return array;\n    }\n\n    // O(log(n)) time | O(1) space\n    public void siftDown(int currentIdx, int endIdx, List<int> heap) {\n      int childOneIdx = currentIdx * 2 + 1;\n      while (childOneIdx <= endIdx) {\n        int childTwoIdx =\n          currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;\n        int idxToSwap;\n        if (childTwoIdx != -1 && heap[childTwoIdx] < heap[childOneIdx]) {\n          idxToSwap = childTwoIdx;\n        } else {\n          idxToSwap = childOneIdx;\n        }\n        if (heap[idxToSwap] < heap[currentIdx]) {\n          swap(currentIdx, idxToSwap, heap);\n          currentIdx = idxToSwap;\n          childOneIdx = currentIdx * 2 + 1;\n        } else {\n          return;\n        }\n      }\n    }\n\n    // O(log(n)) time | O(1) space\n    public void siftUp(int currentIdx, List<int> heap) {\n      int parentIdx = (currentIdx - 1) / 2;\n      while (currentIdx > 0 && heap[currentIdx] < heap[parentIdx]) {\n        swap(currentIdx, parentIdx, heap);\n        currentIdx = parentIdx;\n        parentIdx = (currentIdx - 1) / 2;\n      }\n    }\n\n    public int peek() {\n      return heap[0];\n    }\n\n    public int remove() {\n      swap(0, heap.Count - 1, heap);\n      int valueToRemove = heap[heap.Count - 1];\n      heap.RemoveAt(heap.Count - 1);\n      siftDown(0, heap.Count - 1, heap);\n      return valueToRemove;\n    }\n\n    public void insert(int value) {\n      heap.Add(value);\n      siftUp(heap.Count - 1, heap);\n    }\n\n    public void swap(int i, int j, List<int> heap) {\n      int temp = heap[j];\n      heap[j] = heap[i];\n      heap[i] = temp;\n    }\n\n    public bool isEmpty() {\n      return heap.Count == 0;\n    }\n  }\n}"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] input = new int[] { 3, 2, 1, 5, 4, 7, 6, 5 };\n    int k = 3;\n    int[] expected = new int[] { 1, 2, 3, 4, 5, 5, 6, 7 };\n    var actual = new Program().SortKSortedArray(input, k);\n    for (int i = 0; i < expected.Length; i++) {\n      Utils.AssertTrue(expected[i] == actual[i]);\n    }\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] input = new int[] { 3, 2, 1, 5, 4, 7, 6, 5 };\n    int k = 3;\n    int[] expected = new int[] { 1, 2, 3, 4, 5, 5, 6, 7 };\n    var actual = new Program().SortKSortedArray(input, k);\n    for (int i = 0; i < expected.Length; i++) {\n      Utils.AssertTrue(expected[i] == actual[i]);\n    }\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc SortKSortedArray(array []int, k int) []int {\n\t// Write your code here.\n\treturn nil\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(nlog(k)) time | O(k) space - where n is the number\n// of elements in the array and k is how far away elements\n// are from their sorted position\nfunc SortKSortedArray(array []int, k int) []int {\n\tif len(array) == 0 || k == 0 {\n\t\treturn array\n\t}\n\theapArray := make([]int, min(k+1, len(array)))\n\tcopy(heapArray, array[0:min(k+1, len(array))])\n\tminHeapWithKElements := NewMinHeap(heapArray)\n\n\tnextIndexToInsertElement := 0\n\tfor idx := k + 1; idx < len(array); idx++ {\n\t\tminElement := minHeapWithKElements.Remove()\n\t\tarray[nextIndexToInsertElement] = minElement\n\t\tnextIndexToInsertElement += 1\n\n\t\tcurrentElement := array[idx]\n\t\tminHeapWithKElements.Insert(currentElement)\n\t}\n\n\tfor !minHeapWithKElements.IsEmpty() {\n\t\tminElement := minHeapWithKElements.Remove()\n\t\tarray[nextIndexToInsertElement] = minElement\n\t\tnextIndexToInsertElement += 1\n\t}\n\treturn array\n}\n\nfunc min(a, b int) int {\n\tif a < b {\n\t\treturn a\n\t}\n\treturn b\n}\n\ntype MinHeap []int\n\nfunc NewMinHeap(array []int) *MinHeap {\n\theap := MinHeap(array)\n\tptr := &heap\n\tptr.BuildHeap(array)\n\treturn ptr\n}\n\nfunc (h *MinHeap) BuildHeap(array []int) {\n\tfirst := (len(array) - 2) / 2\n\tfor currentIndex := first + 1; currentIndex >= 0; currentIndex-- {\n\t\th.siftDown(currentIndex, len(array)-1)\n\t}\n}\n\nfunc (h *MinHeap) siftDown(currentIndex, endIndex int) {\n\tchildOneIdx := currentIndex*2 + 1\n\tfor childOneIdx <= endIndex {\n\t\tchildTwoIdx := -1\n\t\tif currentIndex*2+2 <= endIndex {\n\t\t\tchildTwoIdx = currentIndex*2 + 2\n\t\t}\n\t\tindexToSwap := childOneIdx\n\t\tif childTwoIdx > -1 && (*h)[childTwoIdx] < (*h)[childOneIdx] {\n\t\t\tindexToSwap = childTwoIdx\n\t\t}\n\t\tif (*h)[indexToSwap] < (*h)[currentIndex] {\n\t\t\th.swap(currentIndex, indexToSwap)\n\t\t\tcurrentIndex = indexToSwap\n\t\t\tchildOneIdx = currentIndex*2 + 1\n\t\t} else {\n\t\t\treturn\n\t\t}\n\t}\n}\n\nfunc (h *MinHeap) siftUp() {\n\tcurrentIndex := len(*h) - 1\n\tparentIndex := (currentIndex - 1) / 2\n\tfor currentIndex > 0 {\n\t\tcurrent, parent := (*h)[currentIndex], (*h)[parentIndex]\n\t\tif current < parent {\n\t\t\th.swap(currentIndex, parentIndex)\n\t\t\tcurrentIndex = parentIndex\n\t\t\tparentIndex = (currentIndex - 1) / 2\n\t\t} else {\n\t\t\treturn\n\t\t}\n\t}\n}\n\nfunc (h MinHeap) Peek() int {\n\tif len(h) == 0 {\n\t\treturn -1\n\t}\n\treturn h[0]\n}\n\nfunc (h *MinHeap) Remove() int {\n\tl := len(*h)\n\th.swap(0, l-1)\n\tpeeked := (*h)[l-1]\n\t*h = (*h)[0 : l-1]\n\th.siftDown(0, l-2)\n\treturn peeked\n}\n\nfunc (h *MinHeap) Insert(value int) {\n\t*h = append(*h, value)\n\th.siftUp()\n}\n\nfunc (h *MinHeap) IsEmpty() bool {\n\treturn len(*h) == 0\n}\n\nfunc (h MinHeap) swap(i, j int) {\n\th[i], h[j] = h[j], h[i]\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []int{3, 2, 1, 5, 4, 7, 6, 5}\n\tk := 3\n\texpected := []int{1, 2, 3, 4, 5, 5, 6, 7}\n\tactual := SortKSortedArray(input, k)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []int{3, 2, 1, 5, 4, 7, 6, 5}\n\tk := 3\n\texpected := []int{1, 2, 3, 4, 5, 5, 6, 7}\n\tactual := SortKSortedArray(input, k)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int[] sortKSortedArray(int[] array, int k) {\n    // Write your code here.\n    return new int[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(nlog(k)) time | O(k) space - where n is the number\n  // of elements in the array and k is how far away elements\n  // are from their sorted position\n  public int[] sortKSortedArray(int[] array, int k) {\n    List<Integer> heapValues = new ArrayList<Integer>();\n    for (int i = 0; i < Math.min(k + 1, array.length); i++)\n      heapValues.add(array[i]);\n\n    MinHeap minHeapWithKElements = new MinHeap(heapValues);\n\n    int nextIndexToInsertElement = 0;\n    for (int idx = k + 1; idx < array.length; idx++) {\n      int minElement = minHeapWithKElements.remove();\n      array[nextIndexToInsertElement] = minElement;\n      nextIndexToInsertElement += 1;\n\n      int currentElement = array[idx];\n      minHeapWithKElements.insert(currentElement);\n    }\n\n    while (!minHeapWithKElements.isEmpty()) {\n      int minElement = minHeapWithKElements.remove();\n      array[nextIndexToInsertElement] = minElement;\n      nextIndexToInsertElement += 1;\n    }\n\n    return array;\n  }\n\n  class MinHeap {\n    List<Integer> heap = new ArrayList<Integer>();\n\n    public MinHeap(List<Integer> array) {\n      heap = buildHeap(array);\n    }\n\n    // O(n) time | O(1) space\n    public List<Integer> buildHeap(List<Integer> array) {\n      int firstParentIdx = (array.size() - 2) / 2;\n      for (int currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {\n        siftDown(currentIdx, array.size() - 1, array);\n      }\n      return array;\n    }\n\n    // O(log(n)) time | O(1) space\n    public void siftDown(int currentIdx, int endIdx, List<Integer> heap) {\n      int childOneIdx = currentIdx * 2 + 1;\n      while (childOneIdx <= endIdx) {\n        int childTwoIdx =\n          currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;\n        int idxToSwap;\n        if (childTwoIdx != -1 && heap.get(childTwoIdx) < heap.get(childOneIdx)) {\n          idxToSwap = childTwoIdx;\n        } else {\n          idxToSwap = childOneIdx;\n        }\n        if (heap.get(idxToSwap) < heap.get(currentIdx)) {\n          swap(currentIdx, idxToSwap, heap);\n          currentIdx = idxToSwap;\n          childOneIdx = currentIdx * 2 + 1;\n        } else {\n          return;\n        }\n      }\n    }\n\n    // O(log(n)) time | O(1) space\n    public void siftUp(int currentIdx, List<Integer> heap) {\n      int parentIdx = (currentIdx - 1) / 2;\n      while (currentIdx > 0 && heap.get(currentIdx) < heap.get(parentIdx)) {\n        swap(currentIdx, parentIdx, heap);\n        currentIdx = parentIdx;\n        parentIdx = (currentIdx - 1) / 2;\n      }\n    }\n\n    public int peek() {\n      return heap.get(0);\n    }\n\n    public int remove() {\n      swap(0, heap.size() - 1, heap);\n      int valueToRemove = heap.get(heap.size() - 1);\n      heap.remove(heap.size() - 1);\n      siftDown(0, heap.size() - 1, heap);\n      return valueToRemove;\n    }\n\n    public void insert(int value) {\n      heap.add(value);\n      siftUp(heap.size() - 1, heap);\n    }\n\n    public void swap(int i, int j, List<Integer> heap) {\n      Integer temp = heap.get(j);\n      heap.set(j, heap.get(i));\n      heap.set(i, temp);\n    }\n\n    public boolean isEmpty() {\n      return heap.size() == 0;\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] input = new int[] {3, 2, 1, 5, 4, 7, 6, 5};\n    int k = 3;\n    int[] expected = new int[] {1, 2, 3, 4, 5, 5, 6, 7};\n    var actual = new Program().sortKSortedArray(input, k);\n    for (int i = 0; i < expected.length; i++) {\n      Utils.assertTrue(expected[i] == actual[i]);\n    }\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] input = new int[] {3, 2, 1, 5, 4, 7, 6, 5};\n    int k = 3;\n    int[] expected = new int[] {1, 2, 3, 4, 5, 5, 6, 7};\n    var actual = new Program().sortKSortedArray(input, k);\n    for (int i = 0; i < expected.length; i++) {\n      Utils.assertTrue(expected[i] == actual[i]);\n    }\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function sortKSortedArray(array, k) {\n  // Write your code here.\n  return [];\n}\n\n// Do not edit the line below.\nexports.sortKSortedArray = sortKSortedArray;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(nlog(k)) time | O(k) space - where n is the number\n// of elements in the array and k is how far away elements\n// are from their sorted position\nfunction sortKSortedArray(array, k) {\n  const minHeapWithKElements = new MinHeap(array.slice(0, Math.min(k + 1, array.length)));\n\n  let nextIndexToInsertElement = 0;\n  for (let idx = k + 1; idx < array.length; idx++) {\n    const minElement = minHeapWithKElements.remove();\n    array[nextIndexToInsertElement] = minElement;\n    nextIndexToInsertElement++;\n\n    const currentElement = array[idx];\n    minHeapWithKElements.insert(currentElement);\n  }\n\n  while (!minHeapWithKElements.isEmpty()) {\n    const minElement = minHeapWithKElements.remove();\n    array[nextIndexToInsertElement] = minElement;\n    nextIndexToInsertElement++;\n  }\n\n  return array;\n}\n\nclass MinHeap {\n  constructor(array) {\n    this.heap = this.buildHeap(array);\n  }\n\n  isEmpty() {\n    return this.heap.length === 0;\n  }\n\n  buildHeap(array) {\n    const firstParentIdx = Math.floor((array.length - 2) / 2);\n    for (let currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {\n      this.siftDown(currentIdx, array.length - 1, array);\n    }\n    return array;\n  }\n\n  siftDown(currentIdx, endIdx, heap) {\n    let childOneIdx = currentIdx * 2 + 1;\n    while (childOneIdx <= endIdx) {\n      const childTwoIdx = currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;\n      let idxToSwap;\n      if (childTwoIdx !== -1 && heap[childTwoIdx] < heap[childOneIdx]) {\n        idxToSwap = childTwoIdx;\n      } else {\n        idxToSwap = childOneIdx;\n      }\n      if (heap[idxToSwap] < heap[currentIdx]) {\n        this.swap(currentIdx, idxToSwap, heap);\n        currentIdx = idxToSwap;\n        childOneIdx = currentIdx * 2 + 1;\n      } else {\n        return;\n      }\n    }\n  }\n\n  siftUp(currentIdx, heap) {\n    let parentIdx = Math.floor((currentIdx - 1) / 2);\n    while (currentIdx > 0 && heap[currentIdx] < heap[parentIdx]) {\n      this.swap(currentIdx, parentIdx, heap);\n      currentIdx = parentIdx;\n      parentIdx = Math.floor((currentIdx - 1) / 2);\n    }\n  }\n\n  peek() {\n    return this.heap[0];\n  }\n\n  remove() {\n    this.swap(0, this.heap.length - 1, this.heap);\n    const valueToRemove = this.heap.pop();\n    this.siftDown(0, this.heap.length - 1, this.heap);\n    return valueToRemove;\n  }\n\n  insert(value) {\n    this.heap.push(value);\n    this.siftUp(this.heap.length - 1, this.heap);\n  }\n\n  swap(i, j, heap) {\n    const temp = heap[j];\n    heap[j] = heap[i];\n    heap[i] = temp;\n  }\n}\n\n// Do not edit the line below.\nexports.sortKSortedArray = sortKSortedArray;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [3, 2, 1, 5, 4, 7, 6, 5];\n  const k = 3;\n  const expected = [1, 2, 3, 4, 5, 5, 6, 7];\n  const actual = program.sortKSortedArray(input, k);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [3, 2, 1, 5, 4, 7, 6, 5];\n  const k = 3;\n  const expected = [1, 2, 3, 4, 5, 5, 6, 7];\n  const actual = program.sortKSortedArray(input, k);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun sortKSortedArray(array: MutableList<Int>, k: Int): MutableList<Int> {\n    // Write your code here.\n    return array\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.min\n\n// O(nlog(k)) time | O(k) space - where n is the number\n// of elements in the array and k is how far away elements\n// are from their sorted position\nfun sortKSortedArray(array: MutableList<Int>, k: Int): MutableList<Int> {\n    val minHeapWithKElements = MinHeap(array.slice(0..min(k, array.size - 1)).toMutableList())\n\n    var nextIndexToInsertElement = 0\n    for (idx in k + 1 until array.size) {\n        val minElement = minHeapWithKElements.remove()!!\n        array[nextIndexToInsertElement] = minElement\n        nextIndexToInsertElement += 1\n\n        val currentElement = array[idx]\n        minHeapWithKElements.insert(currentElement)\n    }\n\n    while (!minHeapWithKElements.isEmpty()) {\n        val minElement = minHeapWithKElements.remove()!!\n        array[nextIndexToInsertElement] = minElement\n        nextIndexToInsertElement += 1\n    }\n\n    return array\n}\n\nopen class MinHeap(array: MutableList<Int>) {\n    val heap = this.buildHeap(array)\n\n    fun isEmpty(): Boolean {\n        return this.heap.size == 0\n    }\n\n    fun buildHeap(array: MutableList<Int>): MutableList<Int> {\n        val firstParentIdx = (array.size - 2) / 2\n        for (currentIdx in firstParentIdx downTo 0) {\n            this.siftDown(currentIdx, array.size - 1, array)\n        }\n        return array\n    }\n\n    fun siftDown(currentIdx: Int, endIdx: Int, heap: MutableList<Int>) {\n        var newCurrentIdx = currentIdx\n        var childOneIdx = currentIdx * 2 + 1\n        while (childOneIdx <= endIdx) {\n            var childTwoIdx = if (newCurrentIdx * 2 + 2 <= endIdx) newCurrentIdx * 2 + 2 else -1\n            var idxToSwap: Int\n            if (childTwoIdx != -1 && heap[childTwoIdx] < heap[childOneIdx]) {\n                idxToSwap = childTwoIdx\n            } else {\n                idxToSwap = childOneIdx\n            }\n            if (heap[idxToSwap] < heap[newCurrentIdx]) {\n                this.swap(newCurrentIdx, idxToSwap, heap)\n                newCurrentIdx = idxToSwap\n                childOneIdx = newCurrentIdx * 2 + 1\n            } else {\n                return\n            }\n        }\n    }\n\n    fun siftUp(currentIdx: Int, heap: MutableList<Int>) {\n        var newCurrentIdx = currentIdx\n        var parentIdx = (currentIdx - 1) / 2\n        while (newCurrentIdx > 0 && heap[newCurrentIdx] < heap[parentIdx]) {\n            this.swap(newCurrentIdx, parentIdx, heap)\n            newCurrentIdx = parentIdx\n            parentIdx = (newCurrentIdx - 1) / 2\n        }\n    }\n\n    fun peek(): Int? {\n        return this.heap[0]\n    }\n\n    fun remove(): Int? {\n        this.swap(0, this.heap.size - 1, this.heap)\n        val valueToRemove = this.heap.removeAt(this.heap.size - 1)\n        this.siftDown(0, this.heap.size - 1, this.heap)\n        return valueToRemove\n    }\n\n    fun insert(value: Int) {\n        this.heap.add(value)\n        this.siftUp(this.heap.size - 1, this.heap)\n    }\n\n    fun swap(i: Int, j: Int, heap: MutableList<Int>) {\n        val temp = heap[j]\n        heap[j] = heap[i]\n        heap[i] = temp\n    }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.sortKSortedArray\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(3, 2, 1, 5, 4, 7, 6, 5)\n        val k = 3\n        val expected = mutableListOf(1, 2, 3, 4, 5, 5, 6, 7)\n        val output = sortKSortedArray(input, k)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.sortKSortedArray\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(3, 2, 1, 5, 4, 7, 6, 5)\n        val k = 3\n        val expected = mutableListOf(1, 2, 3, 4, 5, 5, 6, 7)\n        val output = sortKSortedArray(input, k)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def sortKSortedArray(array, k):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(nlog(k)) time | O(k) space - where n is the number\n# of elements in the array and k is how far away elements\n# are from their sorted position\ndef sortKSortedArray(array, k):\n    minHeapWithKElements = MinHeap(array[: min(k + 1, len(array))])\n\n    nextIndexToInsertElement = 0\n    for idx in range(k + 1, len(array)):\n        minElement = minHeapWithKElements.remove()\n        array[nextIndexToInsertElement] = minElement\n        nextIndexToInsertElement += 1\n\n        currentElement = array[idx]\n        minHeapWithKElements.insert(currentElement)\n\n    while not minHeapWithKElements.isEmpty():\n        minElement = minHeapWithKElements.remove()\n        array[nextIndexToInsertElement] = minElement\n        nextIndexToInsertElement += 1\n\n    return array\n\n\nclass MinHeap:\n    def __init__(self, array):\n        self.heap = self.buildHeap(array)\n\n    def isEmpty(self):\n        return len(self.heap) == 0\n\n    def buildHeap(self, array):\n        firstParentIdx = (len(array) - 2) // 2\n        for currentIdx in reversed(range(firstParentIdx + 1)):\n            self.siftDown(currentIdx, len(array) - 1, array)\n        return array\n\n    def siftDown(self, currentIdx, endIdx, heap):\n        childOneIdx = currentIdx * 2 + 1\n        while childOneIdx <= endIdx:\n            childTwoIdx = currentIdx * 2 + 2 if currentIdx * 2 + 2 <= endIdx else -1\n            if childTwoIdx != -1 and heap[childTwoIdx] < heap[childOneIdx]:\n                idxToSwap = childTwoIdx\n            else:\n                idxToSwap = childOneIdx\n            if heap[idxToSwap] < heap[currentIdx]:\n                self.swap(currentIdx, idxToSwap, heap)\n                currentIdx = idxToSwap\n                childOneIdx = currentIdx * 2 + 1\n            else:\n                return\n\n    def siftUp(self, currentIdx, heap):\n        parentIdx = (currentIdx - 1) // 2\n        while currentIdx > 0 and heap[currentIdx] < heap[parentIdx]:\n            self.swap(currentIdx, parentIdx, heap)\n            currentIdx = parentIdx\n            parentIdx = (currentIdx - 1) // 2\n\n    def peek(self):\n        return self.heap[0]\n\n    def remove(self):\n        self.swap(0, len(self.heap) - 1, self.heap)\n        valueToRemove = self.heap.pop()\n        self.siftDown(0, len(self.heap) - 1, self.heap)\n        return valueToRemove\n\n    def insert(self, value):\n        self.heap.append(value)\n        self.siftUp(len(self.heap) - 1, self.heap)\n\n    def swap(self, i, j, heap):\n        heap[i], heap[j] = heap[j], heap[i]\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [3, 2, 1, 5, 4, 7, 6, 5]\n        k = 3\n        expected = [1, 2, 3, 4, 5, 5, 6, 7]\n        actual = program.sortKSortedArray(input, k)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [3, 2, 1, 5, 4, 7, 6, 5]\n        k = 3\n        expected = [1, 2, 3, 4, 5, 5, 6, 7]\n        actual = program.sortKSortedArray(input, k)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  def sortKSortedArray(array, k)\n    # Write your code here.\n    return []\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def sortKSortedArray(array, k)\n    # Write your code here.\n    return []\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.sortKSortedArray\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.sortKSortedArray\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func sortKSortedArray(_ array: inout [Int], _ k: Int) -> [Int] {\n    // Write your code here.\n    return [Int]()\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(nlog(k)) time | O(k) space - where n is the number\n  // of elements in the array and k is how far away elements\n  // are from their sorted position\n  func sortKSortedArray(_ array: inout [Int], _ k: Int) -> [Int] {\n    if array.count == 0 || k == 0 {\n      return array\n    }\n\n    var minHeapWithKElements = MinHeap(Array(array[0 ... min(k, array.count - 1)]))\n\n    var nextIndexToInsertElement = 0\n    for idx in stride(from: k + 1, to: array.count, by: 1) {\n      let minElement = minHeapWithKElements.remove()\n      array[nextIndexToInsertElement] = minElement\n      nextIndexToInsertElement += 1\n\n      let currentElement = array[idx]\n      minHeapWithKElements.insert(currentElement)\n    }\n\n    while !minHeapWithKElements.isEmpty() {\n      let minElement = minHeapWithKElements.remove()\n      array[nextIndexToInsertElement] = minElement\n      nextIndexToInsertElement += 1\n    }\n    return array\n  }\n\n  class MinHeap {\n    var heap = [Int]()\n\n    init(_ array: [Int]) {\n      heap = array\n      buildHeap(array: array)\n    }\n\n    func buildHeap(array: [Int]) {\n      var firstParentIndex = Double((array.count - 2) / 2)\n      firstParentIndex = firstParentIndex.rounded(.down)\n\n      for var currentIndex in (0 ... Int(firstParentIndex)).reversed() {\n        var endIndex = array.count - 1\n        siftDown(currentIndex: currentIndex, endIndex: endIndex)\n      }\n    }\n\n    func siftDown(currentIndex: Int, endIndex: Int) {\n      var childOneIdx = currentIndex * 2 + 1\n      var current = currentIndex\n      while childOneIdx <= endIndex {\n        var childTwoIdx = -1\n        if current * 2 + 2 <= endIndex {\n          childTwoIdx = current * 2 + 2\n        }\n        var indexToSwap = childOneIdx\n        if childTwoIdx > -1, heap[childTwoIdx] < heap[childOneIdx] {\n          indexToSwap = childTwoIdx\n        }\n\n        if heap[indexToSwap] < heap[current] {\n          swap(firstIndex: current, secondIndex: indexToSwap)\n          current = indexToSwap\n          childOneIdx = current * 2 + 1\n        } else {\n          return\n        }\n      }\n    }\n\n    func siftUp() {\n      var currentIndex = heap.count - 1\n      var parentIndex = (currentIndex - 1) / 2\n\n      while currentIndex > 0 {\n        var current = heap[currentIndex]\n        var parent = heap[Int(parentIndex)]\n        if current < parent {\n          swap(firstIndex: currentIndex, secondIndex: parentIndex)\n          currentIndex = parentIndex\n          parentIndex = (currentIndex - 1) / 2\n        } else {\n          return\n        }\n      }\n    }\n\n    func peek() -> Int {\n      return heap[0]\n    }\n\n    func remove() -> Int {\n      var l = heap.count\n      swap(firstIndex: 0, secondIndex: l - 1)\n      var peeked = heap[l - 1]\n      heap.removeLast()\n      siftDown(currentIndex: 0, endIndex: l - 2)\n      return peeked\n    }\n\n    func insert(_ value: Int) {\n      heap.append(value)\n      siftUp()\n    }\n\n    func swap(firstIndex: Int, secondIndex: Int) {\n      let temp = heap[firstIndex]\n      heap[firstIndex] = heap[secondIndex]\n      heap[secondIndex] = temp\n    }\n\n    func length() -> Int {\n      return heap.count\n    }\n\n    func isEmpty() -> Bool {\n      return length() == 0\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var input = [3, 2, 1, 5, 4, 7, 6, 5]\n      var k = 3\n      var expected = [1, 2, 3, 4, 5, 5, 6, 7]\n      var actual = Program().sortKSortedArray(&input, k)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var input = [3, 2, 1, 5, 4, 7, 6, 5]\n      var k = 3\n      var expected = [1, 2, 3, 4, 5, 5, 6, 7]\n      var actual = Program().sortKSortedArray(&input, k)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function sortKSortedArray(array: number[], k: number) {\n  // Write your code here.\n  return array;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(nlog(k)) time | O(k) space - where n is the number\n// of elements in the array and k is how far away elements\n// are from their sorted position\nexport function sortKSortedArray(array: number[], k: number) {\n  const minHeapWithKElements = new MinHeap(array.slice(0, Math.min(k + 1, array.length)));\n\n  let nextIndexToInsertElement = 0;\n  for (let idx = k + 1; idx < array.length; idx++) {\n    const minElement = minHeapWithKElements.remove()!;\n    array[nextIndexToInsertElement] = minElement;\n    nextIndexToInsertElement++;\n\n    const currentElement = array[idx];\n    minHeapWithKElements.insert(currentElement);\n  }\n\n  while (!minHeapWithKElements.isEmpty()) {\n    const minElement = minHeapWithKElements.remove()!;\n    array[nextIndexToInsertElement] = minElement;\n    nextIndexToInsertElement++;\n  }\n\n  return array;\n}\n\nexport class MinHeap {\n  heap: number[];\n\n  constructor(array: number[]) {\n    this.heap = this.buildHeap(array);\n  }\n\n  isEmpty() {\n    return this.heap.length === 0;\n  }\n\n  buildHeap(array: number[]) {\n    const firstParentIdx = Math.floor((array.length - 2) / 2);\n    for (let currentIdx = firstParentIdx; currentIdx >= 0; currentIdx--) {\n      this.siftDown(currentIdx, array.length - 1, array);\n    }\n    return array;\n  }\n\n  siftDown(currentIdx: number, endIdx: number, heap: number[]) {\n    let childOneIdx = currentIdx * 2 + 1;\n    while (childOneIdx <= endIdx) {\n      const childTwoIdx = currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;\n      let idxToSwap;\n      if (childTwoIdx !== -1 && heap[childTwoIdx] < heap[childOneIdx]) {\n        idxToSwap = childTwoIdx;\n      } else {\n        idxToSwap = childOneIdx;\n      }\n      if (heap[idxToSwap] < heap[currentIdx]) {\n        this.swap(currentIdx, idxToSwap, heap);\n        currentIdx = idxToSwap;\n        childOneIdx = currentIdx * 2 + 1;\n      } else {\n        return;\n      }\n    }\n  }\n\n  siftUp(currentIdx: number, heap: number[]) {\n    let parentIdx = Math.floor((currentIdx - 1) / 2);\n    while (currentIdx > 0 && heap[currentIdx] < heap[parentIdx]) {\n      this.swap(currentIdx, parentIdx, heap);\n      currentIdx = parentIdx;\n      parentIdx = Math.floor((currentIdx - 1) / 2);\n    }\n  }\n\n  peek() {\n    return this.heap[0];\n  }\n\n  remove() {\n    this.swap(0, this.heap.length - 1, this.heap);\n    const valueToRemove = this.heap.pop();\n    this.siftDown(0, this.heap.length - 1, this.heap);\n    return valueToRemove;\n  }\n\n  insert(value: number) {\n    this.heap.push(value);\n    this.siftUp(this.heap.length - 1, this.heap);\n  }\n\n  swap(i: number, j: number, heap: number[]) {\n    const temp = heap[j];\n    heap[j] = heap[i];\n    heap[i] = temp;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [3, 2, 1, 5, 4, 7, 6, 5];\n  const k = 3;\n  const expected = [1, 2, 3, 4, 5, 5, 6, 7];\n  const actual = program.sortKSortedArray(input, k);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [3, 2, 1, 5, 4, 7, 6, 5];\n  const k = 3;\n  const expected = [1, 2, 3, 4, 5, 5, 6, 7];\n  const actual = program.sortKSortedArray(input, k);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "array",
+            "example": [
+                3,
+                2,
+                1,
+                5,
+                4,
+                7,
+                6,
+                5
+            ],
+            "schema": {
+                "items": {
+                    "type": "integer"
+                },
+                "type": "array"
+            }
+        },
+        {
+            "name": "k",
+            "example": 3,
+            "schema": {
+                "minimum": 0,
+                "type": "integer"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "array": [
+                3,
+                2,
+                1,
+                5,
+                4,
+                7,
+                6,
+                5
+            ],
+            "k": 3
+        },
+        {
+            "array": [
+                -1,
+                -3,
+                -4,
+                2,
+                1,
+                3
+            ],
+            "k": 2
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                5
+            ],
+            "k": 0
+        },
+        {
+            "array": [],
+            "k": 5
+        },
+        {
+            "array": [
+                4,
+                3,
+                2,
+                1,
+                2,
+                5,
+                6
+            ],
+            "k": 4
+        },
+        {
+            "array": [
+                3,
+                2,
+                1,
+                0,
+                4,
+                7,
+                6,
+                5,
+                9,
+                8,
+                7
+            ],
+            "k": 3
+        },
+        {
+            "array": [
+                2,
+                1,
+                4,
+                3,
+                5,
+                6,
+                8,
+                7
+            ],
+            "k": 1
+        },
+        {
+            "array": [
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "k": 1
+        },
+        {
+            "array": [
+                5,
+                4,
+                3,
+                2,
+                -100
+            ],
+            "k": 5
+        },
+        {
+            "array": [
+                3,
+                3,
+                2,
+                1,
+                6,
+                4,
+                4,
+                5,
+                9,
+                7,
+                8,
+                11,
+                12
+            ],
+            "k": 3
+        },
+        {
+            "array": [
+                1
+            ],
+            "k": 1
+        },
+        {
+            "array": [
+                -1,
+                -5
+            ],
+            "k": 1
+        },
+        {
+            "array": [
+                -2,
+                -3,
+                1,
+                2,
+                3,
+                1,
+                1,
+                2,
+                3,
+                8,
+                100,
+                130,
+                9,
+                12
+            ],
+            "k": 4
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                1
+            ],
+            "k": 8
+        }
+    ],
+    "jsonTests": [
+        {
+            "array": [
+                3,
+                2,
+                1,
+                5,
+                4,
+                7,
+                6,
+                5
+            ],
+            "k": 3
+        },
+        {
+            "array": [
+                -1,
+                -3,
+                -4,
+                2,
+                1,
+                3
+            ],
+            "k": 2
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                5
+            ],
+            "k": 0
+        },
+        {
+            "array": [],
+            "k": 5
+        },
+        {
+            "array": [
+                4,
+                3,
+                2,
+                1,
+                2,
+                5,
+                6
+            ],
+            "k": 4
+        },
+        {
+            "array": [
+                3,
+                2,
+                1,
+                0,
+                4,
+                7,
+                6,
+                5,
+                9,
+                8,
+                7
+            ],
+            "k": 3
+        },
+        {
+            "array": [
+                2,
+                1,
+                4,
+                3,
+                5,
+                6,
+                8,
+                7
+            ],
+            "k": 1
+        },
+        {
+            "array": [
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "k": 1
+        },
+        {
+            "array": [
+                5,
+                4,
+                3,
+                2,
+                -100
+            ],
+            "k": 5
+        },
+        {
+            "array": [
+                3,
+                3,
+                2,
+                1,
+                6,
+                4,
+                4,
+                5,
+                9,
+                7,
+                8,
+                11,
+                12
+            ],
+            "k": 3
+        },
+        {
+            "array": [
+                1
+            ],
+            "k": 1
+        },
+        {
+            "array": [
+                -1,
+                -5
+            ],
+            "k": 1
+        },
+        {
+            "array": [
+                -2,
+                -3,
+                1,
+                2,
+                3,
+                1,
+                1,
+                2,
+                3,
+                8,
+                100,
+                130,
+                9,
+                12
+            ],
+            "k": 4
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                1
+            ],
+            "k": 8
+        }
+    ],
+    "changelog": []
+}

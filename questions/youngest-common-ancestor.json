@@ -1,0 +1,3992 @@
+{
+    "uid": "youngest-common-ancestor",
+    "testStrategy": "JSON",
+    "name": "Youngest Common Ancestor",
+    "version": 0,
+    "releaseDate": "2019-05-04T00:00:00Z",
+    "category": "Graphs",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 26485,
+        "failureCount": 7407
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "333528850",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Clement Mihailescu",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 704
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  You're given three inputs, all of which are instances of an\n  <span>AncestralTree</span> class that have an <span>ancestor</span> property\n  pointing to their youngest ancestor. The first input is the top ancestor in an\n  ancestral tree (i.e., the only instance that has no ancestor--its\n  <span>ancestor</span> property points to <span>None</span> /\n  <span>null</span>), and the other two inputs are descendants in the ancestral\n  tree.\n</p>\n<p>\n  Write a function that returns the youngest common ancestor to the two\n  descendants.\n</p>\n<p>\n  Note that a descendant is considered its own ancestor. So in the simple\n  ancestral tree below, the youngest common ancestor to nodes A and B is node A.\n</p>\n<pre>\n<span class=\"CodeEditor-promptComment\">// The youngest common ancestor to nodes A and B is node A.</span>\n  A\n /\nB\n</pre>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptComment\">// The nodes are from the ancestral tree below.</span>\n<span class=\"CodeEditor-promptParameter\">topAncestor</span> = node A\n<span class=\"CodeEditor-promptParameter\">descendantOne</span> = node E\n<span class=\"CodeEditor-promptParameter\">descendantTwo</span> = node I\n          A\n       /     \\\n      B       C\n    /   \\   /   \\\n   D     E F     G\n /   \\\nH     I\n</pre>\n<h3>Sample Output</h3>\n<pre>\nnode B\n</pre>\n</div>",
+    "hints": [
+        "<p>\nYou could try to simultaneously iterate through the ancestors of both input descendants until you find a common ancestor; however, if one of the descendants has more ancestors than the other (i.e., is lower in the ancestral tree), you won't find the youngest common ancestor. How can you get around this problem?\n</p>\n",
+        "\n<p>\nStart by finding the two input descendants' depths in the ancestral tree. If one of them is deeper, iterate up through its ancestors until you reach the depth of the higher descendant. Then, iterate through both descendants' ancestors in tandem until you find the first common ancestor. Note that at this point, one of the descendants will be the ancestor of the lower descendant that is at the same level as the higher descendant.\n</p>"
+    ],
+    "spaceTime": "O(d) time | O(1) space - where d is the depth (height) of the ancestral tree",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\nusing namespace std;\n\nclass AncestralTree {\n public:\n  char name;\n  AncestralTree* ancestor;\n\n  AncestralTree(char name) {\n    this->name = name;\n    this->ancestor = nullptr;\n  }\n\n  void addAsAncestor(vector<AncestralTree*> descendants);\n};\n\nAncestralTree* getYoungestCommonAncestor(\n  AncestralTree* topAncestor,\n  AncestralTree* descendantOne,\n  AncestralTree* descendantTwo\n) {\n  // Write your code here.\n  return nullptr;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <vector>\nusing namespace std;\n\nclass AncestralTree {\n public:\n  char name;\n  AncestralTree* ancestor;\n\n  AncestralTree(char name) {\n    this->name = name;\n    this->ancestor = nullptr;\n  }\n\n  void addAsAncestor(vector<AncestralTree*> descendants);\n};\n\nint getDescendantDepth(AncestralTree* descendant, AncestralTree* topAncestor);\nAncestralTree* backtrackAncestralTree(\n  AncestralTree* lowerDescendant, AncestralTree* higherDescendant, int diff\n);\n\n// O(d) time | O(1) space - where d is the depth (height) of the ancestral tree\nAncestralTree* getYoungestCommonAncestor(\n  AncestralTree* topAncestor,\n  AncestralTree* descendantOne,\n  AncestralTree* descendantTwo\n) {\n  int depthOne = getDescendantDepth(descendantOne, topAncestor);\n  int depthTwo = getDescendantDepth(descendantTwo, topAncestor);\n  if (depthOne > depthTwo) {\n    return backtrackAncestralTree(\n      descendantOne, descendantTwo, depthOne - depthTwo\n    );\n  } else {\n    return backtrackAncestralTree(\n      descendantTwo, descendantOne, depthTwo - depthOne\n    );\n  }\n}\n\nint getDescendantDepth(AncestralTree* descendant, AncestralTree* topAncestor) {\n  int depth = 0;\n  while (descendant != topAncestor) {\n    depth++;\n    descendant = descendant->ancestor;\n  }\n  return depth;\n}\n\nAncestralTree* backtrackAncestralTree(\n  AncestralTree* lowerDescendant, AncestralTree* higherDescendant, int diff\n) {\n  while (diff > 0) {\n    lowerDescendant = lowerDescendant->ancestor;\n    diff--;\n  }\n  while (lowerDescendant != higherDescendant) {\n    lowerDescendant = lowerDescendant->ancestor;\n    higherDescendant = higherDescendant->ancestor;\n  }\n  return lowerDescendant;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\n#include <unordered_map>\n\nvoid AncestralTree::addAsAncestor(vector<AncestralTree*> descendants) {\n  for (AncestralTree* descendant : descendants) {\n    descendant->ancestor = this;\n  }\n}\n\nunordered_map<char, AncestralTree*> getAncestralTrees() {\n  unordered_map<char, AncestralTree*> trees;\n  string alphabet = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\";\n  for (char a : alphabet) {\n    trees.insert({a, new AncestralTree(a)});\n  }\n  return trees;\n}\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      auto trees = getAncestralTrees();\n      trees.at('A')->addAsAncestor({trees.at('B'), trees.at('C')});\n      trees.at('B')->addAsAncestor({trees.at('D'), trees.at('E')});\n      trees.at('D')->addAsAncestor({trees.at('H'), trees.at('I')});\n      trees.at('C')->addAsAncestor({trees.at('F'), trees.at('G')});\n\n      AncestralTree* yca =\n        getYoungestCommonAncestor(trees.at('A'), trees.at('E'), trees.at('I'));\n      assert(yca == trees.at('B'));\n    });\n  }\n};\n",
+            "unitTests": "#include <unordered_map>\n\nvoid AncestralTree::addAsAncestor(vector<AncestralTree*> descendants) {\n  for (AncestralTree* descendant : descendants) {\n    descendant->ancestor = this;\n  }\n}\n\nunordered_map<char, AncestralTree*> getAncestralTrees() {\n  unordered_map<char, AncestralTree*> trees;\n  string alphabet = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\";\n  for (char a : alphabet) {\n    trees.insert({a, new AncestralTree(a)});\n  }\n  return trees;\n}\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      auto trees = getAncestralTrees();\n      trees.at('A')->addAsAncestor({trees.at('B'), trees.at('C')});\n      trees.at('B')->addAsAncestor({trees.at('D'), trees.at('E')});\n      trees.at('D')->addAsAncestor({trees.at('H'), trees.at('I')});\n      trees.at('C')->addAsAncestor({trees.at('F'), trees.at('G')});\n\n      AncestralTree* yca =\n        getYoungestCommonAncestor(trees.at('A'), trees.at('E'), trees.at('I'));\n      assert(yca == trees.at('B'));\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public static AncestralTree GetYoungestCommonAncestor(\n    AncestralTree topAncestor,\n    AncestralTree descendantOne,\n    AncestralTree descendantTwo\n  ) {\n    // Write your code here.\n    return topAncestor;\n  }\n\n  public class AncestralTree {\n    public char name;\n    public AncestralTree ancestor;\n\n    public AncestralTree(char name) {\n      this.name = name;\n      this.ancestor = null;\n    }\n\n    // This method is for testing only.\n    public void AddAsAncestor(AncestralTree[] descendants) {\n      foreach (AncestralTree descendant in descendants) {\n        descendant.ancestor = this;\n      }\n    }\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npublic class Program {\n  // O(d) time | O(1) space - where d is the depth (height) of the ancestral\n  // tree\n  public static AncestralTree GetYoungestCommonAncestor(\n    AncestralTree topAncestor,\n    AncestralTree descendantOne,\n    AncestralTree descendantTwo\n  ) {\n    int depthOne = getDescendantDepth(descendantOne, topAncestor);\n    int depthTwo = getDescendantDepth(descendantTwo, topAncestor);\n    if (depthOne > depthTwo) {\n      return backtrackAncestralTree(\n        descendantOne, descendantTwo, depthOne - depthTwo\n      );\n    } else {\n      return backtrackAncestralTree(\n        descendantTwo, descendantOne, depthTwo - depthOne\n      );\n    }\n  }\n\n  public static int getDescendantDepth(\n    AncestralTree descendant, AncestralTree topAncestor\n  ) {\n    int depth = 0;\n    while (descendant != topAncestor) {\n      depth++;\n      descendant = descendant.ancestor;\n    }\n    return depth;\n  }\n\n  public static AncestralTree backtrackAncestralTree(\n    AncestralTree lowerDescendant, AncestralTree higherDescendant, int diff\n  ) {\n    while (diff > 0) {\n      lowerDescendant = lowerDescendant.ancestor;\n      diff--;\n    }\n    while (lowerDescendant != higherDescendant) {\n      lowerDescendant = lowerDescendant.ancestor;\n      higherDescendant = higherDescendant.ancestor;\n    }\n    return lowerDescendant;\n  }\n\n  public class AncestralTree {\n    public char name;\n    public AncestralTree ancestor;\n\n    public AncestralTree(char name) {\n      this.name = name;\n      this.ancestor = null;\n    }\n\n    // This method is for testing only.\n    public void AddAsAncestor(AncestralTree[] descendants) {\n      foreach (AncestralTree descendant in descendants) {\n        descendant.ancestor = this;\n      }\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System.Collections.Generic;\n\npublic class ProgramTest {\n  public Dictionary<char, Program.AncestralTree> getNewTrees() {\n    var trees = new Dictionary<char, Program.AncestralTree>();\n    var alphabet = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\";\n    foreach (char a in alphabet) {\n      trees.Add(a, new Program.AncestralTree(a));\n    }\n\n    trees['A'].AddAsAncestor(new Program.AncestralTree[] {\n      trees['B'], trees['C'], trees['D'], trees['E'], trees['F']\n    });\n    return trees;\n  }\n\n  [Test]\n  public void TestCase1() {\n    var trees = getNewTrees();\n    trees['A'].AddAsAncestor(\n      new Program.AncestralTree[] { trees['B'], trees['C'] }\n    );\n    trees['B'].AddAsAncestor(\n      new Program.AncestralTree[] { trees['D'], trees['E'] }\n    );\n    trees['D'].AddAsAncestor(\n      new Program.AncestralTree[] { trees['H'], trees['I'] }\n    );\n    trees['C'].AddAsAncestor(\n      new Program.AncestralTree[] { trees['F'], trees['G'] }\n    );\n\n    Program.AncestralTree yca =\n      Program.GetYoungestCommonAncestor(trees['A'], trees['E'], trees['I']);\n    Utils.AssertTrue(yca == trees['B']);\n  }\n}\n",
+            "unitTests": "using System.Collections.Generic;\n\npublic class ProgramTest {\n  public Dictionary<char, Program.AncestralTree> getNewTrees() {\n    var trees = new Dictionary<char, Program.AncestralTree>();\n    var alphabet = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\";\n    foreach (char a in alphabet) {\n      trees.Add(a, new Program.AncestralTree(a));\n    }\n\n    trees['A'].AddAsAncestor(new Program.AncestralTree[] {\n      trees['B'], trees['C'], trees['D'], trees['E'], trees['F']\n    });\n    return trees;\n  }\n\n  [Test]\n  public void TestCase1() {\n    var trees = getNewTrees();\n    trees['A'].AddAsAncestor(\n      new Program.AncestralTree[] { trees['B'], trees['C'] }\n    );\n    trees['B'].AddAsAncestor(\n      new Program.AncestralTree[] { trees['D'], trees['E'] }\n    );\n    trees['D'].AddAsAncestor(\n      new Program.AncestralTree[] { trees['H'], trees['I'] }\n    );\n    trees['C'].AddAsAncestor(\n      new Program.AncestralTree[] { trees['F'], trees['G'] }\n    );\n\n    Program.AncestralTree yca =\n      Program.GetYoungestCommonAncestor(trees['A'], trees['E'], trees['I']);\n    Utils.AssertTrue(yca == trees['B']);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\ntype AncestralTree struct {\n\tName     string\n\tAncestor *AncestralTree\n}\n\nfunc GetYoungestCommonAncestor(top, descendantOne, descendantTwo *AncestralTree) *AncestralTree {\n\t// Write your code here.\n\treturn nil\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\ntype AncestralTree struct {\n\tName     string\n\tAncestor *AncestralTree\n}\n\n// O(d) time | O(1) space - where d is the depth (height) of the ancestral tree\nfunc GetYoungestCommonAncestor(topAncestor, descendantOne, descendantTwo *AncestralTree) *AncestralTree {\n\tdepthOne := getDescendantDepth(descendantOne, topAncestor)\n\tdepthTwo := getDescendantDepth(descendantTwo, topAncestor)\n\tif depthOne > depthTwo {\n\t\treturn backtrackAncestralTree(descendantOne, descendantTwo, depthOne-depthTwo)\n\t}\n\treturn backtrackAncestralTree(descendantTwo, descendantOne, depthTwo-depthOne)\n}\n\nfunc getDescendantDepth(descendant, topAncestor *AncestralTree) int {\n\tdepth := 0\n\tfor descendant != topAncestor {\n\t\tdepth++\n\t\tdescendant = descendant.Ancestor\n\t}\n\treturn depth\n}\n\nfunc backtrackAncestralTree(lowerDescendant, higherDescendant *AncestralTree, diff int) *AncestralTree {\n\tfor diff > 0 {\n\t\tlowerDescendant = lowerDescendant.Ancestor\n\t\tdiff--\n\t}\n\tfor lowerDescendant != higherDescendant {\n\t\tlowerDescendant = lowerDescendant.Ancestor\n\t\thigherDescendant = higherDescendant.Ancestor\n\t}\n\treturn lowerDescendant\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (tree *AncestralTree) addAsAncestor(descendants ...*AncestralTree) {\n\tfor _, descendant := range descendants {\n\t\tdescendant.Ancestor = tree\n\t}\n}\n\nfunc getTrees() map[rune]*AncestralTree {\n\ttrees := map[rune]*AncestralTree{}\n\tfor _, r := range \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\" {\n\t\ttrees[r] = &AncestralTree{Name: string(r)}\n\t}\n\treturn trees\n}\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\ttrees := getTrees()\n\ttrees['A'].addAsAncestor(trees['B'], trees['C'])\n\ttrees['B'].addAsAncestor(trees['D'], trees['E'])\n\ttrees['D'].addAsAncestor(trees['H'], trees['I'])\n\ttrees['C'].addAsAncestor(trees['F'], trees['G'])\n\tyca := GetYoungestCommonAncestor(trees['A'], trees['E'], trees['I'])\n\trequire.Equal(t, trees['B'], yca)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (tree *AncestralTree) addAsAncestor(descendants ...*AncestralTree) {\n\tfor _, descendant := range descendants {\n\t\tdescendant.Ancestor = tree\n\t}\n}\n\nfunc getTrees() map[rune]*AncestralTree {\n\ttrees := map[rune]*AncestralTree{}\n\tfor _, r := range \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\" {\n\t\ttrees[r] = &AncestralTree{Name: string(r)}\n\t}\n\treturn trees\n}\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\ttrees := getTrees()\n\ttrees['A'].addAsAncestor(trees['B'], trees['C'])\n\ttrees['B'].addAsAncestor(trees['D'], trees['E'])\n\ttrees['D'].addAsAncestor(trees['H'], trees['I'])\n\ttrees['C'].addAsAncestor(trees['F'], trees['G'])\n\tyca := GetYoungestCommonAncestor(trees['A'], trees['E'], trees['I'])\n\trequire.Equal(t, trees['B'], yca)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public static AncestralTree getYoungestCommonAncestor(\n    AncestralTree topAncestor,\n    AncestralTree descendantOne,\n    AncestralTree descendantTwo\n  ) {\n    // Write your code here.\n    return topAncestor; // Replace this line\n  }\n\n  static class AncestralTree {\n    public char name;\n    public AncestralTree ancestor;\n\n    AncestralTree(char name) {\n      this.name = name;\n      this.ancestor = null;\n    }\n\n    // This method is for testing only.\n    void addAsAncestor(AncestralTree[] descendants) {\n      for (AncestralTree descendant : descendants) {\n        descendant.ancestor = this;\n      }\n    }\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(d) time | O(1) space - where d is the depth (height) of the ancestral\n  // tree\n  public static AncestralTree getYoungestCommonAncestor(\n    AncestralTree topAncestor,\n    AncestralTree descendantOne,\n    AncestralTree descendantTwo\n  ) {\n    int depthOne = getDescendantDepth(descendantOne, topAncestor);\n    int depthTwo = getDescendantDepth(descendantTwo, topAncestor);\n    if (depthOne > depthTwo) {\n      return backtrackAncestralTree(\n        descendantOne, descendantTwo, depthOne - depthTwo\n      );\n    } else {\n      return backtrackAncestralTree(\n        descendantTwo, descendantOne, depthTwo - depthOne\n      );\n    }\n  }\n\n  public static int getDescendantDepth(\n    AncestralTree descendant, AncestralTree topAncestor\n  ) {\n    int depth = 0;\n    while (descendant != topAncestor) {\n      depth++;\n      descendant = descendant.ancestor;\n    }\n    return depth;\n  }\n\n  public static AncestralTree backtrackAncestralTree(\n    AncestralTree lowerDescendant, AncestralTree higherDescendant, int diff\n  ) {\n    while (diff > 0) {\n      lowerDescendant = lowerDescendant.ancestor;\n      diff--;\n    }\n    while (lowerDescendant != higherDescendant) {\n      lowerDescendant = lowerDescendant.ancestor;\n      higherDescendant = higherDescendant.ancestor;\n    }\n    return lowerDescendant;\n  }\n\n  static class AncestralTree {\n    public char name;\n    public AncestralTree ancestor;\n\n    AncestralTree(char name) {\n      this.name = name;\n      this.ancestor = null;\n    }\n\n    // This method is for testing only.\n    void addAsAncestor(AncestralTree[] descendants) {\n      for (AncestralTree descendant : descendants) {\n        descendant.ancestor = this;\n      }\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  public HashMap<Character, Program.AncestralTree> getTrees() {\n    var trees = new HashMap<Character, Program.AncestralTree>();\n    var alphabet = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\";\n    for (char a : alphabet.toCharArray()) {\n      trees.put(a, new Program.AncestralTree(a));\n    }\n\n    trees.get('A').addAsAncestor(new Program.AncestralTree[] {\n      trees.get('B'),\n      trees.get('C'),\n      trees.get('D'),\n      trees.get('E'),\n      trees.get('F')});\n    return trees;\n  }\n\n  @Test\n  public void TestCase1() {\n    var trees = getTrees();\n    trees.get('A').addAsAncestor(new Program.AncestralTree[] {\n      trees.get('B'), trees.get('C')});\n    trees.get('B').addAsAncestor(new Program.AncestralTree[] {\n      trees.get('D'), trees.get('E')});\n    trees.get('D').addAsAncestor(new Program.AncestralTree[] {\n      trees.get('H'), trees.get('I')});\n    trees.get('C').addAsAncestor(new Program.AncestralTree[] {\n      trees.get('F'), trees.get('G')});\n\n    var yca = Program.getYoungestCommonAncestor(\n      trees.get('A'), trees.get('E'), trees.get('I')\n    );\n    Utils.assertTrue(yca == trees.get('B'));\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  public HashMap<Character, Program.AncestralTree> getTrees() {\n    var trees = new HashMap<Character, Program.AncestralTree>();\n    var alphabet = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\";\n    for (char a : alphabet.toCharArray()) {\n      trees.put(a, new Program.AncestralTree(a));\n    }\n\n    trees.get('A').addAsAncestor(new Program.AncestralTree[] {\n      trees.get('B'),\n      trees.get('C'),\n      trees.get('D'),\n      trees.get('E'),\n      trees.get('F')});\n    return trees;\n  }\n\n  @Test\n  public void TestCase1() {\n    var trees = getTrees();\n    trees.get('A').addAsAncestor(new Program.AncestralTree[] {\n      trees.get('B'), trees.get('C')});\n    trees.get('B').addAsAncestor(new Program.AncestralTree[] {\n      trees.get('D'), trees.get('E')});\n    trees.get('D').addAsAncestor(new Program.AncestralTree[] {\n      trees.get('H'), trees.get('I')});\n    trees.get('C').addAsAncestor(new Program.AncestralTree[] {\n      trees.get('F'), trees.get('G')});\n\n    var yca = Program.getYoungestCommonAncestor(\n      trees.get('A'), trees.get('E'), trees.get('I')\n    );\n    Utils.assertTrue(yca == trees.get('B'));\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "// This is an input class. Do not edit.\nclass AncestralTree {\n  constructor(name) {\n    this.name = name;\n    this.ancestor = null;\n  }\n}\n\nfunction getYoungestCommonAncestor(topAncestor, descendantOne, descendantTwo) {\n  // Write your code here.\n}\n\n// Do not edit the lines below.\nexports.AncestralTree = AncestralTree;\nexports.getYoungestCommonAncestor = getYoungestCommonAncestor;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass AncestralTree {\n  constructor(name) {\n    this.name = name;\n    this.ancestor = null;\n  }\n}\n\n// O(d) time | O(1) space - where d is the depth (height) of the ancestral tree\nfunction getYoungestCommonAncestor(topAncestor, descendantOne, descendantTwo) {\n  const depthOne = getDescendantDepth(descendantOne, topAncestor);\n  const depthTwo = getDescendantDepth(descendantTwo, topAncestor);\n  if (depthOne > depthTwo) {\n    return backtrackAncestralTree(descendantOne, descendantTwo, depthOne - depthTwo);\n  } else {\n    return backtrackAncestralTree(descendantTwo, descendantOne, depthTwo - depthOne);\n  }\n}\n\nfunction getDescendantDepth(descendant, topAncestor) {\n  let depth = 0;\n  while (descendant !== topAncestor) {\n    depth++;\n    descendant = descendant.ancestor;\n  }\n  return depth;\n}\n\nfunction backtrackAncestralTree(lowerDescendant, higherDescendant, diff) {\n  while (diff > 0) {\n    lowerDescendant = lowerDescendant.ancestor;\n    diff--;\n  }\n  while (lowerDescendant !== higherDescendant) {\n    lowerDescendant = lowerDescendant.ancestor;\n    higherDescendant = higherDescendant.ancestor;\n  }\n  return lowerDescendant;\n}\n\nexports.AncestralTree = AncestralTree;\nexports.getYoungestCommonAncestor = getYoungestCommonAncestor;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nclass AncestralTree extends program.AncestralTree {\n  constructor(name) {\n    super(name);\n  }\n\n  addAsAncestor(descendants) {\n    for (const descendant of descendants) {\n      descendant.ancestor = this;\n    }\n  }\n}\n\nfunction getTrees() {\n  const trees = {};\n  const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');\n  for (const letter of ALPHABET) {\n    trees[letter] = new AncestralTree(letter);\n  }\n  return trees;\n}\n\nit('Test Case #1', function () {\n  const trees = getTrees();\n  trees['A'].addAsAncestor([trees['B'], trees['C']]);\n  trees['B'].addAsAncestor([trees['D'], trees['E']]);\n  trees['D'].addAsAncestor([trees['H'], trees['I']]);\n  trees['C'].addAsAncestor([trees['F'], trees['G']]);\n\n  const yca = program.getYoungestCommonAncestor(trees.A, trees.E, trees.I);\n  chai.expect(yca).to.deep.equal(trees.B);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nclass AncestralTree extends program.AncestralTree {\n  constructor(name) {\n    super(name);\n  }\n\n  addAsAncestor(descendants) {\n    for (const descendant of descendants) {\n      descendant.ancestor = this;\n    }\n  }\n}\n\nfunction getTrees() {\n  const trees = {};\n  const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');\n  for (const letter of ALPHABET) {\n    trees[letter] = new AncestralTree(letter);\n  }\n  return trees;\n}\n\nit('Test Case #1', function () {\n  const trees = getTrees();\n  trees['A'].addAsAncestor([trees['B'], trees['C']]);\n  trees['B'].addAsAncestor([trees['D'], trees['E']]);\n  trees['D'].addAsAncestor([trees['H'], trees['I']]);\n  trees['C'].addAsAncestor([trees['F'], trees['G']]);\n\n  const yca = program.getYoungestCommonAncestor(trees.A, trees.E, trees.I);\n  chai.expect(yca).to.deep.equal(trees.B);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nclass AncestralTree(name: Char) {\n    val name = name\n    var ancestor: AncestralTree? = null\n}\n\nfun getYoungestCommonAncestor(topAncestor: AncestralTree, descendantOne: AncestralTree, descendantTwo: AncestralTree): AncestralTree? {\n    // Write your code here.\n    return null\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nclass AncestralTree(name: Char) {\n    val name = name\n    var ancestor: AncestralTree? = null\n}\n\n// O(d) time | O(1) space - where d is the depth (height) of the ancestral tree\nfun getYoungestCommonAncestor(\n    topAncestor: AncestralTree,\n    descendantOne: AncestralTree,\n    descendantTwo: AncestralTree,\n): AncestralTree? {\n    val depthOne = getDescendantDepth(descendantOne, topAncestor)\n    val depthTwo = getDescendantDepth(descendantTwo, topAncestor)\n    if (depthOne > depthTwo) {\n        return backtrackAncestralTree(descendantOne, descendantTwo, depthOne - depthTwo)\n    } else {\n        return backtrackAncestralTree(descendantTwo, descendantOne, depthTwo - depthOne)\n    }\n}\n\nfun getDescendantDepth(start: AncestralTree, topAncestor: AncestralTree): Int {\n    var descendant: AncestralTree? = start\n    var depth = 0\n    while (descendant != topAncestor) {\n        depth++\n        descendant = descendant!!.ancestor\n    }\n    return depth\n}\n\nfun backtrackAncestralTree(lowerDescendant: AncestralTree, higherDescendant: AncestralTree, diffStart: Int): AncestralTree? {\n    var lower: AncestralTree? = lowerDescendant\n    var higher: AncestralTree? = higherDescendant\n    var diff = diffStart\n    while (diff > 0) {\n        lower = lower!!.ancestor\n        diff--\n    }\n    while (lower != higher) {\n        lower = lower!!.ancestor\n        higher = higher!!.ancestor\n    }\n    return lower\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.AncestralTree\nimport com.algoexpert.program.getYoungestCommonAncestor\n\nclass ProgramTest {\n    fun getAncestralTrees(): Map<Char, AncestralTree> {\n        val trees = mutableMapOf<Char, AncestralTree>()\n        var alphabet = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"\n        for (a in alphabet) {\n            trees[a] = AncestralTree(a)\n        }\n\n        trees['B']!!.ancestor = trees['A']\n        trees['C']!!.ancestor = trees['A']\n        trees['D']!!.ancestor = trees['A']\n        trees['E']!!.ancestor = trees['A']\n        trees['F']!!.ancestor = trees['A']\n        return trees\n    }\n\n    @Test\n    fun TestCase1() {\n        var trees = getAncestralTrees()\n\n        trees['B']!!.ancestor = trees['A']\n        trees['C']!!.ancestor = trees['A']\n\n        trees['D']!!.ancestor = trees['B']\n        trees['E']!!.ancestor = trees['B']\n\n        trees['H']!!.ancestor = trees['D']\n        trees['I']!!.ancestor = trees['D']\n\n        trees['F']!!.ancestor = trees['C']\n        trees['G']!!.ancestor = trees['C']\n\n        val yca = getYoungestCommonAncestor(trees['A']!!, trees['E']!!, trees['I']!!)\n        assert(yca == trees['B']!!)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.AncestralTree\nimport com.algoexpert.program.getYoungestCommonAncestor\n\nclass ProgramTest {\n    fun getAncestralTrees(): Map<Char, AncestralTree> {\n        val trees = mutableMapOf<Char, AncestralTree>()\n        var alphabet = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"\n        for (a in alphabet) {\n            trees[a] = AncestralTree(a)\n        }\n\n        trees['B']!!.ancestor = trees['A']\n        trees['C']!!.ancestor = trees['A']\n        trees['D']!!.ancestor = trees['A']\n        trees['E']!!.ancestor = trees['A']\n        trees['F']!!.ancestor = trees['A']\n        return trees\n    }\n\n    @Test\n    fun TestCase1() {\n        var trees = getAncestralTrees()\n\n        trees['B']!!.ancestor = trees['A']\n        trees['C']!!.ancestor = trees['A']\n\n        trees['D']!!.ancestor = trees['B']\n        trees['E']!!.ancestor = trees['B']\n\n        trees['H']!!.ancestor = trees['D']\n        trees['I']!!.ancestor = trees['D']\n\n        trees['F']!!.ancestor = trees['C']\n        trees['G']!!.ancestor = trees['C']\n\n        val yca = getYoungestCommonAncestor(trees['A']!!, trees['E']!!, trees['I']!!)\n        assert(yca == trees['B']!!)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "# This is an input class. Do not edit.\nclass AncestralTree:\n    def __init__(self, name):\n        self.name = name\n        self.ancestor = None\n\n\ndef getYoungestCommonAncestor(topAncestor, descendantOne, descendantTwo):\n    # Write your code here.\n    pass\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass AncestralTree:\n    def __init__(self, name):\n        self.name = name\n        self.ancestor = None\n\n\n# O(d) time | O(1) space - where d is the depth (height) of the ancestral tree\ndef getYoungestCommonAncestor(topAncestor, descendantOne, descendantTwo):\n    depthOne = getDescendantDepth(descendantOne, topAncestor)\n    depthTwo = getDescendantDepth(descendantTwo, topAncestor)\n    if depthOne > depthTwo:\n        return backtrackAncestralTree(descendantOne, descendantTwo, depthOne - depthTwo)\n    else:\n        return backtrackAncestralTree(descendantTwo, descendantOne, depthTwo - depthOne)\n\n\ndef getDescendantDepth(descendant, topAncestor):\n    depth = 0\n    while descendant != topAncestor:\n        depth += 1\n        descendant = descendant.ancestor\n    return depth\n\n\ndef backtrackAncestralTree(lowerDescendant, higherDescendant, diff):\n    while diff > 0:\n        lowerDescendant = lowerDescendant.ancestor\n        diff -= 1\n    while lowerDescendant != higherDescendant:\n        lowerDescendant = lowerDescendant.ancestor\n        higherDescendant = higherDescendant.ancestor\n    return lowerDescendant\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass AncestralTree(program.AncestralTree):\n    def addDescendants(self, *descendants):\n        for descendant in descendants:\n            descendant.ancestor = self\n\n\ndef new_trees():\n    ancestralTrees = {}\n    for letter in list(\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"):\n        ancestralTrees[letter] = AncestralTree(letter)\n    return ancestralTrees\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        trees = new_trees()\n        trees[\"A\"].addDescendants(trees[\"B\"], trees[\"C\"])\n        trees[\"B\"].addDescendants(trees[\"D\"], trees[\"E\"])\n        trees[\"D\"].addDescendants(trees[\"H\"], trees[\"I\"])\n        trees[\"C\"].addDescendants(trees[\"F\"], trees[\"G\"])\n\n        yca = program.getYoungestCommonAncestor(trees[\"A\"], trees[\"E\"], trees[\"I\"])\n        self.assertTrue(yca == trees[\"B\"])\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass AncestralTree(program.AncestralTree):\n    def addDescendants(self, *descendants):\n        for descendant in descendants:\n            descendant.ancestor = self\n\n\ndef new_trees():\n    ancestralTrees = {}\n    for letter in list(\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"):\n        ancestralTrees[letter] = AncestralTree(letter)\n    return ancestralTrees\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        trees = new_trees()\n        trees[\"A\"].addDescendants(trees[\"B\"], trees[\"C\"])\n        trees[\"B\"].addDescendants(trees[\"D\"], trees[\"E\"])\n        trees[\"D\"].addDescendants(trees[\"H\"], trees[\"I\"])\n        trees[\"C\"].addDescendants(trees[\"F\"], trees[\"G\"])\n\n        yca = program.getYoungestCommonAncestor(trees[\"A\"], trees[\"E\"], trees[\"I\"])\n        self.assertTrue(yca == trees[\"B\"])\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  def getYoungestCommonAncestor(topAncestor, descendantOne, descendantTwo)\n    # Write your code here.\n    return -1\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def getYoungestCommonAncestor(topAncestor, descendantOne, descendantTwo)\n    # Write your code here.\n    return -1\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.getYoungestCommonAncestor\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.getYoungestCommonAncestor\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  // This is an input class. Do not edit.\n  class AncestralTree {\n    var name = String()\n    var ancestor: AncestralTree?\n\n    init(name: String) {\n      self.name = name\n      ancestor = nil\n    }\n  }\n\n  func getYoungestCommonAncestor(_ topAncestor: AncestralTree?, _ descendantOne: inout AncestralTree?, _ descendantTwo: inout AncestralTree?) -> AncestralTree {\n    // Write your code here.\n    return AncestralTree(name: \"replace me\") // replace me\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  class AncestralTree {\n    var name = String()\n    var ancestor: AncestralTree?\n\n    init(name: String) {\n      self.name = name\n      ancestor = nil\n    }\n  }\n\n  // O(d) time | O(1) space\n  func getYoungestCommonAncestor(_ topAncestor: AncestralTree?, _ descendantOne: inout AncestralTree?, _ descendantTwo: inout AncestralTree?) -> AncestralTree {\n    var firstDescendant = descendantOne\n    var secondDescendant = descendantTwo\n\n    let depthOne = getDescendantDepth(&descendantOne, topAncestor)\n    let depthTwo = getDescendantDepth(&descendantTwo, topAncestor)\n\n    if depthOne > depthTwo {\n      var difference = depthOne - depthTwo\n      return backTrackAncestralTree(&firstDescendant, &secondDescendant, &difference)\n    } else {\n      var difference = depthTwo - depthOne\n      return backTrackAncestralTree(&secondDescendant, &firstDescendant, &difference)\n    }\n  }\n\n  func getDescendantDepth(_ descendant: inout AncestralTree?, _ topAncestor: AncestralTree?) -> Int {\n    var depth = 0\n\n    while descendant !== topAncestor {\n      depth += 1\n      descendant = descendant?.ancestor\n    }\n\n    return depth\n  }\n\n  func backTrackAncestralTree(_ lowerDescendant: inout AncestralTree?, _ higherDescendant: inout AncestralTree?, _ difference: inout Int) -> AncestralTree {\n    while difference > 0 {\n      difference -= 1\n      lowerDescendant = lowerDescendant?.ancestor\n    }\n\n    while lowerDescendant !== higherDescendant {\n      lowerDescendant = lowerDescendant?.ancestor\n      higherDescendant = higherDescendant?.ancestor\n    }\n\n    return lowerDescendant!\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func getTrees() -> [String: Program.AncestralTree] {\n    var trees = [String: Program.AncestralTree]()\n    let alphabet = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"\n\n    for letter in alphabet {\n      let stringifiedLetter = String(letter)\n      trees[stringifiedLetter] = Program.AncestralTree(name: stringifiedLetter)\n    }\n    return trees\n  }\n\n  func test() {\n    let program = Program()\n\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var trees = getTrees()\n      addAsAncestor(trees[\"A\"]!, [trees[\"B\"]!, trees[\"C\"]!])\n      addAsAncestor(trees[\"B\"]!, [trees[\"D\"]!, trees[\"E\"]!])\n      addAsAncestor(trees[\"D\"]!, [trees[\"H\"]!, trees[\"I\"]!])\n      addAsAncestor(trees[\"C\"]!, [trees[\"F\"]!, trees[\"G\"]!])\n\n      var e = trees[\"E\"]\n      var i = trees[\"I\"]\n      let yca = program.getYoungestCommonAncestor(trees[\"A\"], &e, &i)\n      try assert(yca === trees[\"B\"])\n    }\n  }\n}\n\nfunc addAsAncestor(_ ancestor: Program.AncestralTree, _ descendants: [Program.AncestralTree]) {\n  for descendant in descendants {\n    descendant.ancestor = ancestor\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func getTrees() -> [String: Program.AncestralTree] {\n    var trees = [String: Program.AncestralTree]()\n    let alphabet = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"\n\n    for letter in alphabet {\n      let stringifiedLetter = String(letter)\n      trees[stringifiedLetter] = Program.AncestralTree(name: stringifiedLetter)\n    }\n    return trees\n  }\n\n  func test() {\n    let program = Program()\n\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var trees = getTrees()\n      addAsAncestor(trees[\"A\"]!, [trees[\"B\"]!, trees[\"C\"]!])\n      addAsAncestor(trees[\"B\"]!, [trees[\"D\"]!, trees[\"E\"]!])\n      addAsAncestor(trees[\"D\"]!, [trees[\"H\"]!, trees[\"I\"]!])\n      addAsAncestor(trees[\"C\"]!, [trees[\"F\"]!, trees[\"G\"]!])\n\n      var e = trees[\"E\"]\n      var i = trees[\"I\"]\n      let yca = program.getYoungestCommonAncestor(trees[\"A\"], &e, &i)\n      try assert(yca === trees[\"B\"])\n    }\n  }\n}\n\nfunc addAsAncestor(_ ancestor: Program.AncestralTree, _ descendants: [Program.AncestralTree]) {\n  for descendant in descendants {\n    descendant.ancestor = ancestor\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "// This is an input class. Do not edit.\nclass AncestralTree {\n  name: string;\n  ancestor: AncestralTree | null;\n\n  constructor(name: string) {\n    this.name = name;\n    this.ancestor = null;\n  }\n}\n\nexport function getYoungestCommonAncestor(\n  topAncestor: AncestralTree,\n  descendantOne: AncestralTree,\n  descendantTwo: AncestralTree,\n) {\n  // Write your code here.\n  return topAncestor;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass AncestralTree {\n  name: string;\n  ancestor: AncestralTree | null;\n\n  constructor(name: string) {\n    this.name = name;\n    this.ancestor = null;\n  }\n}\n\n// O(d) time | O(1) space - where d is the depth (height) of the ancestral tree\nexport function getYoungestCommonAncestor(\n  topAncestor: AncestralTree,\n  descendantOne: AncestralTree,\n  descendantTwo: AncestralTree,\n) {\n  const depthOne = getDescendantDepth(descendantOne, topAncestor);\n  const depthTwo = getDescendantDepth(descendantTwo, topAncestor);\n  if (depthOne > depthTwo) {\n    return backtrackAncestralTree(descendantOne, descendantTwo, depthOne - depthTwo);\n  } else {\n    return backtrackAncestralTree(descendantTwo, descendantOne, depthTwo - depthOne);\n  }\n}\n\nfunction getDescendantDepth(descendant: AncestralTree, topAncestor: AncestralTree) {\n  let depth = 0;\n  while (descendant !== topAncestor) {\n    depth++;\n    descendant = descendant.ancestor!;\n  }\n  return depth;\n}\n\nfunction backtrackAncestralTree(\n  lowerDescendant: AncestralTree,\n  higherDescendant: AncestralTree,\n  diff: number,\n) {\n  while (diff > 0) {\n    lowerDescendant = lowerDescendant.ancestor!;\n    diff--;\n  }\n  while (lowerDescendant !== higherDescendant) {\n    lowerDescendant = lowerDescendant.ancestor!;\n    higherDescendant = higherDescendant.ancestor!;\n  }\n  return lowerDescendant;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nclass AncestralTree {\n  name: string;\n  ancestor: AncestralTree | null;\n\n  constructor(name: string) {\n    this.name = name;\n    this.ancestor = null;\n  }\n\n  addAsAncestor(descendants: AncestralTree[]) {\n    for (const descendant of descendants) {\n      descendant.ancestor = this;\n    }\n  }\n}\n\nfunction getTrees() {\n  const trees: {[key: string]: AncestralTree} = {};\n  const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');\n  for (const letter of ALPHABET) {\n    trees[letter] = new AncestralTree(letter);\n  }\n  return trees;\n}\n\nit('Test Case #1', function () {\n  const trees = getTrees();\n  trees['A'].addAsAncestor([trees['B'], trees['C']]);\n  trees['B'].addAsAncestor([trees['D'], trees['E']]);\n  trees['D'].addAsAncestor([trees['H'], trees['I']]);\n  trees['C'].addAsAncestor([trees['F'], trees['G']]);\n\n  const yca = program.getYoungestCommonAncestor(trees.A, trees.E, trees.I);\n  chai.expect(yca).to.deep.equal(trees.B);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nclass AncestralTree {\n  name: string;\n  ancestor: AncestralTree | null;\n\n  constructor(name: string) {\n    this.name = name;\n    this.ancestor = null;\n  }\n\n  addAsAncestor(descendants: AncestralTree[]) {\n    for (const descendant of descendants) {\n      descendant.ancestor = this;\n    }\n  }\n}\n\nfunction getTrees() {\n  const trees: {[key: string]: AncestralTree} = {};\n  const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');\n  for (const letter of ALPHABET) {\n    trees[letter] = new AncestralTree(letter);\n  }\n  return trees;\n}\n\nit('Test Case #1', function () {\n  const trees = getTrees();\n  trees['A'].addAsAncestor([trees['B'], trees['C']]);\n  trees['B'].addAsAncestor([trees['D'], trees['E']]);\n  trees['D'].addAsAncestor([trees['H'], trees['I']]);\n  trees['C'].addAsAncestor([trees['F'], trees['G']]);\n\n  const yca = program.getYoungestCommonAncestor(trees.A, trees.E, trees.I);\n  chai.expect(yca).to.deep.equal(trees.B);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "topAncestor",
+            "example": "A",
+            "schema": {
+                "type": "string"
+            }
+        },
+        {
+            "name": "descendantOne",
+            "example": "E",
+            "schema": {
+                "type": "string"
+            }
+        },
+        {
+            "name": "descendantTwo",
+            "example": "I",
+            "schema": {
+                "type": "string"
+            }
+        },
+        {
+            "name": "ancestralTree",
+            "example": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "I",
+                        "name": "I"
+                    }
+                ]
+            },
+            "schema": {
+                "description": "An <span>AncestralTree</span> is represented by a list of <span>nodes</span>. Every node has to\nhave a unique string <span>id</span> that will be referenced by other nodes' <span>ancestor</span> pointers and by the\n<span>topAncestor</span>, the <span>descendantOne</span>, and the <span>descendantTwo</span>.\n",
+                "properties": {
+                    "nodes": {
+                        "items": {
+                            "properties": {
+                                "ancestor": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "id": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "name",
+                                "ancestor"
+                            ],
+                            "type": "object"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "nodes"
+                ],
+                "type": "object"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "I",
+                        "name": "I"
+                    }
+                ]
+            },
+            "descendantOne": "E",
+            "descendantTwo": "I",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "A",
+            "descendantTwo": "B",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "B",
+            "descendantTwo": "F",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "G",
+            "descendantTwo": "M",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "U",
+            "descendantTwo": "S",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "Z",
+            "descendantTwo": "M",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "O",
+            "descendantTwo": "I",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "T",
+            "descendantTwo": "Z",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "T",
+            "descendantTwo": "V",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "T",
+            "descendantTwo": "H",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "W",
+            "descendantTwo": "V",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "Z",
+            "descendantTwo": "B",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "Q",
+            "descendantTwo": "W",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "A",
+            "descendantTwo": "Z",
+            "topAncestor": "A"
+        }
+    ],
+    "jsonTests": [
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "I",
+                        "name": "I"
+                    }
+                ]
+            },
+            "descendantOne": "E",
+            "descendantTwo": "I",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "A",
+            "descendantTwo": "B",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "B",
+            "descendantTwo": "F",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "G",
+            "descendantTwo": "M",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "U",
+            "descendantTwo": "S",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "Z",
+            "descendantTwo": "M",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "O",
+            "descendantTwo": "I",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "T",
+            "descendantTwo": "Z",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "T",
+            "descendantTwo": "V",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "T",
+            "descendantTwo": "H",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "W",
+            "descendantTwo": "V",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "Z",
+            "descendantTwo": "B",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "Q",
+            "descendantTwo": "W",
+            "topAncestor": "A"
+        },
+        {
+            "ancestralTree": {
+                "nodes": [
+                    {
+                        "ancestor": null,
+                        "id": "A",
+                        "name": "A"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "B",
+                        "name": "B"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "C",
+                        "name": "C"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "D",
+                        "name": "D"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "E",
+                        "name": "E"
+                    },
+                    {
+                        "ancestor": "A",
+                        "id": "F",
+                        "name": "F"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "G",
+                        "name": "G"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "H",
+                        "name": "H"
+                    },
+                    {
+                        "ancestor": "B",
+                        "id": "I",
+                        "name": "I"
+                    },
+                    {
+                        "ancestor": "C",
+                        "id": "J",
+                        "name": "J"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "K",
+                        "name": "K"
+                    },
+                    {
+                        "ancestor": "D",
+                        "id": "L",
+                        "name": "L"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "M",
+                        "name": "M"
+                    },
+                    {
+                        "ancestor": "F",
+                        "id": "N",
+                        "name": "N"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "O",
+                        "name": "O"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "P",
+                        "name": "P"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "Q",
+                        "name": "Q"
+                    },
+                    {
+                        "ancestor": "H",
+                        "id": "R",
+                        "name": "R"
+                    },
+                    {
+                        "ancestor": "K",
+                        "id": "S",
+                        "name": "S"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "T",
+                        "name": "T"
+                    },
+                    {
+                        "ancestor": "P",
+                        "id": "U",
+                        "name": "U"
+                    },
+                    {
+                        "ancestor": "R",
+                        "id": "V",
+                        "name": "V"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "W",
+                        "name": "W"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "X",
+                        "name": "X"
+                    },
+                    {
+                        "ancestor": "V",
+                        "id": "Y",
+                        "name": "Y"
+                    },
+                    {
+                        "ancestor": "X",
+                        "id": "Z",
+                        "name": "Z"
+                    }
+                ]
+            },
+            "descendantOne": "A",
+            "descendantTwo": "Z",
+            "topAncestor": "A"
+        }
+    ],
+    "changelog": []
+}

@@ -1,0 +1,1744 @@
+{
+    "uid": "remove-islands",
+    "testStrategy": "JSON",
+    "name": "Remove Islands",
+    "version": 0,
+    "releaseDate": "2020-12-23T00:00:00Z",
+    "category": "Graphs",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 19744,
+        "failureCount": 5676
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "491011275",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Tim Ruscica",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1639
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  You're given a two-dimensional array (a matrix) of potentially unequal height\n  and width containing only <span>0</span>s and <span>1</span>s. The matrix\n  represents a two-toned image, where each <span>1</span> represents black and\n  each <span>0</span> represents white. An island is defined as any number of\n  <span>1</span>s that are horizontally or vertically adjacent (but not\n  diagonally adjacent) and that don't touch the border of the image. In other\n  words, a group of horizontally or vertically adjacent <span>1</span>s isn't an\n  island if any of those <span>1</span>s are in the first row, last row, first\n  column, or last column of the input matrix.\n</p>\n<p>\n  Note that an island can twist. In other words, it doesn't have to be a\n  straight vertical line or a straight horizontal line; it can be L-shaped, for\n  example.\n</p>\n<p>\n  You can think of islands as patches of black that don't touch the border of\n  the two-toned image.\n</p>\n<p>\n  Write a function that returns a modified version of the input matrix, where\n  all of the islands are removed. You remove an island by replacing it with\n  <span>0</span>s.\n</p>\n<p>Naturally, you're allowed to mutate the input matrix.</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">matrix</span> = \n[\n  [1, 0, 0, 0, 0, 0],\n  [0, 1, 0, 1, 1, 1],\n  [0, 0, 1, 0, 1, 0],\n  [1, 1, 0, 0, 1, 0],\n  [1, 0, 1, 1, 0, 0],\n  [1, 0, 0, 0, 0, 1],\n]\n</pre>\n<h3>Sample Output</h3>\n<pre>\n[\n  [1, 0, 0, 0, 0, 0],\n  [0, 0, 0, 1, 1, 1],\n  [0, 0, 0, 0, 1, 0],\n  [1, 1, 0, 0, 1, 0],\n  [1, 0, 0, 0, 0, 0],\n  [1, 0, 0, 0, 0, 1],\n] \n<span class=\"CodeEditor-promptComment\">// The islands that were removed can be clearly seen here:</span>\n<span class=\"CodeEditor-promptComment\">// [</span>\n<span class=\"CodeEditor-promptComment\">//   [ ,  ,  ,  ,  , ],</span>\n<span class=\"CodeEditor-promptComment\">//   [ , 1,  ,  ,  , ],</span>\n<span class=\"CodeEditor-promptComment\">//   [ ,  , 1,  ,  , ],</span>\n<span class=\"CodeEditor-promptComment\">//   [ ,  ,  ,  ,  , ],</span>\n<span class=\"CodeEditor-promptComment\">//   [ ,  , 1, 1,  , ],</span>\n<span class=\"CodeEditor-promptComment\">//   [ ,  ,  ,  ,  , ], </span>\n<span class=\"CodeEditor-promptComment\">// ]</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\nHow would you solve this problem if you knew the positions of all the non-island 1s?\n</p>\n",
+        "\n<p>\nFind and store the positions of all the non-island 1s. You can do this by performing a graph traversal (depth-first search, for example) on all the 1s that are on the border of the image. Afterwards, you can easily identify and remove all the island 1s from the input matrix by relying on the data structure that you used to store the positions of non-island 1s.\n</p>\n",
+        "\n<p>\nYou can also solve this problem without the use of a data structure that stores the positions of non-islands 1s. Simply loop through the border of the image, and perform a depth-first search on all positions with the value 1. During this depth-first search, find all the 1s that are connected to the original position on the border, and change them from 1 to 2. After changing all non-island 1s to 2s, you can simply remove all the remaining 1s, which are guaranteed to be islands, from the matrix (by replacing them with 0s), and you can then change all the 2s back to 1s, since these were previously determined to be non-islands.\n</p>"
+    ],
+    "spaceTime": "O(wh) time | O(wh) space - where w and h are the width and height of the input matrix",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\nusing namespace std;\n\nvector<vector<int>> removeIslands(vector<vector<int>> matrix) {\n  // Write your code here.\n  return matrix;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <vector>\nusing namespace std;\n\nvoid findOnesConnectedToBorder(\n  vector<vector<int>>& matrix,\n  int startRow,\n  int startCol,\n  vector<vector<bool>>& onesConnectedToBorder\n);\nvector<vector<int>> getNeighbors(vector<vector<int>>& matrix, int row, int col);\n\n// O(wh) time | O(wh) space - where w and h\n// are the width and height of the input matrix\nvector<vector<int>> removeIslands(vector<vector<int>> matrix) {\n  vector<vector<bool>> onesConnectedToBorder;\n  for (int i = 0; i < matrix.size(); i++) {\n    onesConnectedToBorder.push_back(vector<bool>(matrix[0].size(), false));\n  }\n\n  // Find all the 1s that are not islands\n  for (int row = 0; row < matrix.size(); row++) {\n    for (int col = 0; col < matrix[row].size(); col++) {\n      bool rowIsBorder = row == 0 || row == matrix.size() - 1;\n      bool colIsBorder = col == 0 || col == matrix[row].size() - 1;\n      bool isBorder = rowIsBorder || colIsBorder;\n\n      if (!isBorder) {\n        continue;\n      }\n\n      if (matrix[row][col] != 1) {\n        continue;\n      }\n\n      findOnesConnectedToBorder(matrix, row, col, onesConnectedToBorder);\n    }\n  }\n\n  for (int row = 1; row < matrix.size() - 1; row++) {\n    for (int col = 1; col < matrix[row].size() - 1; col++) {\n      if (onesConnectedToBorder[row][col]) {\n        continue;\n      }\n      matrix[row][col] = 0;\n    }\n  }\n\n  return matrix;\n}\n\nvoid findOnesConnectedToBorder(\n  vector<vector<int>>& matrix,\n  int startRow,\n  int startCol,\n  vector<vector<bool>>& onesConnectedToBorder\n) {\n  vector<vector<int>> stack = {{startRow, startCol}};\n\n  while (stack.size() > 0) {\n    auto currentPosition = stack[stack.size() - 1];\n    stack.pop_back();\n    int currentRow = currentPosition[0];\n    int currentCol = currentPosition[1];\n\n    bool alreadyVisited = onesConnectedToBorder[currentRow][currentCol];\n    if (alreadyVisited) {\n      continue;\n    }\n\n    onesConnectedToBorder[currentRow][currentCol] = true;\n\n    auto neighbors = getNeighbors(matrix, currentRow, currentCol);\n    for (auto neighbor : neighbors) {\n      int row = neighbor[0];\n      int col = neighbor[1];\n\n      if (matrix[row][col] != 1) {\n        continue;\n      }\n      stack.push_back(neighbor);\n    }\n  }\n}\n\nvector<vector<int>> getNeighbors(\n  vector<vector<int>>& matrix, int row, int col\n) {\n  vector<vector<int>> neighbors;\n  int numRows = matrix.size();\n  int numCols = matrix[row].size();\n\n  if (row - 1 >= 0) {\n    neighbors.push_back(vector<int>{row - 1, col});  // UP\n  }\n  if (row + 1 < numRows) {\n    neighbors.push_back(vector<int>{row + 1, col});  // DOWN\n  }\n  if (col - 1 >= 0) {\n    neighbors.push_back(vector<int>{row, col - 1});  // LEFT\n  }\n  if (col + 1 < numCols) {\n    neighbors.push_back(vector<int>{row, col + 1});  // RIGHT\n  }\n  return neighbors;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <vector>\nusing namespace std;\n\nvoid changeOnesConnectedToBorderToTwos(\n  vector<vector<int>>& matrix, int startRow, int startCol\n);\nvector<vector<int>> getNeighbors(vector<vector<int>>& matrix, int row, int col);\n\n// O(wh) time | O(wh) space - where w and h\n// are the width and height of the input matrix\nvector<vector<int>> removeIslands(vector<vector<int>> matrix) {\n  for (int row = 0; row < matrix.size(); row++) {\n    for (int col = 0; col < matrix[row].size(); col++) {\n      bool rowIsBorder = row == 0 || row == matrix.size() - 1;\n      bool colIsBorder = col == 0 || col == matrix[row].size() - 1;\n      bool isBorder = rowIsBorder || colIsBorder;\n\n      if (!isBorder) {\n        continue;\n      }\n\n      if (matrix[row][col] != 1) {\n        continue;\n      }\n\n      changeOnesConnectedToBorderToTwos(matrix, row, col);\n    }\n  }\n\n  for (int row = 0; row < matrix.size(); row++) {\n    for (int col = 0; col < matrix[row].size(); col++) {\n      int color = matrix[row][col];\n      if (color == 1) {\n        matrix[row][col] = 0;\n      } else if (color == 2) {\n        matrix[row][col] = 1;\n      }\n    }\n  }\n\n  return matrix;\n}\n\nvoid changeOnesConnectedToBorderToTwos(\n  vector<vector<int>>& matrix, int startRow, int startCol\n) {\n  vector<vector<int>> stack = {{startRow, startCol}};\n\n  while (stack.size() > 0) {\n    auto currentPosition = stack[stack.size() - 1];\n    stack.pop_back();\n    int currentRow = currentPosition[0];\n    int currentCol = currentPosition[1];\n\n    matrix[currentRow][currentCol] = 2;\n\n    auto neighbors = getNeighbors(matrix, currentRow, currentCol);\n    for (auto neighbor : neighbors) {\n      int row = neighbor[0];\n      int col = neighbor[1];\n\n      if (matrix[row][col] != 1) {\n        continue;\n      }\n      stack.push_back(neighbor);\n    }\n  }\n}\n\nvector<vector<int>> getNeighbors(\n  vector<vector<int>>& matrix, int row, int col\n) {\n  vector<vector<int>> neighbors;\n  int numRows = matrix.size();\n  int numCols = matrix[row].size();\n\n  if (row - 1 >= 0) {\n    neighbors.push_back(vector<int>{row - 1, col});  // UP\n  }\n  if (row + 1 < numRows) {\n    neighbors.push_back(vector<int>{row + 1, col});  // DOWN\n  }\n  if (col - 1 >= 0) {\n    neighbors.push_back(vector<int>{row, col - 1});  // LEFT\n  }\n  if (col + 1 < numCols) {\n    neighbors.push_back(vector<int>{row, col + 1});  // RIGHT\n  }\n  return neighbors;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> input = {\n        {1, 0, 0, 0, 0, 0},\n        {0, 1, 0, 1, 1, 1},\n        {0, 0, 1, 0, 1, 0},\n        {1, 1, 0, 0, 1, 0},\n        {1, 0, 1, 1, 0, 0},\n        {1, 0, 0, 0, 0, 1},\n      };\n      vector<vector<int>> expected = {\n        {1, 0, 0, 0, 0, 0},\n        {0, 0, 0, 1, 1, 1},\n        {0, 0, 0, 0, 1, 0},\n        {1, 1, 0, 0, 1, 0},\n        {1, 0, 0, 0, 0, 0},\n        {1, 0, 0, 0, 0, 1},\n      };\n      auto actual = removeIslands(input);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> input = {\n        {1, 0, 0, 0, 0, 0},\n        {0, 1, 0, 1, 1, 1},\n        {0, 0, 1, 0, 1, 0},\n        {1, 1, 0, 0, 1, 0},\n        {1, 0, 1, 1, 0, 0},\n        {1, 0, 0, 0, 0, 1},\n      };\n      vector<vector<int>> expected = {\n        {1, 0, 0, 0, 0, 0},\n        {0, 0, 0, 1, 1, 1},\n        {0, 0, 0, 0, 1, 0},\n        {1, 1, 0, 0, 1, 0},\n        {1, 0, 0, 0, 0, 0},\n        {1, 0, 0, 0, 0, 1},\n      };\n      auto actual = removeIslands(input);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int[][] RemoveIslands(int[][] matrix) {\n    // Write your code here.\n    return new int[][] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(wh) time | O(wh) space - where w and h\n  // are the width and height of the input matrix\n  public int[][] RemoveIslands(int[][] matrix) {\n    bool[,] onesConnectedToBorder = new bool[matrix.Length, matrix[0].Length];\n    for (int i = 0; i < matrix.Length; i++) {\n      onesConnectedToBorder[i, matrix[0].Length - 1] = false;\n    }\n\n    // Find all the 1s that are not islands\n    for (int row = 0; row < matrix.Length; row++) {\n      for (int col = 0; col < matrix[row].Length; col++) {\n        bool rowIsBorder = row == 0 || row == matrix.Length - 1;\n        bool colIsBorder = col == 0 || col == matrix[row].Length - 1;\n        bool isBorder = rowIsBorder || colIsBorder;\n\n        if (!isBorder) {\n          continue;\n        }\n\n        if (matrix[row][col] != 1) {\n          continue;\n        }\n\n        findOnesConnectedToBorder(matrix, row, col, onesConnectedToBorder);\n      }\n    }\n\n    for (int row = 1; row < matrix.Length - 1; row++) {\n      for (int col = 1; col < matrix[row].Length - 1; col++) {\n        if (onesConnectedToBorder[row, col]) {\n          continue;\n        }\n        matrix[row][col] = 0;\n      }\n    }\n\n    return matrix;\n  }\n\n  public void findOnesConnectedToBorder(\n    int[][] matrix, int startRow, int startCol, bool[,] onesConnectedToBorder\n  ) {\n    Stack<Tuple<int, int> > stack = new Stack<Tuple<int, int> >();\n    stack.Push(new Tuple<int, int>(startRow, startCol));\n\n    while (stack.Count > 0) {\n      var currentPosition = stack.Pop();\n      int currentRow = currentPosition.Item1;\n      int currentCol = currentPosition.Item2;\n\n      bool alreadyVisited = onesConnectedToBorder[currentRow, currentCol];\n      if (alreadyVisited) {\n        continue;\n      }\n\n      onesConnectedToBorder[currentRow, currentCol] = true;\n\n      var neighbors = getNeighbors(matrix, currentRow, currentCol);\n      foreach (var neighbor in neighbors) {\n        int row = neighbor.Item1;\n        int col = neighbor.Item2;\n\n        if (matrix[row][col] != 1) {\n          continue;\n        }\n        stack.Push(neighbor);\n      }\n    }\n  }\n\n  public List<Tuple<int, int> > getNeighbors(int[][] matrix, int row, int col) {\n    int numRows = matrix.Length;\n    int numCols = matrix[row].Length;\n    List<Tuple<int, int> > neighbors = new List<Tuple<int, int> >();\n\n    if (row - 1 >= 0) {\n      neighbors.Add(new Tuple<int, int>(row - 1, col));  // UP\n    }\n    if (row + 1 < numRows) {\n      neighbors.Add(new Tuple<int, int>(row + 1, col));  // DOWN\n    }\n    if (col - 1 >= 0) {\n      neighbors.Add(new Tuple<int, int>(row, col - 1));  // LEFT\n    }\n    if (col + 1 < numCols) {\n      neighbors.Add(new Tuple<int, int>(row, col + 1));  // RIGHT\n    }\n    return neighbors;\n  }\n}",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(wh) time | O(wh) space - where w and h\n  // are the width and height of the input matrix\n  public int[][] RemoveIslands(int[][] matrix) {\n    for (int row = 0; row < matrix.Length; row++) {\n      for (int col = 0; col < matrix[row].Length; col++) {\n        bool rowIsBorder = row == 0 || row == matrix.Length - 1;\n        bool colIsBorder = col == 0 || col == matrix[row].Length - 1;\n        bool isBorder = rowIsBorder || colIsBorder;\n\n        if (!isBorder) {\n          continue;\n        }\n\n        if (matrix[row][col] != 1) {\n          continue;\n        }\n\n        changeOnesConnectedToBorderToTwos(matrix, row, col);\n      }\n    }\n\n    for (int row = 0; row < matrix.Length; row++) {\n      for (int col = 0; col < matrix[row].Length; col++) {\n        int color = matrix[row][col];\n        if (color == 1) {\n          matrix[row][col] = 0;\n        } else if (color == 2) {\n          matrix[row][col] = 1;\n        }\n      }\n    }\n\n    return matrix;\n  }\n\n  public void changeOnesConnectedToBorderToTwos(\n    int[][] matrix, int startRow, int startCol\n  ) {\n    Stack<Tuple<int, int> > stack = new Stack<Tuple<int, int> >();\n    stack.Push(new Tuple<int, int>(startRow, startCol));\n\n    while (stack.Count > 0) {\n      var currentPosition = stack.Pop();\n      int currentRow = currentPosition.Item1;\n      int currentCol = currentPosition.Item2;\n\n      matrix[currentRow][currentCol] = 2;\n\n      var neighbors = getNeighbors(matrix, currentRow, currentCol);\n      foreach (var neighbor in neighbors) {\n        int row = neighbor.Item1;\n        int col = neighbor.Item2;\n\n        if (matrix[row][col] != 1) {\n          continue;\n        }\n        stack.Push(neighbor);\n      }\n    }\n  }\n\n  public List<Tuple<int, int> > getNeighbors(int[][] matrix, int row, int col) {\n    int numRows = matrix.Length;\n    int numCols = matrix[row].Length;\n    List<Tuple<int, int> > neighbors = new List<Tuple<int, int> >();\n\n    if (row - 1 >= 0) {\n      neighbors.Add(new Tuple<int, int>(row - 1, col));  // UP\n    }\n    if (row + 1 < numRows) {\n      neighbors.Add(new Tuple<int, int>(row + 1, col));  // DOWN\n    }\n    if (col - 1 >= 0) {\n      neighbors.Add(new Tuple<int, int>(row, col - 1));  // LEFT\n    }\n    if (col + 1 < numCols) {\n      neighbors.Add(new Tuple<int, int>(row, col + 1));  // RIGHT\n    }\n    return neighbors;\n  }\n}"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[][] input = new int[][] {\n      new int[] { 1, 0, 0, 0, 0, 0 },\n      new int[] { 0, 1, 0, 1, 1, 1 },\n      new int[] { 0, 0, 1, 0, 1, 0 },\n      new int[] { 1, 1, 0, 0, 1, 0 },\n      new int[] { 1, 0, 1, 1, 0, 0 },\n      new int[] { 1, 0, 0, 0, 0, 1 },\n    };\n    int[][] expected = new int[][] {\n      new int[] { 1, 0, 0, 0, 0, 0 },\n      new int[] { 0, 0, 0, 1, 1, 1 },\n      new int[] { 0, 0, 0, 0, 1, 0 },\n      new int[] { 1, 1, 0, 0, 1, 0 },\n      new int[] { 1, 0, 0, 0, 0, 0 },\n      new int[] { 1, 0, 0, 0, 0, 1 },\n    };\n    int[][] actual = new Program().RemoveIslands(input);\n    for (int i = 0; i < actual.Length; i++) {\n      for (int j = 0; j < actual[i].Length; j++) {\n        Utils.AssertTrue(actual[i][j] == expected[i][j]);\n      }\n    }\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[][] input = new int[][] {\n      new int[] { 1, 0, 0, 0, 0, 0 },\n      new int[] { 0, 1, 0, 1, 1, 1 },\n      new int[] { 0, 0, 1, 0, 1, 0 },\n      new int[] { 1, 1, 0, 0, 1, 0 },\n      new int[] { 1, 0, 1, 1, 0, 0 },\n      new int[] { 1, 0, 0, 0, 0, 1 },\n    };\n    int[][] expected = new int[][] {\n      new int[] { 1, 0, 0, 0, 0, 0 },\n      new int[] { 0, 0, 0, 1, 1, 1 },\n      new int[] { 0, 0, 0, 0, 1, 0 },\n      new int[] { 1, 1, 0, 0, 1, 0 },\n      new int[] { 1, 0, 0, 0, 0, 0 },\n      new int[] { 1, 0, 0, 0, 0, 1 },\n    };\n    int[][] actual = new Program().RemoveIslands(input);\n    for (int i = 0; i < actual.Length; i++) {\n      for (int j = 0; j < actual[i].Length; j++) {\n        Utils.AssertTrue(actual[i][j] == expected[i][j]);\n      }\n    }\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc RemoveIslands(matrix [][]int) [][]int {\n\t// Write your code here.\n\treturn nil\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(wh) time | O(wh) space - where w and h\n// are the width and height of the input matrix\nfunc RemoveIslands(matrix [][]int) [][]int {\n\tonesConnectedToBorder := make([][]bool, len(matrix))\n\tfor i := range matrix {\n\t\tonesConnectedToBorder[i] = make([]bool, len(matrix[0]))\n\t}\n\n\t// Find all the 1s that are not islands\n\tfor row := 0; row < len(matrix); row++ {\n\t\tfor col := 0; col < len(matrix[row]); col++ {\n\t\t\trowIsBorder := row == 0 || row == len(matrix)-1\n\t\t\tcolIsBorder := col == 0 || col == len(matrix[row])-1\n\t\t\tisBorder := rowIsBorder || colIsBorder\n\t\t\tif !isBorder {\n\t\t\t\tcontinue\n\t\t\t}\n\n\t\t\tif matrix[row][col] != 1 {\n\t\t\t\tcontinue\n\t\t\t}\n\n\t\t\tfindOnesConnectedToBorder(matrix, row, col, onesConnectedToBorder)\n\t\t}\n\t}\n\n\tfor row := 0; row < len(matrix)-1; row++ {\n\t\tfor col := 0; col < len(matrix[row])-1; col++ {\n\t\t\tif onesConnectedToBorder[row][col] {\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tmatrix[row][col] = 0\n\t\t}\n\t}\n\n\treturn matrix\n}\n\nfunc findOnesConnectedToBorder(matrix [][]int, startRow, startCol int, onesConnectedToBorder [][]bool) {\n\tstack := [][]int{{startRow, startCol}}\n\n\tvar currentPosition []int\n\tfor len(stack) > 0 {\n\t\tcurrentPosition, stack = stack[len(stack)-1], stack[:len(stack)-1]\n\t\tcurrentRow, currentCol := currentPosition[0], currentPosition[1]\n\n\t\talreadyVisited := onesConnectedToBorder[currentRow][currentCol]\n\t\tif alreadyVisited {\n\t\t\tcontinue\n\t\t}\n\n\t\tonesConnectedToBorder[currentRow][currentCol] = true\n\n\t\tneighbors := getNeighbors(matrix, currentRow, currentCol)\n\t\tfor _, neighbor := range neighbors {\n\t\t\trow, col := neighbor[0], neighbor[1]\n\n\t\t\tif matrix[row][col] != 1 {\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tstack = append(stack, neighbor)\n\t\t}\n\t}\n}\n\nfunc getNeighbors(matrix [][]int, row, col int) [][]int {\n\tneighbors := make([][]int, 0)\n\tnumRows := len(matrix)\n\tnumCols := len(matrix[row])\n\n\tif row-1 >= 0 {\n\t\tneighbors = append(neighbors, []int{row - 1, col}) // UP\n\t}\n\tif row+1 < numRows {\n\t\tneighbors = append(neighbors, []int{row + 1, col}) // DOWN\n\t}\n\tif col-1 >= 0 {\n\t\tneighbors = append(neighbors, []int{row, col - 1}) // LEFT\n\t}\n\tif col+1 < numCols {\n\t\tneighbors = append(neighbors, []int{row, col + 1}) // RIGHT\n\t}\n\treturn neighbors\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(wh) time | O(wh) space - where w and h\n// are the width and height of the input matrix\nfunc RemoveIslands(matrix [][]int) [][]int {\n\tfor row := 0; row < len(matrix); row++ {\n\t\tfor col := 0; col < len(matrix[row]); col++ {\n\t\t\trowIsBorder := row == 0 || row == len(matrix)-1\n\t\t\tcolIsBorder := col == 0 || col == len(matrix[row])-1\n\t\t\tisBorder := rowIsBorder || colIsBorder\n\t\t\tif !isBorder {\n\t\t\t\tcontinue\n\t\t\t}\n\n\t\t\tif matrix[row][col] != 1 {\n\t\t\t\tcontinue\n\t\t\t}\n\n\t\t\tchangeOnesConnectedToBorderToTwos(matrix, row, col)\n\t\t}\n\t}\n\n\tfor row := 0; row < len(matrix); row++ {\n\t\tfor col := 0; col < len(matrix[row]); col++ {\n\t\t\tcolor := matrix[row][col]\n\t\t\tif color == 1 {\n\t\t\t\tmatrix[row][col] = 0\n\t\t\t} else if color == 2 {\n\t\t\t\tmatrix[row][col] = 1\n\t\t\t}\n\t\t}\n\t}\n\n\treturn matrix\n}\n\nfunc changeOnesConnectedToBorderToTwos(matrix [][]int, startRow, startCol int) {\n\tstack := [][]int{{startRow, startCol}}\n\n\tvar currentPosition []int\n\tfor len(stack) > 0 {\n\t\tcurrentPosition, stack = stack[len(stack)-1], stack[:len(stack)-1]\n\t\tcurrentRow, currentCol := currentPosition[0], currentPosition[1]\n\n\t\tmatrix[currentRow][currentCol] = 2\n\n\t\tneighbors := getNeighbors(matrix, currentRow, currentCol)\n\t\tfor _, neighbor := range neighbors {\n\t\t\trow, col := neighbor[0], neighbor[1]\n\n\t\t\tif matrix[row][col] != 1 {\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tstack = append(stack, neighbor)\n\t\t}\n\t}\n}\n\nfunc getNeighbors(matrix [][]int, row, col int) [][]int {\n\tneighbors := make([][]int, 0)\n\tnumRows := len(matrix)\n\tnumCols := len(matrix[row])\n\n\tif row-1 >= 0 {\n\t\tneighbors = append(neighbors, []int{row - 1, col}) // UP\n\t}\n\tif row+1 < numRows {\n\t\tneighbors = append(neighbors, []int{row + 1, col}) // DOWN\n\t}\n\tif col-1 >= 0 {\n\t\tneighbors = append(neighbors, []int{row, col - 1}) // LEFT\n\t}\n\tif col+1 < numCols {\n\t\tneighbors = append(neighbors, []int{row, col + 1}) // RIGHT\n\t}\n\treturn neighbors\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := [][]int{\n\t\t{1, 0, 0, 0, 0, 0},\n\t\t{0, 1, 0, 1, 1, 1},\n\t\t{0, 0, 1, 0, 1, 0},\n\t\t{1, 1, 0, 0, 1, 0},\n\t\t{1, 0, 1, 1, 0, 0},\n\t\t{1, 0, 0, 0, 0, 1},\n\t}\n\texpected := [][]int{\n\t\t{1, 0, 0, 0, 0, 0},\n\t\t{0, 0, 0, 1, 1, 1},\n\t\t{0, 0, 0, 0, 1, 0},\n\t\t{1, 1, 0, 0, 1, 0},\n\t\t{1, 0, 0, 0, 0, 0},\n\t\t{1, 0, 0, 0, 0, 1},\n\t}\n\tactual := RemoveIslands(input)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := [][]int{\n\t\t{1, 0, 0, 0, 0, 0},\n\t\t{0, 1, 0, 1, 1, 1},\n\t\t{0, 0, 1, 0, 1, 0},\n\t\t{1, 1, 0, 0, 1, 0},\n\t\t{1, 0, 1, 1, 0, 0},\n\t\t{1, 0, 0, 0, 0, 1},\n\t}\n\texpected := [][]int{\n\t\t{1, 0, 0, 0, 0, 0},\n\t\t{0, 0, 0, 1, 1, 1},\n\t\t{0, 0, 0, 0, 1, 0},\n\t\t{1, 1, 0, 0, 1, 0},\n\t\t{1, 0, 0, 0, 0, 0},\n\t\t{1, 0, 0, 0, 0, 1},\n\t}\n\tactual := RemoveIslands(input)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int[][] removeIslands(int[][] matrix) {\n    // Write your code here.\n    return new int[][] {{}};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(wh) time | O(wh) space - where w and h\n  // are the width and height of the input matrix\n  int[][] removeIslands(int[][] matrix) {\n    boolean[][] onesConnectedToBorder =\n      new boolean[matrix.length][matrix[0].length];\n    for (int i = 0; i < matrix.length; i++) {\n      onesConnectedToBorder[i][matrix[0].length - 1] = false;\n    }\n\n    // Find all the 1s that are not islands\n    for (int row = 0; row < matrix.length; row++) {\n      for (int col = 0; col < matrix[row].length; col++) {\n        boolean rowIsBorder = row == 0 || row == matrix.length - 1;\n        boolean colIsBorder = col == 0 || col == matrix[row].length - 1;\n        boolean isBorder = rowIsBorder || colIsBorder;\n\n        if (!isBorder) {\n          continue;\n        }\n\n        if (matrix[row][col] != 1) {\n          continue;\n        }\n\n        findOnesConnectedToBorder(matrix, row, col, onesConnectedToBorder);\n      }\n    }\n\n    for (int row = 1; row < matrix.length - 1; row++) {\n      for (int col = 1; col < matrix[row].length - 1; col++) {\n        if (onesConnectedToBorder[row][col]) {\n          continue;\n        }\n        matrix[row][col] = 0;\n      }\n    }\n\n    return matrix;\n  }\n\n  public void findOnesConnectedToBorder(\n    int[][] matrix,\n    int startRow,\n    int startCol,\n    boolean[][] onesConnectedToBorder\n  ) {\n    Stack<int[]> stack = new Stack<int[]>();\n    stack.push(new int[] {startRow, startCol});\n\n    while (stack.size() > 0) {\n      int[] currentPosition = stack.pop();\n      int currentRow = currentPosition[0];\n      int currentCol = currentPosition[1];\n\n      boolean alreadyVisited = onesConnectedToBorder[currentRow][currentCol];\n      if (alreadyVisited) {\n        continue;\n      }\n\n      onesConnectedToBorder[currentRow][currentCol] = true;\n\n      int[][] neighbors = getNeighbors(matrix, currentRow, currentCol);\n      for (int[] neighbor : neighbors) {\n        int row = neighbor[0];\n        int col = neighbor[1];\n\n        if (matrix[row][col] != 1) {\n          continue;\n        }\n        stack.push(neighbor);\n      }\n    }\n  }\n\n  public int[][] getNeighbors(int[][] matrix, int row, int col) {\n    int numRows = matrix.length;\n    int numCols = matrix[row].length;\n    ArrayList<int[]> temp = new ArrayList<int[]>();\n\n    if (row - 1 >= 0) {\n      temp.add(new int[] {row - 1, col}); // UP\n    }\n    if (row + 1 < numRows) {\n      temp.add(new int[] {row + 1, col}); // DOWN\n    }\n    if (col - 1 >= 0) {\n      temp.add(new int[] {row, col - 1}); // LEFT\n    }\n    if (col + 1 < numCols) {\n      temp.add(new int[] {row, col + 1}); // RIGHT\n    }\n\n    int[][] neighbors = new int[temp.size()][2];\n    for (int i = 0; i < temp.size(); i++) {\n      neighbors[i] = temp.get(i);\n    }\n    return neighbors;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(wh) time | O(wh) space - where w and h\n  // are the width and height of the input matrix\n  int[][] removeIslands(int[][] matrix) {\n    for (int row = 0; row < matrix.length; row++) {\n      for (int col = 0; col < matrix[row].length; col++) {\n        boolean rowIsBorder = row == 0 || row == matrix.length - 1;\n        boolean colIsBorder = col == 0 || col == matrix[row].length - 1;\n        boolean isBorder = rowIsBorder || colIsBorder;\n\n        if (!isBorder) {\n          continue;\n        }\n\n        if (matrix[row][col] != 1) {\n          continue;\n        }\n\n        changeOnesConnectedToBorderToTwos(matrix, row, col);\n      }\n    }\n\n    for (int row = 0; row < matrix.length; row++) {\n      for (int col = 0; col < matrix[row].length; col++) {\n        int color = matrix[row][col];\n        if (color == 1) {\n          matrix[row][col] = 0;\n        } else if (color == 2) {\n          matrix[row][col] = 1;\n        }\n      }\n    }\n\n    return matrix;\n  }\n\n  public void changeOnesConnectedToBorderToTwos(\n    int[][] matrix, int startRow, int startCol\n  ) {\n    Stack<int[]> stack = new Stack<int[]>();\n    stack.push(new int[] {startRow, startCol});\n\n    while (stack.size() > 0) {\n      int[] currentPosition = stack.pop();\n      int currentRow = currentPosition[0];\n      int currentCol = currentPosition[1];\n\n      matrix[currentRow][currentCol] = 2;\n\n      int[][] neighbors = getNeighbors(matrix, currentRow, currentCol);\n      for (int[] neighbor : neighbors) {\n        int row = neighbor[0];\n        int col = neighbor[1];\n\n        if (matrix[row][col] != 1) {\n          continue;\n        }\n        stack.push(neighbor);\n      }\n    }\n  }\n\n  public int[][] getNeighbors(int[][] matrix, int row, int col) {\n    int numRows = matrix.length;\n    int numCols = matrix[row].length;\n    ArrayList<int[]> temp = new ArrayList<int[]>();\n\n    if (row - 1 >= 0) {\n      temp.add(new int[] {row - 1, col}); // UP\n    }\n    if (row + 1 < numRows) {\n      temp.add(new int[] {row + 1, col}); // DOWN\n    }\n    if (col - 1 >= 0) {\n      temp.add(new int[] {row, col - 1}); // LEFT\n    }\n    if (col + 1 < numCols) {\n      temp.add(new int[] {row, col + 1}); // RIGHT\n    }\n\n    int[][] neighbors = new int[temp.size()][2];\n    for (int i = 0; i < temp.size(); i++) {\n      neighbors[i] = temp.get(i);\n    }\n    return neighbors;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[][] input = new int[][] {\n      {1, 0, 0, 0, 0, 0},\n      {0, 1, 0, 1, 1, 1},\n      {0, 0, 1, 0, 1, 0},\n      {1, 1, 0, 0, 1, 0},\n      {1, 0, 1, 1, 0, 0},\n      {1, 0, 0, 0, 0, 1},\n    };\n    int[][] expected = new int[][] {\n      {1, 0, 0, 0, 0, 0},\n      {0, 0, 0, 1, 1, 1},\n      {0, 0, 0, 0, 1, 0},\n      {1, 1, 0, 0, 1, 0},\n      {1, 0, 0, 0, 0, 0},\n      {1, 0, 0, 0, 0, 1},\n    };\n    int[][] actual = new Program().removeIslands(input);\n    for (int i = 0; i < actual.length; i++) {\n      for (int j = 0; j < actual[i].length; j++) {\n        Utils.assertTrue(actual[i][j] == expected[i][j]);\n      }\n    }\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[][] input = new int[][] {\n      {1, 0, 0, 0, 0, 0},\n      {0, 1, 0, 1, 1, 1},\n      {0, 0, 1, 0, 1, 0},\n      {1, 1, 0, 0, 1, 0},\n      {1, 0, 1, 1, 0, 0},\n      {1, 0, 0, 0, 0, 1},\n    };\n    int[][] expected = new int[][] {\n      {1, 0, 0, 0, 0, 0},\n      {0, 0, 0, 1, 1, 1},\n      {0, 0, 0, 0, 1, 0},\n      {1, 1, 0, 0, 1, 0},\n      {1, 0, 0, 0, 0, 0},\n      {1, 0, 0, 0, 0, 1},\n    };\n    int[][] actual = new Program().removeIslands(input);\n    for (int i = 0; i < actual.length; i++) {\n      for (int j = 0; j < actual[i].length; j++) {\n        Utils.assertTrue(actual[i][j] == expected[i][j]);\n      }\n    }\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function removeIslands(matrix) {\n  // Write your code here.\n  return [];\n}\n\n// Do not edit the line below.\nexports.removeIslands = removeIslands;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(wh) time | O(wh) space - where w and h\n// are the width and height of the input matrix\nfunction removeIslands(matrix) {\n  const onesConnectedToBorder = [];\n  for (let row = 0; row < matrix.length; row++) {\n    onesConnectedToBorder.push([]);\n    for (let col = 0; col < matrix[0].length; col++) {\n      onesConnectedToBorder[row].push(false);\n    }\n  }\n\n  for (let row = 0; row < matrix.length; row++) {\n    for (let col = 0; col < matrix[row].length; col++) {\n      const rowIsBorder = row === 0 || row === matrix.length - 1;\n      const colIsBorder = col === 0 || col === matrix[row].length - 1;\n      const isBorder = rowIsBorder || colIsBorder;\n      if (!isBorder) continue;\n\n      if (matrix[row][col] != 1) continue;\n\n      findOnesConnectedToBorder(matrix, row, col, onesConnectedToBorder);\n    }\n  }\n\n  for (let row = 1; row < matrix.length - 1; row++) {\n    for (let col = 1; col < matrix[row].length - 1; col++) {\n      if (onesConnectedToBorder[row][col]) continue;\n\n      matrix[row][col] = 0;\n    }\n  }\n\n  return matrix;\n}\n\nfunction findOnesConnectedToBorder(matrix, startRow, startCol, onesConnectedToBorder) {\n  const stack = [[startRow, startCol]];\n\n  while (stack.length > 0) {\n    const currentPosition = stack.pop();\n    const [currentRow, currentCol] = currentPosition;\n\n    const alreadyVisited = onesConnectedToBorder[currentRow][currentCol];\n    if (alreadyVisited) continue;\n\n    onesConnectedToBorder[currentRow][currentCol] = true;\n\n    const neighbors = getNeighbors(matrix, currentRow, currentCol);\n    for (const neighbor of neighbors) {\n      const [row, col] = neighbor;\n\n      if (matrix[row][col] != 1) continue;\n\n      stack.push(neighbor);\n    }\n  }\n}\n\nfunction getNeighbors(matrix, row, col) {\n  const neighbors = [];\n\n  const numRows = matrix.length;\n  const numCols = matrix[row].length;\n\n  if (row - 1 >= 0) neighbors.push([row - 1, col]); // UP\n  if (row + 1 < numRows) neighbors.push([row + 1, col]); // DOWN\n  if (col - 1 >= 0) neighbors.push([row, col - 1]); // LEFT\n  if (col + 1 < numCols) neighbors.push([row, col + 1]); // RIGHT\n\n  return neighbors;\n}\n\n// Do not edit the line below.\nexports.removeIslands = removeIslands;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(wh) time | O(wh) space - where w and h\n// are the width and height of the input matrix\nfunction removeIslands(matrix) {\n  for (let row = 0; row < matrix.length; row++) {\n    for (let col = 0; col < matrix[row].length; col++) {\n      const rowIsBorder = row === 0 || row === matrix.length - 1;\n      const colIsBorder = col === 0 || col === matrix[row].length - 1;\n      const isBorder = rowIsBorder || colIsBorder;\n      if (!isBorder) continue;\n\n      if (matrix[row][col] != 1) continue;\n\n      changeOnesConnectedToBorderToTwos(matrix, row, col);\n    }\n  }\n\n  for (let row = 0; row < matrix.length; row++) {\n    for (let col = 0; col < matrix[row].length; col++) {\n      const color = matrix[row][col];\n      if (color === 1) {\n        matrix[row][col] = 0;\n      } else if (color === 2) {\n        matrix[row][col] = 1;\n      }\n    }\n  }\n\n  return matrix;\n}\n\nfunction changeOnesConnectedToBorderToTwos(matrix, startRow, startCol) {\n  const stack = [[startRow, startCol]];\n\n  while (stack.length > 0) {\n    const currentPosition = stack.pop();\n    const [currentRow, currentCol] = currentPosition;\n\n    matrix[currentRow][currentCol] = 2;\n\n    const neighbors = getNeighbors(matrix, currentRow, currentCol);\n    for (const neighbor of neighbors) {\n      const [row, col] = neighbor;\n\n      if (matrix[row][col] != 1) continue;\n\n      stack.push(neighbor);\n    }\n  }\n}\n\nfunction getNeighbors(matrix, row, col) {\n  const neighbors = [];\n\n  const numRows = matrix.length;\n  const numCols = matrix[row].length;\n\n  if (row - 1 >= 0) neighbors.push([row - 1, col]); // UP\n  if (row + 1 < numRows) neighbors.push([row + 1, col]); // DOWN\n  if (col - 1 >= 0) neighbors.push([row, col - 1]); // LEFT\n  if (col + 1 < numCols) neighbors.push([row, col + 1]); // RIGHT\n\n  return neighbors;\n}\n\n// Do not edit the line below.\nexports.removeIslands = removeIslands;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [\n    [1, 0, 0, 0, 0, 0],\n    [0, 1, 0, 1, 1, 1],\n    [0, 0, 1, 0, 1, 0],\n    [1, 1, 0, 0, 1, 0],\n    [1, 0, 1, 1, 0, 0],\n    [1, 0, 0, 0, 0, 1],\n  ];\n  const expected = [\n    [1, 0, 0, 0, 0, 0],\n    [0, 0, 0, 1, 1, 1],\n    [0, 0, 0, 0, 1, 0],\n    [1, 1, 0, 0, 1, 0],\n    [1, 0, 0, 0, 0, 0],\n    [1, 0, 0, 0, 0, 1],\n  ];\n  const actual = program.removeIslands(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [\n    [1, 0, 0, 0, 0, 0],\n    [0, 1, 0, 1, 1, 1],\n    [0, 0, 1, 0, 1, 0],\n    [1, 1, 0, 0, 1, 0],\n    [1, 0, 1, 1, 0, 0],\n    [1, 0, 0, 0, 0, 1],\n  ];\n  const expected = [\n    [1, 0, 0, 0, 0, 0],\n    [0, 0, 0, 1, 1, 1],\n    [0, 0, 0, 0, 1, 0],\n    [1, 1, 0, 0, 1, 0],\n    [1, 0, 0, 0, 0, 0],\n    [1, 0, 0, 0, 0, 1],\n  ];\n  const actual = program.removeIslands(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun removeIslands(matrix: List<MutableList<Int>>): List<MutableList<Int>> {\n    // Write your code here.\n    return matrix\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(wh) time | O(wh) space - where w and h\n// are the width and height of the input matrix\nfun removeIslands(matrix: List<MutableList<Int>>): List<MutableList<Int>> {\n    val onesConnectedToBorder = List(matrix.size, { MutableList(matrix[0].size, { false }) })\n\n    // Find all the 1s that are not islands\n    for (row in 0 until matrix.size) {\n        for (col in 0 until matrix[row].size) {\n            val rowIsBorder = row == 0 || row == matrix.size - 1\n            val colIsBorder = col == 0 || col == matrix[row].size - 1\n            val isBorder = rowIsBorder || colIsBorder\n            if (!isBorder) continue\n\n            if (matrix[row][col] != 1) continue\n\n            findOnesConnectedToBorder(matrix, row, col, onesConnectedToBorder)\n        }\n    }\n\n    for (row in 1 until matrix.size - 1) {\n        for (col in 1 until matrix[row].size - 1) {\n            if (onesConnectedToBorder[row][col]) continue\n\n            matrix[row][col] = 0\n        }\n    }\n\n    return matrix\n}\n\nfun findOnesConnectedToBorder(matrix: List<MutableList<Int>>, startRow: Int, startCol: Int, onesConnectedToBorder: List<MutableList<Boolean>>) {\n    val stack = mutableListOf(Pair(startRow, startCol))\n\n    while (stack.size > 0) {\n        val currentPosition = stack.removeAt(stack.size - 1)\n        val (currentRow, currentCol) = currentPosition\n\n        val alreadyVisited = onesConnectedToBorder[currentRow][currentCol]\n        if (alreadyVisited) continue\n\n        onesConnectedToBorder[currentRow][currentCol] = true\n\n        val neighbors = getNeighbors(matrix, currentRow, currentCol)\n        for (neighbor in neighbors) {\n            val (row, col) = neighbor\n\n            if (matrix[row][col] != 1) continue\n\n            stack.add(neighbor)\n        }\n    }\n}\n\nfun getNeighbors(matrix: List<MutableList<Int>>, row: Int, col: Int): List<Pair<Int, Int>> {\n    val neighbors = mutableListOf<Pair<Int, Int>>()\n\n    val numRows = matrix.size\n    val numCols = matrix[row].size\n\n    if (row - 1 >= 0) neighbors.add(Pair(row - 1, col)) // UP\n    if (row + 1 < numRows) neighbors.add(Pair(row + 1, col)) // DOWN\n    if (col - 1 >= 0) neighbors.add(Pair(row, col - 1)) // LEFT\n    if (col + 1 < numCols) neighbors.add(Pair(row, col + 1)) // RIGHT\n\n    return neighbors\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(wh) time | O(wh) space - where w and h\n// are the width and height of the input matrix\nfun removeIslands(matrix: List<MutableList<Int>>): List<MutableList<Int>> {\n    for (row in 0 until matrix.size) {\n        for (col in 0 until matrix[row].size) {\n            val rowIsBorder = row == 0 || row == matrix.size - 1\n            val colIsBorder = col == 0 || col == matrix[row].size - 1\n            val isBorder = rowIsBorder || colIsBorder\n            if (!isBorder) continue\n\n            if (matrix[row][col] != 1) continue\n\n            changeOnesConnectedToBorderToTwos(matrix, row, col)\n        }\n    }\n\n    for (row in 0 until matrix.size) {\n        for (col in 0 until matrix[row].size) {\n            val color = matrix[row][col]\n            if (color == 1) {\n                matrix[row][col] = 0\n            } else if (color == 2) {\n                matrix[row][col] = 1\n            }\n        }\n    }\n\n    return matrix\n}\n\nfun changeOnesConnectedToBorderToTwos(matrix: List<MutableList<Int>>, startRow: Int, startCol: Int) {\n    val stack = mutableListOf(Pair(startRow, startCol))\n\n    while (stack.size > 0) {\n        val currentPosition = stack.removeAt(stack.size - 1)\n        val (currentRow, currentCol) = currentPosition\n\n        matrix[currentRow][currentCol] = 2\n\n        val neighbors = getNeighbors(matrix, currentRow, currentCol)\n        for (neighbor in neighbors) {\n            val (row, col) = neighbor\n\n            if (matrix[row][col] != 1) continue\n\n            stack.add(neighbor)\n        }\n    }\n}\n\nfun getNeighbors(matrix: List<MutableList<Int>>, row: Int, col: Int): List<Pair<Int, Int>> {\n    val neighbors = mutableListOf<Pair<Int, Int>>()\n\n    val numRows = matrix.size\n    val numCols = matrix[row].size\n\n    if (row - 1 >= 0) neighbors.add(Pair(row - 1, col)) // UP\n    if (row + 1 < numRows) neighbors.add(Pair(row + 1, col)) // DOWN\n    if (col - 1 >= 0) neighbors.add(Pair(row, col - 1)) // LEFT\n    if (col + 1 < numCols) neighbors.add(Pair(row, col + 1)) // RIGHT\n\n    return neighbors\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.removeIslands\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(\n            mutableListOf(1, 0, 0, 0, 0, 0),\n            mutableListOf(0, 1, 0, 1, 1, 1),\n            mutableListOf(0, 0, 1, 0, 1, 0),\n            mutableListOf(1, 1, 0, 0, 1, 0),\n            mutableListOf(1, 0, 1, 1, 0, 0),\n            mutableListOf(1, 0, 0, 0, 0, 1),\n        )\n        val expected = listOf(\n            mutableListOf(1, 0, 0, 0, 0, 0),\n            mutableListOf(0, 0, 0, 1, 1, 1),\n            mutableListOf(0, 0, 0, 0, 1, 0),\n            mutableListOf(1, 1, 0, 0, 1, 0),\n            mutableListOf(1, 0, 0, 0, 0, 0),\n            mutableListOf(1, 0, 0, 0, 0, 1),\n        )\n        val output = removeIslands(input)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.removeIslands\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(\n            mutableListOf(1, 0, 0, 0, 0, 0),\n            mutableListOf(0, 1, 0, 1, 1, 1),\n            mutableListOf(0, 0, 1, 0, 1, 0),\n            mutableListOf(1, 1, 0, 0, 1, 0),\n            mutableListOf(1, 0, 1, 1, 0, 0),\n            mutableListOf(1, 0, 0, 0, 0, 1),\n        )\n        val expected = listOf(\n            mutableListOf(1, 0, 0, 0, 0, 0),\n            mutableListOf(0, 0, 0, 1, 1, 1),\n            mutableListOf(0, 0, 0, 0, 1, 0),\n            mutableListOf(1, 1, 0, 0, 1, 0),\n            mutableListOf(1, 0, 0, 0, 0, 0),\n            mutableListOf(1, 0, 0, 0, 0, 1),\n        )\n        val output = removeIslands(input)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def removeIslands(matrix):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(wh) time | O(wh) space - where w and h\n# are the width and height of the input matrix\ndef removeIslands(matrix):\n    onesConnectedToBorder = [[False for col in matrix[0]] for row in matrix]\n\n    # Find all the 1s that are not islands\n    for row in range(len(matrix)):\n        for col in range(len(matrix[row])):\n            rowIsBorder = row == 0 or row == len(matrix) - 1\n            colIsBorder = col == 0 or col == len(matrix[row]) - 1\n            isBorder = rowIsBorder or colIsBorder\n            if not isBorder:\n                continue\n\n            if matrix[row][col] != 1:\n                continue\n\n            findOnesConnectedToBorder(matrix, row, col, onesConnectedToBorder)\n\n    for row in range(1, len(matrix) - 1):\n        for col in range(1, len(matrix[row]) - 1):\n            if onesConnectedToBorder[row][col]:\n                continue\n\n            matrix[row][col] = 0\n\n    return matrix\n\n\ndef findOnesConnectedToBorder(matrix, startRow, startCol, onesConnectedToBorder):\n    stack = [(startRow, startCol)]\n\n    while len(stack) > 0:\n        currentPosition = stack.pop()\n        currentRow, currentCol = currentPosition\n\n        alreadyVisited = onesConnectedToBorder[currentRow][currentCol]\n        if alreadyVisited:\n            continue\n\n        onesConnectedToBorder[currentRow][currentCol] = True\n\n        neighbors = getNeighbors(matrix, currentRow, currentCol)\n        for neighbor in neighbors:\n            row, col = neighbor\n\n            if matrix[row][col] != 1:\n                continue\n\n            stack.append(neighbor)\n\n\ndef getNeighbors(matrix, row, col):\n    neighbors = []\n\n    numRows = len(matrix)\n    numCols = len(matrix[row])\n\n    if row - 1 >= 0:  # UP\n        neighbors.append((row - 1, col))\n    if row + 1 < numRows:  # DOWN\n        neighbors.append((row + 1, col))\n    if col - 1 >= 0:  # LEFT\n        neighbors.append((row, col - 1))\n    if col + 1 < numCols:  # RIGHT\n        neighbors.append((row, col + 1))\n\n    return neighbors\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(wh) time | O(wh) space - where w and h\n# are the width and height of the input matrix\ndef removeIslands(matrix):\n    for row in range(len(matrix)):\n        for col in range(len(matrix[row])):\n            rowIsBorder = row == 0 or row == len(matrix) - 1\n            colIsBorder = col == 0 or col == len(matrix[row]) - 1\n            isBorder = rowIsBorder or colIsBorder\n            if not isBorder:\n                continue\n\n            if matrix[row][col] != 1:\n                continue\n\n            changeOnesConnectedToBorderToTwos(matrix, row, col)\n\n    for row in range(len(matrix)):\n        for col in range(len(matrix[row])):\n            color = matrix[row][col]\n            if color == 1:\n                matrix[row][col] = 0\n            elif color == 2:\n                matrix[row][col] = 1\n\n    return matrix\n\n\ndef changeOnesConnectedToBorderToTwos(matrix, startRow, startCol):\n    stack = [(startRow, startCol)]\n\n    while len(stack) > 0:\n        currentPosition = stack.pop()\n        currentRow, currentCol = currentPosition\n\n        matrix[currentRow][currentCol] = 2\n\n        neighbors = getNeighbors(matrix, currentRow, currentCol)\n        for neighbor in neighbors:\n            row, col = neighbor\n\n            if matrix[row][col] != 1:\n                continue\n\n            stack.append(neighbor)\n\n\ndef getNeighbors(matrix, row, col):\n    neighbors = []\n\n    numRows = len(matrix)\n    numCols = len(matrix[row])\n\n    if row - 1 >= 0:  # UP\n        neighbors.append((row - 1, col))\n    if row + 1 < numRows:  # DOWN\n        neighbors.append((row + 1, col))\n    if col - 1 >= 0:  # LEFT\n        neighbors.append((row, col - 1))\n    if col + 1 < numCols:  # RIGHT\n        neighbors.append((row, col + 1))\n\n    return neighbors\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [\n            [1, 0, 0, 0, 0, 0],\n            [0, 1, 0, 1, 1, 1],\n            [0, 0, 1, 0, 1, 0],\n            [1, 1, 0, 0, 1, 0],\n            [1, 0, 1, 1, 0, 0],\n            [1, 0, 0, 0, 0, 1],\n        ]\n        expected = [\n            [1, 0, 0, 0, 0, 0],\n            [0, 0, 0, 1, 1, 1],\n            [0, 0, 0, 0, 1, 0],\n            [1, 1, 0, 0, 1, 0],\n            [1, 0, 0, 0, 0, 0],\n            [1, 0, 0, 0, 0, 1],\n        ]\n        actual = program.removeIslands(input)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [\n            [1, 0, 0, 0, 0, 0],\n            [0, 1, 0, 1, 1, 1],\n            [0, 0, 1, 0, 1, 0],\n            [1, 1, 0, 0, 1, 0],\n            [1, 0, 1, 1, 0, 0],\n            [1, 0, 0, 0, 0, 1],\n        ]\n        expected = [\n            [1, 0, 0, 0, 0, 0],\n            [0, 0, 0, 1, 1, 1],\n            [0, 0, 0, 0, 1, 0],\n            [1, 1, 0, 0, 1, 0],\n            [1, 0, 0, 0, 0, 0],\n            [1, 0, 0, 0, 0, 1],\n        ]\n        actual = program.removeIslands(input)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": true,
+            "startingCode": "class Program\n  def removeIslands(matrix)\n    # Write your code here.\n    return []\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def removeIslands(matrix)\n    # Write your code here.\n    return []\n  end\nend\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def removeIslands(matrix)\n    # Write your code here.\n    return []\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.removeIslands\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.removeIslands\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func removeIslands(_ matrix: inout [[Int]]) -> [[Int]] {\n    // Write your code here.\n    return [[Int]]()\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(wh) time | O(wh) space - where w and h\n  // are the width and height of the input matrix\n  func removeIslands(_ matrix: inout [[Int]]) -> [[Int]] {\n    var onesConnectedToBorder = [[Bool]](repeating: [], count: matrix.count)\n    for i in 0 ..< matrix.count {\n      onesConnectedToBorder[i] = [Bool](repeating: false, count: matrix[0].count)\n    }\n\n    // Find all the 1s that are not islands\n    for row in 0 ..< matrix.count {\n      for col in 0 ..< matrix[0].count {\n        let rowIsBorder = row == 0 || row == matrix.count - 1\n        let colIsBorder = col == 0 || col == matrix[row].count - 1\n        let isBorder = rowIsBorder || colIsBorder\n        if !isBorder {\n          continue\n        }\n\n        if matrix[row][col] != 1 {\n          continue\n        }\n\n        findOnesConnectedToBorder(&matrix, row, col, &onesConnectedToBorder)\n      }\n    }\n\n    for row in 0 ..< matrix.count - 1 {\n      for col in 0 ..< matrix[0].count - 1 {\n        if onesConnectedToBorder[row][col] {\n          continue\n        }\n        matrix[row][col] = 0\n      }\n    }\n\n    return matrix\n  }\n\n  func findOnesConnectedToBorder(_ matrix: inout [[Int]], _ startRow: Int, _ startCol: Int, _ onesConnectedToBorder: inout [[Bool]]) {\n    var stack = [[startRow, startCol]]\n\n    var currentPosition = [Int]()\n    while stack.count > 0 {\n      let currentPosition = stack.removeLast()\n      let (currentRow, currentCol) = (currentPosition[0], currentPosition[1])\n\n      let alreadyVisited = onesConnectedToBorder[currentRow][currentCol]\n      if alreadyVisited {\n        continue\n      }\n\n      onesConnectedToBorder[currentRow][currentCol] = true\n\n      let neighbors = getNeighbors(&matrix, currentRow, currentCol)\n      for neighbor in neighbors {\n        let (row, col) = (neighbor[0], neighbor[1])\n        if matrix[row][col] != 1 {\n          continue\n        }\n        stack.append(neighbor)\n      }\n    }\n  }\n\n  func getNeighbors(_ matrix: inout [[Int]], _ row: Int, _ col: Int) -> [[Int]] {\n    var neighbors = [[Int]]()\n    let numRows = matrix.count\n    let numCols = matrix[row].count\n\n    if row - 1 >= 0 {\n      neighbors.append([row - 1, col]) // UP\n    }\n    if row + 1 < numRows {\n      neighbors.append([row + 1, col]) // DOWN\n    }\n    if col - 1 >= 0 {\n      neighbors.append([row, col - 1]) // LEFT\n    }\n    if col + 1 < numCols {\n      neighbors.append([row, col + 1]) // RIGHT\n    }\n    return neighbors\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(wh) time | O(wh) space - where w and h\n  // are the width and height of the input matrix\n  func removeIslands(_ matrix: inout [[Int]]) -> [[Int]] {\n    // Find all the 1s that are not islands\n    for row in 0 ..< matrix.count {\n      for col in 0 ..< matrix[0].count {\n        let rowIsBorder = row == 0 || row == matrix.count - 1\n        let colIsBorder = col == 0 || col == matrix[row].count - 1\n        let isBorder = rowIsBorder || colIsBorder\n        if !isBorder {\n          continue\n        }\n\n        if matrix[row][col] != 1 {\n          continue\n        }\n\n        changeOnesConnectedToBorderToTwos(&matrix, row, col)\n      }\n    }\n\n    for row in 0 ..< matrix.count {\n      for col in 0 ..< matrix[0].count {\n        let color = matrix[row][col]\n        if color == 1 {\n          matrix[row][col] = 0\n        } else if color == 2 {\n          matrix[row][col] = 1\n        }\n      }\n    }\n\n    return matrix\n  }\n\n  func changeOnesConnectedToBorderToTwos(_ matrix: inout [[Int]], _ startRow: Int, _ startCol: Int) {\n    var stack = [[startRow, startCol]]\n\n    var currentPosition = [Int]()\n    while stack.count > 0 {\n      let currentPosition = stack.removeLast()\n      let (currentRow, currentCol) = (currentPosition[0], currentPosition[1])\n\n      matrix[currentRow][currentCol] = 2\n\n      let neighbors = getNeighbors(&matrix, currentRow, currentCol)\n      for neighbor in neighbors {\n        let (row, col) = (neighbor[0], neighbor[1])\n        if matrix[row][col] != 1 {\n          continue\n        }\n        stack.append(neighbor)\n      }\n    }\n  }\n\n  func getNeighbors(_ matrix: inout [[Int]], _ row: Int, _ col: Int) -> [[Int]] {\n    var neighbors = [[Int]]()\n    let numRows = matrix.count\n    let numCols = matrix[row].count\n\n    if row - 1 >= 0 {\n      neighbors.append([row - 1, col]) // UP\n    }\n    if row + 1 < numRows {\n      neighbors.append([row + 1, col]) // DOWN\n    }\n    if col - 1 >= 0 {\n      neighbors.append([row, col - 1]) // LEFT\n    }\n    if col + 1 < numCols {\n      neighbors.append([row, col + 1]) // RIGHT\n    }\n    return neighbors\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var input = [\n        [1, 0, 0, 0, 0, 0],\n        [0, 1, 0, 1, 1, 1],\n        [0, 0, 1, 0, 1, 0],\n        [1, 1, 0, 0, 1, 0],\n        [1, 0, 1, 1, 0, 0],\n        [1, 0, 0, 0, 0, 1],\n      ]\n      var expected = [\n        [1, 0, 0, 0, 0, 0],\n        [0, 0, 0, 1, 1, 1],\n        [0, 0, 0, 0, 1, 0],\n        [1, 1, 0, 0, 1, 0],\n        [1, 0, 0, 0, 0, 0],\n        [1, 0, 0, 0, 0, 1],\n      ]\n      var actual = Program().removeIslands(&input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var input = [\n        [1, 0, 0, 0, 0, 0],\n        [0, 1, 0, 1, 1, 1],\n        [0, 0, 1, 0, 1, 0],\n        [1, 1, 0, 0, 1, 0],\n        [1, 0, 1, 1, 0, 0],\n        [1, 0, 0, 0, 0, 1],\n      ]\n      var expected = [\n        [1, 0, 0, 0, 0, 0],\n        [0, 0, 0, 1, 1, 1],\n        [0, 0, 0, 0, 1, 0],\n        [1, 1, 0, 0, 1, 0],\n        [1, 0, 0, 0, 0, 0],\n        [1, 0, 0, 0, 0, 1],\n      ]\n      var actual = Program().removeIslands(&input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function removeIslands(matrix: number[][]) {\n  // Write your code here.\n  return matrix;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(wh) time | O(wh) space - where w and h\n// are the width and height of the input matrix\nexport function removeIslands(matrix: number[][]) {\n  const onesConnectedToBorder: boolean[][] = [];\n  for (let row = 0; row < matrix.length; row++) {\n    onesConnectedToBorder.push([]);\n    for (let col = 0; col < matrix[0].length; col++) {\n      onesConnectedToBorder[row].push(false);\n    }\n  }\n\n  for (let row = 0; row < matrix.length; row++) {\n    for (let col = 0; col < matrix[row].length; col++) {\n      const rowIsBorder = row === 0 || row === matrix.length - 1;\n      const colIsBorder = col === 0 || col === matrix[row].length - 1;\n      const isBorder = rowIsBorder || colIsBorder;\n      if (!isBorder) continue;\n\n      if (matrix[row][col] != 1) continue;\n\n      findOnesConnectedToBorder(matrix, row, col, onesConnectedToBorder);\n    }\n  }\n\n  for (let row = 1; row < matrix.length - 1; row++) {\n    for (let col = 1; col < matrix[row].length - 1; col++) {\n      if (onesConnectedToBorder[row][col]) continue;\n\n      matrix[row][col] = 0;\n    }\n  }\n\n  return matrix;\n}\n\nfunction findOnesConnectedToBorder(\n  matrix: number[][],\n  startRow: number,\n  startCol: number,\n  onesConnectedToBorder: boolean[][],\n) {\n  const stack = [[startRow, startCol]];\n\n  while (stack.length > 0) {\n    const currentPosition = stack.pop()!;\n    const [currentRow, currentCol] = currentPosition;\n\n    const alreadyVisited = onesConnectedToBorder[currentRow][currentCol];\n    if (alreadyVisited) continue;\n\n    onesConnectedToBorder[currentRow][currentCol] = true;\n\n    const neighbors = getNeighbors(matrix, currentRow, currentCol);\n    for (const neighbor of neighbors) {\n      const [row, col] = neighbor;\n\n      if (matrix[row][col] != 1) continue;\n\n      stack.push(neighbor);\n    }\n  }\n}\n\nfunction getNeighbors(matrix: number[][], row: number, col: number) {\n  const neighbors: [number, number][] = [];\n\n  const numRows = matrix.length;\n  const numCols = matrix[row].length;\n\n  if (row - 1 >= 0) neighbors.push([row - 1, col]); // UP\n  if (row + 1 < numRows) neighbors.push([row + 1, col]); // DOWN\n  if (col - 1 >= 0) neighbors.push([row, col - 1]); // LEFT\n  if (col + 1 < numCols) neighbors.push([row, col + 1]); // RIGHT\n\n  return neighbors;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(wh) time | O(wh) space - where w and h\n// are the width and height of the input matrix\nexport function removeIslands(matrix: number[][]) {\n  for (let row = 0; row < matrix.length; row++) {\n    for (let col = 0; col < matrix[row].length; col++) {\n      const rowIsBorder = row === 0 || row === matrix.length - 1;\n      const colIsBorder = col === 0 || col === matrix[row].length - 1;\n      const isBorder = rowIsBorder || colIsBorder;\n      if (!isBorder) continue;\n\n      if (matrix[row][col] != 1) continue;\n\n      changeOnesConnectedToBorderToTwos(matrix, row, col);\n    }\n  }\n\n  for (let row = 0; row < matrix.length; row++) {\n    for (let col = 0; col < matrix[row].length; col++) {\n      const color = matrix[row][col];\n      if (color === 1) {\n        matrix[row][col] = 0;\n      } else if (color === 2) {\n        matrix[row][col] = 1;\n      }\n    }\n  }\n\n  return matrix;\n}\n\nfunction changeOnesConnectedToBorderToTwos(matrix: number[][], startRow: number, startCol: number) {\n  const stack = [[startRow, startCol]];\n\n  while (stack.length > 0) {\n    const currentPosition = stack.pop()!;\n    const [currentRow, currentCol] = currentPosition;\n\n    matrix[currentRow][currentCol] = 2;\n\n    const neighbors = getNeighbors(matrix, currentRow, currentCol);\n    for (const neighbor of neighbors) {\n      const [row, col] = neighbor;\n\n      if (matrix[row][col] != 1) continue;\n\n      stack.push(neighbor);\n    }\n  }\n}\n\nfunction getNeighbors(matrix: number[][], row: number, col: number) {\n  const neighbors: [number, number][] = [];\n\n  const numRows = matrix.length;\n  const numCols = matrix[row].length;\n\n  if (row - 1 >= 0) neighbors.push([row - 1, col]); // UP\n  if (row + 1 < numRows) neighbors.push([row + 1, col]); // DOWN\n  if (col - 1 >= 0) neighbors.push([row, col - 1]); // LEFT\n  if (col + 1 < numCols) neighbors.push([row, col + 1]); // RIGHT\n\n  return neighbors;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [\n    [1, 0, 0, 0, 0, 0],\n    [0, 1, 0, 1, 1, 1],\n    [0, 0, 1, 0, 1, 0],\n    [1, 1, 0, 0, 1, 0],\n    [1, 0, 1, 1, 0, 0],\n    [1, 0, 0, 0, 0, 1],\n  ];\n  const expected = [\n    [1, 0, 0, 0, 0, 0],\n    [0, 0, 0, 1, 1, 1],\n    [0, 0, 0, 0, 1, 0],\n    [1, 1, 0, 0, 1, 0],\n    [1, 0, 0, 0, 0, 0],\n    [1, 0, 0, 0, 0, 1],\n  ];\n  const actual = program.removeIslands(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [\n    [1, 0, 0, 0, 0, 0],\n    [0, 1, 0, 1, 1, 1],\n    [0, 0, 1, 0, 1, 0],\n    [1, 1, 0, 0, 1, 0],\n    [1, 0, 1, 1, 0, 0],\n    [1, 0, 0, 0, 0, 1],\n  ];\n  const expected = [\n    [1, 0, 0, 0, 0, 0],\n    [0, 0, 0, 1, 1, 1],\n    [0, 0, 0, 0, 1, 0],\n    [1, 1, 0, 0, 1, 0],\n    [1, 0, 0, 0, 0, 0],\n    [1, 0, 0, 0, 0, 1],\n  ];\n  const actual = program.removeIslands(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "matrix",
+            "example": [
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    0,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            ],
+            "schema": {
+                "items": {
+                    "items": {
+                        "maximum": 1,
+                        "minimum": 0,
+                        "type": "integer"
+                    },
+                    "type": "array"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    0,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    0,
+                    1,
+                    0,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    0,
+                    1,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    0,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    1,
+                    1,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    0,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    0,
+                    1,
+                    0,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    0,
+                    1,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    0,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    1,
+                    1,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            ]
+        }
+    ],
+    "changelog": []
+}
