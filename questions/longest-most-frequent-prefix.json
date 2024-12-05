@@ -1,0 +1,462 @@
+{
+    "uid": "longest-most-frequent-prefix",
+    "testStrategy": "JSON",
+    "name": "Longest Most Frequent Prefix",
+    "version": 0,
+    "releaseDate": "2023-10-15T00:00:00Z",
+    "category": "Tries",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 562,
+        "failureCount": 47
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "842316187",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 685
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    Write a function that takes in an array of unique strings and returns the\n    prefix that appears most frequently throughout the strings. If there are two\n    or more such prefixes, your function should return the longest one. If there\n    are no such prefixes, your function should return the longest string. You\n    can assume that there will only ever be one longest prefix or string.\n  </p>\n\n  <p>\n    For example, given the strings\n    <span>[\"algoexpert\", \"algorithm\", \"foo\", \"food\"]</span>, the most frequent\n    prefix is either \"algo\" or \"foo\", since both appear in two strings. However,\n    \"algo\" is longer than \"foo\", so \"algo\" is the desired answer.\n  </p>\n\n  <h3>Sample Input #1</h3>\n  <pre><span class=\"CodeEditor-promptParameter\">strings</span> = [\n  \"algoexpert\",\n  \"algorithm\",\n  \"frontendexpert\",\n  \"mlexpert\"\n]</pre>\n  <h3>Sample Output #1</h3>\n  <pre>\"algo\"</pre>\n\n  <h3>Sample Input #2</h3>\n  <pre><span class=\"CodeEditor-promptParameter\">strings</span> = [\n  \"hello\",\n  \"world\",\n  \"fossil\",\n  \"worldly\",\n  \"food\",\n  \"forrest\",\n  \"helium\",\n  \"algoexpert\",\n  \"algorithm\"\n]</pre>\n  <h3>Sample Output #2</h3>\n  <pre>\"fo\"</pre>\n</div>",
+    "hints": [
+        "<p>\n  This problem requires finding shared prefixes of various strings.\n  Is there a data structure that can help with this?\n</p>\n",
+        "\n<p>\n  Try first inserting all of the strings into a trie, and with that trie keep\n  track of the frequency of every prefix you see. The most common prefix will\n  be the solution.\n</p>\n",
+        "\n<p>\n  To avoid iterating through the trie after creating it, try calculating what\n  the current solution to the problem is as you insert into the trie.\n</p>"
+    ],
+    "spaceTime": "O(n * m) time | O(n * m) space - where n is the length of strings, and m is the length of the longest string",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nstring longestMostFrequentPrefix(vector<string> strings) {\n  // Write your code here.\n  return \"\";\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <unordered_map>\n\nusing namespace std;\n\nclass TrieNode {\n public:\n  unordered_map<char, TrieNode*> children;\n  int count = 0;\n};\n\nclass Trie {\n public:\n  TrieNode* root = new TrieNode();\n  int maxPrefixCount = 0;\n  int maxPrefixLength = 0;\n  string maxPrefixFullString = \"\";\n\n  void insert(string str);\n};\n\n// O(n * m) time | O(n * m) space - where n is the length of strings, and m\n// is the length of the longest string\nstring longestMostFrequentPrefix(vector<string> strings) {\n  Trie trie;\n  for (const string& str : strings) {\n    trie.insert(str);\n  }\n  return trie.maxPrefixFullString.substr(0, trie.maxPrefixLength);\n}\n\nvoid Trie::insert(string str) {\n  TrieNode* currentTrieNode = root;\n  for (int i = 0; i < str.length(); i++) {\n    char letter = str.at(i);\n    if (currentTrieNode->children.find(letter) == currentTrieNode->children.end()) {\n      TrieNode* newNode = new TrieNode();\n      currentTrieNode->children[letter] = newNode;\n    }\n    currentTrieNode = currentTrieNode->children[letter];\n    currentTrieNode->count++;\n\n    if (currentTrieNode->count > maxPrefixCount) {\n      maxPrefixCount = currentTrieNode->count;\n      maxPrefixLength = i + 1;\n      maxPrefixFullString = str;\n    } else if (currentTrieNode->count == maxPrefixCount && i + 1 > maxPrefixLength) {\n      maxPrefixLength = i + 1;\n      maxPrefixFullString = str;\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<string> strings = {\n        \"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"};\n      auto expected = \"algo\";\n      auto actual = longestMostFrequentPrefix(strings);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<string> strings = {\n        \"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"};\n      auto expected = \"algo\";\n      auto actual = longestMostFrequentPrefix(strings);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public string LongestMostFrequentPrefix(string[] strings) {\n    // Write your code here.\n    return \"\";\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n * m) time | O(n * m) space - where n is the length of strings, and m\n  // is the length of the longest string\n  public string LongestMostFrequentPrefix(string[] strings) {\n    Trie trie = new Trie();\n    foreach (var str in strings) {\n      trie.insert(str);\n    }\n    return trie.maxPrefixFullstring.Substring(0, trie.maxPrefixLength - 0);\n  }\n\n  public class TrieNode {\n    public Dictionary<char, TrieNode> children =\n      new Dictionary<char, TrieNode>();\n    public int count = 0;\n  }\n\n  public class Trie {\n    public TrieNode root = new TrieNode();\n    public int maxPrefixCount = 0;\n    public int maxPrefixLength = 0;\n    public string maxPrefixFullstring = \"\";\n\n    public void insert(string str) {\n      TrieNode currentTrieNode = root;\n      for (int i = 0; i < str.Length; i++) {\n        char letter = str[i];\n        if (!currentTrieNode.children.ContainsKey(letter)) {\n          TrieNode newNode = new TrieNode();\n          currentTrieNode.children[letter] = newNode;\n        }\n        currentTrieNode = currentTrieNode.children[letter];\n        currentTrieNode.count++;\n\n        if (currentTrieNode.count > this.maxPrefixCount) {\n          this.maxPrefixCount = currentTrieNode.count;\n          this.maxPrefixLength = i + 1;\n          this.maxPrefixFullstring = str;\n        } else if (currentTrieNode.count == this.maxPrefixCount && i + 1 > this.maxPrefixLength) {\n          this.maxPrefixLength = i + 1;\n          this.maxPrefixFullstring = str;\n        }\n      }\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    string[] strings =\n      new string[] { \"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\" };\n    string expected = \"algo\";\n    string actual = new Program().LongestMostFrequentPrefix(strings);\n    Utils.AssertTrue(expected.Equals(actual));\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    string[] strings =\n      new string[] { \"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\" };\n    string expected = \"algo\";\n    string actual = new Program().LongestMostFrequentPrefix(strings);\n    Utils.AssertTrue(expected.Equals(actual));\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc LongestMostFrequentPrefix(strings []string) string {\n\t// Write your code here.\n\treturn \"\"\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n * m) time | O(n * m) space - where n is the length of strings, and m\n// is the length of the longest string\nfunc LongestMostFrequentPrefix(strings []string) string {\n\ttrie := NewTrie()\n\tfor _, str := range strings {\n\t\ttrie.Insert(str)\n\t}\n\treturn trie.maxPrefixFullString[:trie.maxPrefixLength]\n}\n\ntype TrieNode struct {\n\tchildren map[rune]*TrieNode\n\tcount    int\n}\n\ntype Trie struct {\n\troot                *TrieNode\n\tmaxPrefixCount      int\n\tmaxPrefixLength     int\n\tmaxPrefixFullString string\n}\n\nfunc NewTrie() *Trie {\n\treturn &Trie{root: &TrieNode{children: make(map[rune]*TrieNode), count: 0}, maxPrefixCount: 0, maxPrefixLength: 0, maxPrefixFullString: \"\"}\n}\n\nfunc (t *Trie) Insert(str string) {\n\tcurrentTrieNode := t.root\n\tfor i, char := range str {\n\t\tif _, ok := currentTrieNode.children[char]; !ok {\n\t\t\tcurrentTrieNode.children[char] = &TrieNode{children: make(map[rune]*TrieNode), count: 0}\n\t\t}\n\t\tcurrentTrieNode = currentTrieNode.children[char]\n\t\tcurrentTrieNode.count++\n\n\t\tif currentTrieNode.count > t.maxPrefixCount {\n\t\t\tt.maxPrefixCount = currentTrieNode.count\n\t\t\tt.maxPrefixLength = i + 1\n\t\t\tt.maxPrefixFullString = str\n\t\t} else if currentTrieNode.count == t.maxPrefixCount && i+1 > t.maxPrefixLength {\n\t\t\tt.maxPrefixLength = i + 1\n\t\t\tt.maxPrefixFullString = str\n\t\t}\n\t}\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tstrings := []string{\"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"}\n\texpected := \"algo\"\n\tactual := LongestMostFrequentPrefix(strings)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tstrings := []string{\"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"}\n\texpected := \"algo\"\n\tactual := LongestMostFrequentPrefix(strings)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public String longestMostFrequentPrefix(String[] strings) {\n    // Write your code here.\n    return \"\";\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n * m) time | O(n * m) space - where n is the length of strings, and m\n  // is the length of the longest string\n  public String longestMostFrequentPrefix(String[] strings) {\n    Trie trie = new Trie();\n    for (String str : strings) {\n      trie.insert(str);\n    }\n    return trie.maxPrefixFullString.substring(0, trie.maxPrefixLength);\n  }\n\n  static class TrieNode {\n    Map<Character, TrieNode> children = new HashMap<Character, TrieNode>();\n    int count = 0;\n  }\n\n  static class Trie {\n    TrieNode root = new TrieNode();\n    int maxPrefixCount = 0;\n    int maxPrefixLength = 0;\n    String maxPrefixFullString = \"\";\n\n    public void insert(String str) {\n      TrieNode currentTrieNode = root;\n      for (int i = 0; i < str.length(); i++) {\n        char letter = str.charAt(i);\n        if (!currentTrieNode.children.containsKey(letter)) {\n          TrieNode newNode = new TrieNode();\n          currentTrieNode.children.put(letter, newNode);\n        }\n        currentTrieNode = currentTrieNode.children.get(letter);\n        currentTrieNode.count++;\n\n        if (currentTrieNode.count > this.maxPrefixCount) {\n          this.maxPrefixCount = currentTrieNode.count;\n          this.maxPrefixLength = i + 1;\n          this.maxPrefixFullString = str;\n        } else if (currentTrieNode.count == this.maxPrefixCount && i + 1 > this.maxPrefixLength) {\n          this.maxPrefixLength = i + 1;\n          this.maxPrefixFullString = str;\n        }\n      }\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    String[] strings =\n      new String[] {\"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"};\n    String expected = \"algo\";\n    String actual = new Program().longestMostFrequentPrefix(strings);\n    Utils.assertTrue(expected.equals(actual));\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    String[] strings =\n      new String[] {\"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"};\n    String expected = \"algo\";\n    String actual = new Program().longestMostFrequentPrefix(strings);\n    Utils.assertTrue(expected.equals(actual));\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function longestMostFrequentPrefix(strings) {\n  // Write your code here.\n  return '';\n}\n\n// Do not edit the line below.\nexports.longestMostFrequentPrefix = longestMostFrequentPrefix;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * m) time | O(n * m) space - where n is the length of strings, and m\n// is the length of the longest string\nfunction longestMostFrequentPrefix(strings) {\n  const trie = new Trie();\n  for (const string of strings) {\n    trie.insert(string);\n  }\n  return trie.maxPrefixFullString.slice(0, trie.maxPrefixLength);\n}\n\nclass Trie {\n  constructor() {\n    this.root = {count: 0};\n    this.maxPrefixCount = 0;\n    this.maxPrefixLength = 0;\n    this.maxPrefixFullString = '';\n  }\n\n  insert(string) {\n    let currentTrieNode = this.root;\n    for (let i = 0; i < string.length; i++) {\n      if (!(string[i] in currentTrieNode)) {\n        currentTrieNode[string[i]] = {count: 0};\n      }\n      currentTrieNode = currentTrieNode[string[i]];\n      currentTrieNode.count++;\n\n      if (currentTrieNode.count > this.maxPrefixCount) {\n        this.maxPrefixCount = currentTrieNode.count;\n        this.maxPrefixLength = i + 1;\n        this.maxPrefixFullString = string;\n      } else if (currentTrieNode.count === this.maxPrefixCount && i + 1 > this.maxPrefixLength) {\n        this.maxPrefixLength = i + 1;\n        this.maxPrefixFullString = string;\n      }\n    }\n  }\n}\n\n// Do not edit the line below.\nexports.longestMostFrequentPrefix = longestMostFrequentPrefix;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const strings = ['algoexpert', 'algorithm', 'frontendexpert', 'mlexpert'];\n  const expected = 'algo';\n  const actual = program.longestMostFrequentPrefix(strings);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const strings = ['algoexpert', 'algorithm', 'frontendexpert', 'mlexpert'];\n  const expected = 'algo';\n  const actual = program.longestMostFrequentPrefix(strings);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun longestMostFrequentPrefix(strings: MutableList<String>): String {\n    // Write your code here.\n    return \"\"\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n * m) time | O(n * m) space - where n is the length of strings, and m\n// is the length of the longest string\nfun longestMostFrequentPrefix(strings: MutableList<String>): String {\n    val trie = Trie()\n    for (string in strings) {\n        trie.insert(string)\n    }\n    return trie.maxPrefixFullString.substring(0, trie.maxPrefixLength)\n}\n\ndata class TrieNode(\n    val children: MutableMap<Char, TrieNode?> = mutableMapOf(),\n    var count: Int = 0,\n)\n\nclass Trie {\n    val root = TrieNode()\n    var maxPrefixCount = 0\n    var maxPrefixLength = 0\n    var maxPrefixFullString = \"\"\n\n    fun insert(string: String) {\n        var currentTrieNode = root\n        for (i in 0 until string.length) {\n            if (!(string[i] in currentTrieNode.children)) {\n                currentTrieNode.children[string[i]] = TrieNode()\n            }\n            currentTrieNode = currentTrieNode.children[string[i]]!!\n            currentTrieNode.count++\n\n            if (currentTrieNode.count > maxPrefixCount) {\n                maxPrefixCount = currentTrieNode.count\n                maxPrefixLength = i + 1\n                maxPrefixFullString = string\n            } else if (currentTrieNode.count == maxPrefixCount && i + 1 > maxPrefixLength) {\n                maxPrefixLength = i + 1\n                maxPrefixFullString = string\n            }\n        }\n    }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.longestMostFrequentPrefix\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val strings = mutableListOf(\n            \"algoexpert\",\n            \"algorithm\",\n            \"frontendexpert\",\n            \"mlexpert\",\n        )\n        val expected = \"algo\"\n        val output = longestMostFrequentPrefix(strings)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.longestMostFrequentPrefix\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val strings = mutableListOf(\n            \"algoexpert\",\n            \"algorithm\",\n            \"frontendexpert\",\n            \"mlexpert\",\n        )\n        val expected = \"algo\"\n        val output = longestMostFrequentPrefix(strings)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def longestMostFrequentPrefix(strings):\n    # Write your code here.\n    return \"\"\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n * m) time | O(n * m) space - where n is the length of strings, and m\n# is the length of the longest string\ndef longestMostFrequentPrefix(strings):\n    trie = Trie()\n    for string in strings:\n        trie.insert(string)\n    return trie.maxPrefixFullString[0 : trie.maxPrefixLength]\n\n\nclass Trie:\n    def __init__(self):\n        self.root = {\"count\": 0}\n        self.maxPrefixCount = 0\n        self.maxPrefixLength = 0\n        self.maxPrefixFullString = \"\"\n\n    def insert(self, string):\n        currentTrieNode = self.root\n        for i in range(len(string)):\n            if string[i] not in currentTrieNode:\n                currentTrieNode[string[i]] = {\"count\": 0}\n            currentTrieNode = currentTrieNode[string[i]]\n            currentTrieNode[\"count\"] += 1\n\n            if currentTrieNode[\"count\"] > self.maxPrefixCount:\n                self.maxPrefixCount = currentTrieNode[\"count\"]\n                self.maxPrefixLength = i + 1\n                self.maxPrefixFullString = string\n            elif currentTrieNode[\"count\"] == self.maxPrefixCount and i + 1 > self.maxPrefixLength:\n                self.maxPrefixLength = i + 1\n                self.maxPrefixFullString = string\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        strings = [\n            \"algoexpert\",\n            \"algorithm\",\n            \"frontendexpert\",\n            \"mlexpert\",\n        ]\n        expected = \"algo\"\n        actual = program.longestMostFrequentPrefix(strings)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        strings = [\n            \"algoexpert\",\n            \"algorithm\",\n            \"frontendexpert\",\n            \"mlexpert\",\n        ]\n        expected = \"algo\"\n        actual = program.longestMostFrequentPrefix(strings)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def longestMostFrequentPrefix(strings)\n        # Write your code here.\n        return \"\"\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def longestMostFrequentPrefix(strings)\n        # Write your code here.\n        return \"\"\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.longestMostFrequentPrefix\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.longestMostFrequentPrefix\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func longestMostFrequentPrefix(_ strings: [String]) -> String {\n    // Write your code here.\n    return \"\"\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n * m) time | O(n * m) space - where n is the length of strings, and m\n  // is the length of the longest string\n  func longestMostFrequentPrefix(_ strings: [String]) -> String {\n    let trie = Trie()\n    for string in strings {\n      trie.insert(string)\n    }\n    return String(trie.maxPrefixFullString.prefix(trie.maxPrefixLength))\n  }\n\n  class TrieNode {\n    var children: [Character: TrieNode]\n    var count: Int\n\n    init() {\n      children = [:]\n      count = 0\n    }\n  }\n\n  class Trie {\n    var root: TrieNode\n    var maxPrefixCount: Int\n    var maxPrefixLength: Int\n    var maxPrefixFullString: String\n\n    init() {\n      root = TrieNode()\n      maxPrefixCount = 0\n      maxPrefixLength = 0\n      maxPrefixFullString = \"\"\n    }\n\n    func insert(_ string: String) {\n      var currentTrieNode = root\n      for (i, char) in string.enumerated() {\n        if currentTrieNode.children[char] == nil {\n          currentTrieNode.children[char] = TrieNode()\n        }\n        currentTrieNode = currentTrieNode.children[char]!\n        currentTrieNode.count += 1\n\n        if currentTrieNode.count > maxPrefixCount {\n          maxPrefixCount = currentTrieNode.count\n          maxPrefixLength = i + 1\n          maxPrefixFullString = string\n        } else if currentTrieNode.count == maxPrefixCount, i + 1 > maxPrefixLength {\n          maxPrefixLength = i + 1\n          maxPrefixFullString = string\n        }\n      }\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var strings = [\"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"]\n      var expected = \"algo\"\n      var actual = Program().longestMostFrequentPrefix(strings)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var strings = [\"algoexpert\", \"algorithm\", \"frontendexpert\", \"mlexpert\"]\n      var expected = \"algo\"\n      var actual = Program().longestMostFrequentPrefix(strings)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function longestMostFrequentPrefix(strings: string[]) {\n  // Write your code here.\n  return '';\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * m) time | O(n * m) space - where n is the length of strings, and m\n// is the length of the longest string\nexport function longestMostFrequentPrefix(strings: string[]) {\n  const trie = new Trie();\n  for (const string of strings) {\n    trie.insert(string);\n  }\n  return trie.maxPrefixFullString.slice(0, trie.maxPrefixLength);\n}\n\ninterface TrieNode {\n  children: Record<string, TrieNode>;\n  count: number;\n}\n\nclass Trie {\n  root: TrieNode;\n  maxPrefixCount: number;\n  maxPrefixLength: number;\n  maxPrefixFullString: string;\n\n  constructor() {\n    this.root = {children: {}, count: 0};\n    this.maxPrefixCount = 0;\n    this.maxPrefixLength = 0;\n    this.maxPrefixFullString = '';\n  }\n\n  insert(string: string) {\n    let currentTrieNode = this.root;\n    for (let i = 0; i < string.length; i++) {\n      if (!(string[i] in currentTrieNode.children)) {\n        currentTrieNode.children[string[i]] = {children: {}, count: 0};\n      }\n      currentTrieNode = currentTrieNode.children[string[i]];\n      currentTrieNode.count++;\n\n      if (currentTrieNode.count > this.maxPrefixCount) {\n        this.maxPrefixCount = currentTrieNode.count;\n        this.maxPrefixLength = i + 1;\n        this.maxPrefixFullString = string;\n      } else if (currentTrieNode.count === this.maxPrefixCount && i + 1 > this.maxPrefixLength) {\n        this.maxPrefixLength = i + 1;\n        this.maxPrefixFullString = string;\n      }\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const strings = ['algoexpert', 'algorithm', 'frontendexpert', 'mlexpert'];\n  const expected = 'algo';\n  const actual = program.longestMostFrequentPrefix(strings);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const strings = ['algoexpert', 'algorithm', 'frontendexpert', 'mlexpert'];\n  const expected = 'algo';\n  const actual = program.longestMostFrequentPrefix(strings);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "strings",
+            "example": [
+                "algoexpert"
+            ],
+            "schema": {
+                "items": {
+                    "minLength": 1,
+                    "type": "string"
+                },
+                "minItems": 1,
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "strings": [
+                "algoexpert"
+            ]
+        },
+        {
+            "strings": [
+                "abcdef",
+                "abcdefg",
+                "aaa",
+                "bbb",
+                "ccc"
+            ]
+        },
+        {
+            "strings": [
+                "abcdefg",
+                "abcdddd",
+                "abceeee",
+                "bcdefg",
+                "cdefg",
+                "abce"
+            ]
+        },
+        {
+            "strings": [
+                "algoexpert",
+                "algorithm",
+                "frontendexpert",
+                "mlexpert"
+            ]
+        },
+        {
+            "strings": [
+                "hello",
+                "world",
+                "fossil",
+                "worldly",
+                "food",
+                "forrest",
+                "helium",
+                "algoexpert",
+                "algorithm"
+            ]
+        },
+        {
+            "strings": [
+                "foobarbaz",
+                "foo",
+                "bar",
+                "foobarfoo",
+                "baz",
+                "foobaz",
+                "foofoofoo",
+                "foobazar"
+            ]
+        },
+        {
+            "strings": [
+                "foobarbaz",
+                "foo",
+                "bar",
+                "foobarfoo",
+                "baz",
+                "foobaz",
+                "foofoofoo",
+                "foobazar",
+                "fancy"
+            ]
+        },
+        {
+            "strings": [
+                "foo",
+                "bar",
+                "foobar"
+            ]
+        },
+        {
+            "strings": [
+                "foo",
+                "bar",
+                "barfoo"
+            ]
+        },
+        {
+            "strings": [
+                "foo",
+                "bar",
+                "baz"
+            ]
+        },
+        {
+            "strings": [
+                "this",
+                "is",
+                "a",
+                "test",
+                "thisisatest",
+                "thisisthis",
+                "thisisnotatest",
+                "atestthisis",
+                "testthistest",
+                "notthistest"
+            ]
+        },
+        {
+            "strings": [
+                "this",
+                "is",
+                "a",
+                "thisisatest",
+                "thisisthis",
+                "thisisnotatest",
+                "atestthisis",
+                "notthistest"
+            ]
+        },
+        {
+            "strings": [
+                "abc1",
+                "abc2",
+                "abc3",
+                "abc4",
+                "xyzk1",
+                "xyzk2",
+                "xyzk3",
+                "xyzk4"
+            ]
+        },
+        {
+            "strings": [
+                "abc",
+                "def",
+                "ghi",
+                "jkl",
+                "mnop",
+                "qrs",
+                "tuv",
+                "wxy",
+                "z"
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "strings": [
+                "algoexpert"
+            ]
+        },
+        {
+            "strings": [
+                "abcdef",
+                "abcdefg",
+                "aaa",
+                "bbb",
+                "ccc"
+            ]
+        },
+        {
+            "strings": [
+                "abcdefg",
+                "abcdddd",
+                "abceeee",
+                "bcdefg",
+                "cdefg",
+                "abce"
+            ]
+        },
+        {
+            "strings": [
+                "algoexpert",
+                "algorithm",
+                "frontendexpert",
+                "mlexpert"
+            ]
+        },
+        {
+            "strings": [
+                "hello",
+                "world",
+                "fossil",
+                "worldly",
+                "food",
+                "forrest",
+                "helium",
+                "algoexpert",
+                "algorithm"
+            ]
+        },
+        {
+            "strings": [
+                "foobarbaz",
+                "foo",
+                "bar",
+                "foobarfoo",
+                "baz",
+                "foobaz",
+                "foofoofoo",
+                "foobazar"
+            ]
+        },
+        {
+            "strings": [
+                "foobarbaz",
+                "foo",
+                "bar",
+                "foobarfoo",
+                "baz",
+                "foobaz",
+                "foofoofoo",
+                "foobazar",
+                "fancy"
+            ]
+        },
+        {
+            "strings": [
+                "foo",
+                "bar",
+                "foobar"
+            ]
+        },
+        {
+            "strings": [
+                "foo",
+                "bar",
+                "barfoo"
+            ]
+        },
+        {
+            "strings": [
+                "foo",
+                "bar",
+                "baz"
+            ]
+        },
+        {
+            "strings": [
+                "this",
+                "is",
+                "a",
+                "test",
+                "thisisatest",
+                "thisisthis",
+                "thisisnotatest",
+                "atestthisis",
+                "testthistest",
+                "notthistest"
+            ]
+        },
+        {
+            "strings": [
+                "this",
+                "is",
+                "a",
+                "thisisatest",
+                "thisisthis",
+                "thisisnotatest",
+                "atestthisis",
+                "notthistest"
+            ]
+        },
+        {
+            "strings": [
+                "abc1",
+                "abc2",
+                "abc3",
+                "abc4",
+                "xyzk1",
+                "xyzk2",
+                "xyzk3",
+                "xyzk4"
+            ]
+        },
+        {
+            "strings": [
+                "abc",
+                "def",
+                "ghi",
+                "jkl",
+                "mnop",
+                "qrs",
+                "tuv",
+                "wxy",
+                "z"
+            ]
+        }
+    ],
+    "changelog": []
+}

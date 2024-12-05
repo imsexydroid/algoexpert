@@ -1,0 +1,514 @@
+{
+    "uid": "knight-connection",
+    "testStrategy": "JSON",
+    "name": "Knight Connection",
+    "version": 0,
+    "releaseDate": "2023-06-02T00:00:00Z",
+    "category": "Arrays",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 1175,
+        "failureCount": 153
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "824934720",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 891
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    You're given the position of two knight pieces on an infinite chess board.\n    Write a function that returns the minimum number of turns required before\n    one of the knights is able to capture the other knight, assuming the knights\n    are working together to achieve this goal.\n  </p>\n\n  <p>\n    The position of each knight is given as a list of 2 values, the x and y\n    coordinates. A knight can make 1 of 8 possible moves on any given turn. Each\n    of these moves involves moving in an \"L\" shape. This means they can either\n    move 2 squares horizontally and 1 square vertically, or they can move 1\n    square horizontally and 2 squares vertically. For example, if a knight is\n    currently at position [0, 0], then it can move to any of these 8 locations\n    on its next move:\n  </p>\n\n  <pre>\n[\n  [-2, 1], [-1, 2], [1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1]\n]</pre\n  >\n\n  <p>\n    A knight is able to capture the other knight when it is able to move onto\n    the square currently occupied by the other knight.\n  </p>\n\n  <p>\n    Each turn allows each knight to move up to one time. For example, if both\n    knights moved towards each other once, and then knightA captures knightB on\n    its next move, two turns would have been used (even though knightB never\n    made its second move).\n  </p>\n  <h3>Sample Input</h3>\n  <pre><span class=\"CodeEditor-promptParameter\">knightA</span> = [0, 0]\n<span class=\"CodeEditor-promptParameter\">knightB</span> = [4, 2]</pre>\n  <h3>Sample Output</h3>\n  <pre>\n1 <span class=\"CodeEditor-promptComment\">// knightA moves to [2, 1], knightB captures knightA on [2, 1]\n</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  The number of turns needed for two knights to meet on a common square is the\n  same as the number of moves needed for a single knight to reach the other knight\n  divided by two (and rounded up to account for odd numbers of moves).\n</p>\n",
+        "\n<p>\n  Rather than thinking of this problem in terms of chess, try thinking about\n  it as a graph problem. What are the nodes and what are the edges?\n</p>\n",
+        "\n<p>\n  As a graph problem, you can consider each square on the board as a node, and\n  each possible knight move as an edge. Then you can find the distance between\n  those nodes using standard graph algorithms, such as BFS.\n</p>"
+    ],
+    "spaceTime": "O(n * m) time | O(n * m) space - where n is horizontal distance between the knights and m is the vertical distance between the knights",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nint knightConnection(vector<int> knightA, vector<int> knightB) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <cmath>\n#include <queue>\n#include <unordered_set>\n\nusing namespace std;\n\nstring positionToString(vector<int> position);\n\n// O(n * m) time | O(n * m) space - where n is horizontal distance between\n// the knights and m is the vertical distance between the knights\nint knightConnection(vector<int> knightA, vector<int> knightB) {\n  vector<vector<int>> possibleMoves = {\n    {-2, 1}, {-1, 2}, {1, 2}, {2, 1}, {2, -1}, {1, -2}, {-1, -2}, {-2, -1}};\n\n  queue<vector<int>> q;\n  q.push({knightA[0], knightA[1], 0});\n  unordered_set<string> visited;\n  visited.insert(positionToString(knightA));\n\n  while (true) {\n    vector<int> currentPosition = q.front();\n    q.pop();\n\n    if (currentPosition[0] == knightB[0] && currentPosition[1] == knightB[1]) {\n      return ceil((double)currentPosition[2] / 2);\n    }\n\n    for (auto const& move : possibleMoves) {\n      vector<int> position = {\n        currentPosition[0] + move[0], currentPosition[1] + move[1]};\n      string positionString = positionToString(position);\n\n      if (visited.find(positionString) == visited.end()) {\n        position.push_back(currentPosition[2] + 1);\n        q.push(position);\n        visited.insert(positionString);\n      }\n    }\n  }\n\n  return -1;\n}\n\nstring positionToString(vector<int> position) {\n  return to_string(position[0]) + \",\" + to_string(position[1]);\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      auto knightA = {0, 0};\n      auto knightB = {2, 1};\n      auto expected = 1;\n      auto actual = knightConnection(knightA, knightB);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      auto knightA = {0, 0};\n      auto knightB = {2, 1};\n      auto expected = 1;\n      auto actual = knightConnection(knightA, knightB);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int KnightConnection(int[] knightA, int[] knightB) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n * m) time | O(n * m) space - where n is horizontal distance between\n  // the knights and m is the vertical distance between the knights\n  public int KnightConnection(int[] knightA, int[] knightB) {\n    int[,] possibleMoves = new int[8, 2] {\n      { -2, 1 },\n      { -1, 2 },\n      { 1, 2 },\n      { 2, 1 },\n      { 2, -1 },\n      { 1, -2 },\n      { -1, -2 },\n      { -2, -1 }\n    };\n\n    Queue<List<int> > queue = new Queue<List<int> >();\n    queue.Enqueue(new List<int> { knightA[0], knightA[1], 0 });\n    HashSet<string> visited = new HashSet<string>();\n    visited.Add(knightA.ToString());\n\n    while (queue.Count > 0) {\n      List<int> currentPosition = queue.Dequeue();\n\n      if (currentPosition[0] == knightB[0] && currentPosition[1] == knightB[1]) {\n        return (int)Math.Ceiling((double)currentPosition[2] / 2);\n      }\n\n      for (var i = 0; i < possibleMoves.GetLength(0); i++) {\n        List<int> position = new List<int>();\n        position.Add(currentPosition[0] + possibleMoves[i, 0]);\n        position.Add(currentPosition[1] + possibleMoves[i, 1]);\n        string positionString =\n          String.Join(\", \", position.ConvertAll<string>(x => x.ToString()));\n\n        if (!visited.Contains(positionString)) {\n          position.Add(currentPosition[2] + 1);\n          queue.Enqueue(position);\n          visited.Add(positionString);\n        }\n      }\n    }\n    return -1;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    var knightA = new int[] { 0, 0 };\n    var knightB = new int[] { 2, 1 };\n    var expected = 1;\n    var actual = new Program().KnightConnection(knightA, knightB);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    var knightA = new int[] { 0, 0 };\n    var knightB = new int[] { 2, 1 };\n    var expected = 1;\n    var actual = new Program().KnightConnection(knightA, knightB);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc KnightConnection(knightA []int, knightB []int) int {\n\t// Write your code here.\n\treturn -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport \"strconv\"\n\n// O(n * m) time | O(n * m) space - where n is horizontal distance between\n// the knights and m is the vertical distance between the knights\nfunc KnightConnection(knightA []int, knightB []int) int {\n\tpossibleMoves := [][]int{{-2, 1}, {-1, 2}, {1, 2}, {2, 1}, {2, -1}, {1, -2}, {-1, -2}, {-2, -1}}\n\n\tqueue := [][]int{{knightA[0], knightA[1], 0}}\n\tvisited := make(map[string]bool)\n\tvisited[positionToString(knightA)] = true\n\n\tfor len(queue) > 0 {\n\t\tcurrentPosition := queue[0]\n\t\tqueue = queue[1:]\n\n\t\tif currentPosition[0] == knightB[0] && currentPosition[1] == knightB[1] {\n\t\t\treturn (currentPosition[2] + 1) / 2\n\t\t}\n\n\t\tfor _, possibleMove := range possibleMoves {\n\t\t\tposition := []int{currentPosition[0] + possibleMove[0], currentPosition[1] + possibleMove[1]}\n\t\t\tpositionString := positionToString(position)\n\t\t\tif !visited[positionString] {\n\t\t\t\tposition = append(position, currentPosition[2]+1)\n\t\t\t\tqueue = append(queue, position)\n\t\t\t\tvisited[positionString] = true\n\t\t\t}\n\t\t}\n\t}\n\n\treturn -1\n}\n\nfunc positionToString(position []int) string {\n\treturn strconv.Itoa(position[0]) + \",\" + strconv.Itoa(position[1])\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tknightA := []int{0, 0}\n\tknightB := []int{2, 1}\n\texpected := 1\n\tactual := KnightConnection(knightA, knightB)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tknightA := []int{0, 0}\n\tknightB := []int{2, 1}\n\texpected := 1\n\tactual := KnightConnection(knightA, knightB)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int knightConnection(int[] knightA, int[] knightB) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n * m) time | O(n * m) space - where n is horizontal distance between\n  // the knights and m is the vertical distance between the knights\n  public int knightConnection(int[] knightA, int[] knightB) {\n    int[][] possibleMoves = new int[][] {\n      {-2, 1}, {-1, 2}, {1, 2}, {2, 1}, {2, -1}, {1, -2}, {-1, -2}, {-2, -1}};\n\n    Queue<List<Integer>> queue = new LinkedList<List<Integer>>();\n    queue.add(Arrays.asList(knightA[0], knightA[1], 0));\n    Set<String> visited = new HashSet<String>();\n    visited.add(knightA.toString());\n\n    while (true) {\n      List<Integer> currentPosition = queue.remove();\n\n      if (currentPosition.get(0) == knightB[0] && currentPosition.get(1) == knightB[1]) {\n        return (int) Math.ceil((double) currentPosition.get(2) / 2);\n      }\n\n      for (int[] possibleMove : possibleMoves) {\n        ArrayList<Integer> position = new ArrayList<Integer>();\n        position.add(currentPosition.get(0) + possibleMove[0]);\n        position.add(currentPosition.get(1) + possibleMove[1]);\n        String positionString = position.toString();\n\n        if (!visited.contains(positionString)) {\n          position.add(currentPosition.get(2) + 1);\n          queue.add(position);\n          visited.add(positionString);\n        }\n      }\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var knightA = new int[] {0, 0};\n    var knightB = new int[] {2, 1};\n    var expected = 1;\n    var actual = new Program().knightConnection(knightA, knightB);\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var knightA = new int[] {0, 0};\n    var knightB = new int[] {2, 1};\n    var expected = 1;\n    var actual = new Program().knightConnection(knightA, knightB);\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function knightConnection(knightA, knightB) {\n  // Write your code here.\n  return -1;\n}\n\n// Do not edit the line below.\nexports.knightConnection = knightConnection;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * m) time | O(n * m) space - where n is horizontal distance between\n// the knights and m is the vertical distance between the knights\nfunction knightConnection(knightA, knightB) {\n  const possibleMoves = [\n    [-2, 1],\n    [-1, 2],\n    [1, 2],\n    [2, 1],\n    [2, -1],\n    [1, -2],\n    [-1, -2],\n    [-2, -1],\n  ];\n\n  const queue = [[knightA[0], knightA[1], 0]];\n  const visited = new Set(positionToString(knightA));\n\n  while (true) {\n    // In JavaScript, shifting elements from the start of an array is an O(n)-time operation.\n    // To make this an O(1)-time operation, we could use a more legitimate queue structure.\n    // For our time complexity analysis, we'll assume this runs in O(1) time.\n    const currentPosition = queue.shift();\n\n    if (currentPosition[0] === knightB[0] && currentPosition[1] === knightB[1]) {\n      return Math.ceil(currentPosition[2] / 2);\n    }\n\n    for (const possibleMove of possibleMoves) {\n      const position = [currentPosition[0] + possibleMove[0], currentPosition[1] + possibleMove[1]];\n      const positionString = positionToString(position);\n      if (!visited.has(positionString)) {\n        position.push(currentPosition[2] + 1);\n        queue.push(position);\n        visited.add(positionString);\n      }\n    }\n  }\n}\n\nfunction positionToString(position) {\n  return position.join(',');\n}\n\n// Do not edit the line below.\nexports.knightConnection = knightConnection;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const knightA = [0, 0];\n  const knightB = [2, 1];\n  const expected = 1;\n  const actual = program.knightConnection(knightA, knightB);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const knightA = [0, 0];\n  const knightB = [2, 1];\n  const expected = 1;\n  const actual = program.knightConnection(knightA, knightB);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun knightConnection(knightA: MutableList<Int>, knightB: MutableList<Int>): Int {\n    // Write your code here.\n    return -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.ceil\n\n// O(n * m) time | O(n * m) space - where n is horizontal distance between\n// the knights and m is the vertical distance between the knights\nfun knightConnection(knightA: MutableList<Int>, knightB: MutableList<Int>): Int {\n    val possibleMoves = listOf(\n        listOf(-2, 1),\n        listOf(-1, 2),\n        listOf(1, 2),\n        listOf(2, 1),\n        listOf(2, -1),\n        listOf(1, -2),\n        listOf(-1, -2),\n        listOf(-2, -1),\n    )\n\n    val queue = mutableListOf(listOf(knightA[0], knightA[1], 0))\n    val visited = mutableSetOf(positionToString(knightA))\n\n    while (true) {\n        // In Kotlin, removing elements from the start of a list is an O(n)-time operation.\n        // To make this an O(1)-time operation, we could use a more legitimate queue structure.\n        // For our time complexity analysis, we'll assume this runs in O(1) time.\n        val currentPosition = queue.removeAt(0)\n\n        if (currentPosition[0] == knightB[0] && currentPosition[1] == knightB[1]) {\n            return ceil(currentPosition[2] / 2.0).toInt()\n        }\n\n        for (possibleMove in possibleMoves) {\n            val position =\n                mutableListOf(\n                    currentPosition[0] + possibleMove[0],\n                    currentPosition[1] + possibleMove[1],\n                )\n            val positionString = positionToString(position)\n            if (!(positionString in visited)) {\n                position.add(currentPosition[2] + 1)\n                queue.add(position)\n                visited.add(positionString)\n            }\n        }\n    }\n}\n\nfun positionToString(position: List<Int>): String {\n    return position.joinToString(\",\")\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.knightConnection\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val knightA = mutableListOf(0, 0)\n        val knightB = mutableListOf(2, 1)\n        val expected = 1\n        val output = knightConnection(knightA, knightB)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.knightConnection\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val knightA = mutableListOf(0, 0)\n        val knightB = mutableListOf(2, 1)\n        val expected = 1\n        val output = knightConnection(knightA, knightB)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def knightConnection(knightA, knightB):\n    # Write your code here.\n    return -1\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport math\n\n\n# O(n * m) time | O(n * m) space - where n is horizontal distance between\n# the knights and m is the vertical distance between the knights\ndef knightConnection(knightA, knightB):\n    possibleMoves = [[-2, 1], [-1, 2], [1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1]]\n\n    queue = [[knightA[0], knightA[1], 0]]\n    visited = {positionToString(knightA)}\n\n    while True:\n        # In Python, popping elements from the start of a list is an O(n)-time operation.\n        # To make this an O(1)-time operation, we could use the `deque` object.\n        # For our time complexity analysis, we'll assume this runs in O(1) time.\n        currentPosition = queue.pop(0)\n\n        if currentPosition[0] == knightB[0] and currentPosition[1] == knightB[1]:\n            return math.ceil(currentPosition[2] / 2)\n\n        for possibleMove in possibleMoves:\n            position = [currentPosition[0] + possibleMove[0], currentPosition[1] + possibleMove[1]]\n            positionString = positionToString(position)\n            if positionString not in visited:\n                position.append(currentPosition[2] + 1)\n                queue.append(position)\n                visited.add(positionString)\n\n\ndef positionToString(position):\n    return \",\".join(map(str, position))\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        knightA = [0, 0]\n        knightB = [2, 1]\n        expected = 1\n        actual = program.knightConnection(knightA, knightB)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        knightA = [0, 0]\n        knightB = [2, 1]\n        expected = 1\n        actual = program.knightConnection(knightA, knightB)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def knightConnection(knightA, knightB)\n        # Write your code here.\n        return -1\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def knightConnection(knightA, knightB)\n        # Write your code here.\n        return -1\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.knightConnection\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.knightConnection\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func knightConnection(_ knightA: [Int], _ knightB: [Int]) -> Int {\n    // Write your code here.\n    return -1\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n * m) time | O(n * m) space - where n is horizontal distance between\n  // the knights and m is the vertical distance between the knights\n  func knightConnection(_ knightA: [Int], _ knightB: [Int]) -> Int {\n    let possibleMoves = [[-2, 1], [-1, 2], [1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1]]\n\n    var queue = [[knightA[0], knightA[1], 0]]\n    var visited = Set<String>()\n    visited.insert(positionToString(position: knightA))\n\n    while !queue.isEmpty {\n      let currentPosition = queue.removeFirst()\n\n      if currentPosition[0] == knightB[0] && currentPosition[1] == knightB[1] {\n        return (currentPosition[2] + 1) / 2\n      }\n\n      for possibleMove in possibleMoves {\n        let position = [currentPosition[0] + possibleMove[0], currentPosition[1] + possibleMove[1]]\n        let positionString = positionToString(position: position)\n        if !visited.contains(positionString) {\n          var newPosition = position\n          newPosition.append(currentPosition[2] + 1)\n          queue.append(newPosition)\n          visited.insert(positionString)\n        }\n      }\n    }\n\n    return -1\n  }\n\n  func positionToString(position: [Int]) -> String {\n    return position.map { String($0) }.joined(separator: \",\")\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var knightA = [0, 0]\n      var knightB = [2, 1]\n      var expected = 1\n      var actual = Program().knightConnection(knightA, knightB)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var knightA = [0, 0]\n      var knightB = [2, 1]\n      var expected = 1\n      var actual = Program().knightConnection(knightA, knightB)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function knightConnection(knightA: number[], knightB: number[]) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * m) time | O(n * m) space - where n is horizontal distance between\n// the knights and m is the vertical distance between the knights\nexport function knightConnection(knightA: number[], knightB: number[]) {\n  const possibleMoves = [\n    [-2, 1],\n    [-1, 2],\n    [1, 2],\n    [2, 1],\n    [2, -1],\n    [1, -2],\n    [-1, -2],\n    [-2, -1],\n  ];\n\n  const queue: number[][] = [[knightA[0], knightA[1], 0]];\n  const visited = new Set(positionToString(knightA));\n\n  while (true) {\n    // In JavaScript, shifting elements from the start of an array is an O(n)-time operation.\n    // To make this an O(1)-time operation, we could use a more legitimate queue structure.\n    // For our time complexity analysis, we'll assume this runs in O(1) time.\n    const currentPosition = queue.shift()!;\n\n    if (currentPosition[0] === knightB[0] && currentPosition[1] === knightB[1]) {\n      return Math.ceil(currentPosition[2] / 2);\n    }\n\n    for (const possibleMove of possibleMoves) {\n      const position = [currentPosition[0] + possibleMove[0], currentPosition[1] + possibleMove[1]];\n      const positionString = positionToString(position);\n      if (!visited.has(positionString)) {\n        position.push(currentPosition[2] + 1);\n        queue.push(position);\n        visited.add(positionString);\n      }\n    }\n  }\n}\n\nfunction positionToString(position: number[]) {\n  return position.join(',');\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const knightA = [0, 0];\n  const knightB = [2, 1];\n  const expected = 1;\n  const actual = program.knightConnection(knightA, knightB);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const knightA = [0, 0];\n  const knightB = [2, 1];\n  const expected = 1;\n  const actual = program.knightConnection(knightA, knightB);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "knightA",
+            "example": [
+                0,
+                0
+            ],
+            "schema": {
+                "items": {
+                    "type": "integer"
+                },
+                "maxItems": 2,
+                "minItems": 2,
+                "type": "array"
+            }
+        },
+        {
+            "name": "knightB",
+            "example": [
+                0,
+                0
+            ],
+            "schema": {
+                "items": {
+                    "type": "integer"
+                },
+                "maxItems": 2,
+                "minItems": 2,
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "knightA": [
+                0,
+                0
+            ],
+            "knightB": [
+                0,
+                0
+            ]
+        },
+        {
+            "knightA": [
+                15,
+                -12
+            ],
+            "knightB": [
+                15,
+                -12
+            ]
+        },
+        {
+            "knightA": [
+                1,
+                0
+            ],
+            "knightB": [
+                0,
+                0
+            ]
+        },
+        {
+            "knightA": [
+                0,
+                0
+            ],
+            "knightB": [
+                1,
+                0
+            ]
+        },
+        {
+            "knightA": [
+                1,
+                1
+            ],
+            "knightB": [
+                0,
+                0
+            ]
+        },
+        {
+            "knightA": [
+                0,
+                0
+            ],
+            "knightB": [
+                -1,
+                -1
+            ]
+        },
+        {
+            "knightA": [
+                2,
+                1
+            ],
+            "knightB": [
+                0,
+                0
+            ]
+        },
+        {
+            "knightA": [
+                3,
+                3
+            ],
+            "knightB": [
+                0,
+                0
+            ]
+        },
+        {
+            "knightA": [
+                2,
+                1
+            ],
+            "knightB": [
+                -1,
+                -2
+            ]
+        },
+        {
+            "knightA": [
+                2,
+                1
+            ],
+            "knightB": [
+                -2,
+                -4
+            ]
+        },
+        {
+            "knightA": [
+                5,
+                2
+            ],
+            "knightB": [
+                -2,
+                -4
+            ]
+        },
+        {
+            "knightA": [
+                10,
+                10
+            ],
+            "knightB": [
+                -10,
+                -10
+            ]
+        },
+        {
+            "knightA": [
+                15,
+                15
+            ],
+            "knightB": [
+                -10,
+                -10
+            ]
+        },
+        {
+            "knightA": [
+                -15,
+                2
+            ],
+            "knightB": [
+                -3,
+                20
+            ]
+        },
+        {
+            "knightA": [
+                20,
+                20
+            ],
+            "knightB": [
+                0,
+                0
+            ]
+        },
+        {
+            "knightA": [
+                18,
+                -13
+            ],
+            "knightB": [
+                0,
+                12
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "knightA": [
+                0,
+                0
+            ],
+            "knightB": [
+                0,
+                0
+            ]
+        },
+        {
+            "knightA": [
+                15,
+                -12
+            ],
+            "knightB": [
+                15,
+                -12
+            ]
+        },
+        {
+            "knightA": [
+                1,
+                0
+            ],
+            "knightB": [
+                0,
+                0
+            ]
+        },
+        {
+            "knightA": [
+                0,
+                0
+            ],
+            "knightB": [
+                1,
+                0
+            ]
+        },
+        {
+            "knightA": [
+                1,
+                1
+            ],
+            "knightB": [
+                0,
+                0
+            ]
+        },
+        {
+            "knightA": [
+                0,
+                0
+            ],
+            "knightB": [
+                -1,
+                -1
+            ]
+        },
+        {
+            "knightA": [
+                2,
+                1
+            ],
+            "knightB": [
+                0,
+                0
+            ]
+        },
+        {
+            "knightA": [
+                3,
+                3
+            ],
+            "knightB": [
+                0,
+                0
+            ]
+        },
+        {
+            "knightA": [
+                2,
+                1
+            ],
+            "knightB": [
+                -1,
+                -2
+            ]
+        },
+        {
+            "knightA": [
+                2,
+                1
+            ],
+            "knightB": [
+                -2,
+                -4
+            ]
+        },
+        {
+            "knightA": [
+                5,
+                2
+            ],
+            "knightB": [
+                -2,
+                -4
+            ]
+        },
+        {
+            "knightA": [
+                10,
+                10
+            ],
+            "knightB": [
+                -10,
+                -10
+            ]
+        },
+        {
+            "knightA": [
+                15,
+                15
+            ],
+            "knightB": [
+                -10,
+                -10
+            ]
+        },
+        {
+            "knightA": [
+                -15,
+                2
+            ],
+            "knightB": [
+                -3,
+                20
+            ]
+        },
+        {
+            "knightA": [
+                20,
+                20
+            ],
+            "knightB": [
+                0,
+                0
+            ]
+        },
+        {
+            "knightA": [
+                18,
+                -13
+            ],
+            "knightB": [
+                0,
+                12
+            ]
+        }
+    ],
+    "changelog": []
+}

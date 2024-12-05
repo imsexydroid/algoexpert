@@ -1,0 +1,1084 @@
+{
+    "uid": "largest-island",
+    "testStrategy": "JSON",
+    "name": "Largest Island",
+    "version": 0,
+    "releaseDate": "2023-06-02T00:00:00Z",
+    "category": "Graphs",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 1109,
+        "failureCount": 153
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "799693361",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1310
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  You're given a two-dimensional array (a matrix) of potentially unequal height\n  and width containing only <span>0</span>s and <span>1</span>s. Each\n  <span>1</span> represents water, and each <span>0</span> represents part of a\n  land mass. A land mass consists of any number of <span>0</span>s that are either\n  horizontally or vertically adjacent (but not diagonally adjacent). The number\n  of adjacent <span>0</span>s forming a land mass determine its size.\n</p>\n<p>\n  Note that a land mass can twist. In other words, it doesn't have to be a straight\n  vertical line or a straight horizontal line; it can be L-shaped, for example.\n</p>\n<p>\n  Write a function that returns the largest possible land mass size after\n  changing exactly one <span>1</span> to a <span>0</span>. Note that the given\n  matrix will always contain at least one <span>1</span>, and you may mutate\n  the matrix.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">matrix</span> = [\n  [0, 1, 1],\n  [0, 0, 1],\n  [1, 1, 0]\n]\n</pre>\n<h3>Sample Output</h3>\n<pre>\n5 <span class=\"CodeEditor-promptComment\">// Switching either matrix[1][2] or matrix[2][1]\n<span class=\"CodeEditor-promptComment\">// creates a land mass of size 5</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  A brute force approach to this problem would be to try changing every\n  <span>1</span> into a <span>0</span>. From there, you can check what the\n  largest land mass size is from the newly changed index.\n</p>\n",
+        "\n<p>\n  The brute force approach potentially calculates the size of the same land mass\n  multiple times. Can you try to optimize this?\n</p>\n",
+        "\n<p>\n  You can change values in the <span>matrix</span> to help keep track of\n  additional useful information about a given index.\n</p>\n",
+        "\n<p>\n  Try first precomputing the sizes of each land mass. Changing any\n  <span>1</span> would then create a new land mass of the combined sizes of\n  all its adjacent land masses plus one to account for the newly changed value.\n</p>\n",
+        "\n<p>\n  To avoid double counting land masses, try updating the matrix with unique\n  identifiers for each land mass to know which <span>0</span>'s are from the\n  same land mass.\n</p>"
+    ],
+    "spaceTime": "O(w * h) time | O(w * h) space - where w is the width of the matrix, and h is the height of the matrix",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nint largestIsland(vector<vector<int>> matrix) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n#include <stack>\n\nusing namespace std;\n\nint getSizeFromNode(int row, int col, vector<vector<int>>& matrix);\nvoid getLandNeighbors(\n  int row,\n  int col,\n  vector<vector<int>>& matrix,\n  stack<vector<int>>& nodesToExplore\n);\n\n// O(w^2 * h^2) time | O(w * h) space - where w is the width of the matrix, and\n// h is the height of the matrix\nint largestIsland(vector<vector<int>> matrix) {\n  int maxSize = 0;\n  for (int row = 0; row < matrix.size(); row++) {\n    for (int col = 0; col < matrix[row].size(); col++) {\n      if (matrix[row][col] == 0) {\n        continue;\n      }\n      maxSize = max(maxSize, getSizeFromNode(row, col, matrix));\n    }\n  }\n\n  return maxSize;\n}\n\nint getSizeFromNode(int row, int col, vector<vector<int>>& matrix) {\n  int size = 1;\n  vector<vector<bool>> visited(\n    matrix.size(), vector<bool>(matrix[0].size(), false)\n  );\n  stack<vector<int>> nodesToExplore;\n  getLandNeighbors(row, col, matrix, nodesToExplore);\n\n  while (!nodesToExplore.empty()) {\n    vector<int> currentNode = nodesToExplore.top();\n    nodesToExplore.pop();\n    int currentRow = currentNode[0];\n    int currentCol = currentNode[1];\n\n    if (visited[currentRow][currentCol]) {\n      continue;\n    }\n    visited[currentRow][currentCol] = true;\n\n    size++;\n    getLandNeighbors(currentRow, currentCol, matrix, nodesToExplore);\n  }\n  return size;\n}\n\nvoid getLandNeighbors(\n  int row,\n  int col,\n  vector<vector<int>>& matrix,\n  stack<vector<int>>& nodesToExplore\n) {\n  if (row > 0 && matrix[row - 1][col] != 1) {\n    nodesToExplore.push({row - 1, col});\n  }\n  if (row < matrix.size() - 1 && matrix[row + 1][col] != 1) {\n    nodesToExplore.push({row + 1, col});\n  }\n  if (col > 0 && matrix[row][col - 1] != 1) {\n    nodesToExplore.push({row, col - 1});\n  }\n  if (col < matrix[0].size() - 1 && matrix[row][col + 1] != 1) {\n    nodesToExplore.push({row, col + 1});\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n#include <stack>\n#include <unordered_set>\n\nusing namespace std;\n\nint getSizeFromNode(\n  int row, int col, vector<vector<int>>& matrix, int islandNumber\n);\nvector<vector<int>> getLandNeighbors(\n  int row, int col, vector<vector<int>>& matrix\n);\n\n// O(w * h) time | O(w * h) space - where w is the width of the matrix, and\n// h is the height of the matrix\nint largestIsland(vector<vector<int>> matrix) {\n  vector<int> islandSizes;\n  // islandNumber starts at 2 to avoid overwriting existing 0s and 1s\n  int islandNumber = 2;\n  for (int row = 0; row < matrix.size(); row++) {\n    for (int col = 0; col < matrix[row].size(); col++) {\n      if (matrix[row][col] == 0) {\n        islandSizes.push_back(getSizeFromNode(row, col, matrix, islandNumber));\n        islandNumber++;\n      }\n    }\n  }\n\n  int maxSize = 0;\n  for (int row = 0; row < matrix.size(); row++) {\n    for (int col = 0; col < matrix[row].size(); col++) {\n      if (matrix[row][col] != 1) {\n        continue;\n      }\n\n      vector<vector<int>> landNeighbors = getLandNeighbors(row, col, matrix);\n      unordered_set<int> islands;\n      for (auto const& neighbor : landNeighbors) {\n        islands.insert(matrix[neighbor[0]][neighbor[1]]);\n      }\n\n      int size = 1;\n      for (int island : islands) {\n        size += islandSizes[island - 2];\n      }\n      maxSize = max(maxSize, size);\n    }\n  }\n  return maxSize;\n}\n\nint getSizeFromNode(\n  int row, int col, vector<vector<int>>& matrix, int islandNumber\n) {\n  int size = 0;\n  stack<vector<int>> nodesToExplore;\n  nodesToExplore.push({row, col});\n\n  while (!nodesToExplore.empty()) {\n    vector<int> currentNode = nodesToExplore.top();\n    nodesToExplore.pop();\n    int currentRow = currentNode[0];\n    int currentCol = currentNode[1];\n\n    if (matrix[currentRow][currentCol] != 0) {\n      continue;\n    }\n    matrix[currentRow][currentCol] = islandNumber;\n\n    size++;\n    vector<vector<int>> newNeighbors =\n      getLandNeighbors(currentRow, currentCol, matrix);\n    for (vector<int> neighbor : newNeighbors) {\n      nodesToExplore.push(neighbor);\n    }\n  }\n  return size;\n}\n\nvector<vector<int>> getLandNeighbors(\n  int row, int col, vector<vector<int>>& matrix\n) {\n  vector<vector<int>> landNeighbors;\n  if (row > 0 && matrix[row - 1][col] != 1) {\n    landNeighbors.push_back({row - 1, col});\n  }\n  if (row < matrix.size() - 1 && matrix[row + 1][col] != 1) {\n    landNeighbors.push_back({row + 1, col});\n  }\n  if (col > 0 && matrix[row][col - 1] != 1) {\n    landNeighbors.push_back({row, col - 1});\n  }\n  if (col < matrix[0].size() - 1 && matrix[row][col + 1] != 1) {\n    landNeighbors.push_back({row, col + 1});\n  }\n  return landNeighbors;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> input = {{0, 1, 1}, {0, 0, 1}, {1, 1, 0}};\n      auto expected = 5;\n      auto actual = largestIsland(input);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<vector<int>> input = {{0, 1, 1}, {0, 0, 1}, {1, 1, 0}};\n      auto expected = 5;\n      auto actual = largestIsland(input);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int LargestIsland(int[][] matrix) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(w^2 * h^2) time | O(w * h) space - where w is the width of the matrix,\n  // and h is the height of the matrix\n  public int LargestIsland(int[][] matrix) {\n    int maxSize = 0;\n    for (int row = 0; row < matrix.Length; row++) {\n      for (int col = 0; col < matrix[row].Length; col++) {\n        if (matrix[row][col] == 0) {\n          continue;\n        }\n        maxSize = Math.Max(maxSize, getSizeFromNode(row, col, matrix));\n      }\n    }\n\n    return maxSize;\n  }\n\n  private int getSizeFromNode(int row, int col, int[][] matrix) {\n    int size = 1;\n    bool[,] visited = new bool[matrix.Length, matrix[0].Length];\n    Stack<List<int> > nodesToExplore = new Stack<List<int> >();\n    getLandNeighbors(row, col, matrix, nodesToExplore);\n\n    while (nodesToExplore.Count > 0) {\n      List<int> currentNode = nodesToExplore.Pop();\n      int currentRow = currentNode[0];\n      int currentCol = currentNode[1];\n\n      if (visited[currentRow, currentCol]) {\n        continue;\n      }\n      visited[currentRow, currentCol] = true;\n\n      size++;\n      getLandNeighbors(currentRow, currentCol, matrix, nodesToExplore);\n    }\n    return size;\n  }\n\n  private void getLandNeighbors(\n    int row, int col, int[][] matrix, Stack<List<int> > nodesToExplore\n  ) {\n    if (row > 0 && matrix[row - 1][col] != 1) {\n      nodesToExplore.Push(new List<int> { row - 1, col });\n    }\n    if (row < matrix.Length - 1 && matrix[row + 1][col] != 1) {\n      nodesToExplore.Push(new List<int> { row + 1, col });\n    }\n    if (col > 0 && matrix[row][col - 1] != 1) {\n      nodesToExplore.Push(new List<int> { row, col - 1 });\n    }\n    if (col < matrix[0].Length - 1 && matrix[row][col + 1] != 1) {\n      nodesToExplore.Push(new List<int> { row, col + 1 });\n    }\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(w * h) time | O(w * h) space - where w is the width of the matrix, and\n  // h is the height of the matrix\n  public int LargestIsland(int[][] matrix) {\n    List<int> islandSizes = new List<int>();\n    // islandNumber starts at 2 to avoid overwriting existing 0s and 1s\n    int islandNumber = 2;\n    for (int row = 0; row < matrix.Length; row++) {\n      for (int col = 0; col < matrix[row].Length; col++) {\n        if (matrix[row][col] == 0) {\n          islandSizes.Add(getSizeFromNode(row, col, matrix, islandNumber));\n          islandNumber++;\n        }\n      }\n    }\n\n    int maxSize = 0;\n    for (int row = 0; row < matrix.Length; row++) {\n      for (int col = 0; col < matrix[row].Length; col++) {\n        if (matrix[row][col] != 1) {\n          continue;\n        }\n\n        List<List<int> > landNeighbors = getLandNeighbors(row, col, matrix);\n        HashSet<int> islands = new HashSet<int>();\n        foreach (var neighbor in landNeighbors) {\n          islands.Add(matrix[neighbor[0]][neighbor[1]]);\n        }\n\n        int size = 1;\n        foreach (var island in islands) {\n          size += islandSizes[island - 2];\n        }\n        maxSize = Math.Max(maxSize, size);\n      }\n    }\n    return maxSize;\n  }\n\n  private int getSizeFromNode(\n    int row, int col, int[][] matrix, int islandNumber\n  ) {\n    int size = 0;\n    Stack<List<int> > nodesToExplore = new Stack<List<int> >();\n    nodesToExplore.Push(new List<int> { row, col });\n\n    while (nodesToExplore.Count > 0) {\n      List<int> currentNode = nodesToExplore.Pop();\n      int currentRow = currentNode[0];\n      int currentCol = currentNode[1];\n\n      if (matrix[currentRow][currentCol] != 0) {\n        continue;\n      }\n      matrix[currentRow][currentCol] = islandNumber;\n\n      size++;\n      List<List<int> > newNeighbors =\n        getLandNeighbors(currentRow, currentCol, matrix);\n      foreach (var neighbor in newNeighbors) {\n        nodesToExplore.Push(neighbor);\n      }\n    }\n    return size;\n  }\n\n  private List<List<int> > getLandNeighbors(int row, int col, int[][] matrix) {\n    List<List<int> > landNeighbors = new List<List<int> >();\n    if (row > 0 && matrix[row - 1][col] != 1) {\n      landNeighbors.Add(new List<int> { row - 1, col });\n    }\n    if (row < matrix.Length - 1 && matrix[row + 1][col] != 1) {\n      landNeighbors.Add(new List<int> { row + 1, col });\n    }\n    if (col > 0 && matrix[row][col - 1] != 1) {\n      landNeighbors.Add(new List<int> { row, col - 1 });\n    }\n    if (col < matrix[0].Length - 1 && matrix[row][col + 1] != 1) {\n      landNeighbors.Add(new List<int> { row, col + 1 });\n    }\n    return landNeighbors;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    var input = new int[][] {\n      new int[] { 0, 1, 1 }, new int[] { 0, 0, 1 }, new int[] { 1, 1, 0 }\n    };\n    var expected = 5;\n    var actual = new Program().LargestIsland(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    var input = new int[][] {\n      new int[] { 0, 1, 1 }, new int[] { 0, 0, 1 }, new int[] { 1, 1, 0 }\n    };\n    var expected = 5;\n    var actual = new Program().LargestIsland(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc LargestIsland(matrix [][]int) int {\n\t// Write your code here.\n\treturn -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\ntype node struct {\n\trow, col int\n}\n\n// O(w^2 * h^2) time | O(w * h) space - where w is the width of the matrix, and\n// h is the height of the matrix\nfunc LargestIsland(matrix [][]int) int {\n\tmaxSize := 0\n\n\tfor row := 0; row < len(matrix); row++ {\n\t\tfor col := 0; col < len(matrix[row]); col++ {\n\t\t\tif matrix[row][col] == 0 {\n\t\t\t\tcontinue\n\t\t\t}\n\n\t\t\tmaxSize = max(maxSize, getSizeFromNode(row, col, matrix))\n\t\t}\n\t}\n\treturn maxSize\n}\n\nfunc getSizeFromNode(row, col int, matrix [][]int) int {\n\tsize := 1\n\tvisited := make([][]bool, len(matrix))\n\tfor x, row := range matrix {\n\t\tvisited[x] = make([]bool, len(row))\n\t}\n\tnodesToExplore := getLandNeighbors(row, col, matrix)\n\tvar currentNode node\n\tfor len(nodesToExplore) > 0 {\n\t\tcurrentNode, nodesToExplore = nodesToExplore[len(nodesToExplore)-1], nodesToExplore[:len(nodesToExplore)-1]\n\t\tcurrentRow, currentCol := currentNode.row, currentNode.col\n\n\t\tif visited[currentRow][currentCol] {\n\t\t\tcontinue\n\t\t}\n\n\t\tvisited[currentRow][currentCol] = true\n\t\tsize += 1\n\t\tnodesToExplore = append(nodesToExplore, getLandNeighbors(currentRow, currentCol, matrix)...)\n\t}\n\n\treturn size\n}\n\nfunc getLandNeighbors(row, col int, matrix [][]int) []node {\n\tlandNeighbors := make([]node, 0)\n\n\tif row > 0 && matrix[row-1][col] != 1 {\n\t\tlandNeighbors = append(landNeighbors, node{row - 1, col})\n\t}\n\tif row < len(matrix)-1 && matrix[row+1][col] != 1 {\n\t\tlandNeighbors = append(landNeighbors, node{row + 1, col})\n\t}\n\tif col > 0 && matrix[row][col-1] != 1 {\n\t\tlandNeighbors = append(landNeighbors, node{row, col - 1})\n\t}\n\tif col < len(matrix[0])-1 && matrix[row][col+1] != 1 {\n\t\tlandNeighbors = append(landNeighbors, node{row, col + 1})\n\t}\n\treturn landNeighbors\n}\n\nfunc max(a, b int) int {\n\tif a > b {\n\t\treturn a\n\t}\n\treturn b\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\ntype node struct {\n\trow, col int\n}\n\n// O(w * h) time | O(w * h) space - where w is the width of the matrix, and\n// h is the height of the matrix\nfunc LargestIsland(matrix [][]int) int {\n\tislandSizes := make([]int, 0)\n\n\t// islandNumber starts at 2 to avoid overwriting existing 0s and 1s\n\tislandNumber := 2\n\tfor row := 0; row < len(matrix); row++ {\n\t\tfor col := 0; col < len(matrix[row]); col++ {\n\t\t\tif matrix[row][col] == 0 {\n\t\t\t\tislandSizes = append(islandSizes, getSizeFromNode(row, col, matrix, islandNumber))\n\t\t\t\tislandNumber += 1\n\t\t\t}\n\t\t}\n\t}\n\n\tmaxSize := 0\n\tfor row := 0; row < len(matrix); row++ {\n\t\tfor col := 0; col < len(matrix[row]); col++ {\n\t\t\tif matrix[row][col] != 1 {\n\t\t\t\tcontinue\n\t\t\t}\n\n\t\t\tlandNeighbors := getLandNeighbors(row, col, matrix)\n\t\t\tislands := map[int]bool{}\n\t\t\tfor _, neighbor := range landNeighbors {\n\t\t\t\tislands[matrix[neighbor.row][neighbor.col]] = true\n\t\t\t}\n\n\t\t\tsize := 1\n\t\t\tfor island := range islands {\n\t\t\t\tsize += islandSizes[island-2]\n\t\t\t}\n\t\t\tmaxSize = max(maxSize, size)\n\t\t}\n\t}\n\treturn maxSize\n}\n\nfunc getSizeFromNode(row, col int, matrix [][]int, islandNumber int) int {\n\tsize := 0\n\tnodesToExplore := []node{{row, col}}\n\tvar currentNode node\n\tfor len(nodesToExplore) > 0 {\n\t\tcurrentNode, nodesToExplore = nodesToExplore[len(nodesToExplore)-1], nodesToExplore[:len(nodesToExplore)-1]\n\t\tcurrentRow, currentCol := currentNode.row, currentNode.col\n\n\t\tif matrix[currentRow][currentCol] != 0 {\n\t\t\tcontinue\n\t\t}\n\n\t\tmatrix[currentRow][currentCol] = islandNumber\n\t\tsize += 1\n\t\tnodesToExplore = append(nodesToExplore, getLandNeighbors(currentRow, currentCol, matrix)...)\n\t}\n\n\treturn size\n}\n\nfunc getLandNeighbors(row, col int, matrix [][]int) []node {\n\tlandNeighbors := make([]node, 0)\n\n\tif row > 0 && matrix[row-1][col] != 1 {\n\t\tlandNeighbors = append(landNeighbors, node{row - 1, col})\n\t}\n\tif row < len(matrix)-1 && matrix[row+1][col] != 1 {\n\t\tlandNeighbors = append(landNeighbors, node{row + 1, col})\n\t}\n\tif col > 0 && matrix[row][col-1] != 1 {\n\t\tlandNeighbors = append(landNeighbors, node{row, col - 1})\n\t}\n\tif col < len(matrix[0])-1 && matrix[row][col+1] != 1 {\n\t\tlandNeighbors = append(landNeighbors, node{row, col + 1})\n\t}\n\treturn landNeighbors\n}\n\nfunc max(a, b int) int {\n\tif a > b {\n\t\treturn a\n\t}\n\treturn b\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := [][]int{{0, 1, 1}, {0, 0, 1}, {1, 1, 0}}\n\texpected := 5\n\tactual := LargestIsland(input)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := [][]int{{0, 1, 1}, {0, 0, 1}, {1, 1, 0}}\n\texpected := 5\n\tactual := LargestIsland(input)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int largestIsland(int[][] matrix) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(w^2 * h^2) time | O(w * h) space - where w is the width of the matrix,\n  // and h is the height of the matrix\n  public int largestIsland(int[][] matrix) {\n    int maxSize = 0;\n    for (int row = 0; row < matrix.length; row++) {\n      for (int col = 0; col < matrix[row].length; col++) {\n        if (matrix[row][col] == 0) {\n          continue;\n        }\n        maxSize = Math.max(maxSize, getSizeFromNode(row, col, matrix));\n      }\n    }\n\n    return maxSize;\n  }\n\n  private int getSizeFromNode(int row, int col, int[][] matrix) {\n    int size = 1;\n    boolean[][] visited = new boolean[matrix.length][matrix[0].length];\n    Stack<List<Integer>> nodesToExplore = new Stack<List<Integer>>();\n    getLandNeighbors(row, col, matrix, nodesToExplore);\n\n    while (!nodesToExplore.isEmpty()) {\n      List<Integer> currentNode = nodesToExplore.pop();\n      int currentRow = currentNode.get(0);\n      int currentCol = currentNode.get(1);\n\n      if (visited[currentRow][currentCol]) {\n        continue;\n      }\n      visited[currentRow][currentCol] = true;\n\n      size++;\n      getLandNeighbors(currentRow, currentCol, matrix, nodesToExplore);\n    }\n    return size;\n  }\n\n  private void getLandNeighbors(\n    int row, int col, int[][] matrix, Stack<List<Integer>> nodesToExplore\n  ) {\n    if (row > 0 && matrix[row - 1][col] != 1) {\n      nodesToExplore.push(Arrays.asList(row - 1, col));\n    }\n    if (row < matrix.length - 1 && matrix[row + 1][col] != 1) {\n      nodesToExplore.push(Arrays.asList(row + 1, col));\n    }\n    if (col > 0 && matrix[row][col - 1] != 1) {\n      nodesToExplore.push(Arrays.asList(row, col - 1));\n    }\n    if (col < matrix[0].length - 1 && matrix[row][col + 1] != 1) {\n      nodesToExplore.push(Arrays.asList(row, col + 1));\n    }\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(w * h) time | O(w * h) space - where w is the width of the matrix, and\n  // h is the height of the matrix\n  public int largestIsland(int[][] matrix) {\n    ArrayList<Integer> islandSizes = new ArrayList<Integer>();\n    // islandNumber starts at 2 to avoid overwriting existing 0s and 1s\n    int islandNumber = 2;\n    for (int row = 0; row < matrix.length; row++) {\n      for (int col = 0; col < matrix[row].length; col++) {\n        if (matrix[row][col] == 0) {\n          islandSizes.add(getSizeFromNode(row, col, matrix, islandNumber));\n          islandNumber++;\n        }\n      }\n    }\n\n    int maxSize = 0;\n    for (int row = 0; row < matrix.length; row++) {\n      for (int col = 0; col < matrix[row].length; col++) {\n        if (matrix[row][col] != 1) {\n          continue;\n        }\n\n        List<List<Integer>> landNeighbors = getLandNeighbors(row, col, matrix);\n        HashSet<Integer> islands = new HashSet<Integer>();\n        for (List<Integer> neighbor : landNeighbors) {\n          islands.add(matrix[neighbor.get(0)][neighbor.get(1)]);\n        }\n\n        int size = 1;\n        for (Integer island : islands) {\n          size += islandSizes.get(island - 2);\n        }\n        maxSize = Math.max(maxSize, size);\n      }\n    }\n    return maxSize;\n  }\n\n  private int getSizeFromNode(\n    int row, int col, int[][] matrix, int islandNumber\n  ) {\n    int size = 0;\n    Stack<List<Integer>> nodesToExplore = new Stack<List<Integer>>();\n    nodesToExplore.push(Arrays.asList(row, col));\n\n    while (!nodesToExplore.isEmpty()) {\n      List<Integer> currentNode = nodesToExplore.pop();\n      int currentRow = currentNode.get(0);\n      int currentCol = currentNode.get(1);\n\n      if (matrix[currentRow][currentCol] != 0) {\n        continue;\n      }\n      matrix[currentRow][currentCol] = islandNumber;\n\n      size++;\n      List<List<Integer>> newNeighbors =\n        getLandNeighbors(currentRow, currentCol, matrix);\n      for (List<Integer> neighbor : newNeighbors) {\n        nodesToExplore.push(neighbor);\n      }\n    }\n    return size;\n  }\n\n  private List<List<Integer>> getLandNeighbors(\n    int row, int col, int[][] matrix\n  ) {\n    List<List<Integer>> landNeighbors = new ArrayList<List<Integer>>();\n    if (row > 0 && matrix[row - 1][col] != 1) {\n      landNeighbors.add(Arrays.asList(row - 1, col));\n    }\n    if (row < matrix.length - 1 && matrix[row + 1][col] != 1) {\n      landNeighbors.add(Arrays.asList(row + 1, col));\n    }\n    if (col > 0 && matrix[row][col - 1] != 1) {\n      landNeighbors.add(Arrays.asList(row, col - 1));\n    }\n    if (col < matrix[0].length - 1 && matrix[row][col + 1] != 1) {\n      landNeighbors.add(Arrays.asList(row, col + 1));\n    }\n    return landNeighbors;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var input = new int[][] {{0, 1, 1}, {0, 0, 1}, {1, 1, 0}};\n    var expected = 5;\n    var actual = new Program().largestIsland(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var input = new int[][] {{0, 1, 1}, {0, 0, 1}, {1, 1, 0}};\n    var expected = 5;\n    var actual = new Program().largestIsland(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function largestIsland(matrix) {\n  // Write your code here.\n  return -1;\n}\n\n// Do not edit the line below.\nexports.largestIsland = largestIsland;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(w^2 * h^2) time | O(w * h) space - where w is the width of the matrix, and\n// h is the height of the matrix\nfunction largestIsland(matrix) {\n  let maxSize = 0;\n  for (let row = 0; row < matrix.length; row++) {\n    for (let col = 0; col < matrix[row].length; col++) {\n      if (matrix[row][col] === 0) continue;\n\n      maxSize = Math.max(maxSize, getSizeFromNode(row, col, matrix));\n    }\n  }\n\n  return maxSize;\n}\n\nfunction getSizeFromNode(row, col, matrix) {\n  let size = 1;\n  const visited = matrix.map(row => row.map(_ => false));\n  const nodesToExplore = getLandNeighbors(row, col, matrix);\n  while (nodesToExplore.length > 0) {\n    const currentNode = nodesToExplore.pop();\n    const [currentRow, currentCol] = currentNode;\n\n    if (visited[currentRow][currentCol]) continue;\n\n    visited[currentRow][currentCol] = true;\n    size += 1;\n    nodesToExplore.push(...getLandNeighbors(currentRow, currentCol, matrix));\n  }\n\n  return size;\n}\n\nfunction getLandNeighbors(row, col, matrix) {\n  const landNeighbors = [];\n  if (row > 0 && matrix[row - 1][col] !== 1) {\n    landNeighbors.push([row - 1, col]);\n  }\n  if (row < matrix.length - 1 && matrix[row + 1][col] !== 1) {\n    landNeighbors.push([row + 1, col]);\n  }\n  if (col > 0 && matrix[row][col - 1] !== 1) {\n    landNeighbors.push([row, col - 1]);\n  }\n  if (col < matrix[0].length - 1 && matrix[row][col + 1] !== 1) {\n    landNeighbors.push([row, col + 1]);\n  }\n\n  return landNeighbors;\n}\n\n// Do not edit the line below.\nexports.largestIsland = largestIsland;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(w * h) time | O(w * h) space - where w is the width of the matrix, and\n// h is the height of the matrix\nfunction largestIsland(matrix) {\n  const islandSizes = [];\n  // islandNumber starts at 2 to avoid overwriting existing 0s and 1s\n  let islandNumber = 2;\n  for (let row = 0; row < matrix.length; row++) {\n    for (let col = 0; col < matrix[row].length; col++) {\n      if (matrix[row][col] === 0) {\n        islandSizes.push(getSizeFromNode(row, col, matrix, islandNumber));\n        islandNumber += 1;\n      }\n    }\n  }\n\n  let maxSize = 0;\n  for (let row = 0; row < matrix.length; row++) {\n    for (let col = 0; col < matrix[row].length; col++) {\n      if (matrix[row][col] !== 1) continue;\n\n      const landNeighbors = getLandNeighbors(row, col, matrix);\n      const islands = new Set();\n      for (const neighbor of landNeighbors) {\n        islands.add(matrix[neighbor[0]][neighbor[1]]);\n      }\n\n      let size = 1;\n      for (const island of islands) {\n        size += islandSizes[island - 2];\n      }\n      maxSize = Math.max(maxSize, size);\n    }\n  }\n\n  return maxSize;\n}\n\nfunction getSizeFromNode(row, col, matrix, islandNumber) {\n  let size = 0;\n  const nodesToExplore = [[row, col]];\n  while (nodesToExplore.length > 0) {\n    const currentNode = nodesToExplore.pop();\n    const [currentRow, currentCol] = currentNode;\n\n    if (matrix[currentRow][currentCol] !== 0) continue;\n\n    matrix[currentRow][currentCol] = islandNumber;\n    size += 1;\n    nodesToExplore.push(...getLandNeighbors(currentRow, currentCol, matrix));\n  }\n\n  return size;\n}\n\nfunction getLandNeighbors(row, col, matrix) {\n  const landNeighbors = [];\n  if (row > 0 && matrix[row - 1][col] !== 1) {\n    landNeighbors.push([row - 1, col]);\n  }\n  if (row < matrix.length - 1 && matrix[row + 1][col] !== 1) {\n    landNeighbors.push([row + 1, col]);\n  }\n  if (col > 0 && matrix[row][col - 1] !== 1) {\n    landNeighbors.push([row, col - 1]);\n  }\n  if (col < matrix[0].length - 1 && matrix[row][col + 1] !== 1) {\n    landNeighbors.push([row, col + 1]);\n  }\n\n  return landNeighbors;\n}\n\n// Do not edit the line below.\nexports.largestIsland = largestIsland;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [\n    [0, 1, 1],\n    [0, 0, 1],\n    [1, 1, 0],\n  ];\n  const expected = 5;\n  const actual = program.largestIsland(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [\n    [0, 1, 1],\n    [0, 0, 1],\n    [1, 1, 0],\n  ];\n  const expected = 5;\n  const actual = program.largestIsland(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun largestIsland(matrix: MutableList<MutableList<Int>>): Int {\n    // Write your code here.\n    return -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.max\n\n// O(w^2 * h^2) time | O(w * h) space - where w is the width of the matrix, and\n// h is the height of the matrix\nfun largestIsland(matrix: MutableList<MutableList<Int>>): Int {\n    var maxSize = 0\n    for (row in 0 until matrix.size) {\n        for (col in 0 until matrix[row].size) {\n            if (matrix[row][col] == 0) continue\n\n            maxSize = max(maxSize, getSizeFromNode(row, col, matrix))\n        }\n    }\n\n    return maxSize\n}\n\nfun getSizeFromNode(row: Int, col: Int, matrix: List<List<Int>>): Int {\n    var size = 1\n    val visited = List(matrix.size) { MutableList(matrix[0].size) { false } }\n    val nodesToExplore = getLandNeighbors(row, col, matrix)\n    while (nodesToExplore.size > 0) {\n        val currentNode = nodesToExplore.removeAt(nodesToExplore.size - 1)\n        val (currentRow, currentCol) = currentNode\n\n        if (visited[currentRow][currentCol]) continue\n\n        visited[currentRow][currentCol] = true\n        size += 1\n        nodesToExplore.addAll(getLandNeighbors(currentRow, currentCol, matrix))\n    }\n\n    return size\n}\n\nfun getLandNeighbors(row: Int, col: Int, matrix: List<List<Int>>): MutableList<Pair<Int, Int>> {\n    val landNeighbors = mutableListOf<Pair<Int, Int>>()\n    if (row > 0 && matrix[row - 1][col] != 1) {\n        landNeighbors.add(Pair(row - 1, col))\n    }\n    if (row < matrix.size - 1 && matrix[row + 1][col] != 1) {\n        landNeighbors.add(Pair(row + 1, col))\n    }\n    if (col > 0 && matrix[row][col - 1] != 1) {\n        landNeighbors.add(Pair(row, col - 1))\n    }\n    if (col < matrix[0].size - 1 && matrix[row][col + 1] != 1) {\n        landNeighbors.add(Pair(row, col + 1))\n    }\n\n    return landNeighbors\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.max\n\n// O(w * h) time | O(w * h) space - where w is the width of the matrix, and\n// h is the height of the matrix\nfun largestIsland(matrix: MutableList<MutableList<Int>>): Int {\n    var islandSizes = mutableListOf<Int>()\n    // islandNumber starts at 2 to avoid overwriting existing 0s and 1s\n    var islandNumber = 2\n    for (row in 0 until matrix.size) {\n        for (col in 0 until matrix[row].size) {\n            if (matrix[row][col] == 0) {\n                islandSizes.add(getSizeFromNode(row, col, matrix, islandNumber))\n                islandNumber += 1\n            }\n        }\n    }\n\n    var maxSize = 0\n    for (row in 0 until matrix.size) {\n        for (col in 0 until matrix[row].size) {\n            if (matrix[row][col] != 1) continue\n\n            val landNeighbors = getLandNeighbors(row, col, matrix)\n            val islands = mutableSetOf<Int>()\n            for (neighbor in landNeighbors) {\n                islands.add(matrix[neighbor.first][neighbor.second])\n            }\n\n            var size = 1\n            for (island in islands) {\n                size += islandSizes[island - 2]\n            }\n            maxSize = max(maxSize, size)\n        }\n    }\n\n    return maxSize\n}\n\nfun getSizeFromNode(row: Int, col: Int, matrix: List<MutableList<Int>>, islandNumber: Int): Int {\n    var size = 0\n    val nodesToExplore = mutableListOf(Pair(row, col))\n    while (nodesToExplore.size > 0) {\n        val currentNode = nodesToExplore.removeAt(nodesToExplore.size - 1)\n        val (currentRow, currentCol) = currentNode\n\n        if (matrix[currentRow][currentCol] != 0) continue\n\n        matrix[currentRow][currentCol] = islandNumber\n        size += 1\n        nodesToExplore.addAll(getLandNeighbors(currentRow, currentCol, matrix))\n    }\n\n    return size\n}\n\nfun getLandNeighbors(row: Int, col: Int, matrix: List<List<Int>>): MutableList<Pair<Int, Int>> {\n    val landNeighbors = mutableListOf<Pair<Int, Int>>()\n    if (row > 0 && matrix[row - 1][col] != 1) {\n        landNeighbors.add(Pair(row - 1, col))\n    }\n    if (row < matrix.size - 1 && matrix[row + 1][col] != 1) {\n        landNeighbors.add(Pair(row + 1, col))\n    }\n    if (col > 0 && matrix[row][col - 1] != 1) {\n        landNeighbors.add(Pair(row, col - 1))\n    }\n    if (col < matrix[0].size - 1 && matrix[row][col + 1] != 1) {\n        landNeighbors.add(Pair(row, col + 1))\n    }\n\n    return landNeighbors\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.largestIsland\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(\n            mutableListOf(0, 1, 1),\n            mutableListOf(0, 0, 1),\n            mutableListOf(1, 1, 0),\n        )\n        val expected = 5\n        val output = largestIsland(input)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.largestIsland\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(\n            mutableListOf(0, 1, 1),\n            mutableListOf(0, 0, 1),\n            mutableListOf(1, 1, 0),\n        )\n        val expected = 5\n        val output = largestIsland(input)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def largestIsland(matrix):\n    # Write your code here.\n    return -1\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(w^2 * h^2) time | O(w * h) space - where w is the width of the matrix, and\n# h is the height of the matrix\ndef largestIsland(matrix):\n    maxSize = 0\n    for row in range(len(matrix)):\n        for col in range(len(matrix[row])):\n            if matrix[row][col] == 0:\n                continue\n\n            maxSize = max(maxSize, getSizeFromNode(row, col, matrix))\n\n    return maxSize\n\n\ndef getSizeFromNode(row, col, matrix):\n    size = 1\n    visited = [[False for value in row] for row in matrix]\n    nodesToExplore = getLandNeighbors(row, col, matrix)\n    while len(nodesToExplore) > 0:\n        currentNode = nodesToExplore.pop()\n        currentRow, currentCol = currentNode[0], currentNode[1]\n\n        if visited[currentRow][currentCol]:\n            continue\n\n        visited[currentRow][currentCol] = True\n        size += 1\n        nodesToExplore += getLandNeighbors(currentRow, currentCol, matrix)\n\n    return size\n\n\ndef getLandNeighbors(row, col, matrix):\n    landNeighbors = []\n    if row > 0 and matrix[row - 1][col] != 1:\n        landNeighbors.append([row - 1, col])\n    if row < len(matrix) - 1 and matrix[row + 1][col] != 1:\n        landNeighbors.append([row + 1, col])\n    if col > 0 and matrix[row][col - 1] != 1:\n        landNeighbors.append([row, col - 1])\n    if col < len(matrix[0]) - 1 and matrix[row][col + 1] != 1:\n        landNeighbors.append([row, col + 1])\n\n    return landNeighbors\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(w * h) time | O(w * h) space - where w is the width of the matrix, and\n# h is the height of the matrix\ndef largestIsland(matrix):\n    islandSizes = []\n    # islandNumber starts at 2 to avoid overwriting existing 0s and 1s\n    islandNumber = 2\n    for row in range(len(matrix)):\n        for col in range(len(matrix[row])):\n            if matrix[row][col] == 0:\n                islandSizes.append(getSizeFromNode(row, col, matrix, islandNumber))\n                islandNumber += 1\n\n    maxSize = 0\n    for row in range(len(matrix)):\n        for col in range(len(matrix[row])):\n            if matrix[row][col] != 1:\n                continue\n\n            landNeighbors = getLandNeighbors(row, col, matrix)\n            islands = set()\n            for neighbor in landNeighbors:\n                islands.add(matrix[neighbor[0]][neighbor[1]])\n\n            size = 1\n            for island in islands:\n                size += islandSizes[island - 2]\n            maxSize = max(maxSize, size)\n\n    return maxSize\n\n\ndef getSizeFromNode(row, col, matrix, islandNumber):\n    size = 0\n    nodesToExplore = [[row, col]]\n    while len(nodesToExplore) > 0:\n        currentNode = nodesToExplore.pop()\n        currentRow, currentCol = currentNode[0], currentNode[1]\n\n        if matrix[currentRow][currentCol] != 0:\n            continue\n\n        matrix[currentRow][currentCol] = islandNumber\n        size += 1\n        nodesToExplore += getLandNeighbors(currentRow, currentCol, matrix)\n\n    return size\n\n\ndef getLandNeighbors(row, col, matrix):\n    landNeighbors = []\n    if row > 0 and matrix[row - 1][col] != 1:\n        landNeighbors.append([row - 1, col])\n    if row < len(matrix) - 1 and matrix[row + 1][col] != 1:\n        landNeighbors.append([row + 1, col])\n    if col > 0 and matrix[row][col - 1] != 1:\n        landNeighbors.append([row, col - 1])\n    if col < len(matrix[0]) - 1 and matrix[row][col + 1] != 1:\n        landNeighbors.append([row, col + 1])\n\n    return landNeighbors\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [[0, 1, 1], [0, 0, 1], [1, 1, 0]]\n        expected = 5\n        actual = program.largestIsland(input)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [[0, 1, 1], [0, 0, 1], [1, 1, 0]]\n        expected = 5\n        actual = program.largestIsland(input)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def largestIsland(matrix)\n        # Write your code here.\n        return -1\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def largestIsland(matrix)\n        # Write your code here.\n        return -1\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.largestIsland\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.largestIsland\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func largestIsland(_ matrix: inout [[Int]]) -> Int {\n    // Write your code here.\n    return -1\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(w^2 * h^2) time | O(w * h) space - where w is the width of the matrix, and\n  // h is the height of the matrix\n  func largestIsland(_ matrix: inout [[Int]]) -> Int {\n    var maxSize = 0\n\n    for row in 0 ..< matrix.count {\n      for col in 0 ..< matrix[row].count {\n        if matrix[row][col] == 0 { continue }\n\n        maxSize = max(maxSize, getSizeFromNode(row: row, col: col, matrix: matrix))\n      }\n    }\n\n    return maxSize\n  }\n\n  func getSizeFromNode(row: Int, col: Int, matrix: [[Int]]) -> Int {\n    var size = 1\n    var visited = matrix.map { $0.map { _ in false } }\n    var nodesToExplore = getLandNeighbors(row: row, col: col, matrix: matrix)\n\n    while !nodesToExplore.isEmpty {\n      let currentNode = nodesToExplore.removeLast()\n      let currentRow = currentNode.0\n      let currentCol = currentNode.1\n\n      if visited[currentRow][currentCol] { continue }\n\n      visited[currentRow][currentCol] = true\n      size += 1\n      nodesToExplore.append(contentsOf: getLandNeighbors(row: currentRow, col: currentCol, matrix: matrix))\n    }\n\n    return size\n  }\n\n  func getLandNeighbors(row: Int, col: Int, matrix: [[Int]]) -> [(Int, Int)] {\n    var landNeighbors: [(Int, Int)] = []\n\n    if row > 0 && matrix[row - 1][col] != 1 {\n      landNeighbors.append((row - 1, col))\n    }\n    if row < matrix.count - 1 && matrix[row + 1][col] != 1 {\n      landNeighbors.append((row + 1, col))\n    }\n    if col > 0 && matrix[row][col - 1] != 1 {\n      landNeighbors.append((row, col - 1))\n    }\n    if col < matrix[0].count - 1 && matrix[row][col + 1] != 1 {\n      landNeighbors.append((row, col + 1))\n    }\n\n    return landNeighbors\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(w * h) time | O(w * h) space - where w is the width of the matrix, and\n  // h is the height of the matrix\n  func largestIsland(_ matrix: inout [[Int]]) -> Int {\n    var islandSizes: [Int] = []\n    var islandNumber = 2\n\n    for row in 0 ..< matrix.count {\n      for col in 0 ..< matrix[row].count {\n        if matrix[row][col] == 0 {\n          islandSizes.append(getSizeFromNode(row: row, col: col, matrix: &matrix, islandNumber: islandNumber))\n          islandNumber += 1\n        }\n      }\n    }\n\n    var maxSize = 0\n\n    for row in 0 ..< matrix.count {\n      for col in 0 ..< matrix[row].count {\n        if matrix[row][col] != 1 { continue }\n\n        let landNeighbors = getLandNeighbors(row: row, col: col, matrix: matrix)\n        var islands = Set<Int>()\n\n        for neighbor in landNeighbors {\n          islands.insert(matrix[neighbor.0][neighbor.1])\n        }\n\n        var size = 1\n\n        for island in islands {\n          size += islandSizes[island - 2]\n        }\n\n        maxSize = max(maxSize, size)\n      }\n    }\n\n    return maxSize\n  }\n\n  func getSizeFromNode(row: Int, col: Int, matrix: inout [[Int]], islandNumber: Int) -> Int {\n    var size = 0\n    var nodesToExplore = [(row, col)]\n\n    while !nodesToExplore.isEmpty {\n      let currentNode = nodesToExplore.removeLast()\n      let currentRow = currentNode.0\n      let currentCol = currentNode.1\n\n      if matrix[currentRow][currentCol] != 0 { continue }\n\n      matrix[currentRow][currentCol] = islandNumber\n      size += 1\n      let landNeighbors = getLandNeighbors(row: currentRow, col: currentCol, matrix: matrix)\n      nodesToExplore.append(contentsOf: landNeighbors)\n    }\n\n    return size\n  }\n\n  func getLandNeighbors(row: Int, col: Int, matrix: [[Int]]) -> [(Int, Int)] {\n    var landNeighbors: [(Int, Int)] = []\n\n    if row > 0 && matrix[row - 1][col] != 1 {\n      landNeighbors.append((row - 1, col))\n    }\n    if row < matrix.count - 1 && matrix[row + 1][col] != 1 {\n      landNeighbors.append((row + 1, col))\n    }\n    if col > 0 && matrix[row][col - 1] != 1 {\n      landNeighbors.append((row, col - 1))\n    }\n    if col < matrix[0].count - 1 && matrix[row][col + 1] != 1 {\n      landNeighbors.append((row, col + 1))\n    }\n\n    return landNeighbors\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var input = [[0, 1, 1], [0, 0, 1], [1, 1, 0]]\n      var expected = 5\n      var actual = Program().largestIsland(&input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var input = [[0, 1, 1], [0, 0, 1], [1, 1, 0]]\n      var expected = 5\n      var actual = Program().largestIsland(&input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function largestIsland(matrix: number[][]) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(w^2 * h^2) time | O(w * h) space - where w is the width of the matrix, and\n// h is the height of the matrix\nexport function largestIsland(matrix: number[][]) {\n  let maxSize = 0;\n  for (let row = 0; row < matrix.length; row++) {\n    for (let col = 0; col < matrix[row].length; col++) {\n      if (matrix[row][col] === 0) continue;\n\n      maxSize = Math.max(maxSize, getSizeFromNode(row, col, matrix));\n    }\n  }\n\n  return maxSize;\n}\n\nfunction getSizeFromNode(row: number, col: number, matrix: number[][]) {\n  let size = 1;\n  const visited = matrix.map(row => row.map(_ => false));\n  const nodesToExplore = getLandNeighbors(row, col, matrix);\n  while (nodesToExplore.length > 0) {\n    const currentNode = nodesToExplore.pop()!;\n    const [currentRow, currentCol] = currentNode;\n\n    if (visited[currentRow][currentCol]) continue;\n\n    visited[currentRow][currentCol] = true;\n    size += 1;\n    nodesToExplore.push(...getLandNeighbors(currentRow, currentCol, matrix));\n  }\n\n  return size;\n}\n\nfunction getLandNeighbors(row: number, col: number, matrix: number[][]) {\n  const landNeighbors: [number, number][] = [];\n  if (row > 0 && matrix[row - 1][col] !== 1) {\n    landNeighbors.push([row - 1, col]);\n  }\n  if (row < matrix.length - 1 && matrix[row + 1][col] !== 1) {\n    landNeighbors.push([row + 1, col]);\n  }\n  if (col > 0 && matrix[row][col - 1] !== 1) {\n    landNeighbors.push([row, col - 1]);\n  }\n  if (col < matrix[0].length - 1 && matrix[row][col + 1] !== 1) {\n    landNeighbors.push([row, col + 1]);\n  }\n\n  return landNeighbors;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(w * h) time | O(w * h) space - where w is the width of the matrix, and\n// h is the height of the matrix\nexport function largestIsland(matrix: number[][]) {\n  const islandSizes: number[] = [];\n  // islandNumber starts at 2 to avoid overwriting existing 0s and 1s\n  let islandNumber = 2;\n  for (let row = 0; row < matrix.length; row++) {\n    for (let col = 0; col < matrix[row].length; col++) {\n      if (matrix[row][col] === 0) {\n        islandSizes.push(getSizeFromNode(row, col, matrix, islandNumber));\n        islandNumber += 1;\n      }\n    }\n  }\n\n  let maxSize = 0;\n  for (let row = 0; row < matrix.length; row++) {\n    for (let col = 0; col < matrix[row].length; col++) {\n      if (matrix[row][col] !== 1) continue;\n\n      const landNeighbors = getLandNeighbors(row, col, matrix);\n      const islands = new Set<number>();\n      for (const neighbor of landNeighbors) {\n        islands.add(matrix[neighbor[0]][neighbor[1]]);\n      }\n\n      let size = 1;\n      for (const island of islands) {\n        size += islandSizes[island - 2];\n      }\n      maxSize = Math.max(maxSize, size);\n    }\n  }\n\n  return maxSize;\n}\n\nfunction getSizeFromNode(row: number, col: number, matrix: number[][], islandNumber: number) {\n  let size = 0;\n  const nodesToExplore = [[row, col]];\n  while (nodesToExplore.length > 0) {\n    const currentNode = nodesToExplore.pop()!;\n    const [currentRow, currentCol] = currentNode;\n\n    if (matrix[currentRow][currentCol] !== 0) continue;\n\n    matrix[currentRow][currentCol] = islandNumber;\n    size += 1;\n    nodesToExplore.push(...getLandNeighbors(currentRow, currentCol, matrix));\n  }\n\n  return size;\n}\n\nfunction getLandNeighbors(row: number, col: number, matrix: number[][]) {\n  const landNeighbors: [number, number][] = [];\n  if (row > 0 && matrix[row - 1][col] !== 1) {\n    landNeighbors.push([row - 1, col]);\n  }\n  if (row < matrix.length - 1 && matrix[row + 1][col] !== 1) {\n    landNeighbors.push([row + 1, col]);\n  }\n  if (col > 0 && matrix[row][col - 1] !== 1) {\n    landNeighbors.push([row, col - 1]);\n  }\n  if (col < matrix[0].length - 1 && matrix[row][col + 1] !== 1) {\n    landNeighbors.push([row, col + 1]);\n  }\n\n  return landNeighbors;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [\n    [0, 1, 1],\n    [0, 0, 1],\n    [1, 1, 0],\n  ];\n  const expected = 5;\n  const actual = program.largestIsland(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [\n    [0, 1, 1],\n    [0, 0, 1],\n    [1, 1, 0],\n  ];\n  const expected = 5;\n  const actual = program.largestIsland(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "matrix",
+            "example": [
+                [
+                    1
+                ]
+            ],
+            "schema": {
+                "items": {
+                    "items": {
+                        "maximum": 1,
+                        "minimum": 0,
+                        "type": "integer"
+                    },
+                    "type": "array"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "matrix": [
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    0,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    0,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    0,
+                    1,
+                    1,
+                    0,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    0,
+                    0,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    0,
+                    1,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    1,
+                    1,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    1,
+                    1
+                ]
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "matrix": [
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    0,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    0,
+                    0
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    0,
+                    1,
+                    1,
+                    0,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    0,
+                    0,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    1,
+                    1
+                ]
+            ]
+        },
+        {
+            "matrix": [
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    1
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    1,
+                    1,
+                    0,
+                    1,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    1,
+                    1,
+                    1,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1
+                ],
+                [
+                    1,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    1,
+                    1
+                ]
+            ]
+        }
+    ],
+    "changelog": []
+}

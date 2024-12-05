@@ -1,0 +1,1068 @@
+{
+    "uid": "median-of-two-sorted-arrays",
+    "testStrategy": "JSON",
+    "name": "Median Of Two Sorted Arrays",
+    "version": 0,
+    "releaseDate": "2023-07-10T00:00:00Z",
+    "category": "Searching",
+    "difficulty": 4,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 639,
+        "failureCount": 95
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "839216735",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 964
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    You're given two sorted arrays of integers <span>arrayOne</span> and\n    <span>arrayTwo</span>. Write a function that returns the median of these\n    arrays.\n  </p>\n\n  <p>\n    You can assume both arrays have at least one value. However, they could\n    be of different lengths. If the median is a decimal value, it should not\n    be rounded (beyond the inevitable rounding of floating point math).\n  </p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">arrayOne</span> = [1, 3, 4, 5]\n<span class=\"CodeEditor-promptParameter\">arrayTwo</span> = [2, 3, 6, 7]\n</pre>\n<h3>Sample Output</h3>\n<pre>\n3.5 <span class=\"CodeEditor-promptComment\">// The combined array is [1, 2, 3, 3, 4, 5, 6, 7]</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  The median value of the combined array will always have the\n  same number of integers to its left and its right. Therefore\n  the goal is to find the element at the middle index (or the\n  average of the middle indices if the array has an even length).\n</p>\n",
+        "\n<p>\n  A naive approach would be to iterate through both arrays\n  simultaneously, with each iteration moving forward in the\n  array with the lower current value until passing half of\n  the total values. This solution would have a linear\n  time complexity, but can you find a way to improve it\n  to be logarithmic?\n</p>\n",
+        "\n<p>\n  Try considering just the smaller of the two arrays.\n  Start with the median of that array, and temporarily\n  assume that all of the values to its left of that median\n  are to the left of the overall median, and all of the\n  values to the right are to the right of the overall\n  median. Assuming this is correct, could you also place\n  a dividing point in the larger array, to ensure there\n  are the correct number of values on either side of the\n  combined median? And now can you find a way to do a\n  binary search with just the smaller array to find the\n  actual correct dividing point?\n</p>\n",
+        "\n<p>\n  The value at the dividing point in <span>arrayOne</span>\n  must be smaller than the value at the index after the\n  dividing point of <span>arrayTwo</span>. The value at\n  the dividing point in <span>arrayTwo</span> must be\n  smaller than the value at the index after the dividing\n  point of <span>arrayOne</span>. If either of these\n  conditions are not met, then the binary search must\n  continue to either include more or less elements from\n  that smaller array.\n</p>"
+    ],
+    "spaceTime": "O(log(min(n, m)) time | O(1) space - where n is the length of arrayOne and m is the length of arrayTwo",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nfloat medianOfTwoSortedArrays(vector<int> arrayOne, vector<int> arrayTwo) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n\nusing namespace std;\n\n// O(n + m) time | O(1) space - where n is the length of arrayOne and\n// m is the length of arrayTwo\nfloat medianOfTwoSortedArrays(vector<int> arrayOne, vector<int> arrayTwo) {\n  int idxOne = 0, idxTwo = 0;\n  int middleIdx = (arrayOne.size() + arrayTwo.size() - 1) / 2;\n\n  while (idxOne + idxTwo < middleIdx) {\n    if (idxOne >= arrayOne.size()) {\n      idxTwo++;\n    } else if (idxTwo >= arrayTwo.size()) {\n      idxOne++;\n    } else if (arrayOne[idxOne] < arrayTwo[idxTwo]) {\n      idxOne++;\n    } else {\n      idxTwo++;\n    }\n  }\n\n  if ((arrayOne.size() + arrayTwo.size()) % 2 == 0) {\n    bool areBothValuesArrayOne =\n      idxTwo >= arrayTwo.size() ||\n      (idxOne + 1 < arrayOne.size() && arrayTwo[idxTwo] > arrayOne[idxOne + 1]);\n    bool areBothValuesArrayTwo =\n      idxOne >= arrayOne.size() ||\n      (idxTwo + 1 < arrayTwo.size() && arrayOne[idxOne] > arrayTwo[idxTwo + 1]);\n\n    int valueOne =\n      areBothValuesArrayOne ? arrayOne[idxOne + 1] : arrayTwo[idxTwo];\n    int valueTwo =\n      areBothValuesArrayTwo ? arrayTwo[idxTwo + 1] : arrayOne[idxOne];\n    return static_cast<float>(valueOne + valueTwo) / 2;\n  }\n\n  int valueOne = idxOne < arrayOne.size() ? arrayOne[idxOne] : INT_MAX;\n  int valueTwo = idxTwo < arrayTwo.size() ? arrayTwo[idxTwo] : INT_MAX;\n  return min(valueOne, valueTwo);\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n#include <cmath>\n\nusing namespace std;\n\n// O(log(min(n, m)) time | O(1) space - where n is the length of arrayOne and\n// m is the length of arrayTwo\nfloat medianOfTwoSortedArrays(vector<int> arrayOne, vector<int> arrayTwo) {\n  vector<int>& smallArray =\n    (arrayOne.size() <= arrayTwo.size()) ? arrayOne : arrayTwo;\n  vector<int>& bigArray =\n    (arrayOne.size() > arrayTwo.size()) ? arrayOne : arrayTwo;\n\n  int leftIdx = 0;\n  int rightIdx = smallArray.size() - 1;\n  int mergedLeftIdx = (smallArray.size() + bigArray.size() - 1) / 2;\n\n  while (true) {\n    int smallPartitionIdx =\n      static_cast<int>(floor(static_cast<double>(leftIdx + rightIdx) / 2));\n    int bigPartitionIdx = mergedLeftIdx - smallPartitionIdx - 1;\n\n    int smallMaxLeftValue =\n      (smallPartitionIdx >= 0) ? smallArray[smallPartitionIdx] : INT_MIN;\n    int smallMinRightValue = (smallPartitionIdx + 1 < smallArray.size())\n                               ? smallArray[smallPartitionIdx + 1]\n                               : INT_MAX;\n    int bigMaxLeftValue =\n      (bigPartitionIdx >= 0) ? bigArray[bigPartitionIdx] : INT_MIN;\n    int bigMinRightValue = (bigPartitionIdx + 1 < bigArray.size())\n                             ? bigArray[bigPartitionIdx + 1]\n                             : INT_MAX;\n\n    if (smallMaxLeftValue > bigMinRightValue) {\n      rightIdx = smallPartitionIdx - 1;\n    } else if (bigMaxLeftValue > smallMinRightValue) {\n      leftIdx = smallPartitionIdx + 1;\n    } else {\n      if ((smallArray.size() + bigArray.size()) % 2 == 0) {\n        return static_cast<float>(\n                 max(smallMaxLeftValue, bigMaxLeftValue) +\n                 min(smallMinRightValue, bigMinRightValue)\n               ) /\n               2;\n      }\n      return max(smallMaxLeftValue, bigMaxLeftValue);\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      auto arrayOne = {1, 3, 4, 5};\n      auto arrayTwo = {2, 3, 6, 7};\n      auto expected = 3.5;\n      auto actual = medianOfTwoSortedArrays(arrayOne, arrayTwo);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      auto arrayOne = {1, 3, 4, 5};\n      auto arrayTwo = {2, 3, 6, 7};\n      auto expected = 3.5;\n      auto actual = medianOfTwoSortedArrays(arrayOne, arrayTwo);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public float MedianOfTwoSortedArrays(int[] arrayOne, int[] arrayTwo) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(n + m) time | O(1) space - where n is the length of arrayOne and\n  // m is the length of arrayTwo\n  public float MedianOfTwoSortedArrays(int[] arrayOne, int[] arrayTwo) {\n    int idxOne = 0, idxTwo = 0;\n    int middleIdx = (arrayOne.Length + arrayTwo.Length - 1) / 2;\n\n    while (idxOne + idxTwo < middleIdx) {\n      if (idxOne >= arrayOne.Length) {\n        idxTwo++;\n      } else if (idxTwo >= arrayTwo.Length) {\n        idxOne++;\n      } else if (arrayOne[idxOne] < arrayTwo[idxTwo]) {\n        idxOne++;\n      } else {\n        idxTwo++;\n      }\n    }\n\n    int valueOne, valueTwo;\n    if ((arrayOne.Length + arrayTwo.Length) % 2 == 0) {\n      bool areBothValuesArrayOne =\n        idxTwo >= arrayTwo.Length || (idxOne + 1 < arrayOne.Length &&\n                                      arrayTwo[idxTwo] > arrayOne[idxOne + 1]);\n      bool areBothValuesArrayTwo =\n        idxOne >= arrayOne.Length || (idxTwo + 1 < arrayTwo.Length &&\n                                      arrayOne[idxOne] > arrayTwo[idxTwo + 1]);\n\n      valueOne =\n        areBothValuesArrayOne ? arrayOne[idxOne + 1] : arrayTwo[idxTwo];\n      valueTwo =\n        areBothValuesArrayTwo ? arrayTwo[idxTwo + 1] : arrayOne[idxOne];\n      return (float)(valueOne + valueTwo) / 2;\n    }\n\n    valueOne = idxOne < arrayOne.Length ? arrayOne[idxOne] : Int32.MaxValue;\n    valueTwo = idxTwo < arrayTwo.Length ? arrayTwo[idxTwo] : Int32.MaxValue;\n    return Math.Min(valueOne, valueTwo);\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(log(min(n, m)) time | O(1) space - where n is the length of arrayOne and\n  // m is the length of arrayTwo\n  public float MedianOfTwoSortedArrays(int[] arrayOne, int[] arrayTwo) {\n    int[] smallArray = arrayOne.Length <= arrayTwo.Length ? arrayOne : arrayTwo;\n    int[] bigArray = arrayOne.Length > arrayTwo.Length ? arrayOne : arrayTwo;\n\n    int leftIdx = 0;\n    int rightIdx = smallArray.Length - 1;\n    int mergedLeftIdx = (smallArray.Length + bigArray.Length - 1) / 2;\n\n    while (true) {\n      int smallPartitionIdx =\n        (int)Math.Floor(((double)(leftIdx + rightIdx)) / 2);\n      int bigPartitionIdx = mergedLeftIdx - smallPartitionIdx - 1;\n\n      int smallMaxLeftValue =\n        smallPartitionIdx >= 0 ? smallArray[smallPartitionIdx] : Int32.MinValue;\n      int smallMinRightValue = smallPartitionIdx + 1 < smallArray.Length\n                                 ? smallArray[smallPartitionIdx + 1]\n                                 : Int32.MaxValue;\n      int bigMaxLeftValue =\n        bigPartitionIdx >= 0 ? bigArray[bigPartitionIdx] : Int32.MinValue;\n      int bigMinRightValue = bigPartitionIdx + 1 < bigArray.Length\n                               ? bigArray[bigPartitionIdx + 1]\n                               : Int32.MaxValue;\n\n      if (smallMaxLeftValue > bigMinRightValue) {\n        rightIdx = smallPartitionIdx - 1;\n      } else if (bigMaxLeftValue > smallMinRightValue) {\n        leftIdx = smallPartitionIdx + 1;\n      } else {\n        if ((smallArray.Length + bigArray.Length) % 2 == 0) {\n          return (float)(Math.Max(smallMaxLeftValue, bigMaxLeftValue) +\n                         Math.Min(smallMinRightValue, bigMinRightValue)) /\n                 2;\n        }\n        return Math.Max(smallMaxLeftValue, bigMaxLeftValue);\n      }\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] arrayOne = new int[] { 1, 3, 4, 5 };\n    int[] arrayTwo = new int[] { 2, 3, 6, 7 };\n    float actual = new Program().MedianOfTwoSortedArrays(arrayOne, arrayTwo);\n    float expected = 3.5f;\n    Utils.AssertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] arrayOne = new int[] { 1, 3, 4, 5 };\n    int[] arrayTwo = new int[] { 2, 3, 6, 7 };\n    float actual = new Program().MedianOfTwoSortedArrays(arrayOne, arrayTwo);\n    float expected = 3.5f;\n    Utils.AssertTrue(expected == actual);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc MedianOfTwoSortedArrays(arrayOne []int, arrayTwo []int) float64 {\n\t// Write your code here.\n\treturn -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport \"math\"\n\n// O(n + m) time | O(1) space - where n is the length of arrayOne and\n// m is the length of arrayTwo\nfunc MedianOfTwoSortedArrays(arrayOne []int, arrayTwo []int) float64 {\n\tidxOne := 0\n\tidxTwo := 0\n\tmiddleIdx := (len(arrayOne) + len(arrayTwo) - 1) / 2\n\n\tfor idxOne+idxTwo < middleIdx {\n\t\tif idxOne >= len(arrayOne) {\n\t\t\tidxTwo++\n\t\t} else if idxTwo >= len(arrayTwo) {\n\t\t\tidxOne++\n\t\t} else if arrayOne[idxOne] < arrayTwo[idxTwo] {\n\t\t\tidxOne++\n\t\t} else {\n\t\t\tidxTwo++\n\t\t}\n\t}\n\n\tif (len(arrayOne)+len(arrayTwo))%2 == 0 {\n\t\tareBothValuesArrayOne := idxTwo >= len(arrayTwo) || (idxOne+1 < len(arrayOne) && arrayTwo[idxTwo] > arrayOne[idxOne+1])\n\t\tareBothValuesArrayTwo := idxOne >= len(arrayOne) || (idxTwo+1 < len(arrayTwo) && arrayOne[idxOne] > arrayTwo[idxTwo+1])\n\n\t\tvar valueOne, valueTwo float64\n\t\tif areBothValuesArrayOne {\n\t\t\tvalueOne = float64(arrayOne[idxOne+1])\n\t\t} else {\n\t\t\tvalueOne = float64(arrayTwo[idxTwo])\n\t\t}\n\t\tif areBothValuesArrayTwo {\n\t\t\tvalueTwo = float64(arrayTwo[idxTwo+1])\n\t\t} else {\n\t\t\tvalueTwo = float64(arrayOne[idxOne])\n\t\t}\n\t\treturn (valueOne + valueTwo) / 2\n\t}\n\n\tvalueOne := math.Inf(1)\n\tvalueTwo := math.Inf(1)\n\tif idxOne < len(arrayOne) {\n\t\tvalueOne = float64(arrayOne[idxOne])\n\t}\n\tif idxTwo < len(arrayTwo) {\n\t\tvalueTwo = float64(arrayTwo[idxTwo])\n\t}\n\treturn math.Min(valueOne, valueTwo)\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport (\n\t\"math\"\n)\n\n// O(log(min(n, m)) time | O(1) space - where n is the length of arrayOne and\n// m is the length of arrayTwo\nfunc MedianOfTwoSortedArrays(arrayOne []int, arrayTwo []int) float64 {\n\tsmallArray := arrayOne\n\tbigArray := arrayTwo\n\tif len(arrayOne) > len(arrayTwo) {\n\t\tsmallArray = arrayTwo\n\t\tbigArray = arrayOne\n\t}\n\n\tleftIdx := 0\n\trightIdx := len(smallArray) - 1\n\tmergedLeftIdx := (len(smallArray) + len(bigArray) - 1) / 2\n\n\tfor {\n\t\tsmallPartitionIdx := int(math.Floor(float64(leftIdx+rightIdx) / 2))\n\t\tbigPartitionIdx := mergedLeftIdx - smallPartitionIdx - 1\n\n\t\tsmallMaxLeftValue := math.Inf(-1)\n\t\tif smallPartitionIdx >= 0 {\n\t\t\tsmallMaxLeftValue = float64(smallArray[smallPartitionIdx])\n\t\t}\n\t\tsmallMinRightValue := math.Inf(1)\n\t\tif smallPartitionIdx+1 < len(smallArray) {\n\t\t\tsmallMinRightValue = float64(smallArray[smallPartitionIdx+1])\n\t\t}\n\n\t\tbigMaxLeftValue := math.Inf(-1)\n\t\tif bigPartitionIdx >= 0 {\n\t\t\tbigMaxLeftValue = float64(bigArray[bigPartitionIdx])\n\t\t}\n\t\tbigMinRightValue := math.Inf(1)\n\t\tif bigPartitionIdx+1 < len(bigArray) {\n\t\t\tbigMinRightValue = float64(bigArray[bigPartitionIdx+1])\n\t\t}\n\n\t\tif smallMaxLeftValue > bigMinRightValue {\n\t\t\trightIdx = smallPartitionIdx - 1\n\t\t} else if bigMaxLeftValue > smallMinRightValue {\n\t\t\tleftIdx = smallPartitionIdx + 1\n\t\t} else {\n\t\t\tif (len(smallArray)+len(bigArray))%2 == 0 {\n\t\t\t\treturn (math.Max(smallMaxLeftValue, bigMaxLeftValue) + math.Min(smallMinRightValue, bigMinRightValue)) / 2\n\t\t\t}\n\t\t\treturn math.Max(smallMaxLeftValue, bigMaxLeftValue)\n\t\t}\n\t}\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tarrayOne := []int{1, 3, 4, 5}\n\tarrayTwo := []int{2, 3, 6, 7}\n\texpected := 3.5\n\tactual := MedianOfTwoSortedArrays(arrayOne, arrayTwo)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tarrayOne := []int{1, 3, 4, 5}\n\tarrayTwo := []int{2, 3, 6, 7}\n\texpected := 3.5\n\tactual := MedianOfTwoSortedArrays(arrayOne, arrayTwo)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public float medianOfTwoSortedArrays(int[] arrayOne, int[] arrayTwo) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n + m) time | O(1) space - where n is the length of arrayOne and\n  // m is the length of arrayTwo\n  public float medianOfTwoSortedArrays(int[] arrayOne, int[] arrayTwo) {\n    int idxOne = 0, idxTwo = 0;\n    int middleIdx = (arrayOne.length + arrayTwo.length - 1) / 2;\n\n    while (idxOne + idxTwo < middleIdx) {\n      if (idxOne >= arrayOne.length) {\n        idxTwo++;\n      } else if (idxTwo >= arrayTwo.length) {\n        idxOne++;\n      } else if (arrayOne[idxOne] < arrayTwo[idxTwo]) {\n        idxOne++;\n      } else {\n        idxTwo++;\n      }\n    }\n\n    if ((arrayOne.length + arrayTwo.length) % 2 == 0) {\n      boolean areBothValuesArrayOne = idxTwo >= arrayTwo.length\n        || (idxOne + 1 < arrayOne.length\n            && arrayTwo[idxTwo] > arrayOne[idxOne + 1]);\n      boolean areBothValuesArrayTwo = idxOne >= arrayOne.length\n        || (idxTwo + 1 < arrayTwo.length\n            && arrayOne[idxOne] > arrayTwo[idxTwo + 1]);\n\n      int valueOne =\n        areBothValuesArrayOne ? arrayOne[idxOne + 1] : arrayTwo[idxTwo];\n      int valueTwo =\n        areBothValuesArrayTwo ? arrayTwo[idxTwo + 1] : arrayOne[idxOne];\n      return (float) (valueOne + valueTwo) / 2;\n    }\n\n    int valueOne =\n      idxOne < arrayOne.length ? arrayOne[idxOne] : Integer.MAX_VALUE;\n    int valueTwo =\n      idxTwo < arrayTwo.length ? arrayTwo[idxTwo] : Integer.MAX_VALUE;\n    return Math.min(valueOne, valueTwo);\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(log(min(n, m)) time | O(1) space - where n is the length of arrayOne and\n  // m is the length of arrayTwo\n  public float medianOfTwoSortedArrays(int[] arrayOne, int[] arrayTwo) {\n    int[] smallArray = arrayOne.length <= arrayTwo.length ? arrayOne : arrayTwo;\n    int[] bigArray = arrayOne.length > arrayTwo.length ? arrayOne : arrayTwo;\n\n    int leftIdx = 0;\n    int rightIdx = smallArray.length - 1;\n    int mergedLeftIdx = (smallArray.length + bigArray.length - 1) / 2;\n\n    while (true) {\n      int smallPartitionIdx =\n        (int) Math.floor(((double) (leftIdx + rightIdx)) / 2);\n      int bigPartitionIdx = mergedLeftIdx - smallPartitionIdx - 1;\n\n      int smallMaxLeftValue = smallPartitionIdx >= 0\n        ? smallArray[smallPartitionIdx]\n        : Integer.MIN_VALUE;\n      int smallMinRightValue = smallPartitionIdx + 1 < smallArray.length\n        ? smallArray[smallPartitionIdx + 1]\n        : Integer.MAX_VALUE;\n      int bigMaxLeftValue =\n        bigPartitionIdx >= 0 ? bigArray[bigPartitionIdx] : Integer.MIN_VALUE;\n      int bigMinRightValue = bigPartitionIdx + 1 < bigArray.length\n        ? bigArray[bigPartitionIdx + 1]\n        : Integer.MAX_VALUE;\n\n      if (smallMaxLeftValue > bigMinRightValue) {\n        rightIdx = smallPartitionIdx - 1;\n      } else if (bigMaxLeftValue > smallMinRightValue) {\n        leftIdx = smallPartitionIdx + 1;\n      } else {\n        if ((smallArray.length + bigArray.length) % 2 == 0) {\n          return (float) (Math.max(smallMaxLeftValue, bigMaxLeftValue)\n                          + Math.min(smallMinRightValue, bigMinRightValue))\n            / 2;\n        }\n        return Math.max(smallMaxLeftValue, bigMaxLeftValue);\n      }\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] arrayOne = new int[] {1, 3, 4, 5};\n    int[] arrayTwo = new int[] {2, 3, 6, 7};\n    float actual = new Program().medianOfTwoSortedArrays(arrayOne, arrayTwo);\n    float expected = 3.5f;\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] arrayOne = new int[] {1, 3, 4, 5};\n    int[] arrayTwo = new int[] {2, 3, 6, 7};\n    float actual = new Program().medianOfTwoSortedArrays(arrayOne, arrayTwo);\n    float expected = 3.5f;\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function medianOfTwoSortedArrays(arrayOne, arrayTwo) {\n  // Write your code here.\n  return -1;\n}\n\n// Do not edit the line below.\nexports.medianOfTwoSortedArrays = medianOfTwoSortedArrays;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n + m) time | O(1) space - where n is the length of arrayOne and\n// m is the length of arrayTwo\nfunction medianOfTwoSortedArrays(arrayOne, arrayTwo) {\n  let idxOne = 0,\n    idxTwo = 0;\n  const middleIdx = Math.floor((arrayOne.length + arrayTwo.length - 1) / 2);\n\n  while (idxOne + idxTwo < middleIdx) {\n    if (idxOne >= arrayOne.length) {\n      idxTwo += 1;\n    } else if (idxTwo >= arrayTwo.length) {\n      idxOne += 1;\n    } else if (arrayOne[idxOne] < arrayTwo[idxTwo]) {\n      idxOne += 1;\n    } else {\n      idxTwo += 1;\n    }\n  }\n\n  if ((arrayOne.length + arrayTwo.length) % 2 === 0) {\n    const areBothValuesArrayOne =\n      idxTwo >= arrayTwo.length ||\n      (idxOne + 1 < arrayOne.length && arrayTwo[idxTwo] > arrayOne[idxOne + 1]);\n    const areBothValuesArrayTwo =\n      idxOne >= arrayOne.length ||\n      (idxTwo + 1 < arrayTwo.length && arrayOne[idxOne] > arrayTwo[idxTwo + 1]);\n\n    const valueOne = areBothValuesArrayOne ? arrayOne[idxOne + 1] : arrayTwo[idxTwo];\n    const valueTwo = areBothValuesArrayTwo ? arrayTwo[idxTwo + 1] : arrayOne[idxOne];\n    return (valueOne + valueTwo) / 2;\n  }\n\n  const valueOne = idxOne < arrayOne.length ? arrayOne[idxOne] : Infinity;\n  const valueTwo = idxTwo < arrayTwo.length ? arrayTwo[idxTwo] : Infinity;\n  return Math.min(valueOne, valueTwo);\n}\n\n// Do not edit the line below.\nexports.medianOfTwoSortedArrays = medianOfTwoSortedArrays;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(log(min(n, m)) time | O(1) space - where n is the length of arrayOne and\n// m is the length of arrayTwo\nfunction medianOfTwoSortedArrays(arrayOne, arrayTwo) {\n  const smallArray = arrayOne.length <= arrayTwo.length ? arrayOne : arrayTwo;\n  const bigArray = arrayOne.length > arrayTwo.length ? arrayOne : arrayTwo;\n\n  let leftIdx = 0;\n  let rightIdx = smallArray.length - 1;\n  let mergedLeftIdx = Math.floor((smallArray.length + bigArray.length - 1) / 2);\n\n  while (true) {\n    const smallPartitionIdx = Math.floor((leftIdx + rightIdx) / 2);\n    const bigPartitionIdx = mergedLeftIdx - smallPartitionIdx - 1;\n\n    const smallMaxLeftValue = smallPartitionIdx >= 0 ? smallArray[smallPartitionIdx] : -Infinity;\n    const smallMinRightValue =\n      smallPartitionIdx + 1 < smallArray.length ? smallArray[smallPartitionIdx + 1] : Infinity;\n    const bigMaxLeftValue = bigPartitionIdx >= 0 ? bigArray[bigPartitionIdx] : -Infinity;\n    const bigMinRightValue =\n      bigPartitionIdx + 1 < bigArray.length ? bigArray[bigPartitionIdx + 1] : Infinity;\n\n    if (smallMaxLeftValue > bigMinRightValue) {\n      rightIdx = smallPartitionIdx - 1;\n    } else if (bigMaxLeftValue > smallMinRightValue) {\n      leftIdx = smallPartitionIdx + 1;\n    } else {\n      if ((smallArray.length + bigArray.length) % 2 === 0) {\n        return (\n          (Math.max(smallMaxLeftValue, bigMaxLeftValue) +\n            Math.min(smallMinRightValue, bigMinRightValue)) /\n          2\n        );\n      }\n      return Math.max(smallMaxLeftValue, bigMaxLeftValue);\n    }\n  }\n}\n\n// Do not edit the line below.\nexports.medianOfTwoSortedArrays = medianOfTwoSortedArrays;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const arrayOne = [1, 3, 4, 5];\n  const arrayTwo = [2, 3, 6, 7];\n  const expected = 3.5;\n  const actual = program.medianOfTwoSortedArrays(arrayOne, arrayTwo);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const arrayOne = [1, 3, 4, 5];\n  const arrayTwo = [2, 3, 6, 7];\n  const expected = 3.5;\n  const actual = program.medianOfTwoSortedArrays(arrayOne, arrayTwo);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun medianOfTwoSortedArrays(arrayOne: MutableList<Int>, arrayTwo: MutableList<Int>): Double {\n    // Write your code here.\n    return -1.0\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.min\n\n// O(n + m) time | O(1) space - where n is the length of arrayOne and\n// m is the length of arrayTwo\nfun medianOfTwoSortedArrays(arrayOne: MutableList<Int>, arrayTwo: MutableList<Int>): Double {\n    var idxOne = 0\n    var idxTwo = 0\n    val middleIdx = (arrayOne.size + arrayTwo.size - 1) / 2\n\n    while (idxOne + idxTwo < middleIdx) {\n        if (idxOne >= arrayOne.size) {\n            idxTwo += 1\n        } else if (idxTwo >= arrayTwo.size) {\n            idxOne += 1\n        } else if (arrayOne[idxOne] < arrayTwo[idxTwo]) {\n            idxOne += 1\n        } else {\n            idxTwo += 1\n        }\n    }\n\n    if ((arrayOne.size + arrayTwo.size) % 2 == 0) {\n        val areBothValuesArrayOne = idxTwo >= arrayTwo.size || (\n            idxOne + 1 < arrayOne.size && arrayTwo[idxTwo] > arrayOne[idxOne + 1]\n            )\n        val areBothValuesArrayTwo = idxOne >= arrayOne.size || (\n            idxTwo + 1 < arrayTwo.size && arrayOne[idxOne] > arrayTwo[idxTwo + 1]\n            )\n\n        val valueOne = if (areBothValuesArrayOne) arrayOne[idxOne + 1] else arrayTwo[idxTwo]\n        val valueTwo = if (areBothValuesArrayTwo) arrayTwo[idxTwo + 1] else arrayOne[idxOne]\n        return (valueOne + valueTwo) / 2.0\n    }\n\n    val valueOne = if (idxOne < arrayOne.size) arrayOne[idxOne] else Int.MAX_VALUE\n    val valueTwo = if (idxTwo < arrayTwo.size) arrayTwo[idxTwo] else Int.MAX_VALUE\n    return min(valueOne, valueTwo).toDouble()\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.floor\nimport kotlin.math.max\nimport kotlin.math.min\n\n// O(log(min(n, m)) time | O(1) space - where n is the length of arrayOne and\n// m is the length of arrayTwo\nfun medianOfTwoSortedArrays(\n    inputArrayOne: MutableList<Int>,\n    inputArrayTwo: MutableList<Int>,\n): Double {\n    var smallArray = if (inputArrayOne.size <= inputArrayTwo.size) inputArrayOne else inputArrayTwo\n    var bigArray = if (inputArrayOne.size > inputArrayTwo.size) inputArrayOne else inputArrayTwo\n\n    var leftIdx = 0\n    var rightIdx = smallArray.size - 1\n    var mergedLeftIdx = (smallArray.size + bigArray.size - 1) / 2\n\n    while (true) {\n        val smallPartitionIdx = floor((leftIdx + rightIdx).toDouble() / 2).toInt()\n        val bigPartitionIdx = mergedLeftIdx - smallPartitionIdx - 1\n\n        val smallMaxLeftValue = if (smallPartitionIdx >= 0) smallArray[smallPartitionIdx] else Int.MIN_VALUE\n        val smallMinRightValue = if (smallPartitionIdx + 1 < smallArray.size) smallArray[smallPartitionIdx + 1] else Int.MAX_VALUE\n        val bigMaxLeftValue = if (bigPartitionIdx >= 0) bigArray[bigPartitionIdx] else Int.MIN_VALUE\n        val bigMinRightValue = if (bigPartitionIdx + 1 < bigArray.size) bigArray[bigPartitionIdx + 1] else Int.MAX_VALUE\n\n        if (smallMaxLeftValue > bigMinRightValue) {\n            rightIdx = smallPartitionIdx - 1\n        } else if (bigMaxLeftValue > smallMinRightValue) {\n            leftIdx = smallPartitionIdx + 1\n        } else {\n            if ((smallArray.size + bigArray.size) % 2 == 0) {\n                return (max(smallMaxLeftValue, bigMaxLeftValue) + min(smallMinRightValue, bigMinRightValue)) / 2.0\n            }\n            return max(smallMaxLeftValue, bigMaxLeftValue).toDouble()\n        }\n    }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.medianOfTwoSortedArrays\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val arrayOne = mutableListOf(1, 3, 4, 5)\n        val arrayTwo = mutableListOf(2, 3, 6, 7)\n        val expected = 3.5\n        val output = medianOfTwoSortedArrays(arrayOne, arrayTwo)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.medianOfTwoSortedArrays\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val arrayOne = mutableListOf(1, 3, 4, 5)\n        val arrayTwo = mutableListOf(2, 3, 6, 7)\n        val expected = 3.5\n        val output = medianOfTwoSortedArrays(arrayOne, arrayTwo)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def medianOfTwoSortedArrays(arrayOne, arrayTwo):\n    # Write your code here.\n    return -1\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n + m) time | O(1) space - where n is the length of arrayOne and\n# m is the length of arrayTwo\ndef medianOfTwoSortedArrays(arrayOne, arrayTwo):\n    idxOne, idxTwo = 0, 0\n    middleIdx = (len(arrayOne) + len(arrayTwo) - 1) // 2\n\n    while idxOne + idxTwo < middleIdx:\n        if idxOne >= len(arrayOne):\n            idxTwo += 1\n        elif idxTwo >= len(arrayTwo):\n            idxOne += 1\n        elif arrayOne[idxOne] < arrayTwo[idxTwo]:\n            idxOne += 1\n        else:\n            idxTwo += 1\n\n    if (len(arrayOne) + len(arrayTwo)) % 2 == 0:\n        areBothValuesArrayOne = idxTwo >= len(arrayTwo) or (\n            idxOne + 1 < len(arrayOne) and arrayTwo[idxTwo] > arrayOne[idxOne + 1]\n        )\n        areBothValuesArrayTwo = idxOne >= len(arrayOne) or (\n            idxTwo + 1 < len(arrayTwo) and arrayOne[idxOne] > arrayTwo[idxTwo + 1]\n        )\n\n        valueOne = arrayOne[idxOne + 1] if areBothValuesArrayOne else arrayTwo[idxTwo]\n        valueTwo = arrayTwo[idxTwo + 1] if areBothValuesArrayTwo else arrayOne[idxOne]\n        return (valueOne + valueTwo) / 2\n\n    valueOne = arrayOne[idxOne] if idxOne < len(arrayOne) else float(\"inf\")\n    valueTwo = arrayTwo[idxTwo] if idxTwo < len(arrayTwo) else float(\"inf\")\n    return min(valueOne, valueTwo)\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(log(min(n, m)) time | O(1) space - where n is the length of arrayOne and\n# m is the length of arrayTwo\ndef medianOfTwoSortedArrays(arrayOne, arrayTwo):\n    smallArray = arrayOne if len(arrayOne) <= len(arrayTwo) else arrayTwo\n    bigArray = arrayOne if len(arrayOne) > len(arrayTwo) else arrayTwo\n\n    leftIdx = 0\n    rightIdx = len(smallArray) - 1\n    mergedLeftIdx = (len(smallArray) + len(bigArray) - 1) // 2\n\n    while True:\n        smallPartitionIdx = (leftIdx + rightIdx) // 2\n        bigPartitionIdx = mergedLeftIdx - smallPartitionIdx - 1\n\n        smallMaxLeftValue = (\n            smallArray[smallPartitionIdx] if smallPartitionIdx >= 0 else float(\"-inf\")\n        )\n        smallMinRightValue = (\n            smallArray[smallPartitionIdx + 1]\n            if smallPartitionIdx + 1 < len(smallArray)\n            else float(\"inf\")\n        )\n        bigMaxLeftValue = bigArray[bigPartitionIdx] if bigPartitionIdx >= 0 else float(\"-inf\")\n        bigMinRightValue = (\n            bigArray[bigPartitionIdx + 1] if bigPartitionIdx + 1 < len(bigArray) else float(\"inf\")\n        )\n\n        if smallMaxLeftValue > bigMinRightValue:\n            rightIdx = smallPartitionIdx - 1\n        elif bigMaxLeftValue > smallMinRightValue:\n            leftIdx = smallPartitionIdx + 1\n        else:\n            if (len(smallArray) + len(bigArray)) % 2 == 0:\n                return (\n                    max(smallMaxLeftValue, bigMaxLeftValue)\n                    + min(smallMinRightValue, bigMinRightValue)\n                ) / 2\n            return max(smallMaxLeftValue, bigMaxLeftValue)\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        arrayOne = [1, 3, 4, 5]\n        arrayTwo = [2, 3, 6, 7]\n        expected = 3.5\n        actual = program.medianOfTwoSortedArrays(arrayOne, arrayTwo)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        arrayOne = [1, 3, 4, 5]\n        arrayTwo = [2, 3, 6, 7]\n        expected = 3.5\n        actual = program.medianOfTwoSortedArrays(arrayOne, arrayTwo)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def medianOfTwoSortedArrays(arrayOne, arrayTwo)\n        # Write your code here.\n        return -1\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def medianOfTwoSortedArrays(arrayOne, arrayTwo)\n        # Write your code here.\n        return -1\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.medianOfTwoSortedArrays\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.medianOfTwoSortedArrays\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func medianOfTwoSortedArrays(_ arrayOne: [Int], _ arrayTwo: [Int]) -> Double {\n    // Write your code here.\n    return -1\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n + m) time | O(1) space - where n is the length of arrayOne and\n  // m is the length of arrayTwo\n  func medianOfTwoSortedArrays(_ arrayOne: [Int], _ arrayTwo: [Int]) -> Double {\n    var idxOne = 0\n    var idxTwo = 0\n    let middleIdx = (arrayOne.count + arrayTwo.count - 1) / 2\n\n    while idxOne + idxTwo < middleIdx {\n      if idxOne >= arrayOne.count {\n        idxTwo += 1\n      } else if idxTwo >= arrayTwo.count {\n        idxOne += 1\n      } else if arrayOne[idxOne] < arrayTwo[idxTwo] {\n        idxOne += 1\n      } else {\n        idxTwo += 1\n      }\n    }\n\n    if (arrayOne.count + arrayTwo.count) % 2 == 0 {\n      let areBothValuesArrayOne = idxTwo >= arrayTwo.count || (idxOne + 1 < arrayOne.count && arrayTwo[idxTwo] > arrayOne[idxOne + 1])\n      let areBothValuesArrayTwo = idxOne >= arrayOne.count || (idxTwo + 1 < arrayTwo.count && arrayOne[idxOne] > arrayTwo[idxTwo + 1])\n\n      let valueOne = areBothValuesArrayOne ? Double(arrayOne[idxOne + 1]) : Double(arrayTwo[idxTwo])\n      let valueTwo = areBothValuesArrayTwo ? Double(arrayTwo[idxTwo + 1]) : Double(arrayOne[idxOne])\n      return (valueOne + valueTwo) / 2\n    }\n\n    let valueOne = idxOne < arrayOne.count ? Double(arrayOne[idxOne]) : Double.infinity\n    let valueTwo = idxTwo < arrayTwo.count ? Double(arrayTwo[idxTwo]) : Double.infinity\n    return min(valueOne, valueTwo)\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport Foundation\n\nclass Program {\n  // O(log(min(n, m)) time | O(1) space - where n is the length of arrayOne and\n  // m is the length of arrayTwo\n  func medianOfTwoSortedArrays(_ arrayOne: [Int], _ arrayTwo: [Int]) -> Double {\n    var smallArray = arrayOne\n    var bigArray = arrayTwo\n    if arrayOne.count > arrayTwo.count {\n      smallArray = arrayTwo\n      bigArray = arrayOne\n    }\n\n    var leftIdx = 0\n    var rightIdx = smallArray.count - 1\n    var mergedLeftIdx = (smallArray.count + bigArray.count - 1) / 2\n\n    while true {\n      let smallPartitionIdx = Int(floor(Double(leftIdx + rightIdx) / 2))\n      let bigPartitionIdx = mergedLeftIdx - smallPartitionIdx - 1\n\n      var smallMaxLeftValue = -Double.infinity\n      var smallMinRightValue = Double.infinity\n      if smallPartitionIdx >= 0 {\n        smallMaxLeftValue = Double(smallArray[smallPartitionIdx])\n      }\n      if smallPartitionIdx + 1 < smallArray.count {\n        smallMinRightValue = Double(smallArray[smallPartitionIdx + 1])\n      }\n\n      var bigMaxLeftValue = -Double.infinity\n      var bigMinRightValue = Double.infinity\n      if bigPartitionIdx >= 0 {\n        bigMaxLeftValue = Double(bigArray[bigPartitionIdx])\n      }\n      if bigPartitionIdx + 1 < bigArray.count {\n        bigMinRightValue = Double(bigArray[bigPartitionIdx + 1])\n      }\n\n      if smallMaxLeftValue > bigMinRightValue {\n        rightIdx = smallPartitionIdx - 1\n      } else if bigMaxLeftValue > smallMinRightValue {\n        leftIdx = smallPartitionIdx + 1\n      } else {\n        if (smallArray.count + bigArray.count) % 2 == 0 {\n          return (max(smallMaxLeftValue, bigMaxLeftValue) + min(smallMinRightValue, bigMinRightValue)) / 2\n        }\n        return max(smallMaxLeftValue, bigMaxLeftValue)\n      }\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var arrayOne = [1, 3, 4, 5]\n      var arrayTwo = [2, 3, 6, 7]\n      var expected = 3.5\n      var actual = Program().medianOfTwoSortedArrays(arrayOne, arrayTwo)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var arrayOne = [1, 3, 4, 5]\n      var arrayTwo = [2, 3, 6, 7]\n      var expected = 3.5\n      var actual = Program().medianOfTwoSortedArrays(arrayOne, arrayTwo)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function medianOfTwoSortedArrays(arrayOne: number[], arrayTwo: number[]) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n + m) time | O(1) space - where n is the length of arrayOne and\n// m is the length of arrayTwo\nexport function medianOfTwoSortedArrays(arrayOne: number[], arrayTwo: number[]) {\n  let idxOne = 0,\n    idxTwo = 0;\n  const middleIdx = Math.floor((arrayOne.length + arrayTwo.length - 1) / 2);\n\n  while (idxOne + idxTwo < middleIdx) {\n    if (idxOne >= arrayOne.length) {\n      idxTwo += 1;\n    } else if (idxTwo >= arrayTwo.length) {\n      idxOne += 1;\n    } else if (arrayOne[idxOne] < arrayTwo[idxTwo]) {\n      idxOne += 1;\n    } else {\n      idxTwo += 1;\n    }\n  }\n\n  if ((arrayOne.length + arrayTwo.length) % 2 === 0) {\n    const areBothValuesArrayOne =\n      idxTwo >= arrayTwo.length ||\n      (idxOne + 1 < arrayOne.length && arrayTwo[idxTwo] > arrayOne[idxOne + 1]);\n    const areBothValuesArrayTwo =\n      idxOne >= arrayOne.length ||\n      (idxTwo + 1 < arrayTwo.length && arrayOne[idxOne] > arrayTwo[idxTwo + 1]);\n\n    const valueOne = areBothValuesArrayOne ? arrayOne[idxOne + 1] : arrayTwo[idxTwo];\n    const valueTwo = areBothValuesArrayTwo ? arrayTwo[idxTwo + 1] : arrayOne[idxOne];\n    return (valueOne + valueTwo) / 2;\n  }\n\n  const valueOne = idxOne < arrayOne.length ? arrayOne[idxOne] : Infinity;\n  const valueTwo = idxTwo < arrayTwo.length ? arrayTwo[idxTwo] : Infinity;\n  return Math.min(valueOne, valueTwo);\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(log(min(n, m)) time | O(1) space - where n is the length of arrayOne and\n// m is the length of arrayTwo\nexport function medianOfTwoSortedArrays(arrayOne: number[], arrayTwo: number[]) {\n  const smallArray = arrayOne.length <= arrayTwo.length ? arrayOne : arrayTwo;\n  const bigArray = arrayOne.length > arrayTwo.length ? arrayOne : arrayTwo;\n\n  let leftIdx = 0;\n  let rightIdx = smallArray.length - 1;\n  let mergedLeftIdx = Math.floor((smallArray.length + bigArray.length - 1) / 2);\n\n  while (true) {\n    const smallPartitionIdx = Math.floor((leftIdx + rightIdx) / 2);\n    const bigPartitionIdx = mergedLeftIdx - smallPartitionIdx - 1;\n\n    const smallMaxLeftValue = smallPartitionIdx >= 0 ? smallArray[smallPartitionIdx] : -Infinity;\n    const smallMinRightValue =\n      smallPartitionIdx + 1 < smallArray.length ? smallArray[smallPartitionIdx + 1] : Infinity;\n    const bigMaxLeftValue = bigPartitionIdx >= 0 ? bigArray[bigPartitionIdx] : -Infinity;\n    const bigMinRightValue =\n      bigPartitionIdx + 1 < bigArray.length ? bigArray[bigPartitionIdx + 1] : Infinity;\n\n    if (smallMaxLeftValue > bigMinRightValue) {\n      rightIdx = smallPartitionIdx - 1;\n    } else if (bigMaxLeftValue > smallMinRightValue) {\n      leftIdx = smallPartitionIdx + 1;\n    } else {\n      if ((smallArray.length + bigArray.length) % 2 === 0) {\n        return (\n          (Math.max(smallMaxLeftValue, bigMaxLeftValue) +\n            Math.min(smallMinRightValue, bigMinRightValue)) /\n          2\n        );\n      }\n      return Math.max(smallMaxLeftValue, bigMaxLeftValue);\n    }\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const arrayOne = [1, 3, 4, 5];\n  const arrayTwo = [2, 3, 6, 7];\n  const expected = 3.5;\n  const actual = program.medianOfTwoSortedArrays(arrayOne, arrayTwo);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const arrayOne = [1, 3, 4, 5];\n  const arrayTwo = [2, 3, 6, 7];\n  const expected = 3.5;\n  const actual = program.medianOfTwoSortedArrays(arrayOne, arrayTwo);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "arrayOne",
+            "example": [
+                1
+            ],
+            "schema": {
+                "items": {
+                    "type": "integer"
+                },
+                "type": "array"
+            }
+        },
+        {
+            "name": "arrayTwo",
+            "example": [
+                2
+            ],
+            "schema": {
+                "items": {
+                    "type": "integer"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "arrayOne": [
+                1
+            ],
+            "arrayTwo": [
+                2
+            ]
+        },
+        {
+            "arrayOne": [
+                1
+            ],
+            "arrayTwo": [
+                1
+            ]
+        },
+        {
+            "arrayOne": [
+                1
+            ],
+            "arrayTwo": [
+                2,
+                3
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                3
+            ],
+            "arrayTwo": [
+                2
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                3,
+                4,
+                5
+            ],
+            "arrayTwo": [
+                6,
+                7,
+                8,
+                9
+            ]
+        },
+        {
+            "arrayOne": [
+                6,
+                7,
+                8,
+                9
+            ],
+            "arrayTwo": [
+                1,
+                3,
+                4,
+                5
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                3,
+                4,
+                5
+            ],
+            "arrayTwo": [
+                2,
+                3,
+                6,
+                7
+            ]
+        },
+        {
+            "arrayOne": [
+                2,
+                3,
+                6,
+                7
+            ],
+            "arrayTwo": [
+                1,
+                3,
+                4,
+                5
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                3,
+                4
+            ],
+            "arrayTwo": [
+                2,
+                3,
+                6,
+                7
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                3,
+                4
+            ],
+            "arrayTwo": [
+                2,
+                3,
+                6
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                3,
+                5,
+                6
+            ],
+            "arrayTwo": [
+                7,
+                8
+            ]
+        },
+        {
+            "arrayOne": [
+                7,
+                8
+            ],
+            "arrayTwo": [
+                1,
+                3,
+                5,
+                6
+            ]
+        },
+        {
+            "arrayOne": [
+                3,
+                4,
+                5
+            ],
+            "arrayTwo": [
+                1,
+                2
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                2
+            ],
+            "arrayTwo": [
+                3,
+                4,
+                5
+            ]
+        },
+        {
+            "arrayOne": [
+                3,
+                4,
+                5,
+                6
+            ],
+            "arrayTwo": [
+                1,
+                2
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                2
+            ],
+            "arrayTwo": [
+                3,
+                4,
+                5,
+                6
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                4,
+                5,
+                6,
+                7,
+                8
+            ],
+            "arrayTwo": [
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                5,
+                6,
+                7,
+                8
+            ],
+            "arrayTwo": [
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                2,
+                3
+            ],
+            "arrayTwo": [
+                1,
+                4,
+                5,
+                6,
+                7,
+                8
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                2,
+                3
+            ],
+            "arrayTwo": [
+                1,
+                5,
+                6,
+                7,
+                8
+            ]
+        },
+        {
+            "arrayOne": [
+                1
+            ],
+            "arrayTwo": [
+                5,
+                6,
+                7,
+                8
+            ]
+        },
+        {
+            "arrayOne": [
+                5,
+                6,
+                7,
+                8
+            ],
+            "arrayTwo": [
+                1
+            ]
+        },
+        {
+            "arrayOne": [
+                6
+            ],
+            "arrayTwo": [
+                1,
+                5,
+                7,
+                8
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                5,
+                7,
+                8
+            ],
+            "arrayTwo": [
+                6
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ],
+            "arrayTwo": [
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15
+            ]
+        },
+        {
+            "arrayOne": [
+                2,
+                2,
+                2,
+                2,
+                2
+            ],
+            "arrayTwo": [
+                3,
+                3,
+                3,
+                3,
+                3
+            ]
+        },
+        {
+            "arrayOne": [
+                2,
+                2,
+                2,
+                2,
+                2
+            ],
+            "arrayTwo": [
+                3,
+                3,
+                3,
+                3
+            ]
+        },
+        {
+            "arrayOne": [
+                -5,
+                -4,
+                -2,
+                3,
+                7,
+                243
+            ],
+            "arrayTwo": [
+                -1,
+                0,
+                0,
+                32,
+                100
+            ]
+        },
+        {
+            "arrayOne": [
+                -100,
+                -50,
+                -1,
+                0,
+                1
+            ],
+            "arrayTwo": [
+                -1,
+                0,
+                1,
+                50,
+                100
+            ]
+        },
+        {
+            "arrayOne": [
+                -100,
+                -50,
+                -1,
+                15,
+                30
+            ],
+            "arrayTwo": [
+                1,
+                20,
+                50,
+                100
+            ]
+        },
+        {
+            "arrayOne": [
+                -100,
+                -50,
+                15,
+                30
+            ],
+            "arrayTwo": [
+                1,
+                20,
+                50,
+                100
+            ]
+        },
+        {
+            "arrayOne": [
+                -10,
+                -5,
+                10,
+                20,
+                70
+            ],
+            "arrayTwo": [
+                40,
+                50,
+                60
+            ]
+        },
+        {
+            "arrayOne": [
+                40,
+                50,
+                60
+            ],
+            "arrayTwo": [
+                -10,
+                -5,
+                10,
+                20,
+                70
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "arrayOne": [
+                1
+            ],
+            "arrayTwo": [
+                2
+            ]
+        },
+        {
+            "arrayOne": [
+                1
+            ],
+            "arrayTwo": [
+                1
+            ]
+        },
+        {
+            "arrayOne": [
+                1
+            ],
+            "arrayTwo": [
+                2,
+                3
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                3
+            ],
+            "arrayTwo": [
+                2
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                3,
+                4,
+                5
+            ],
+            "arrayTwo": [
+                6,
+                7,
+                8,
+                9
+            ]
+        },
+        {
+            "arrayOne": [
+                6,
+                7,
+                8,
+                9
+            ],
+            "arrayTwo": [
+                1,
+                3,
+                4,
+                5
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                3,
+                4,
+                5
+            ],
+            "arrayTwo": [
+                2,
+                3,
+                6,
+                7
+            ]
+        },
+        {
+            "arrayOne": [
+                2,
+                3,
+                6,
+                7
+            ],
+            "arrayTwo": [
+                1,
+                3,
+                4,
+                5
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                3,
+                4
+            ],
+            "arrayTwo": [
+                2,
+                3,
+                6,
+                7
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                3,
+                4
+            ],
+            "arrayTwo": [
+                2,
+                3,
+                6
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                3,
+                5,
+                6
+            ],
+            "arrayTwo": [
+                7,
+                8
+            ]
+        },
+        {
+            "arrayOne": [
+                7,
+                8
+            ],
+            "arrayTwo": [
+                1,
+                3,
+                5,
+                6
+            ]
+        },
+        {
+            "arrayOne": [
+                3,
+                4,
+                5
+            ],
+            "arrayTwo": [
+                1,
+                2
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                2
+            ],
+            "arrayTwo": [
+                3,
+                4,
+                5
+            ]
+        },
+        {
+            "arrayOne": [
+                3,
+                4,
+                5,
+                6
+            ],
+            "arrayTwo": [
+                1,
+                2
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                2
+            ],
+            "arrayTwo": [
+                3,
+                4,
+                5,
+                6
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                4,
+                5,
+                6,
+                7,
+                8
+            ],
+            "arrayTwo": [
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                5,
+                6,
+                7,
+                8
+            ],
+            "arrayTwo": [
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                2,
+                3
+            ],
+            "arrayTwo": [
+                1,
+                4,
+                5,
+                6,
+                7,
+                8
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                2,
+                3
+            ],
+            "arrayTwo": [
+                1,
+                5,
+                6,
+                7,
+                8
+            ]
+        },
+        {
+            "arrayOne": [
+                1
+            ],
+            "arrayTwo": [
+                5,
+                6,
+                7,
+                8
+            ]
+        },
+        {
+            "arrayOne": [
+                5,
+                6,
+                7,
+                8
+            ],
+            "arrayTwo": [
+                1
+            ]
+        },
+        {
+            "arrayOne": [
+                6
+            ],
+            "arrayTwo": [
+                1,
+                5,
+                7,
+                8
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                5,
+                7,
+                8
+            ],
+            "arrayTwo": [
+                6
+            ]
+        },
+        {
+            "arrayOne": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ],
+            "arrayTwo": [
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15
+            ]
+        },
+        {
+            "arrayOne": [
+                2,
+                2,
+                2,
+                2,
+                2
+            ],
+            "arrayTwo": [
+                3,
+                3,
+                3,
+                3,
+                3
+            ]
+        },
+        {
+            "arrayOne": [
+                2,
+                2,
+                2,
+                2,
+                2
+            ],
+            "arrayTwo": [
+                3,
+                3,
+                3,
+                3
+            ]
+        },
+        {
+            "arrayOne": [
+                -5,
+                -4,
+                -2,
+                3,
+                7,
+                243
+            ],
+            "arrayTwo": [
+                -1,
+                0,
+                0,
+                32,
+                100
+            ]
+        },
+        {
+            "arrayOne": [
+                -100,
+                -50,
+                -1,
+                0,
+                1
+            ],
+            "arrayTwo": [
+                -1,
+                0,
+                1,
+                50,
+                100
+            ]
+        },
+        {
+            "arrayOne": [
+                -100,
+                -50,
+                -1,
+                15,
+                30
+            ],
+            "arrayTwo": [
+                1,
+                20,
+                50,
+                100
+            ]
+        },
+        {
+            "arrayOne": [
+                -100,
+                -50,
+                15,
+                30
+            ],
+            "arrayTwo": [
+                1,
+                20,
+                50,
+                100
+            ]
+        },
+        {
+            "arrayOne": [
+                -10,
+                -5,
+                10,
+                20,
+                70
+            ],
+            "arrayTwo": [
+                40,
+                50,
+                60
+            ]
+        },
+        {
+            "arrayOne": [
+                40,
+                50,
+                60
+            ],
+            "arrayTwo": [
+                -10,
+                -5,
+                10,
+                20,
+                70
+            ]
+        }
+    ],
+    "changelog": []
+}

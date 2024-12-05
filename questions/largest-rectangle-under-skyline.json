@@ -1,0 +1,537 @@
+{
+    "uid": "largest-rectangle-under-skyline",
+    "testStrategy": "JSON",
+    "name": "Largest Rectangle Under Skyline",
+    "version": 0,
+    "releaseDate": "2021-04-01T00:00:00Z",
+    "category": "Stacks",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 5472,
+        "failureCount": 1278
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "523572728",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Tim Ruscica",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 2353
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Write a function that takes in an array of positive integers representing the\n  heights of adjacent buildings and returns the area of the largest rectangle\n  that can be created by any number of adjacent buildings, including just one\n  building. Note that all buildings have the same width of <span>1</span> unit.\n</p>\n<p>\n  For example, given <span>buildings = [2, 1, 2]</span>, the area of the largest\n  rectangle that can be created is <span>3</span>, using all three buildings.\n  Since the minimum height of the three buildings is <span>1</span>, you can\n  create a rectangle that has a height of <span>1</span> and a width of\n  <span>3</span> (the number of buildings). You could also create rectangles of\n  area <span>2</span> by using only the first building or the last building, but\n  these clearly wouldn't be the largest rectangles. Similarly, you could create\n  rectangles of area <span>2</span> by using the first and second building or\n  the second and third building.\n</p>\n<p>\n  To clarify, the width of a created rectangle is the number of buildings used\n  to create the rectangle, and its height is the height of the smallest building\n  used to create it.\n</p>\n<p>\n  Note that if no rectangles can be created, your function should return\n  <span>0</span>.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">buildings</span> = [1, 3, 3, 2, 4, 1, 5, 3, 2]\n</pre>\n<h3>Sample Output</h3>\n<pre>\n9\n\n<span class=\"CodeEditor-promptComment\">// Below is a visual representation of the sample input.</span>\n<span class=\"CodeEditor-promptComment\">//              _</span>\n<span class=\"CodeEditor-promptComment\">//          _  | |</span>\n<span class=\"CodeEditor-promptComment\">//    _ _  | | | |_</span>\n<span class=\"CodeEditor-promptComment\">//   | | |_| | | | |_</span>\n<span class=\"CodeEditor-promptComment\">//  _| | | | |_| | | |</span>\n<span class=\"CodeEditor-promptComment\">// |_|_|_|_|_|_|_|_|_|</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  Try treating every building as a pillar of a rectangle that can be created\n  with the height of the building in question.\n</p>\n",
+        "\n<p>\n  The brute-force approach to solve this problem involves treating every\n  building as a part of a potential rectangle to be created. As you loop through\n  all the buildings, simply expand to the left and right of the current\n  building, and determine the width of the longest rectangle that you can create\n  that has a height of the current building. Calculate the area of this longest\n  rectangle, and update a variable to store the area of the largest rectangle\n  that you've found so far. This approach has a time complexity of\n  <span>O(n^2)</span>; can you do better?\n</p>\n",
+        "\n<p>\n  There's a way to solve this problem in linear (<span>O(n)</span>) time by\n  using a stack. When should you push and pop buildings on and off the stack if\n  you were to loop through the buildings from left to right? Try to think of\n  each building on the stack as a pillar of a potential rectangle.\n</p>\n",
+        "\n<p>\n  The stack mentioned in Hint #3 will be used to determine the length of a\n  rectangle that has the height of a building that is currently on top of the\n  stack. Loop through all the buildings, and at each building, compare its\n  height to the height of the building on top of the stack. If the current\n  building's height is smaller than or the same as the height of the building on\n  top of the stack, pop the building off the stack. When you pop the building\n  off the stack, you've determined the rightmost position (your current\n  position) of a rectangle of that height (the height of the building you\n  popped) that uses that building. Then, to determine the leftmost position of\n  that rectangle, you look at the next building on top of the stack. This is the\n  index of the closest building to the left that has a smaller height than that\n  of the building that was just popped off. Now, you can calculate the area of\n  the rectangle that uses this building and update a variable to store the max\n  area. Continue popping buildings off the stack at each iteration until the\n  current building is taller than the one on top of the stack, and don't forget\n  to push each building on top of the stack at each iteration. See the\n  Conceptual Overview section of this question's video explanation for a more\n  in-depth explanation.\n</p>"
+    ],
+    "spaceTime": "O(n) time | O(n) space - where n is the number of buildings",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\nusing namespace std;\n\nint largestRectangleUnderSkyline(vector<int> buildings) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n#include <vector>\nusing namespace std;\n\n// O(n^2) time | O(1) space - where n is the number of buildings\nint largestRectangleUnderSkyline(vector<int> buildings) {\n  int maxArea = 0;\n  for (int pillarIdx = 0; pillarIdx < buildings.size(); pillarIdx++) {\n    int currentHeight = buildings[pillarIdx];\n\n    int furthestLeft = pillarIdx;\n    while (furthestLeft > 0 && buildings[furthestLeft - 1] >= currentHeight) {\n      furthestLeft--;\n    }\n\n    int furthestRight = pillarIdx;\n    while (furthestRight < buildings.size() - 1 &&\n           buildings[furthestRight + 1] >= currentHeight) {\n      furthestRight++;\n    }\n\n    int areaWithCurrentBuilding =\n      (furthestRight - furthestLeft + 1) * currentHeight;\n    maxArea = max(areaWithCurrentBuilding, maxArea);\n  }\n\n  return maxArea;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n#include <vector>\nusing namespace std;\n\n// O(n) time | O(n) space - where n is the number of buildings\nint largestRectangleUnderSkyline(vector<int> buildings) {\n  vector<int> pillarIndices;\n  int maxArea = 0;\n\n  vector<int> extendedBuildings(buildings);\n  extendedBuildings.push_back(0);\n\n  for (int idx = 0; idx < extendedBuildings.size(); idx++) {\n    int height = extendedBuildings[idx];\n    while (pillarIndices.size() != 0 &&\n           extendedBuildings[pillarIndices[pillarIndices.size() - 1]] >= height\n    ) {\n      int pillarHeight =\n        extendedBuildings[pillarIndices[pillarIndices.size() - 1]];\n      pillarIndices.pop_back();\n      int width = pillarIndices.size() == 0\n                    ? idx\n                    : idx - pillarIndices[pillarIndices.size() - 1] - 1;\n      maxArea = max(width * pillarHeight, maxArea);\n    }\n    pillarIndices.push_back(idx);\n  }\n\n  return maxArea;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input = {1, 3, 3, 2, 4, 1, 5, 3, 2};\n      auto expected = 9;\n      auto actual = largestRectangleUnderSkyline(input);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input = {1, 3, 3, 2, 4, 1, 5, 3, 2};\n      auto expected = 9;\n      auto actual = largestRectangleUnderSkyline(input);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System.Collections.Generic;\nusing System;\n\npublic class Program {\n  public int LargestRectangleUnderSkyline(List<int> buildings) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n^2) time | O(1) space - where n is the number of buildings\n  public int LargestRectangleUnderSkyline(List<int> buildings) {\n    int maxArea = 0;\n    for (int pillarIdx = 0; pillarIdx < buildings.Count; pillarIdx++) {\n      int currentHeight = buildings[pillarIdx];\n\n      int furthestLeft = pillarIdx;\n      while (furthestLeft > 0 && buildings[furthestLeft - 1] >= currentHeight) {\n        furthestLeft -= 1;\n      }\n\n      int furthestRight = pillarIdx;\n      while (furthestRight < buildings.Count - 1 &&\n             buildings[furthestRight + 1] >= currentHeight) {\n        furthestRight += 1;\n      }\n\n      int areaWithCurrentBuilding =\n        (furthestRight - furthestLeft + 1) * currentHeight;\n      maxArea = Math.Max(areaWithCurrentBuilding, maxArea);\n    }\n\n    return maxArea;\n  }\n}",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n) time | O(n) space - where n is the number of buildings\n  public int LargestRectangleUnderSkyline(List<int> buildings) {\n    Stack<int> pillarIndices = new Stack<int>();\n    int maxArea = 0;\n\n    List<int> extendedBuildings = new List<int>(buildings);\n    extendedBuildings.Add(0);\n    for (int idx = 0; idx < extendedBuildings.Count; idx++) {\n      int height = extendedBuildings[idx];\n      while (pillarIndices.Count != 0 &&\n             extendedBuildings[pillarIndices.Peek()] >= height) {\n        int pillarHeight = extendedBuildings[pillarIndices.Pop()];\n        int width =\n          (pillarIndices.Count == 0) ? idx : idx - pillarIndices.Peek() - 1;\n        maxArea = Math.Max(width * pillarHeight, maxArea);\n      }\n\n      pillarIndices.Push(idx);\n    }\n\n    return maxArea;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System.Collections.Generic;\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    List<int> input = new List<int> { 1, 3, 3, 2, 4, 1, 5, 3, 2 };\n    int expected = 9;\n    var actual = new Program().LargestRectangleUnderSkyline(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "using System.Collections.Generic;\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    List<int> input = new List<int> { 1, 3, 3, 2, 4, 1, 5, 3, 2 };\n    int expected = 9;\n    var actual = new Program().LargestRectangleUnderSkyline(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc LargestRectangleUnderSkyline(buildings []int) int {\n\t// Write your code here.\n\treturn -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n^2) time | O(1) space - where n is the number of buildings\nfunc LargestRectangleUnderSkyline(buildings []int) int {\n\tmaxArea := 0\n\tfor pillarIdx := range buildings {\n\t\tcurrentHeight := buildings[pillarIdx]\n\n\t\tvar furthestLeft = pillarIdx\n\t\tfor furthestLeft > 0 && buildings[furthestLeft-1] >= currentHeight {\n\t\t\tfurthestLeft -= 1\n\t\t}\n\n\t\tvar furthestRight = pillarIdx\n\t\tfor furthestRight < len(buildings)-1 && buildings[furthestRight+1] >= currentHeight {\n\t\t\tfurthestRight += 1\n\t\t}\n\n\t\tareaWithCurrentBuilding := (furthestRight - furthestLeft + 1) * currentHeight\n\t\tmaxArea = max(areaWithCurrentBuilding, maxArea)\n\t}\n\n\treturn maxArea\n}\n\nfunc max(a, b int) int {\n\tif a > b {\n\t\treturn a\n\t}\n\treturn b\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n) time | O(n) space - where n is the number of buildings\nfunc LargestRectangleUnderSkyline(buildings []int) int {\n\tpillarIndices := []int{}\n\tvar maxArea = 0\n\n\textendedBuildings := append(buildings, 0)\n\tfor idx := range extendedBuildings {\n\t\theight := extendedBuildings[idx]\n\t\tfor len(pillarIndices) != 0 && buildings[pillarIndices[len(pillarIndices)-1]] >= height {\n\t\t\tvar pillarIndex int\n\t\t\tpillarIndex, pillarIndices = pillarIndices[len(pillarIndices)-1], pillarIndices[:len(pillarIndices)-1]\n\t\t\tpillarHeight := buildings[pillarIndex]\n\t\t\twidth := idx\n\t\t\tif len(pillarIndices) != 0 {\n\t\t\t\twidth = idx - pillarIndices[len(pillarIndices)-1] - 1\n\t\t\t}\n\t\t\tmaxArea = max(width*pillarHeight, maxArea)\n\t\t}\n\n\t\tpillarIndices = append(pillarIndices, idx)\n\t}\n\n\treturn maxArea\n}\n\nfunc max(a, b int) int {\n\tif a > b {\n\t\treturn a\n\t}\n\treturn b\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []int{1, 3, 3, 2, 4, 1, 5, 3, 2}\n\texpected := 9\n\tactual := LargestRectangleUnderSkyline(input)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []int{1, 3, 3, 2, 4, 1, 5, 3, 2}\n\texpected := 9\n\tactual := LargestRectangleUnderSkyline(input)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int largestRectangleUnderSkyline(ArrayList<Integer> buildings) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n^2) time | O(1) space - where n is the number of buildings\n  public int largestRectangleUnderSkyline(ArrayList<Integer> buildings) {\n    int maxArea = 0;\n    for (int pillarIdx = 0; pillarIdx < buildings.size(); pillarIdx++) {\n      int currentHeight = buildings.get(pillarIdx);\n\n      int furthestLeft = pillarIdx;\n      while (furthestLeft > 0\n             && buildings.get(furthestLeft - 1) >= currentHeight) {\n        furthestLeft -= 1;\n      }\n\n      int furthestRight = pillarIdx;\n      while (furthestRight < buildings.size() - 1\n             && buildings.get(furthestRight + 1) >= currentHeight) {\n        furthestRight += 1;\n      }\n\n      int areaWithCurrentBuilding =\n        (furthestRight - furthestLeft + 1) * currentHeight;\n      maxArea = Math.max(areaWithCurrentBuilding, maxArea);\n    }\n\n    return maxArea;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n) time | O(n) space - where n is the number of buildings\n  public int largestRectangleUnderSkyline(ArrayList<Integer> buildings) {\n    Stack<Integer> pillarIndices = new Stack<Integer>();\n    int maxArea = 0;\n\n    ArrayList<Integer> extendedBuildings = new ArrayList<Integer>(buildings);\n    extendedBuildings.add(0);\n    for (int idx = 0; idx < extendedBuildings.size(); idx++) {\n      int height = extendedBuildings.get(idx);\n      while (!pillarIndices.isEmpty()\n             && extendedBuildings.get(pillarIndices.peek()) >= height) {\n        int pillarHeight = extendedBuildings.get(pillarIndices.pop());\n        int width =\n          (pillarIndices.isEmpty()) ? idx : idx - pillarIndices.peek() - 1;\n        maxArea = Math.max(width * pillarHeight, maxArea);\n      }\n\n      pillarIndices.push(idx);\n    }\n\n    return maxArea;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    ArrayList<Integer> input =\n      new ArrayList<Integer>(Arrays.asList(1, 3, 3, 2, 4, 1, 5, 3, 2));\n    int expected = 9;\n    var actual = new Program().largestRectangleUnderSkyline(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    ArrayList<Integer> input =\n      new ArrayList<Integer>(Arrays.asList(1, 3, 3, 2, 4, 1, 5, 3, 2));\n    int expected = 9;\n    var actual = new Program().largestRectangleUnderSkyline(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function largestRectangleUnderSkyline(buildings) {\n  // Write your code here.\n  return 0;\n}\n\n// Do not edit the line below.\nexports.largestRectangleUnderSkyline = largestRectangleUnderSkyline;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^2) time | O(1) space - where n is the number of buildings\nfunction largestRectangleUnderSkyline(buildings) {\n  let maxArea = 0;\n  for (let pillarIdx = 0; pillarIdx < buildings.length; pillarIdx++) {\n    const currentHeight = buildings[pillarIdx];\n\n    let furthestLeft = pillarIdx;\n    while (furthestLeft > 0 && buildings[furthestLeft - 1] >= currentHeight) {\n      furthestLeft--;\n    }\n\n    let furthestRight = pillarIdx;\n    while (furthestLeft < buildings.length - 1 && buildings[furthestRight + 1] >= currentHeight) {\n      furthestRight++;\n    }\n\n    const areaWithCurrentBuilding = (furthestRight - furthestLeft + 1) * currentHeight;\n    maxArea = Math.max(areaWithCurrentBuilding, maxArea);\n  }\n\n  return maxArea;\n}\n\n// Do not edit the line below.\nexports.largestRectangleUnderSkyline = largestRectangleUnderSkyline;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space - where n is the number of buildings\nfunction largestRectangleUnderSkyline(buildings) {\n  const pillarIndices = [];\n  let maxArea = 0;\n\n  const extendedBuildings = buildings.concat([0]);\n  for (let idx = 0; idx < extendedBuildings.length; idx++) {\n    const height = extendedBuildings[idx];\n    while (\n      pillarIndices.length !== 0 &&\n      extendedBuildings[pillarIndices[pillarIndices.length - 1]] >= height\n    ) {\n      const pillarHeight = extendedBuildings[pillarIndices.pop()];\n      const width =\n        pillarIndices.length === 0 ? idx : idx - pillarIndices[pillarIndices.length - 1] - 1;\n      maxArea = Math.max(width * pillarHeight, maxArea);\n    }\n    pillarIndices.push(idx);\n  }\n\n  return maxArea;\n}\n\n// Do not edit the line below.\nexports.largestRectangleUnderSkyline = largestRectangleUnderSkyline;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [1, 3, 3, 2, 4, 1, 5, 3, 2];\n  const expected = 9;\n  const actual = program.largestRectangleUnderSkyline(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [1, 3, 3, 2, 4, 1, 5, 3, 2];\n  const expected = 9;\n  const actual = program.largestRectangleUnderSkyline(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun largestRectangleUnderSkyline(buildings: List<Int>): Int {\n    // Write your code here.\n    return -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.max\n\n// O(n^2) time | O(1) space - where n is the number of buildings\nfun largestRectangleUnderSkyline(buildings: List<Int>): Int {\n    var maxArea = 0\n    for (pillarIdx in 0 until buildings.size) {\n        val currentHeight = buildings[pillarIdx]\n\n        var furthestLeft = pillarIdx\n        while (furthestLeft > 0 && buildings[furthestLeft - 1] >= currentHeight) {\n            furthestLeft -= 1\n        }\n\n        var furthestRight = pillarIdx\n        while (furthestRight < buildings.size - 1 && buildings[furthestRight + 1] >= currentHeight) {\n            furthestRight += 1\n        }\n\n        val areaWithCurrentBuilding = (furthestRight - furthestLeft + 1) * currentHeight\n        maxArea = max(areaWithCurrentBuilding, maxArea)\n    }\n\n    return maxArea\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.max\n\n// O(n) time | O(n) space - where n is the number of buildings\nfun largestRectangleUnderSkyline(buildings: List<Int>): Int {\n    val pillarIndices = mutableListOf<Int>()\n    var maxArea = 0\n\n    val extendedBuildings = buildings.plus(listOf(0))\n    for (idx in 0 until extendedBuildings.size) {\n        val height = extendedBuildings[idx]\n        while (pillarIndices.size != 0 && buildings[pillarIndices[pillarIndices.size - 1]] >= height) {\n            val pillarHeight = buildings[pillarIndices.removeAt(pillarIndices.size - 1)]\n            val width = if (pillarIndices.size == 0) idx else idx - pillarIndices[pillarIndices.size - 1] - 1\n            maxArea = max(width * pillarHeight, maxArea)\n        }\n\n        pillarIndices.add(idx)\n    }\n\n    return maxArea\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.largestRectangleUnderSkyline\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(1, 3, 3, 2, 4, 1, 5, 3, 2)\n        val expected = 9\n        val output = largestRectangleUnderSkyline(input)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.largestRectangleUnderSkyline\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(1, 3, 3, 2, 4, 1, 5, 3, 2)\n        val expected = 9\n        val output = largestRectangleUnderSkyline(input)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def largestRectangleUnderSkyline(buildings):\n    # Write your code here.\n    return 0\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n^2) time | O(1) space - where n is the number of buildings\ndef largestRectangleUnderSkyline(buildings):\n    maxArea = 0\n    for pillarIdx in range(len(buildings)):\n        currentHeight = buildings[pillarIdx]\n\n        furthestLeft = pillarIdx\n        while furthestLeft > 0 and buildings[furthestLeft - 1] >= currentHeight:\n            furthestLeft -= 1\n\n        furthestRight = pillarIdx\n        while furthestRight < len(buildings) - 1 and buildings[furthestRight + 1] >= currentHeight:\n            furthestRight += 1\n\n        areaWithCurrentBuilding = (furthestRight - furthestLeft + 1) * currentHeight\n        maxArea = max(areaWithCurrentBuilding, maxArea)\n\n    return maxArea\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(n) space - where n is the number of buildings\ndef largestRectangleUnderSkyline(buildings):\n    pillarIndices = []\n    maxArea = 0\n\n    for idx, height in enumerate(buildings + [0]):\n        while (\n            len(pillarIndices) != 0 and buildings[pillarIndices[len(pillarIndices) - 1]] >= height\n        ):\n            pillarHeight = buildings[pillarIndices.pop()]\n            width = (\n                idx if len(pillarIndices) == 0 else idx - pillarIndices[len(pillarIndices) - 1] - 1\n            )\n            maxArea = max(width * pillarHeight, maxArea)\n\n        pillarIndices.append(idx)\n\n    return maxArea\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [1, 3, 3, 2, 4, 1, 5, 3, 2]\n        expected = 9\n        actual = program.largestRectangleUnderSkyline(input)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [1, 3, 3, 2, 4, 1, 5, 3, 2]\n        expected = 9\n        actual = program.largestRectangleUnderSkyline(input)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "class Program\n  def largestRectangleUnderSkyline(buildings)\n    # Write your code here.\n    return -1\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def largestRectangleUnderSkyline(buildings)\n    # Write your code here.\n    return -1\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.largestRectangleUnderSkyline\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.largestRectangleUnderSkyline\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func largestRectangleUnderSkyline(_ buildings: [Int]) -> Int {\n    // Write your code here.\n    return -1\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n^2) time | O(1) space - where n is the number of buildings\n  func largestRectangleUnderSkyline(_ buildings: [Int]) -> Int {\n    var maxArea = 0\n    for pillarIdx in stride(from: 0, to: buildings.count, by: 1) {\n      let currentHeight = buildings[pillarIdx]\n\n      var furthestLeft = pillarIdx\n      while furthestLeft > 0, buildings[furthestLeft - 1] >= currentHeight {\n        furthestLeft -= 1\n      }\n\n      var furthestRight = pillarIdx\n      while furthestRight < buildings.count - 1, buildings[furthestRight + 1] >= currentHeight {\n        furthestRight += 1\n      }\n\n      let areaWithCurrentBuilding = (furthestRight - furthestLeft + 1) * currentHeight\n      maxArea = max(areaWithCurrentBuilding, maxArea)\n    }\n\n    return maxArea\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(n) space - where n is the number of buildings\n  func largestRectangleUnderSkyline(_ buildings: [Int]) -> Int {\n    var pillarIndices = [Int]()\n    var maxArea = 0\n\n    var extendedBuildings = buildings\n    extendedBuildings.append(0)\n    for (idx, height) in extendedBuildings.enumerated() {\n      while pillarIndices.count != 0, buildings[pillarIndices[pillarIndices.count - 1]] >= height {\n        let pillarHeight = buildings[pillarIndices.removeLast()]\n        var width = idx\n        if pillarIndices.count != 0 {\n          width = idx - pillarIndices[pillarIndices.count - 1] - 1\n        }\n        maxArea = max(width * pillarHeight, maxArea)\n      }\n\n      pillarIndices.append(idx)\n    }\n\n    return maxArea\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let input = [1, 3, 3, 2, 4, 1, 5, 3, 2]\n      let expected = 9\n      var actual = Program().largestRectangleUnderSkyline(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      let input = [1, 3, 3, 2, 4, 1, 5, 3, 2]\n      let expected = 9\n      var actual = Program().largestRectangleUnderSkyline(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function largestRectangleUnderSkyline(buildings: number[]) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^2) time | O(1) space - where n is the number of buildings\nexport function largestRectangleUnderSkyline(buildings: number[]) {\n  let maxArea = 0;\n  for (let pillarIdx = 0; pillarIdx < buildings.length; pillarIdx++) {\n    const currentHeight = buildings[pillarIdx];\n\n    let furthestLeft = pillarIdx;\n    while (furthestLeft > 0 && buildings[furthestLeft - 1] >= currentHeight) {\n      furthestLeft--;\n    }\n\n    let furthestRight = pillarIdx;\n    while (furthestLeft < buildings.length - 1 && buildings[furthestRight + 1] >= currentHeight) {\n      furthestRight++;\n    }\n\n    const areaWithCurrentBuilding = (furthestRight - furthestLeft + 1) * currentHeight;\n    maxArea = Math.max(areaWithCurrentBuilding, maxArea);\n  }\n\n  return maxArea;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space - where n is the number of buildings\nexport function largestRectangleUnderSkyline(buildings: number[]) {\n  const pillarIndices: number[] = [];\n  let maxArea = 0;\n\n  const extendedBuildings = buildings.concat([0]);\n  for (let idx = 0; idx < extendedBuildings.length; idx++) {\n    const height = extendedBuildings[idx];\n    while (\n      pillarIndices.length !== 0 &&\n      extendedBuildings[pillarIndices[pillarIndices.length - 1]] >= height\n    ) {\n      const pillarHeight = extendedBuildings[pillarIndices.pop()!];\n      const width =\n        pillarIndices.length === 0 ? idx : idx - pillarIndices[pillarIndices.length - 1] - 1;\n      maxArea = Math.max(width * pillarHeight, maxArea);\n    }\n    pillarIndices.push(idx);\n  }\n\n  return maxArea;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [1, 3, 3, 2, 4, 1, 5, 3, 2];\n  const expected = 9;\n  const actual = program.largestRectangleUnderSkyline(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [1, 3, 3, 2, 4, 1, 5, 3, 2];\n  const expected = 9;\n  const actual = program.largestRectangleUnderSkyline(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "buildings",
+            "example": [
+                1,
+                3,
+                3,
+                2,
+                4,
+                1,
+                5,
+                3,
+                2
+            ],
+            "schema": {
+                "items": {
+                    "minimum": 1,
+                    "type": "integer"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "buildings": [
+                1,
+                3,
+                3,
+                2,
+                4,
+                1,
+                5,
+                3,
+                2
+            ]
+        },
+        {
+            "buildings": [
+                4,
+                4,
+                4,
+                2,
+                2,
+                1
+            ]
+        },
+        {
+            "buildings": [
+                1,
+                3,
+                3,
+                2,
+                4,
+                1,
+                5,
+                3
+            ]
+        },
+        {
+            "buildings": [
+                5,
+                5,
+                2,
+                2,
+                4,
+                1
+            ]
+        },
+        {
+            "buildings": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                11
+            ]
+        },
+        {
+            "buildings": [
+                25,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ]
+        },
+        {
+            "buildings": [
+                20,
+                2,
+                2,
+                2,
+                2,
+                2,
+                10,
+                5,
+                5,
+                5,
+                4,
+                4
+            ]
+        },
+        {
+            "buildings": [
+                5,
+                10,
+                5,
+                15,
+                10,
+                25
+            ]
+        },
+        {
+            "buildings": [
+                1,
+                1,
+                1,
+                1
+            ]
+        },
+        {
+            "buildings": [
+                10,
+                21
+            ]
+        },
+        {
+            "buildings": [
+                11,
+                21
+            ]
+        },
+        {
+            "buildings": [
+                3,
+                3,
+                3,
+                4,
+                4,
+                4,
+                1,
+                3,
+                1,
+                2,
+                8,
+                9,
+                1
+            ]
+        },
+        {
+            "buildings": [
+                5
+            ]
+        },
+        {
+            "buildings": [
+                10,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+            ]
+        },
+        {
+            "buildings": [
+                10,
+                1,
+                2,
+                3,
+                3,
+                5,
+                6,
+                7
+            ]
+        },
+        {
+            "buildings": []
+        }
+    ],
+    "jsonTests": [
+        {
+            "buildings": [
+                1,
+                3,
+                3,
+                2,
+                4,
+                1,
+                5,
+                3,
+                2
+            ]
+        },
+        {
+            "buildings": [
+                4,
+                4,
+                4,
+                2,
+                2,
+                1
+            ]
+        },
+        {
+            "buildings": [
+                1,
+                3,
+                3,
+                2,
+                4,
+                1,
+                5,
+                3
+            ]
+        },
+        {
+            "buildings": [
+                5,
+                5,
+                2,
+                2,
+                4,
+                1
+            ]
+        },
+        {
+            "buildings": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                11
+            ]
+        },
+        {
+            "buildings": [
+                25,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ]
+        },
+        {
+            "buildings": [
+                20,
+                2,
+                2,
+                2,
+                2,
+                2,
+                10,
+                5,
+                5,
+                5,
+                4,
+                4
+            ]
+        },
+        {
+            "buildings": [
+                5,
+                10,
+                5,
+                15,
+                10,
+                25
+            ]
+        },
+        {
+            "buildings": [
+                1,
+                1,
+                1,
+                1
+            ]
+        },
+        {
+            "buildings": [
+                10,
+                21
+            ]
+        },
+        {
+            "buildings": [
+                11,
+                21
+            ]
+        },
+        {
+            "buildings": [
+                3,
+                3,
+                3,
+                4,
+                4,
+                4,
+                1,
+                3,
+                1,
+                2,
+                8,
+                9,
+                1
+            ]
+        },
+        {
+            "buildings": [
+                5
+            ]
+        },
+        {
+            "buildings": [
+                10,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+            ]
+        },
+        {
+            "buildings": [
+                10,
+                1,
+                2,
+                3,
+                3,
+                5,
+                6,
+                7
+            ]
+        },
+        {
+            "buildings": []
+        }
+    ],
+    "changelog": []
+}

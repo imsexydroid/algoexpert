@@ -1,0 +1,585 @@
+{
+    "uid": "maximize-expression",
+    "testStrategy": "JSON",
+    "name": "Maximize Expression",
+    "version": 0,
+    "releaseDate": "2021-04-14T00:00:00Z",
+    "category": "Dynamic Programming",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": true,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 5569,
+        "failureCount": 1141
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "533398712",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Tim Ruscica",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1357
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Write a function that takes in an array of integers and returns the largest\n  possible value for the expression\n  <span>array[a] - array[b] + array[c] - array[d]</span>, where <span>a</span>,\n  <span>b</span>, <span>c</span>, and <span>d</span> are indices of the array\n  and <span>a &lt; b &lt; c &lt; d</span>.\n</p>\n<p>\n  If the input array has fewer than <span>4</span> elements, your function\n  should return <span>0</span>.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">array</span> = [3, 6, 1, -3, 2, 7]\n</pre>\n<h3>Sample Output</h3>\n<pre>\n4\n<span class=\"CodeEditor-promptComment\">// Choose a = 1, b = 3, c = 4, and d = 5</span>\n<span class=\"CodeEditor-promptComment\">// -> 6 - (-3) + 2 - 7 = 4</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  The brute-force approach to solving this problem is to simply iterate through\n  every valid choice of <span>a</span>, <span>b</span>, <span>c</span>, and\n  <span>d</span> and to evaluate the expression at each iteration. While doing\n  this, you can keep track of the maximum value that you find and return it\n  after considering all possibilities. This solution runs in\n  <span>O(n^4)</span> time; can you think of a way to solve this faster?\n</p>\n",
+        "\n<p>\n  You can solve this problem using dynamic programming with a time complexity of\n  <span>O(n)</span>; however, you'll need to use external space.\n</p>\n",
+        "\n<p>\n  If you know what the maximum possible value of <span>a</span> is at each index\n  in the array, you can find the maximum possible value of <span>a - b</span> at\n  each individual index in the array in <span>O(1)</span> time (or in\n  <span>O(n)</span> time for all indices). The same thing holds for finding the\n  maximum possible value of <span>a - b + c</span> if you know the maximum\n  possible value of <span>a - b</span> at each index. How does this fact help\n  you solve the entire problem in <span>O(n)</span> time?\n</p>\n",
+        "\n<p>\n  Start by finding the maximum possible value of <span>a</span> at each index in\n  the array, meaning the maximum value of <span>a</span> that you can obtain at\n  each index <span>i</span> if <span>a</span> is chosen from an index between\n  <span>0</span> and <span>i</span>, inclusive. Store all of these values in an\n  array, and use them to help you determine the maximum possible value of\n  <span>a - b</span> at each index. Do the same for\n  <span>a - b + c</span> (using the results from <span>a - b</span>) and\n  <span>a - b + c - d</span> (using the results from <span>a - b + c</span>).\n  Once you make it to <span>a - b + c - d</span>, you'll be able to determine\n  the maximum value of the expression.\n</p>"
+    ],
+    "spaceTime": "O(n) time | O(n) space - where n is the length of the array",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\nusing namespace std;\n\nint maximizeExpression(vector<int> array) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n#include <limits>\n#include <vector>\nusing namespace std;\n\nint evaluateExpression(int a, int b, int c, int d);\n\n// O(n^4) time | O(1) space - where n is the length of the array\nint maximizeExpression(vector<int> array) {\n  if (array.size() < 4) {\n    return 0;\n  }\n\n  int maximumValueFound = numeric_limits<int>::min();\n\n  for (int a = 0; a < array.size(); a++) {\n    int aValue = array[a];\n    for (int b = a + 1; b < array.size(); b++) {\n      int bValue = array[b];\n      for (int c = b + 1; c < array.size(); c++) {\n        int cValue = array[c];\n        for (int d = c + 1; d < array.size(); d++) {\n          int dValue = array[d];\n          int expressionValue =\n            evaluateExpression(aValue, bValue, cValue, dValue);\n          maximumValueFound = max(expressionValue, maximumValueFound);\n        }\n      }\n    }\n  }\n\n  return maximumValueFound;\n}\n\nint evaluateExpression(int a, int b, int c, int d) { return a - b + c - d; }\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n#include <limits>\n#include <vector>\nusing namespace std;\n\n// O(n) time | O(n) space - where n is the length of the array\nint maximizeExpression(vector<int> array) {\n  if (array.size() < 4) {\n    return 0;\n  }\n\n  vector<int> maxOfA = {array[0]};\n  vector<int> maxOfAMinusB = {numeric_limits<int>::min()};\n  vector<int> maxOfAMinusBPlusC(2, numeric_limits<int>::min());\n  vector<int> maxOfAMinusBPlusCMinusD(3, numeric_limits<int>::min());\n\n  for (int idx = 1; idx < array.size(); idx++) {\n    int currentMax = max(maxOfA[idx - 1], array[idx]);\n    maxOfA.push_back(currentMax);\n  }\n\n  for (int idx = 1; idx < array.size(); idx++) {\n    int currentMax = max(maxOfAMinusB[idx - 1], maxOfA[idx - 1] - array[idx]);\n    maxOfAMinusB.push_back(currentMax);\n  }\n\n  for (int idx = 2; idx < array.size(); idx++) {\n    int currentMax =\n      max(maxOfAMinusBPlusC[idx - 1], maxOfAMinusB[idx - 1] + array[idx]);\n    maxOfAMinusBPlusC.push_back(currentMax);\n  }\n\n  for (int idx = 3; idx < array.size(); idx++) {\n    int currentMax = max(\n      maxOfAMinusBPlusCMinusD[idx - 1], maxOfAMinusBPlusC[idx - 1] - array[idx]\n    );\n    maxOfAMinusBPlusCMinusD.push_back(currentMax);\n  }\n\n  return maxOfAMinusBPlusCMinusD[maxOfAMinusBPlusCMinusD.size() - 1];\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input = {3, 6, 1, -3, 2, 7};\n      auto expected = 4;\n      auto actual = maximizeExpression(input);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input = {3, 6, 1, -3, 2, 7};\n      auto expected = 4;\n      auto actual = maximizeExpression(input);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int MaximizeExpression(int[] array) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(n^4) time | O(1) space - where n is the length of the array\n  public int MaximizeExpression(int[] array) {\n    if (array.Length < 4) {\n      return 0;\n    }\n\n    int maximumValueFound = Int32.MinValue;\n\n    for (int a = 0; a < array.Length; a++) {\n      int aValue = array[a];\n      for (int b = a + 1; b < array.Length; b++) {\n        int bValue = array[b];\n        for (int c = b + 1; c < array.Length; c++) {\n          int cValue = array[c];\n          for (int d = c + 1; d < array.Length; d++) {\n            int dValue = array[d];\n            int expressionValue =\n              evaluateExpression(aValue, bValue, cValue, dValue);\n            maximumValueFound = Math.Max(expressionValue, maximumValueFound);\n          }\n        }\n      }\n    }\n\n    return maximumValueFound;\n  }\n\n  public int evaluateExpression(int a, int b, int c, int d) {\n    return a - b + c - d;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n) time | O(n) space - where n is the length of the array\n  public int MaximizeExpression(int[] array) {\n    if (array.Length < 4) {\n      return 0;\n    }\n\n    List<int> maxOfA = new List<int> { array[0] };\n    List<int> maxOfAMinusB = new List<int> { Int32.MinValue };\n    List<int> maxOfAMinusBPlusC =\n      new List<int> { Int32.MinValue, Int32.MinValue };\n    List<int> maxOfAMinusBPlusCMinusD =\n      new List<int> { Int32.MinValue, Int32.MinValue, Int32.MinValue };\n\n    for (int idx = 1; idx < array.Length; idx++) {\n      int currentMax = Math.Max(maxOfA[idx - 1], array[idx]);\n      maxOfA.Add(currentMax);\n    }\n\n    for (int idx = 1; idx < array.Length; idx++) {\n      int currentMax =\n        Math.Max(maxOfAMinusB[idx - 1], maxOfA[idx - 1] - array[idx]);\n      maxOfAMinusB.Add(currentMax);\n    }\n\n    for (int idx = 2; idx < array.Length; idx++) {\n      int currentMax = Math.Max(\n        maxOfAMinusBPlusC[idx - 1], maxOfAMinusB[idx - 1] + array[idx]\n      );\n      maxOfAMinusBPlusC.Add(currentMax);\n    }\n\n    for (int idx = 3; idx < array.Length; idx++) {\n      int currentMax = Math.Max(\n        maxOfAMinusBPlusCMinusD[idx - 1],\n        maxOfAMinusBPlusC[idx - 1] - array[idx]\n      );\n      maxOfAMinusBPlusCMinusD.Add(currentMax);\n    }\n\n    return maxOfAMinusBPlusCMinusD[maxOfAMinusBPlusCMinusD.Count - 1];\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] input = new int[] { 3, 6, 1, -3, 2, 7 };\n    int expected = 4;\n    var actual = new Program().MaximizeExpression(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] input = new int[] { 3, 6, 1, -3, 2, 7 };\n    int expected = 4;\n    var actual = new Program().MaximizeExpression(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc MaximizeExpression(array []int) int {\n\t// Write your code here.\n\treturn -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport (\n\t\"math\"\n)\n\n// O(n^4) time | O(1) space - where n is the length of the array\nfunc MaximizeExpression(array []int) int {\n\tif len(array) < 4 {\n\t\treturn 0\n\t}\n\n\tvar maximumValueFound = math.MinInt32\n\n\tfor a := range array {\n\t\taValue := array[a]\n\t\tfor b := a + 1; b < len(array); b++ {\n\t\t\tbValue := array[b]\n\t\t\tfor c := b + 1; c < len(array); c++ {\n\t\t\t\tcValue := array[c]\n\t\t\t\tfor d := c + 1; d < len(array); d++ {\n\t\t\t\t\tdValue := array[d]\n\t\t\t\t\texpressionValue := evaluateExpression(aValue, bValue, cValue, dValue)\n\t\t\t\t\tmaximumValueFound = max(expressionValue, maximumValueFound)\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\n\treturn maximumValueFound\n}\n\nfunc evaluateExpression(a, b, c, d int) int {\n\treturn a - b + c - d\n}\n\nfunc max(a, b int) int {\n\tif a > b {\n\t\treturn a\n\t}\n\treturn b\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\nimport (\n\t\"math\"\n)\n\n// O(n) time | O(n) space - where n is the length of the array\nfunc MaximizeExpression(array []int) int {\n\tif len(array) < 4 {\n\t\treturn 0\n\t}\n\n\tmaxOfA := []int{array[0]}\n\tmaxOfAMinusB := []int{math.MinInt32}\n\tmaxOfAMinusBPlusC := []int{math.MinInt32, math.MinInt32}\n\tmaxOfAMinusBPlusCMinusD := []int{math.MinInt32, math.MinInt32, math.MinInt32}\n\n\tfor idx := 1; idx < len(array); idx++ {\n\t\tcurrentMax := max(maxOfA[idx-1], array[idx])\n\t\tmaxOfA = append(maxOfA, currentMax)\n\t}\n\n\tfor idx := 1; idx < len(array); idx++ {\n\t\tcurrentMax := max(maxOfAMinusB[idx-1], maxOfA[idx-1]-array[idx])\n\t\tmaxOfAMinusB = append(maxOfAMinusB, currentMax)\n\t}\n\n\tfor idx := 2; idx < len(array); idx++ {\n\t\tcurrentMax := max(\n\t\t\tmaxOfAMinusBPlusC[idx-1], maxOfAMinusB[idx-1]+array[idx])\n\t\tmaxOfAMinusBPlusC = append(maxOfAMinusBPlusC, currentMax)\n\t}\n\n\tfor idx := 3; idx < len(array); idx++ {\n\t\tcurrentMax := max(\n\t\t\tmaxOfAMinusBPlusCMinusD[idx-1], maxOfAMinusBPlusC[idx-1]-array[idx])\n\t\tmaxOfAMinusBPlusCMinusD = append(maxOfAMinusBPlusCMinusD, currentMax)\n\t}\n\n\treturn maxOfAMinusBPlusCMinusD[len(maxOfAMinusBPlusCMinusD)-1]\n}\n\nfunc max(a, b int) int {\n\tif a > b {\n\t\treturn a\n\t}\n\treturn b\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []int{3, 6, 1, -3, 2, 7}\n\texpected := 4\n\tactual := MaximizeExpression(input)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []int{3, 6, 1, -3, 2, 7}\n\texpected := 4\n\tactual := MaximizeExpression(input)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int maximizeExpression(int[] array) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n^4) time | O(1) space - where n is the length of the array\n  public int maximizeExpression(int[] array) {\n    if (array.length < 4) {\n      return 0;\n    }\n\n    int maximumValueFound = Integer.MIN_VALUE;\n\n    for (int a = 0; a < array.length; a++) {\n      int aValue = array[a];\n      for (int b = a + 1; b < array.length; b++) {\n        int bValue = array[b];\n        for (int c = b + 1; c < array.length; c++) {\n          int cValue = array[c];\n          for (int d = c + 1; d < array.length; d++) {\n            int dValue = array[d];\n            int expressionValue =\n              evaluateExpression(aValue, bValue, cValue, dValue);\n            maximumValueFound = Math.max(expressionValue, maximumValueFound);\n          }\n        }\n      }\n    }\n\n    return maximumValueFound;\n  }\n\n  public int evaluateExpression(int a, int b, int c, int d) {\n    return a - b + c - d;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n) time | O(n) space - where n is the length of the array\n  public int maximizeExpression(int[] array) {\n    if (array.length < 4) {\n      return 0;\n    }\n\n    ArrayList<Integer> maxOfA = new ArrayList<Integer>(Arrays.asList(array[0]));\n    ArrayList<Integer> maxOfAMinusB =\n      new ArrayList<Integer>(Arrays.asList(Integer.MIN_VALUE));\n    ArrayList<Integer> maxOfAMinusBPlusC =\n      new ArrayList<Integer>(Arrays.asList(Integer.MIN_VALUE, Integer.MIN_VALUE)\n      );\n    ArrayList<Integer> maxOfAMinusBPlusCMinusD = new ArrayList<Integer>(\n      Arrays.asList(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE)\n    );\n\n    for (int idx = 1; idx < array.length; idx++) {\n      int currentMax = Math.max(maxOfA.get(idx - 1), array[idx]);\n      maxOfA.add(currentMax);\n    }\n\n    for (int idx = 1; idx < array.length; idx++) {\n      int currentMax =\n        Math.max(maxOfAMinusB.get(idx - 1), maxOfA.get(idx - 1) - array[idx]);\n      maxOfAMinusB.add(currentMax);\n    }\n\n    for (int idx = 2; idx < array.length; idx++) {\n      int currentMax = Math.max(\n        maxOfAMinusBPlusC.get(idx - 1), maxOfAMinusB.get(idx - 1) + array[idx]\n      );\n      maxOfAMinusBPlusC.add(currentMax);\n    }\n\n    for (int idx = 3; idx < array.length; idx++) {\n      int currentMax = Math.max(\n        maxOfAMinusBPlusCMinusD.get(idx - 1),\n        maxOfAMinusBPlusC.get(idx - 1) - array[idx]\n      );\n      maxOfAMinusBPlusCMinusD.add(currentMax);\n    }\n\n    return maxOfAMinusBPlusCMinusD.get(maxOfAMinusBPlusCMinusD.size() - 1);\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] input = new int[] {3, 6, 1, -3, 2, 7};\n    int expected = 4;\n    var actual = new Program().maximizeExpression(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] input = new int[] {3, 6, 1, -3, 2, 7};\n    int expected = 4;\n    var actual = new Program().maximizeExpression(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function maximizeExpression(array) {\n  // Write your code here.\n  return -1;\n}\n\n// Do not edit the line below.\nexports.maximizeExpression = maximizeExpression;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^4) time | O(1) space - where n is the length of the array\nfunction maximizeExpression(array) {\n  if (array.length < 4) return 0;\n\n  let maximumValueFound = -Infinity;\n\n  for (let a = 0; a < array.length; a++) {\n    const aValue = array[a];\n    for (let b = a + 1; b < array.length; b++) {\n      const bValue = array[b];\n      for (let c = b + 1; c < array.length; c++) {\n        const cValue = array[c];\n        for (let d = c + 1; d < array.length; d++) {\n          const dValue = array[d];\n          const expressionValue = evaluateExpression(aValue, bValue, cValue, dValue);\n          maximumValueFound = Math.max(expressionValue, maximumValueFound);\n        }\n      }\n    }\n  }\n\n  return maximumValueFound;\n}\n\nfunction evaluateExpression(a, b, c, d) {\n  return a - b + c - d;\n}\n\n// Do not edit the line below.\nexports.maximizeExpression = maximizeExpression;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space - where n is the length of the array\nfunction maximizeExpression(array) {\n  if (array.length < 4) return 0;\n\n  const maxOfA = new Array(1).fill(array[0]);\n  const maxOfAMinusB = new Array(1).fill(-Infinity);\n  const maxOfAMinusBPlusC = new Array(2).fill(-Infinity);\n  const maxOfAMinusBPlusCMinusD = new Array(3).fill(-Infinity);\n\n  for (let idx = 1; idx < array.length; idx++) {\n    const currentMax = Math.max(maxOfA[idx - 1], array[idx]);\n    maxOfA.push(currentMax);\n  }\n\n  for (let idx = 1; idx < array.length; idx++) {\n    const currentMax = Math.max(maxOfAMinusB[idx - 1], maxOfA[idx - 1] - array[idx]);\n    maxOfAMinusB.push(currentMax);\n  }\n\n  for (let idx = 2; idx < array.length; idx++) {\n    const currentMax = Math.max(maxOfAMinusBPlusC[idx - 1], maxOfAMinusB[idx - 1] + array[idx]);\n    maxOfAMinusBPlusC.push(currentMax);\n  }\n\n  for (let idx = 3; idx < array.length; idx++) {\n    const currentMax = Math.max(\n      maxOfAMinusBPlusCMinusD[idx - 1],\n      maxOfAMinusBPlusC[idx - 1] - array[idx],\n    );\n    maxOfAMinusBPlusCMinusD.push(currentMax);\n  }\n\n  return maxOfAMinusBPlusCMinusD[maxOfAMinusBPlusCMinusD.length - 1];\n}\n\n// Do not edit the line below.\nexports.maximizeExpression = maximizeExpression;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [3, 6, 1, -3, 2, 7];\n  const expected = 4;\n  const actual = program.maximizeExpression(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [3, 6, 1, -3, 2, 7];\n  const expected = 4;\n  const actual = program.maximizeExpression(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun maximizeExpression(array: List<Int>): Int {\n    // Write your code here.\n    return -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.max\n\n// O(n^4) time | O(1) space - where n is the length of the array\nfun maximizeExpression(array: List<Int>): Int {\n    if (array.size < 4) return 0\n\n    var maximumValueFound = Int.MIN_VALUE\n\n    for (a in 0 until array.size) {\n        val aValue = array[a]\n        for (b in a + 1 until array.size) {\n            val bValue = array[b]\n            for (c in b + 1 until array.size) {\n                val cValue = array[c]\n                for (d in c + 1 until array.size) {\n                    val dValue = array[d]\n                    val expressionValue = evaluateExpression(aValue, bValue, cValue, dValue)\n                    maximumValueFound = max(expressionValue, maximumValueFound)\n                }\n            }\n        }\n    }\n\n    return maximumValueFound\n}\n\nfun evaluateExpression(a: Int, b: Int, c: Int, d: Int): Int {\n    return a - b + c - d\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.max\n\n// O(n) time | O(n) space - where n is the length of the array\nfun maximizeExpression(array: List<Int>): Int {\n    if (array.size < 4) return 0\n\n    val maxOfA = MutableList(1) { array[0] }\n    val maxOfAMinusB = MutableList(1) { Int.MIN_VALUE }\n    val maxOfAMinusBPlusC = MutableList(2) { Int.MIN_VALUE }\n    val maxOfAMinusBPlusCMinusD = MutableList(3) { Int.MIN_VALUE }\n\n    for (idx in 1 until array.size) {\n        val currentMax = max(maxOfA[idx - 1], array[idx])\n        maxOfA.add(currentMax)\n    }\n\n    for (idx in 1 until array.size) {\n        val currentMax = max(maxOfAMinusB[idx - 1], maxOfA[idx - 1] - array[idx])\n        maxOfAMinusB.add(currentMax)\n    }\n\n    for (idx in 2 until array.size) {\n        val currentMax = max(\n            maxOfAMinusBPlusC[idx - 1],\n            maxOfAMinusB[idx - 1] + array[idx],\n        )\n        maxOfAMinusBPlusC.add(currentMax)\n    }\n\n    for (idx in 3 until array.size) {\n        val currentMax = max(\n            maxOfAMinusBPlusCMinusD[idx - 1],\n            maxOfAMinusBPlusC[idx - 1] - array[idx],\n        )\n        maxOfAMinusBPlusCMinusD.add(currentMax)\n    }\n\n    return maxOfAMinusBPlusCMinusD[maxOfAMinusBPlusCMinusD.size - 1]\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.maximizeExpression\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(3, 6, 1, -3, 2, 7)\n        val expected = 4\n        val output = maximizeExpression(input)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.maximizeExpression\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(3, 6, 1, -3, 2, 7)\n        val expected = 4\n        val output = maximizeExpression(input)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def maximizeExpression(array):\n    # Write your code here.\n    return -1\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n^4) time | O(1) space - where n is the length of the array\ndef maximizeExpression(array):\n    if len(array) < 4:\n        return 0\n\n    maximumValueFound = float(\"-inf\")\n\n    for a in range(len(array)):\n        aValue = array[a]\n        for b in range(a + 1, len(array)):\n            bValue = array[b]\n            for c in range(b + 1, len(array)):\n                cValue = array[c]\n                for d in range(c + 1, len(array)):\n                    dValue = array[d]\n                    expressionValue = evaluateExpression(aValue, bValue, cValue, dValue)\n                    maximumValueFound = max(expressionValue, maximumValueFound)\n\n    return maximumValueFound\n\n\ndef evaluateExpression(a, b, c, d):\n    return a - b + c - d\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(n) space - where n is the length of the array\ndef maximizeExpression(array):\n    if len(array) < 4:\n        return 0\n\n    maxOfA = [array[0]]\n    maxOfAMinusB = [float(\"-inf\")]\n    maxOfAMinusBPlusC = [float(\"-inf\")] * 2\n    maxOfAMinusBPlusCMinusD = [float(\"-inf\")] * 3\n\n    for idx in range(1, len(array)):\n        currentMax = max(maxOfA[idx - 1], array[idx])\n        maxOfA.append(currentMax)\n\n    for idx in range(1, len(array)):\n        currentMax = max(maxOfAMinusB[idx - 1], maxOfA[idx - 1] - array[idx])\n        maxOfAMinusB.append(currentMax)\n\n    for idx in range(2, len(array)):\n        currentMax = max(maxOfAMinusBPlusC[idx - 1], maxOfAMinusB[idx - 1] + array[idx])\n        maxOfAMinusBPlusC.append(currentMax)\n\n    for idx in range(3, len(array)):\n        currentMax = max(maxOfAMinusBPlusCMinusD[idx - 1], maxOfAMinusBPlusC[idx - 1] - array[idx])\n        maxOfAMinusBPlusCMinusD.append(currentMax)\n\n    return maxOfAMinusBPlusCMinusD[len(maxOfAMinusBPlusCMinusD) - 1]\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [3, 6, 1, -3, 2, 7]\n        expected = 4\n        actual = program.maximizeExpression(input)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [3, 6, 1, -3, 2, 7]\n        expected = 4\n        actual = program.maximizeExpression(input)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "class Program\n  def maximizeExpression(array)\n    # Write your code here.\n    return -1\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def maximizeExpression(array)\n    # Write your code here.\n    return -1\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.maximizeExpression\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.maximizeExpression\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func maximizeExpression(_ array: [Int]) -> Int {\n    // Write your code here.\n    return -1\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n^4) time | O(1) space - where n is the length of the array\n  func maximizeExpression(_ array: [Int]) -> Int {\n    if array.count < 4 {\n      return 0\n    }\n\n    var maximumValueFound = Int.min\n\n    for a in stride(from: 0, to: array.count, by: 1) {\n      let aValue = array[a]\n      for b in stride(from: a + 1, to: array.count, by: 1) {\n        let bValue = array[b]\n        for c in stride(from: b + 1, to: array.count, by: 1) {\n          let cValue = array[c]\n          for d in stride(from: c + 1, to: array.count, by: 1) {\n            let dValue = array[d]\n            let expressionValue = evaluateExpression(aValue, bValue, cValue, dValue)\n            maximumValueFound = max(expressionValue, maximumValueFound)\n          }\n        }\n      }\n    }\n\n    return maximumValueFound\n  }\n\n  func evaluateExpression(_ a: Int, _ b: Int, _ c: Int, _ d: Int) -> Int {\n    return a - b + c - d\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(n) space - where n is the length of the array\n  func maximizeExpression(_ array: [Int]) -> Int {\n    if array.count < 4 {\n      return 0\n    }\n\n    var maxOfA = [array[0]]\n    var maxOfAMinusB = Array(repeating: Int.min, count: 1)\n    var maxOfAMinusBPlusC = Array(repeating: Int.min, count: 2)\n    var maxOfAMinusBPlusCMinusD = Array(repeating: Int.min, count: 3)\n\n    for idx in stride(from: 1, to: array.count, by: 1) {\n      let currentMax = max(maxOfA[idx - 1], array[idx])\n      maxOfA.append(currentMax)\n    }\n\n    for idx in stride(from: 1, to: array.count, by: 1) {\n      let currentMax = max(maxOfAMinusB[idx - 1], maxOfA[idx - 1] - array[idx])\n      maxOfAMinusB.append(currentMax)\n    }\n\n    for idx in stride(from: 2, to: array.count, by: 1) {\n      let currentMax = max(\n        maxOfAMinusBPlusC[idx - 1], maxOfAMinusB[idx - 1] + array[idx]\n      )\n      maxOfAMinusBPlusC.append(currentMax)\n    }\n\n    for idx in stride(from: 3, to: array.count, by: 1) {\n      let currentMax = max(\n        maxOfAMinusBPlusCMinusD[idx - 1], maxOfAMinusBPlusC[idx - 1] - array[idx]\n      )\n      maxOfAMinusBPlusCMinusD.append(currentMax)\n    }\n\n    return maxOfAMinusBPlusCMinusD[maxOfAMinusBPlusCMinusD.count - 1]\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var input = [3, 6, 1, -3, 2, 7]\n      var expected = 4\n      var actual = Program().maximizeExpression(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var input = [3, 6, 1, -3, 2, 7]\n      var expected = 4\n      var actual = Program().maximizeExpression(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function maximizeExpression(array: number[]) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^4) time | O(1) space - where n is the length of the array\nexport function maximizeExpression(array: number[]) {\n  if (array.length < 4) return 0;\n\n  let maximumValueFound = -Infinity;\n\n  for (let a = 0; a < array.length; a++) {\n    const aValue = array[a];\n    for (let b = a + 1; b < array.length; b++) {\n      const bValue = array[b];\n      for (let c = b + 1; c < array.length; c++) {\n        const cValue = array[c];\n        for (let d = c + 1; d < array.length; d++) {\n          const dValue = array[d];\n          const expressionValue = evaluateExpression(aValue, bValue, cValue, dValue);\n          maximumValueFound = Math.max(expressionValue, maximumValueFound);\n        }\n      }\n    }\n  }\n\n  return maximumValueFound;\n}\n\nfunction evaluateExpression(a: number, b: number, c: number, d: number) {\n  return a - b + c - d;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(n) space - where n is the length of the array\nexport function maximizeExpression(array: number[]) {\n  if (array.length < 4) return 0;\n\n  const maxOfA = new Array(1).fill(array[0]);\n  const maxOfAMinusB = new Array(1).fill(-Infinity);\n  const maxOfAMinusBPlusC = new Array(2).fill(-Infinity);\n  const maxOfAMinusBPlusCMinusD = new Array(3).fill(-Infinity);\n\n  for (let idx = 1; idx < array.length; idx++) {\n    const currentMax = Math.max(maxOfA[idx - 1], array[idx]);\n    maxOfA.push(currentMax);\n  }\n\n  for (let idx = 1; idx < array.length; idx++) {\n    const currentMax = Math.max(maxOfAMinusB[idx - 1], maxOfA[idx - 1] - array[idx]);\n    maxOfAMinusB.push(currentMax);\n  }\n\n  for (let idx = 2; idx < array.length; idx++) {\n    const currentMax = Math.max(maxOfAMinusBPlusC[idx - 1], maxOfAMinusB[idx - 1] + array[idx]);\n    maxOfAMinusBPlusC.push(currentMax);\n  }\n\n  for (let idx = 3; idx < array.length; idx++) {\n    const currentMax = Math.max(\n      maxOfAMinusBPlusCMinusD[idx - 1],\n      maxOfAMinusBPlusC[idx - 1] - array[idx],\n    );\n    maxOfAMinusBPlusCMinusD.push(currentMax);\n  }\n\n  return maxOfAMinusBPlusCMinusD[maxOfAMinusBPlusCMinusD.length - 1];\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [3, 6, 1, -3, 2, 7];\n  const expected = 4;\n  const actual = program.maximizeExpression(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [3, 6, 1, -3, 2, 7];\n  const expected = 4;\n  const actual = program.maximizeExpression(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "array",
+            "example": [
+                3,
+                6,
+                1,
+                -3,
+                2,
+                7
+            ],
+            "schema": {
+                "items": {
+                    "type": "integer"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "array": [
+                3,
+                6,
+                1,
+                -3,
+                2,
+                7
+            ]
+        },
+        {
+            "array": [
+                3,
+                9,
+                10,
+                1,
+                30,
+                40
+            ]
+        },
+        {
+            "array": [
+                40,
+                30,
+                1,
+                10,
+                9,
+                3
+            ]
+        },
+        {
+            "array": [
+                -1,
+                2,
+                -1,
+                -2,
+                -2,
+                1,
+                -1
+            ]
+        },
+        {
+            "array": [
+                10,
+                5,
+                10,
+                5
+            ]
+        },
+        {
+            "array": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                0
+            ]
+        },
+        {
+            "array": [
+                34,
+                21,
+                22,
+                0,
+                -98,
+                -72,
+                100,
+                23
+            ]
+        },
+        {
+            "array": [
+                5,
+                2,
+                2,
+                1,
+                -2,
+                2,
+                -9,
+                0
+            ]
+        },
+        {
+            "array": [
+                1,
+                1,
+                1,
+                1
+            ]
+        },
+        {
+            "array": [
+                1,
+                -1,
+                1,
+                -1
+            ]
+        },
+        {
+            "array": [
+                3,
+                6,
+                1,
+                2,
+                -9,
+                -2,
+                1,
+                3,
+                4,
+                -3,
+                2
+            ]
+        },
+        {
+            "array": [
+                1,
+                -1,
+                1,
+                -1,
+                -2
+            ]
+        },
+        {
+            "array": [
+                3,
+                -1,
+                1,
+                -1,
+                -2,
+                4,
+                5,
+                -4
+            ]
+        },
+        {
+            "array": [
+                -1,
+                2,
+                -3,
+                -3,
+                2,
+                -1
+            ]
+        },
+        {
+            "array": [
+                6,
+                2,
+                3,
+                4,
+                1,
+                -1,
+                -2,
+                3,
+                1,
+                7,
+                8,
+                -8,
+                2,
+                5,
+                1
+            ]
+        },
+        {
+            "array": [
+                5,
+                10,
+                5,
+                10
+            ]
+        },
+        {
+            "array": [
+                2,
+                3
+            ]
+        },
+        {
+            "array": [
+                2,
+                3,
+                4
+            ]
+        },
+        {
+            "array": [
+                1
+            ]
+        },
+        {
+            "array": []
+        }
+    ],
+    "jsonTests": [
+        {
+            "array": [
+                3,
+                6,
+                1,
+                -3,
+                2,
+                7
+            ]
+        },
+        {
+            "array": [
+                3,
+                9,
+                10,
+                1,
+                30,
+                40
+            ]
+        },
+        {
+            "array": [
+                40,
+                30,
+                1,
+                10,
+                9,
+                3
+            ]
+        },
+        {
+            "array": [
+                -1,
+                2,
+                -1,
+                -2,
+                -2,
+                1,
+                -1
+            ]
+        },
+        {
+            "array": [
+                10,
+                5,
+                10,
+                5
+            ]
+        },
+        {
+            "array": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                0
+            ]
+        },
+        {
+            "array": [
+                34,
+                21,
+                22,
+                0,
+                -98,
+                -72,
+                100,
+                23
+            ]
+        },
+        {
+            "array": [
+                5,
+                2,
+                2,
+                1,
+                -2,
+                2,
+                -9,
+                0
+            ]
+        },
+        {
+            "array": [
+                1,
+                1,
+                1,
+                1
+            ]
+        },
+        {
+            "array": [
+                1,
+                -1,
+                1,
+                -1
+            ]
+        },
+        {
+            "array": [
+                3,
+                6,
+                1,
+                2,
+                -9,
+                -2,
+                1,
+                3,
+                4,
+                -3,
+                2
+            ]
+        },
+        {
+            "array": [
+                1,
+                -1,
+                1,
+                -1,
+                -2
+            ]
+        },
+        {
+            "array": [
+                3,
+                -1,
+                1,
+                -1,
+                -2,
+                4,
+                5,
+                -4
+            ]
+        },
+        {
+            "array": [
+                -1,
+                2,
+                -3,
+                -3,
+                2,
+                -1
+            ]
+        },
+        {
+            "array": [
+                6,
+                2,
+                3,
+                4,
+                1,
+                -1,
+                -2,
+                3,
+                1,
+                7,
+                8,
+                -8,
+                2,
+                5,
+                1
+            ]
+        },
+        {
+            "array": [
+                5,
+                10,
+                5,
+                10
+            ]
+        },
+        {
+            "array": [
+                2,
+                3
+            ]
+        },
+        {
+            "array": [
+                2,
+                3,
+                4
+            ]
+        },
+        {
+            "array": [
+                1
+            ]
+        },
+        {
+            "array": []
+        }
+    ],
+    "changelog": []
+}

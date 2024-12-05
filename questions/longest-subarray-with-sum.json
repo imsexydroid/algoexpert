@@ -1,0 +1,761 @@
+{
+    "uid": "longest-subarray-with-sum",
+    "testStrategy": "JSON",
+    "name": "Longest Subarray With Sum",
+    "version": 0,
+    "releaseDate": "2023-06-02T00:00:00Z",
+    "category": "Arrays",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 2399,
+        "failureCount": 406
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "796863907",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 896
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Write a function that takes in a non-empty array of non-negative integers and a non-negative integer\n  representing a target sum. The function should find the longest subarray where the values collectively\n  sum up to equal the target sum. Return an array containing the starting index and ending index of this subarray,\n  both inclusive.\n</p>\n<p>\n  If there is no subarray that sums up to the target sum, the function should return an\n  empty array. You can assume that the given inputs will only ever have one answer.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">array</span> = [1, 2, 3, 4, 3, 3, 1, 2, 1, 2]\n<span class=\"CodeEditor-promptParameter\">targetSum</span> = 10\n</pre>\n<h3>Sample Output</h3>\n<pre>\n[4, 8] <span class=\"CodeEditor-promptComment\"> // The longest subarray that sums to 10 starts at index 4 and ends at index 8\n</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\nUsing intuition you can develop a brute force approach. If you are trying to find the longest\nsubarray that sums to equal the target sum, then look at every possible subarray. Calculate\nthe sum of each subarray, and when the sum is equal to the target sum, check the length against\nthe current maximum.\n</p>\n",
+        "\n<p>\nSince the array contains only non-negative numbers, once a subarray sum is\ngreater than the target sum, there is no possible way adding more numbers to\nthat subarray will get its sum to equal the target sum. Can you use this\ninformation to optimize the solution?\n</p>\n",
+        "\n<p>\nLooking at every possible subarray is very time consuming. However, you can use\na sliding window approach to improve the time complexity. Think about how a sliding window might\nwork in this case. You should look at different subarrays while you traverse the array. How might\nyou update a sliding window if you are looking for subarrays with a sum that is equal to the\ntarget sum?\n</p>\n",
+        "\n<p>\nAdd elements to the sliding window when the current subarray sum is less than the target sum,\nand remove elements when the current subarray sum is greater than the target sum. When you find\na current subarray sum in the sliding window that is equal to the target sum, then you can check and see\nif you found a new longest subarray. If that is the case then update the result, otherwise\ncontinue traversing.\n</p>"
+    ],
+    "spaceTime": "O(n) time | O(1) space - where n is the length of the input array",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nvector<int> longestSubarrayWithSum(vector<int> array, int targetSum) {\n  // Write your code here.\n  return {};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing namespace std;\n\n// O(n^2) time | O(1) space - where n is the length of the input array\nvector<int> longestSubarrayWithSum(vector<int> array, int targetSum) {\n  vector<int> indices;\n\n  for (int startingIndex = 0; startingIndex < array.size(); startingIndex++) {\n    int currentSubarraySum = 0;\n\n    for (int endingIndex = startingIndex; endingIndex < array.size();\n         endingIndex++) {\n      currentSubarraySum += array[endingIndex];\n\n      if (currentSubarraySum == targetSum) {\n        if (indices.size() == 0 || indices[1] - indices[0] < endingIndex - startingIndex) {\n          indices = {startingIndex, endingIndex};\n        }\n      }\n    }\n  }\n\n  return indices;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing namespace std;\n\n// O(n) time | O(1) space - where n is the length of the input array\nvector<int> longestSubarrayWithSum(vector<int> array, int targetSum) {\n  std::vector<int> indices;\n\n  int currentSubarraySum = 0;\n  int startingIndex = 0;\n  int endingIndex = 0;\n\n  while (endingIndex < array.size()) {\n    currentSubarraySum += array[endingIndex];\n    while (startingIndex < endingIndex && currentSubarraySum > targetSum) {\n      currentSubarraySum -= array[startingIndex];\n      startingIndex++;\n    }\n\n    if (currentSubarraySum == targetSum) {\n      if (indices.empty() || indices[1] - indices[0] < endingIndex - startingIndex) {\n        indices = {startingIndex, endingIndex};\n      }\n    }\n\n    endingIndex++;\n  }\n\n  return indices;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> array = {1, 2, 3, 4, 3, 3, 1, 2, 1};\n      int targetSum = 10;\n      vector<int> expected = {4, 8};\n      auto actual = longestSubarrayWithSum(array, targetSum);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> array = {1, 2, 3, 4, 3, 3, 1, 2, 1};\n      int targetSum = 10;\n      vector<int> expected = {4, 8};\n      auto actual = longestSubarrayWithSum(array, targetSum);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int[] LongestSubarrayWithSum(int[] array, int targetSum) {\n    // Write your code here.\n    return new int[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(n^2) time | O(1) space - where n is the length of the input array\n  public int[] LongestSubarrayWithSum(int[] array, int targetSum) {\n    int[] indices = new int[] {};\n\n    for (int startingIndex = 0; startingIndex < array.Length; startingIndex++) {\n      int currentSubarraySum = 0;\n\n      for (int endingIndex = startingIndex; endingIndex < array.Length;\n           endingIndex++) {\n        currentSubarraySum += array[endingIndex];\n\n        if (currentSubarraySum == targetSum) {\n          if (indices.Length == 0 || indices[1] - indices[0] < endingIndex - startingIndex) {\n            indices = new int[] { startingIndex, endingIndex };\n          }\n        }\n      }\n    }\n\n    return indices;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(n) time | O(1) space - where n is the length of the input array\n  public int[] LongestSubarrayWithSum(int[] array, int targetSum) {\n    int[] indices = new int[] {};\n\n    int currentSubarraySum = 0;\n    int startingIndex = 0;\n    int endingIndex = 0;\n\n    while (endingIndex < array.Length) {\n      currentSubarraySum += array[endingIndex];\n      while (startingIndex < endingIndex && currentSubarraySum > targetSum) {\n        currentSubarraySum -= array[startingIndex];\n        startingIndex++;\n      }\n\n      if (currentSubarraySum == targetSum) {\n        if (indices.Length == 0 || indices[1] - indices[0] < endingIndex - startingIndex) {\n          indices = new int[] { startingIndex, endingIndex };\n        }\n      }\n\n      endingIndex++;\n    }\n\n    return indices;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] array = new int[] { 1, 2, 3, 4, 3, 3, 1, 2, 1 };\n    int targetSum = 10;\n    int[] expected = new int[] { 4, 8 };\n    var actual = new Program().LongestSubarrayWithSum(array, targetSum);\n    Utils.AssertTrue(expected.Length == actual.Length);\n    for (int i = 0; i < actual.Length; i++) {\n      Utils.AssertTrue(actual[i] == expected[i]);\n    }\n  }\n}",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    int[] array = new int[] { 1, 2, 3, 4, 3, 3, 1, 2, 1 };\n    int targetSum = 10;\n    int[] expected = new int[] { 4, 8 };\n    var actual = new Program().LongestSubarrayWithSum(array, targetSum);\n    Utils.AssertTrue(expected.Length == actual.Length);\n    for (int i = 0; i < actual.Length; i++) {\n      Utils.AssertTrue(actual[i] == expected[i]);\n    }\n  }\n}"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc LongestSubarrayWithSum(array []int, targetSum int) []int {\n\t// Write your code here.\n\treturn []int{}\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n^2) time | O(1) space - where n is the length of the input array\nfunc LongestSubarrayWithSum(array []int, targetSum int) []int {\n\tindices := []int{}\n\n\tfor startingIndex := 0; startingIndex < len(array); startingIndex++ {\n\t\tcurrentSubarraySum := 0\n\n\t\tfor endingIndex := startingIndex; endingIndex < len(array); endingIndex++ {\n\t\t\tcurrentSubarraySum += array[endingIndex]\n\n\t\t\tif currentSubarraySum == targetSum {\n\t\t\t\tif len(indices) == 0 || indices[1]-indices[0] < endingIndex-startingIndex {\n\t\t\t\t\tindices = []int{startingIndex, endingIndex}\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\n\treturn indices\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n) time | O(1) space - where n is the length of the input array\nfunc LongestSubarrayWithSum(array []int, targetSum int) []int {\n\tindices := []int{}\n\n\tcurrentSubarraySum := 0\n\tstartingIndex := 0\n\tendingIndex := 0\n\n\tfor endingIndex < len(array) {\n\t\tcurrentSubarraySum += array[endingIndex]\n\t\tfor startingIndex < endingIndex && currentSubarraySum > targetSum {\n\t\t\tcurrentSubarraySum -= array[startingIndex]\n\t\t\tstartingIndex += 1\n\t\t}\n\n\t\tif currentSubarraySum == targetSum {\n\t\t\tif len(indices) == 0 || indices[1]-indices[0] < endingIndex-startingIndex {\n\t\t\t\tindices = []int{startingIndex, endingIndex}\n\t\t\t}\n\t\t}\n\n\t\tendingIndex += 1\n\t}\n\n\treturn indices\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tarray := []int{1, 2, 3, 4, 3, 3, 1, 2, 1}\n\ttargetSum := 10\n\texpected := []int{4, 8}\n\tactual := LongestSubarrayWithSum(array, targetSum)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tarray := []int{1, 2, 3, 4, 3, 3, 1, 2, 1}\n\ttargetSum := 10\n\texpected := []int{4, 8}\n\tactual := LongestSubarrayWithSum(array, targetSum)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int[] longestSubarrayWithSum(int[] array, int targetSum) {\n    // Write your code here.\n    return new int[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n^2) time | O(1) space - where n is the length of the input array\n  public int[] longestSubarrayWithSum(int[] array, int targetSum) {\n    int[] indices = new int[] {};\n\n    for (int startingIndex = 0; startingIndex < array.length; startingIndex++) {\n      int currentSubarraySum = 0;\n\n      for (int endingIndex = startingIndex; endingIndex < array.length;\n           endingIndex++) {\n        currentSubarraySum += array[endingIndex];\n\n        if (currentSubarraySum == targetSum) {\n          if (indices.length == 0 || indices[1] - indices[0] < endingIndex - startingIndex) {\n            indices = new int[] {startingIndex, endingIndex};\n          }\n        }\n      }\n    }\n\n    return indices;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n) time | O(1) space - where n is the length of the input array\n  public int[] longestSubarrayWithSum(int[] array, int targetSum) {\n    int[] indices = new int[] {};\n\n    int currentSubarraySum = 0;\n    int startingIndex = 0;\n    int endingIndex = 0;\n\n    while (endingIndex < array.length) {\n      currentSubarraySum += array[endingIndex];\n      while (startingIndex < endingIndex && currentSubarraySum > targetSum) {\n        currentSubarraySum -= array[startingIndex];\n        startingIndex++;\n      }\n\n      if (currentSubarraySum == targetSum) {\n        if (indices.length == 0 || indices[1] - indices[0] < endingIndex - startingIndex) {\n          indices = new int[] {startingIndex, endingIndex};\n        }\n      }\n\n      endingIndex++;\n    }\n\n    return indices;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] array = new int[] {1, 2, 3, 4, 3, 3, 1, 2, 1};\n    int targetSum = 10;\n    int[] expected = new int[] {4, 8};\n    var actual = new Program().longestSubarrayWithSum(array, targetSum);\n    Utils.assertTrue(expected.length == actual.length);\n    for (int i = 0; i < actual.length; i++) {\n      Utils.assertTrue(actual[i] == expected[i]);\n    }\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    int[] array = new int[] {1, 2, 3, 4, 3, 3, 1, 2, 1};\n    int targetSum = 10;\n    int[] expected = new int[] {4, 8};\n    var actual = new Program().longestSubarrayWithSum(array, targetSum);\n    Utils.assertTrue(expected.length == actual.length);\n    for (int i = 0; i < actual.length; i++) {\n      Utils.assertTrue(actual[i] == expected[i]);\n    }\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function longestSubarrayWithSum(array, targetSum) {\n  // Write your code here.\n  return [];\n}\n\n// Do not edit the line below.\nexports.longestSubarrayWithSum = longestSubarrayWithSum;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^2) time | O(1) space - where n is the length of the input array\nfunction longestSubarrayWithSum(array, targetSum) {\n  let indices = [];\n\n  for (let startingIndex = 0; startingIndex < array.length; startingIndex++) {\n    let currentSubarraySum = 0;\n\n    for (let endingIndex = startingIndex; endingIndex < array.length; endingIndex++) {\n      currentSubarraySum += array[endingIndex];\n\n      if (currentSubarraySum === targetSum) {\n        if (indices.length === 0 || indices[1] - indices[0] < endingIndex - startingIndex) {\n          indices = [startingIndex, endingIndex];\n        }\n      }\n    }\n  }\n\n  return indices;\n}\n\n// Do not edit the line below.\nexports.longestSubarrayWithSum = longestSubarrayWithSum;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(1) space - where n is the length of the input array\nfunction longestSubarrayWithSum(array, targetSum) {\n  let indices = [];\n\n  let currentSubarraySum = 0;\n  let startingIndex = 0;\n  let endingIndex = 0;\n\n  while (endingIndex < array.length) {\n    currentSubarraySum += array[endingIndex];\n    while (startingIndex < endingIndex && currentSubarraySum > targetSum) {\n      currentSubarraySum -= array[startingIndex];\n      startingIndex += 1;\n    }\n\n    if (currentSubarraySum === targetSum) {\n      if (indices.length === 0 || indices[1] - indices[0] < endingIndex - startingIndex) {\n        indices = [startingIndex, endingIndex];\n      }\n    }\n\n    endingIndex += 1;\n  }\n\n  return indices;\n}\n\n// Do not edit the line below.\nexports.longestSubarrayWithSum = longestSubarrayWithSum;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const array = [1, 2, 3, 4, 3, 3, 1, 2, 1];\n  const targetSum = 10;\n  const expected = [4, 8];\n  const actual = program.longestSubarrayWithSum(array, targetSum);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const array = [1, 2, 3, 4, 3, 3, 1, 2, 1];\n  const targetSum = 10;\n  const expected = [4, 8];\n  const actual = program.longestSubarrayWithSum(array, targetSum);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun longestSubarrayWithSum(array: List<Int>, targetSum: Int): List<Int> {\n    // Write your code here.\n    return listOf()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n^2) time | O(1) space - where n is the length of the input array\nfun longestSubarrayWithSum(array: List<Int>, targetSum: Int): List<Int> {\n    var indices = listOf<Int>()\n\n    for (startingIndex in 0 until array.size) {\n        var currentSubarraySum = 0\n\n        for (endingIndex in startingIndex until array.size) {\n            currentSubarraySum += array[endingIndex]\n\n            if (currentSubarraySum == targetSum) {\n                if (indices.size == 0 || indices[1] - indices[0] < endingIndex - startingIndex) {\n                    indices = listOf(startingIndex, endingIndex)\n                }\n            }\n        }\n    }\n\n    return indices\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n) time | O(1) space - where n is the length of the input array\nfun longestSubarrayWithSum(array: List<Int>, targetSum: Int): List<Int> {\n    var indices = listOf<Int>()\n\n    var currentSubarraySum = 0\n    var startingIndex = 0\n    var endingIndex = 0\n\n    while (endingIndex < array.size) {\n        currentSubarraySum += array[endingIndex]\n        while (startingIndex < endingIndex && currentSubarraySum > targetSum) {\n            currentSubarraySum -= array[startingIndex]\n            startingIndex += 1\n        }\n\n        if (currentSubarraySum == targetSum) {\n            if (indices.size == 0 || indices[1] - indices[0] < endingIndex - startingIndex) {\n                indices = listOf(startingIndex, endingIndex)\n            }\n        }\n\n        endingIndex += 1\n    }\n\n    return indices\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.longestSubarrayWithSum\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val array = listOf(1, 2, 3, 4, 3, 3, 1, 2, 1)\n        val targetSum = 10\n        val expected = listOf(4, 8)\n        val output = longestSubarrayWithSum(array, targetSum)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.longestSubarrayWithSum\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val array = listOf(1, 2, 3, 4, 3, 3, 1, 2, 1)\n        val targetSum = 10\n        val expected = listOf(4, 8)\n        val output = longestSubarrayWithSum(array, targetSum)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def longestSubarrayWithSum(array, targetSum):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n^2) time | O(1) space - where n is the length of the input array\ndef longestSubarrayWithSum(array, targetSum):\n    indices = []\n\n    for startingIndex in range(len(array)):\n        currentSubarraySum = 0\n\n        for endingIndex in range(startingIndex, len(array)):\n            currentSubarraySum += array[endingIndex]\n\n            if currentSubarraySum == targetSum:\n                if len(indices) == 0 or indices[1] - indices[0] < endingIndex - startingIndex:\n                    indices = [startingIndex, endingIndex]\n\n    return indices\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(1) space - where n is the length of the input array\ndef longestSubarrayWithSum(array, targetSum):\n    indices = []\n\n    currentSubarraySum = 0\n    startingIndex = 0\n    endingIndex = 0\n\n    while endingIndex < len(array):\n        currentSubarraySum += array[endingIndex]\n        while startingIndex < endingIndex and currentSubarraySum > targetSum:\n            currentSubarraySum -= array[startingIndex]\n            startingIndex += 1\n\n        if currentSubarraySum == targetSum:\n            if len(indices) == 0 or indices[1] - indices[0] < endingIndex - startingIndex:\n                indices = [startingIndex, endingIndex]\n\n        endingIndex += 1\n\n    return indices\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        array = [1, 2, 3, 4, 3, 3, 1, 2, 1]\n        targetSum = 10\n        expected = [4, 8]\n        actual = program.longestSubarrayWithSum(array, targetSum)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        array = [1, 2, 3, 4, 3, 3, 1, 2, 1]\n        targetSum = 10\n        expected = [4, 8]\n        actual = program.longestSubarrayWithSum(array, targetSum)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "class Program\n  def longestSubarrayWithSum(array, targetSum)\n    # Write your code here.\n    return []\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def longestSubarrayWithSum(array, targetSum)\n    # Write your code here.\n    return []\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.longestSubarrayWithSum\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.longestSubarrayWithSum\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func longestSubarrayWithSum(_ array: [Int], _ targetSum: Int) -> [Int] {\n    // Write your code here.\n    return [Int]()\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n^2) time | O(1) space - where n is the length of the input array\n  func longestSubarrayWithSum(_ array: [Int], _ targetSum: Int) -> [Int] {\n    var indices: [Int] = []\n\n    for startingIndex in 0 ..< array.count {\n      var currentSubarraySum = 0\n\n      for endingIndex in startingIndex ..< array.count {\n        currentSubarraySum += array[endingIndex]\n\n        if currentSubarraySum == targetSum {\n          if indices.isEmpty || indices[1] - indices[0] < endingIndex - startingIndex {\n            indices = [startingIndex, endingIndex]\n          }\n        }\n      }\n    }\n\n    return indices\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(1) space - where n is the length of the input array\n  func longestSubarrayWithSum(_ array: [Int], _ targetSum: Int) -> [Int] {\n    var indices: [Int] = []\n\n    var currentSubarraySum = 0\n    var startingIndex = 0\n    var endingIndex = 0\n\n    while endingIndex < array.count {\n      currentSubarraySum += array[endingIndex]\n      while startingIndex < endingIndex && currentSubarraySum > targetSum {\n        currentSubarraySum -= array[startingIndex]\n        startingIndex += 1\n      }\n\n      if currentSubarraySum == targetSum {\n        if indices.isEmpty || indices[1] - indices[0] < endingIndex - startingIndex {\n          indices = [startingIndex, endingIndex]\n        }\n      }\n\n      endingIndex += 1\n    }\n\n    return indices\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var array = [1, 2, 3, 4, 3, 3, 1, 2, 1]\n      var targetSum = 10\n      var expected = [4, 8]\n      var actual = Program().longestSubarrayWithSum(array, targetSum)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var array = [1, 2, 3, 4, 3, 3, 1, 2, 1]\n      var targetSum = 10\n      var expected = [4, 8]\n      var actual = Program().longestSubarrayWithSum(array, targetSum)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function longestSubarrayWithSum(array: number[], targetSum: number) {\n  // Write your code here.\n  return [];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^2) time | O(1) space - where n is the length of the input array\nexport function longestSubarrayWithSum(array: number[], targetSum: number) {\n  let indices: number[] = [];\n\n  for (let startingIndex = 0; startingIndex < array.length; startingIndex++) {\n    let currentSubarraySum = 0;\n\n    for (let endingIndex = startingIndex; endingIndex < array.length; endingIndex++) {\n      currentSubarraySum += array[endingIndex];\n\n      if (currentSubarraySum === targetSum) {\n        if (indices.length === 0 || indices[1] - indices[0] < endingIndex - startingIndex) {\n          indices = [startingIndex, endingIndex];\n        }\n      }\n    }\n  }\n\n  return indices;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(1) space - where n is the length of the input array\nexport function longestSubarrayWithSum(array: number[], targetSum: number) {\n  let indices: number[] = [];\n\n  let currentSubarraySum = 0;\n  let startingIndex = 0;\n  let endingIndex = 0;\n\n  while (endingIndex < array.length) {\n    currentSubarraySum += array[endingIndex];\n    while (startingIndex < endingIndex && currentSubarraySum > targetSum) {\n      currentSubarraySum -= array[startingIndex];\n      startingIndex += 1;\n    }\n\n    if (currentSubarraySum === targetSum) {\n      if (indices.length === 0 || indices[1] - indices[0] < endingIndex - startingIndex) {\n        indices = [startingIndex, endingIndex];\n      }\n    }\n\n    endingIndex += 1;\n  }\n\n  return indices;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const array = [1, 2, 3, 4, 3, 3, 1, 2, 1];\n  const targetSum = 10;\n  const expected = [4, 8];\n  const actual = program.longestSubarrayWithSum(array, targetSum);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const array = [1, 2, 3, 4, 3, 3, 1, 2, 1];\n  const targetSum = 10;\n  const expected = [4, 8];\n  const actual = program.longestSubarrayWithSum(array, targetSum);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "array",
+            "example": [
+                1,
+                2,
+                3,
+                4,
+                3,
+                3,
+                1,
+                2,
+                1
+            ],
+            "schema": {
+                "items": {
+                    "type": "integer"
+                },
+                "minItems": 1,
+                "type": "array"
+            }
+        },
+        {
+            "name": "targetSum",
+            "example": 10,
+            "schema": {
+                "minimum": 0,
+                "type": "integer"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                3,
+                3,
+                1,
+                2,
+                1
+            ],
+            "targetSum": 10
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                0,
+                0,
+                0,
+                0,
+                0,
+                3,
+                3,
+                1,
+                2,
+                1
+            ],
+            "targetSum": 10
+        },
+        {
+            "array": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "targetSum": 1
+        },
+        {
+            "array": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0
+            ],
+            "targetSum": 1
+        },
+        {
+            "array": [
+                25,
+                25,
+                25,
+                25,
+                100,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "targetSum": 100
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                5,
+                5,
+                5
+            ],
+            "targetSum": 15
+        },
+        {
+            "array": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                5,
+                5,
+                5,
+                5,
+                1,
+                1,
+                0,
+                1,
+                0,
+                1,
+                0,
+                0,
+                0,
+                1
+            ],
+            "targetSum": 20
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                0,
+                0,
+                0,
+                6,
+                7,
+                8,
+                9,
+                10
+            ],
+            "targetSum": 15
+        },
+        {
+            "array": [
+                61,
+                54,
+                1,
+                499,
+                2212,
+                4059,
+                1,
+                2,
+                3,
+                1,
+                3
+            ],
+            "targetSum": 19
+        },
+        {
+            "array": [
+                0
+            ],
+            "targetSum": 0
+        },
+        {
+            "array": [
+                10
+            ],
+            "targetSum": 10
+        },
+        {
+            "array": [
+                5
+            ],
+            "targetSum": 0
+        },
+        {
+            "array": [
+                5
+            ],
+            "targetSum": 10
+        },
+        {
+            "array": [
+                0,
+                1,
+                0,
+                1
+            ],
+            "targetSum": 3
+        },
+        {
+            "array": [
+                0,
+                0,
+                0,
+                0,
+                39,
+                0,
+                0,
+                0,
+                0,
+                0,
+                28,
+                10
+            ],
+            "targetSum": 39
+        },
+        {
+            "array": [
+                1,
+                4,
+                10,
+                15,
+                31,
+                7,
+                1,
+                40,
+                0,
+                20,
+                1,
+                1,
+                1,
+                1,
+                2,
+                1
+            ],
+            "targetSum": 68
+        },
+        {
+            "array": [
+                1,
+                4,
+                10,
+                15,
+                31,
+                7,
+                1,
+                40,
+                0,
+                20,
+                1,
+                1,
+                1,
+                1,
+                2,
+                1
+            ],
+            "targetSum": 0
+        },
+        {
+            "array": [
+                1,
+                4,
+                10,
+                15,
+                31,
+                7,
+                1,
+                40,
+                5,
+                20,
+                1,
+                1,
+                1,
+                1,
+                2,
+                1
+            ],
+            "targetSum": 0
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                5
+            ],
+            "targetSum": 0
+        }
+    ],
+    "jsonTests": [
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                3,
+                3,
+                1,
+                2,
+                1
+            ],
+            "targetSum": 10
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                0,
+                0,
+                0,
+                0,
+                0,
+                3,
+                3,
+                1,
+                2,
+                1
+            ],
+            "targetSum": 10
+        },
+        {
+            "array": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "targetSum": 1
+        },
+        {
+            "array": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0
+            ],
+            "targetSum": 1
+        },
+        {
+            "array": [
+                25,
+                25,
+                25,
+                25,
+                100,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "targetSum": 100
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                5,
+                5,
+                5
+            ],
+            "targetSum": 15
+        },
+        {
+            "array": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                5,
+                5,
+                5,
+                5,
+                1,
+                1,
+                0,
+                1,
+                0,
+                1,
+                0,
+                0,
+                0,
+                1
+            ],
+            "targetSum": 20
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                0,
+                0,
+                0,
+                6,
+                7,
+                8,
+                9,
+                10
+            ],
+            "targetSum": 15
+        },
+        {
+            "array": [
+                61,
+                54,
+                1,
+                499,
+                2212,
+                4059,
+                1,
+                2,
+                3,
+                1,
+                3
+            ],
+            "targetSum": 19
+        },
+        {
+            "array": [
+                0
+            ],
+            "targetSum": 0
+        },
+        {
+            "array": [
+                10
+            ],
+            "targetSum": 10
+        },
+        {
+            "array": [
+                5
+            ],
+            "targetSum": 0
+        },
+        {
+            "array": [
+                5
+            ],
+            "targetSum": 10
+        },
+        {
+            "array": [
+                0,
+                1,
+                0,
+                1
+            ],
+            "targetSum": 3
+        },
+        {
+            "array": [
+                0,
+                0,
+                0,
+                0,
+                39,
+                0,
+                0,
+                0,
+                0,
+                0,
+                28,
+                10
+            ],
+            "targetSum": 39
+        },
+        {
+            "array": [
+                1,
+                4,
+                10,
+                15,
+                31,
+                7,
+                1,
+                40,
+                0,
+                20,
+                1,
+                1,
+                1,
+                1,
+                2,
+                1
+            ],
+            "targetSum": 68
+        },
+        {
+            "array": [
+                1,
+                4,
+                10,
+                15,
+                31,
+                7,
+                1,
+                40,
+                0,
+                20,
+                1,
+                1,
+                1,
+                1,
+                2,
+                1
+            ],
+            "targetSum": 0
+        },
+        {
+            "array": [
+                1,
+                4,
+                10,
+                15,
+                31,
+                7,
+                1,
+                40,
+                5,
+                20,
+                1,
+                1,
+                1,
+                1,
+                2,
+                1
+            ],
+            "targetSum": 0
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                5
+            ],
+            "targetSum": 0
+        }
+    ],
+    "changelog": []
+}

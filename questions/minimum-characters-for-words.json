@@ -1,0 +1,493 @@
+{
+    "uid": "minimum-characters-for-words",
+    "testStrategy": "JSON",
+    "name": "Minimum Characters For Words",
+    "version": 0,
+    "releaseDate": "2021-05-17T00:00:00Z",
+    "category": "Strings",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 16360,
+        "failureCount": 2047
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "535393659",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Tim Ruscica",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1190
+    },
+    "prompt": "<div class=\"html\">\n<p>\n  Write a function that takes in an array of words and returns the smallest\n  array of characters needed to form all of the words. The characters don't need\n  to be in any particular order.\n</p>\n<p>\n  For example, the characters <span>[\"y\", \"r\", \"o\", \"u\"]</span> are needed to\n  form the words <span>[\"your\", \"you\", \"or\", \"yo\"]</span>.\n</p>\n<p>\n  Note: the input words won't contain any spaces; however, they might contain\n  punctuation and/or special characters.\n</p>\n<h3>Sample Input</h3>\n<pre>\n<span class=\"CodeEditor-promptParameter\">words</span> = [\"this\", \"that\", \"did\", \"deed\", \"them!\", \"a\"]\n</pre>\n<h3>Sample Output</h3>\n<pre>\n[\"t\", \"t\", \"h\", \"i\", \"s\", \"a\", \"d\", \"d\", \"e\", \"e\", \"m\", \"!\"]\n<span class=\"CodeEditor-promptComment\">// The characters could be ordered differently.</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  There are a few different ways to solve this problem, but all of them use the\n  same general approach. You'll need to determine not only all of the unique\n  characters required to form the input words, but also their required\n  frequencies. What determines the required frequencies of characters to form\n  multiple words?\n</p>\n",
+        "\n<p>\n  The word that contains the highest frequency of any character dictates how\n  many of those characters are required. For example, given\n  <span>words = [\"A\", \"AAAA\"]</span> you need 4 <span>A</span>s, because the\n  word that contains the most of amount of <span>A</span>s has 4.\n</p>\n",
+        "\n<p>\n  Use a hash table to keep track of the maximum frequencies of all unique\n  characters that occur across all words. Count the frequency of each character\n  in each word, and use those per-word frequencies to update your\n  maximum-character-frequency hash table. Once you've determined the maximum\n  frequency of each character across all words, you can use the built-up hash\n  table to generate your output array.\n</p>"
+    ],
+    "spaceTime": "O(n * l) time | O(c) space - where n is the number of words, l is the length of the longest word, and c is the number of unique characters across all words\nSee notes under video explanation for details about the space complexity.",
+    "notes": "<div class=\"html\">\n<p>\n  The space complexity of <span>O(c)</span>, where <span>c</span> is the number\n  of unique characters across all words, is actually a lower bound for our\n  solution's space complexity.\n</p>\n<p>\n  This is because the <span>maximumCharacterFrequencies</span> hash table will\n  take up <span>O(c)</span> space, but the output array of characters might take\n  up more space if some unique characters appear multiple times in a single\n  word. For example, we might have a hash table <span>{\"a\": 3\"}</span> with one\n  character but an output array <span>[\"a\", \"a\", \"a\"]</span> with three\n  characters.\n</p>\n<p>\n  An upper bound for the space complexity is <span>O(n * l)</span>, which\n  happens when every single character in each word is unique across all words\n  and the output array therefore contains <span>n * l</span> characters.\n</p>\n</div>",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "#include <vector>\nusing namespace std;\n\nvector<char> minimumCharactersForWords(vector<string> words) {\n  // Write your code here.\n  return {};\n}",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n#include <unordered_map>\n#include <vector>\nusing namespace std;\n\nunordered_map<char, int> countCharacterFrequencies(const string& string);\nvoid updateMaximumFrequencies(\n  const unordered_map<char, int>& frequencies,\n  unordered_map<char, int>& maximumFrequencies\n);\nvector<char> makeArrayFromCharacterFrequencies(\n  const unordered_map<char, int>& characterFrequencies\n);\n\n// O(n * l) time | O(c) space - where n is the number of words,\n// l is the length of the longest word, and c is the number of\n// unique characters across all words\n// See notes under video explanation for details about the space complexity.\nvector<char> minimumCharactersForWords(vector<string> words) {\n  unordered_map<char, int> maximumCharacterFrequencies;\n\n  for (auto const& word : words) {\n    auto characterFrequencies = countCharacterFrequencies(word);\n    updateMaximumFrequencies(characterFrequencies, maximumCharacterFrequencies);\n  }\n\n  return makeArrayFromCharacterFrequencies(maximumCharacterFrequencies);\n}\n\nunordered_map<char, int> countCharacterFrequencies(const string& string) {\n  unordered_map<char, int> characterFrequencies;\n\n  for (auto character : string) {\n    if (characterFrequencies.find(character) == characterFrequencies.end()) {\n      characterFrequencies[character] = 0;\n    }\n\n    characterFrequencies[character] += 1;\n  }\n\n  return characterFrequencies;\n}\n\nvoid updateMaximumFrequencies(\n  const unordered_map<char, int>& frequencies,\n  unordered_map<char, int>& maximumFrequencies\n) {\n  for (const auto& [character, frequency] : frequencies) {\n    if (maximumFrequencies.find(character) != maximumFrequencies.end()) {\n      maximumFrequencies[character] =\n        max(frequency, maximumFrequencies[character]);\n    } else {\n      maximumFrequencies[character] = frequency;\n    }\n  }\n}\n\nvector<char> makeArrayFromCharacterFrequencies(\n  const unordered_map<char, int>& characterFrequencies\n) {\n  vector<char> characters;\n\n  for (const auto& [character, frequency] : characterFrequencies) {\n    for (int idx = 0; idx < frequency; idx++) {\n      characters.push_back(character);\n    }\n  }\n\n  return characters;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<string> input = {\"this\", \"that\", \"did\", \"deed\", \"them!\", \"a\"};\n      vector<char> expected = {\n        't', 't', 'h', 'i', 's', 'a', 'd', 'd', 'e', 'e', 'm', '!'};\n      auto actual = minimumCharactersForWords(input);\n      sort(actual.begin(), actual.end());\n      sort(expected.begin(), expected.end());\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<string> input = {\"this\", \"that\", \"did\", \"deed\", \"them!\", \"a\"};\n      vector<char> expected = {\n        't', 't', 'h', 'i', 's', 'a', 'd', 'd', 'e', 'e', 'm', '!'};\n      auto actual = minimumCharactersForWords(input);\n      sort(actual.begin(), actual.end());\n      sort(expected.begin(), expected.end());\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public string[] MinimumCharactersForWords(string[] words) {\n    // Write your code here.\n    return new string[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n * l) time | O(c) space - where n is the number of words,\n  // l is the length of the longest word, and c is the number of\n  // unique characters across all words\n  // See notes under video explanation for details about the space complexity.\n  public char[] MinimumCharactersForWords(string[] words) {\n    Dictionary<char, int> maximumCharFrequencies = new Dictionary<char, int>();\n\n    foreach (var word in words) {\n      Dictionary<char, int> characterFrequencies = countCharFrequencies(word);\n      updateMaximumFrequencies(characterFrequencies, maximumCharFrequencies);\n    }\n\n    return makeArrayFromCharFrequencies(maximumCharFrequencies);\n  }\n\n  public Dictionary<char, int> countCharFrequencies(string str) {\n    Dictionary<char, int> characterFrequencies = new Dictionary<char, int>();\n\n    foreach (var character in str.ToCharArray()) {\n      characterFrequencies[character] =\n        characterFrequencies.GetValueOrDefault(character, 0) + 1;\n    }\n\n    return characterFrequencies;\n  }\n\n  public void updateMaximumFrequencies(\n    Dictionary<char, int> frequencies, Dictionary<char, int> maximumFrequencies\n  ) {\n    foreach (var frequency in frequencies) {\n      char character = frequency.Key;\n      int characterFrequency = frequency.Value;\n\n      if (maximumFrequencies.ContainsKey(character)) {\n        maximumFrequencies[character] =\n          Math.Max(characterFrequency, maximumFrequencies[character]);\n      } else {\n        maximumFrequencies[character] = characterFrequency;\n      }\n    }\n  }\n\n  public char[] makeArrayFromCharFrequencies(\n    Dictionary<char, int> characterFrequencies\n  ) {\n    List<char> characters = new List<char>();\n\n    foreach (var frequency in characterFrequencies) {\n      char character = frequency.Key;\n      int characterFrequency = frequency.Value;\n\n      for (int idx = 0; idx < characterFrequency; idx++) {\n        characters.Add(character);\n      }\n    }\n\n    char[] charactersArray = new char[characters.Count];\n    for (int idx = 0; idx < characters.Count; idx++) {\n      charactersArray[idx] = characters[idx];\n    }\n\n    return charactersArray;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\nusing System.Linq;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    string[] words =\n      new string[] { \"this\", \"that\", \"did\", \"deed\", \"them!\", \"a\" };\n    char[] expected =\n      new char[] { 't', 't', 'h', 'i', 's', 'a', 'd', 'd', 'e', 'e', 'm', '!' };\n    var actual = new Program().MinimumCharactersForWords(words);\n    Utils.AssertTrue(expected.SequenceEqual(actual));\n  }\n}\n",
+            "unitTests": "using System;\nusing System.Linq;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    string[] words =\n      new string[] { \"this\", \"that\", \"did\", \"deed\", \"them!\", \"a\" };\n    char[] expected =\n      new char[] { 't', 't', 'h', 'i', 's', 'a', 'd', 'd', 'e', 'e', 'm', '!' };\n    var actual = new Program().MinimumCharactersForWords(words);\n    Utils.AssertTrue(expected.SequenceEqual(actual));\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc MinimumCharactersForWords(words []string) []string {\n\t// Write your code here.\n\treturn []string{}\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n * l) time | O(c) space - where n is the number of words,\n// l is the length of the longest word, and c is the number of\n// unique characters across all words\n// See notes under video explanation for details about the space complexity.\nfunc MinimumCharactersForWords(words []string) []string {\n\tmaximumCharacterFrequencies := map[rune]int{}\n\n\tfor _, word := range words {\n\t\tcharacterFrequencies := countCharacterFrequencies(word)\n\t\tupdateMaximumFrequencies(characterFrequencies, maximumCharacterFrequencies)\n\t}\n\n\treturn makeArrayFromCharacterFrequencies(maximumCharacterFrequencies)\n}\n\nfunc countCharacterFrequencies(str string) map[rune]int {\n\tcharacterFrequencies := map[rune]int{}\n\tfor _, character := range str {\n\t\tcharacterFrequencies[character] += 1\n\t}\n\treturn characterFrequencies\n}\n\nfunc updateMaximumFrequencies(frequencies map[rune]int, maximumFrequencies map[rune]int) {\n\tfor character, frequency := range frequencies {\n\t\tif maxFrequency, found := maximumFrequencies[character]; found {\n\t\t\tmaximumFrequencies[character] = max(frequency, maxFrequency)\n\t\t} else {\n\t\t\tmaximumFrequencies[character] = frequency\n\t\t}\n\t}\n}\n\nfunc makeArrayFromCharacterFrequencies(characterFrequencies map[rune]int) []string {\n\tcharacters := make([]string, 0)\n\tfor character, frequency := range characterFrequencies {\n\t\tfor i := 0; i < frequency; i++ {\n\t\t\tcharacters = append(characters, string(character))\n\t\t}\n\t}\n\treturn characters\n}\n\nfunc max(a, b int) int {\n\tif a > b {\n\t\treturn a\n\t}\n\treturn b\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"sort\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []string{\"this\", \"that\", \"did\", \"deed\", \"them!\", \"a\"}\n\texpected := []string{\"t\", \"t\", \"h\", \"i\", \"s\", \"a\", \"d\", \"d\", \"e\", \"e\", \"m\", \"!\"}\n\tactual := MinimumCharactersForWords(input)\n\tsort.Strings(actual)\n\tsort.Strings(expected)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"sort\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []string{\"this\", \"that\", \"did\", \"deed\", \"them!\", \"a\"}\n\texpected := []string{\"t\", \"t\", \"h\", \"i\", \"s\", \"a\", \"d\", \"d\", \"e\", \"e\", \"m\", \"!\"}\n\tactual := MinimumCharactersForWords(input)\n\tsort.Strings(actual)\n\tsort.Strings(expected)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public char[] minimumCharactersForWords(String[] words) {\n    // Write your code here.\n    return new char[] {};\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n * l) time | O(c) space - where n is the number of words,\n  // l is the length of the longest word, and c is the number of\n  // unique characters across all words\n  // See notes under video explanation for details about the space complexity.\n  public char[] minimumCharactersForWords(String[] words) {\n    HashMap<Character, Integer> maximumCharacterFrequencies =\n      new HashMap<Character, Integer>();\n\n    for (String word : words) {\n      HashMap<Character, Integer> characterFrequencies =\n        countCharacterFrequencies(word);\n      updateMaximumFrequencies(\n        characterFrequencies, maximumCharacterFrequencies\n      );\n    }\n\n    return makeArrayFromCharacterFrequencies(maximumCharacterFrequencies);\n  }\n\n  public HashMap<Character, Integer> countCharacterFrequencies(String string) {\n    HashMap<Character, Integer> characterFrequencies =\n      new HashMap<Character, Integer>();\n\n    for (char character : string.toCharArray()) {\n      characterFrequencies.put(\n        character, characterFrequencies.getOrDefault(character, 0) + 1\n      );\n    }\n\n    return characterFrequencies;\n  }\n\n  public void updateMaximumFrequencies(\n    HashMap<Character, Integer> frequencies,\n    HashMap<Character, Integer> maximumFrequencies\n  ) {\n    for (Map.Entry<Character, Integer> frequency : frequencies.entrySet()) {\n      char character = frequency.getKey();\n      int characterFrequency = frequency.getValue();\n\n      if (maximumFrequencies.containsKey(character)) {\n        maximumFrequencies.put(\n          character,\n          Math.max(characterFrequency, maximumFrequencies.get(character))\n        );\n      } else {\n        maximumFrequencies.put(character, characterFrequency);\n      }\n    }\n  }\n\n  public char[] makeArrayFromCharacterFrequencies(\n    HashMap<Character, Integer> characterFrequencies\n  ) {\n    ArrayList<Character> characters = new ArrayList<Character>();\n\n    for (Map.Entry<Character, Integer> frequency :\n         characterFrequencies.entrySet()) {\n      char character = frequency.getKey();\n      int characterFrequency = frequency.getValue();\n\n      for (int idx = 0; idx < characterFrequency; idx++) {\n        characters.add(character);\n      }\n    }\n\n    char[] charactersArray = new char[characters.size()];\n    for (int idx = 0; idx < characters.size(); idx++) {\n      charactersArray[idx] = characters.get(idx);\n    }\n\n    return charactersArray;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    String[] words = new String[] {\"this\", \"that\", \"did\", \"deed\", \"them!\", \"a\"};\n    char[] expected =\n      new char[] {'t', 't', 'h', 'i', 's', 'a', 'd', 'd', 'e', 'e', 'm', '!'};\n    var actual = new Program().minimumCharactersForWords(words);\n    assert (expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    String[] words = new String[] {\"this\", \"that\", \"did\", \"deed\", \"them!\", \"a\"};\n    char[] expected =\n      new char[] {'t', 't', 'h', 'i', 's', 'a', 'd', 'd', 'e', 'e', 'm', '!'};\n    var actual = new Program().minimumCharactersForWords(words);\n    assert (expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function minimumCharactersForWords(words) {\n  // Write your code here.\n  return [];\n}\n\n// Do not edit the line below.\nexports.minimumCharactersForWords = minimumCharactersForWords;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n * l) time | O(c) space - where n is the number of words,\n// l is the length of the longest word, and c is the number of\n// unique characters across all words\n// See notes under video explanation for details about the space complexity.\nfunction minimumCharactersForWords(words) {\n  const maximumCharacterFrequencies = {};\n\n  for (const word of words) {\n    const characterFrequencies = countCharacterFrequencies(word);\n    updateMaximumFrequencies(characterFrequencies, maximumCharacterFrequencies);\n  }\n\n  return makeArrayFromCharacterFrequencies(maximumCharacterFrequencies);\n}\n\nfunction countCharacterFrequencies(string) {\n  const characterFrequencies = {};\n\n  for (const character of string) {\n    if (!(character in characterFrequencies)) {\n      characterFrequencies[character] = 0;\n    }\n\n    characterFrequencies[character] += 1;\n  }\n\n  return characterFrequencies;\n}\n\nfunction updateMaximumFrequencies(frequencies, maximumFrequencies) {\n  for (const character in frequencies) {\n    const frequency = frequencies[character];\n\n    if (character in maximumFrequencies) {\n      maximumFrequencies[character] = Math.max(frequency, maximumFrequencies[character]);\n    } else {\n      maximumFrequencies[character] = frequency;\n    }\n  }\n}\n\nfunction makeArrayFromCharacterFrequencies(characterFrequencies) {\n  const characters = [];\n\n  for (const character in characterFrequencies) {\n    const frequency = characterFrequencies[character];\n\n    for (let idx = 0; idx < frequency; idx++) {\n      characters.push(character);\n    }\n  }\n\n  return characters;\n}\n\n// Do not edit the line below.\nexports.minimumCharactersForWords = minimumCharactersForWords;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = ['this', 'that', 'did', 'deed', 'them!', 'a'];\n  const expected = ['t', 't', 'h', 'i', 's', 'a', 'd', 'd', 'e', 'e', 'm', '!'];\n  const actual = program.minimumCharactersForWords(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = ['this', 'that', 'did', 'deed', 'them!', 'a'];\n  const expected = ['t', 't', 'h', 'i', 's', 'a', 'd', 'd', 'e', 'e', 'm', '!'];\n  const actual = program.minimumCharactersForWords(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun minimumCharactersForWords(words: List<String>): List<Char> {\n    // Write your code here.\n    return listOf()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\nimport kotlin.math.max\n\n// O(n * l) time | O(c) space - where n is the number of words,\n// l is the length of the longest word, and c is the number of\n// unique characters across all words\n// See notes under video explanation for details about the space complexity.\nfun minimumCharactersForWords(words: List<String>): List<Char> {\n    val maximumCharacterFrequencies = mutableMapOf<Char, Int>()\n\n    for (word in words) {\n        val characterFrequencies = countCharacterFrequencies(word)\n        updateMaximumFrequencies(characterFrequencies, maximumCharacterFrequencies)\n    }\n\n    return makeArrayFromCharacterFrequencies(maximumCharacterFrequencies)\n}\n\nfun countCharacterFrequencies(string: String): Map<Char, Int> {\n    val characterFrequencies = mutableMapOf<Char, Int>()\n    for (character in string) {\n        characterFrequencies[character] = characterFrequencies.getOrDefault(character, 0) + 1\n    }\n\n    return characterFrequencies\n}\n\nfun updateMaximumFrequencies(frequencies: Map<Char, Int>, maximumFrequencies: MutableMap<Char, Int>) {\n    for ((character, frequency) in frequencies) {\n        if (character in maximumFrequencies) {\n            maximumFrequencies[character] = max(frequency, maximumFrequencies[character]!!)\n        } else {\n            maximumFrequencies[character] = frequency\n        }\n    }\n}\n\nfun makeArrayFromCharacterFrequencies(characterFrequencies: Map<Char, Int>): List<Char> {\n    val characters = mutableListOf<Char>()\n\n    for ((character, frequency) in characterFrequencies) {\n        for (i in 0 until frequency) {\n            characters.add(character)\n        }\n    }\n\n    return characters\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.minimumCharactersForWords\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(\"this\", \"that\", \"did\", \"deed\", \"them!\", \"a\")\n        val expected = listOf('t', 't', 'h', 'i', 's', 'a', 'd', 'd', 'e', 'e', 'm', '!')\n        val output = minimumCharactersForWords(input)\n        assert(expected.sorted() == output.sorted())\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.minimumCharactersForWords\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = listOf(\"this\", \"that\", \"did\", \"deed\", \"them!\", \"a\")\n        val expected = listOf('t', 't', 'h', 'i', 's', 'a', 'd', 'd', 'e', 'e', 'm', '!')\n        val output = minimumCharactersForWords(input)\n        assert(expected.sorted() == output.sorted())\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def minimumCharactersForWords(words):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n * l) time | O(c) space - where n is the number of words,\n# l is the length of the longest word, and c is the number of\n# unique characters across all words\n# See notes under video explanation for details about the space complexity.\ndef minimumCharactersForWords(words):\n    maximumCharacterFrequencies = {}\n\n    for word in words:\n        characterFrequencies = countCharacterFrequencies(word)\n        updateMaximumFrequencies(characterFrequencies, maximumCharacterFrequencies)\n\n    return makeArrayFromCharacterFrequencies(maximumCharacterFrequencies)\n\n\ndef countCharacterFrequencies(string):\n    characterFrequencies = {}\n\n    for character in string:\n        if character not in characterFrequencies:\n            characterFrequencies[character] = 0\n\n        characterFrequencies[character] += 1\n\n    return characterFrequencies\n\n\ndef updateMaximumFrequencies(frequencies, maximumFrequencies):\n    for character in frequencies:\n        frequency = frequencies[character]\n\n        if character in maximumFrequencies:\n            maximumFrequencies[character] = max(frequency, maximumFrequencies[character])\n        else:\n            maximumFrequencies[character] = frequency\n\n\ndef makeArrayFromCharacterFrequencies(characterFrequencies):\n    characters = []\n\n    for character in characterFrequencies:\n        frequency = characterFrequencies[character]\n\n        for _ in range(frequency):\n            characters.append(character)\n\n    return characters\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [\"this\", \"that\", \"did\", \"deed\", \"them!\", \"a\"]\n        expected = [\"t\", \"t\", \"h\", \"i\", \"s\", \"a\", \"d\", \"d\", \"e\", \"e\", \"m\", \"!\"]\n        actual = program.minimumCharactersForWords(input)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [\"this\", \"that\", \"did\", \"deed\", \"them!\", \"a\"]\n        expected = [\"t\", \"t\", \"h\", \"i\", \"s\", \"a\", \"d\", \"d\", \"e\", \"e\", \"m\", \"!\"]\n        actual = program.minimumCharactersForWords(input)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "class Program\n  def minimumCharactersForWords(words)\n    # Write your code here.\n    return []\n  end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program\n  def minimumCharactersForWords(words)\n    # Write your code here.\n    return []\n  end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.minimumCharactersForWords\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n",
+            "unitTests": "require \"./program.rb\"\n\nclass TestSuite\n  include Assertions\n\n  def test_1\n    # inputs = ...\n    # output = Program.new.minimumCharactersForWords\n    # expected = ...\n    # assertEqual(expected, output)\n  end\nend\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func minimumCharactersForWords(_ words: [String]) -> [String] {\n    // Write your code here.\n    return [String]()\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n * l) time | O(c) space - where n is the number of words,\n  // l is the length of the longest word, and c is the number of\n  // unique characters across all words\n  // See notes under video explanation for details about the space complexity.\n  func minimumCharactersForWords(_ words: [String]) -> [String] {\n    var maximumCharacterFrequencies = [Character: Int]()\n\n    for word in words {\n      let characterFrequencies = countCharacterFrequencies(word)\n      updateMaximumFrequencies(characterFrequencies, &maximumCharacterFrequencies)\n    }\n\n    return makeArrayFromCharacterFrequencies(maximumCharacterFrequencies)\n  }\n\n  func countCharacterFrequencies(_ str: String) -> [Character: Int] {\n    var characterFrequencies = [Character: Int]()\n    for character in str {\n      if characterFrequencies[character] == nil {\n        characterFrequencies[character] = 0\n      }\n      characterFrequencies[character]! += 1\n    }\n    return characterFrequencies\n  }\n\n  func updateMaximumFrequencies(_ frequencies: [Character: Int], _ maximumFrequencies: inout [Character: Int]) {\n    for (character, frequency) in frequencies {\n      if maximumFrequencies[character] != nil {\n        maximumFrequencies[character] = max(frequency, maximumFrequencies[character]!)\n      } else {\n        maximumFrequencies[character] = frequency\n      }\n    }\n  }\n\n  func makeArrayFromCharacterFrequencies(_ characterFrequencies: [Character: Int]) -> [String] {\n    var characters = [String]()\n    for (character, frequency) in characterFrequencies {\n      for i in stride(from: 0, to: frequency, by: 1) {\n        characters.append(String(character))\n      }\n    }\n    return characters\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var input = [\"this\", \"that\", \"did\", \"deed\", \"them!\", \"a\"]\n      var expected = [\"t\", \"t\", \"h\", \"i\", \"s\", \"a\", \"d\", \"d\", \"e\", \"e\", \"m\", \"!\"]\n      var actual = Program().minimumCharactersForWords(input)\n      try assertEqual(expected.sorted(), actual.sorted())\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws -> Void in\n      var input = [\"this\", \"that\", \"did\", \"deed\", \"them!\", \"a\"]\n      var expected = [\"t\", \"t\", \"h\", \"i\", \"s\", \"a\", \"d\", \"d\", \"e\", \"e\", \"m\", \"!\"]\n      var actual = Program().minimumCharactersForWords(input)\n      try assertEqual(expected.sorted(), actual.sorted())\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function minimumCharactersForWords(words: string[]) {\n  // Write your code here.\n  return [];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\ninterface CharacterFrequencies {\n  [character: string]: number;\n}\n\n// O(n * l) time | O(c) space - where n is the number of words,\n// l is the length of the longest word, and c is the number of\n// unique characters across all words\n// See notes under video explanation for details about the space complexity.\nexport function minimumCharactersForWords(words: string[]) {\n  const maximumCharacterFrequencies: CharacterFrequencies = {};\n\n  for (const word of words) {\n    const characterFrequencies = countCharacterFrequencies(word);\n    updateMaximumFrequencies(characterFrequencies, maximumCharacterFrequencies);\n  }\n\n  return makeArrayFromCharacterFrequencies(maximumCharacterFrequencies);\n}\n\nfunction countCharacterFrequencies(string: string) {\n  const characterFrequencies: CharacterFrequencies = {};\n\n  for (const character of string) {\n    if (!(character in characterFrequencies)) {\n      characterFrequencies[character] = 0;\n    }\n\n    characterFrequencies[character] += 1;\n  }\n\n  return characterFrequencies;\n}\n\nfunction updateMaximumFrequencies(\n  frequencies: CharacterFrequencies,\n  maximumFrequencies: CharacterFrequencies,\n) {\n  for (const character in frequencies) {\n    const frequency = frequencies[character];\n\n    if (character in maximumFrequencies) {\n      maximumFrequencies[character] = Math.max(frequency, maximumFrequencies[character]);\n    } else {\n      maximumFrequencies[character] = frequency;\n    }\n  }\n}\n\nfunction makeArrayFromCharacterFrequencies(characterFrequencies: CharacterFrequencies) {\n  const characters: string[] = [];\n\n  for (const character in characterFrequencies) {\n    const frequency = characterFrequencies[character];\n\n    for (let idx = 0; idx < frequency; idx++) {\n      characters.push(character);\n    }\n  }\n\n  return characters;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = ['this', 'that', 'did', 'deed', 'them!', 'a'];\n  const expected = ['t', 't', 'h', 'i', 's', 'a', 'd', 'd', 'e', 'e', 'm', '!'];\n  const actual = program.minimumCharactersForWords(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = ['this', 'that', 'did', 'deed', 'them!', 'a'];\n  const expected = ['t', 't', 'h', 'i', 's', 'a', 'd', 'd', 'e', 'e', 'm', '!'];\n  const actual = program.minimumCharactersForWords(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "words",
+            "example": [
+                "this",
+                "that",
+                "did",
+                "deed",
+                "them!",
+                "a"
+            ],
+            "schema": {
+                "items": {
+                    "type": "string"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "words": [
+                "this",
+                "that",
+                "did",
+                "deed",
+                "them!",
+                "a"
+            ]
+        },
+        {
+            "words": [
+                "a",
+                "abc",
+                "ab",
+                "boo"
+            ]
+        },
+        {
+            "words": [
+                "a"
+            ]
+        },
+        {
+            "words": [
+                "abc",
+                "ab",
+                "b",
+                "bac",
+                "c"
+            ]
+        },
+        {
+            "words": [
+                "!!!2",
+                "234",
+                "222",
+                "432"
+            ]
+        },
+        {
+            "words": [
+                "this",
+                "that",
+                "they",
+                "them",
+                "their",
+                "there",
+                "time",
+                "is"
+            ]
+        },
+        {
+            "words": [
+                "tim",
+                "is",
+                "great"
+            ]
+        },
+        {
+            "words": [
+                "abc",
+                "bavcc",
+                "aaaa",
+                "cde",
+                "efg",
+                "gead"
+            ]
+        },
+        {
+            "words": [
+                "a",
+                "a",
+                "a"
+            ]
+        },
+        {
+            "words": [
+                "them",
+                "they",
+                "that",
+                "that",
+                "yes",
+                "yo",
+                "no",
+                "boo",
+                "you",
+                "okay",
+                "too"
+            ]
+        },
+        {
+            "words": [
+                "cta",
+                "cat",
+                "tca",
+                "tac",
+                "a",
+                "c",
+                "t"
+            ]
+        },
+        {
+            "words": [
+                "my",
+                "coding",
+                "skills",
+                "are",
+                "great"
+            ]
+        },
+        {
+            "words": []
+        },
+        {
+            "words": [
+                "168712hn3;nlsdjhahjdksaxa097918@#$RT%T^&*()_"
+            ]
+        },
+        {
+            "words": [
+                "cat",
+                "cAt",
+                "tAc",
+                "Act",
+                "Cat"
+            ]
+        },
+        {
+            "words": [
+                "Abc",
+                "baVcc",
+                "aaaa",
+                "cdeE",
+                "efg",
+                "gead"
+            ]
+        },
+        {
+            "words": [
+                "mississippi",
+                "piper",
+                "icing",
+                "ice",
+                "pickle",
+                "piping",
+                "pie",
+                "pi",
+                "sassy",
+                "serpent",
+                "python",
+                "ascii",
+                "sister",
+                "mister"
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "words": [
+                "this",
+                "that",
+                "did",
+                "deed",
+                "them!",
+                "a"
+            ]
+        },
+        {
+            "words": [
+                "a",
+                "abc",
+                "ab",
+                "boo"
+            ]
+        },
+        {
+            "words": [
+                "a"
+            ]
+        },
+        {
+            "words": [
+                "abc",
+                "ab",
+                "b",
+                "bac",
+                "c"
+            ]
+        },
+        {
+            "words": [
+                "!!!2",
+                "234",
+                "222",
+                "432"
+            ]
+        },
+        {
+            "words": [
+                "this",
+                "that",
+                "they",
+                "them",
+                "their",
+                "there",
+                "time",
+                "is"
+            ]
+        },
+        {
+            "words": [
+                "tim",
+                "is",
+                "great"
+            ]
+        },
+        {
+            "words": [
+                "abc",
+                "bavcc",
+                "aaaa",
+                "cde",
+                "efg",
+                "gead"
+            ]
+        },
+        {
+            "words": [
+                "a",
+                "a",
+                "a"
+            ]
+        },
+        {
+            "words": [
+                "them",
+                "they",
+                "that",
+                "that",
+                "yes",
+                "yo",
+                "no",
+                "boo",
+                "you",
+                "okay",
+                "too"
+            ]
+        },
+        {
+            "words": [
+                "cta",
+                "cat",
+                "tca",
+                "tac",
+                "a",
+                "c",
+                "t"
+            ]
+        },
+        {
+            "words": [
+                "my",
+                "coding",
+                "skills",
+                "are",
+                "great"
+            ]
+        },
+        {
+            "words": []
+        },
+        {
+            "words": [
+                "168712hn3;nlsdjhahjdksaxa097918@#$RT%T^&*()_"
+            ]
+        },
+        {
+            "words": [
+                "cat",
+                "cAt",
+                "tAc",
+                "Act",
+                "Cat"
+            ]
+        },
+        {
+            "words": [
+                "Abc",
+                "baVcc",
+                "aaaa",
+                "cdeE",
+                "efg",
+                "gead"
+            ]
+        },
+        {
+            "words": [
+                "mississippi",
+                "piper",
+                "icing",
+                "ice",
+                "pickle",
+                "piping",
+                "pie",
+                "pi",
+                "sassy",
+                "serpent",
+                "python",
+                "ascii",
+                "sister",
+                "mister"
+            ]
+        }
+    ],
+    "changelog": []
+}

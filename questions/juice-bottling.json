@@ -1,0 +1,536 @@
+{
+    "uid": "juice-bottling",
+    "testStrategy": "JSON",
+    "name": "Juice Bottling",
+    "version": 0,
+    "releaseDate": "2023-04-08T00:00:00Z",
+    "category": "Dynamic Programming",
+    "difficulty": 3,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 863,
+        "failureCount": 117
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "787077050",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1048
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    You're given an array of integers <span>prices</span> of length\n    <span>n</span> with the retail prices of various quantities of juice. Each\n    index in this array corresponds to the price of that amount of juice. For\n    example, <span>prices[2]</span> would be the retail price of 2 units of\n    juice.\n  </p>\n\n  <p>\n    You have <span>n - 1</span> total units of juice. For example, if the length\n    of <span>prices</span> is 5, then you would have 4 total units of juice.\n    Write a function to determine the optimal way to bottle the juice such that\n    it maximizes revenue. This function should return a list of all of the\n    juice quantities required in ascending order.\n  </p>\n\n  <p>\n    Note that the first value in the <span>prices</span> array will always be 0,\n    because there is no value in no juice. All other values will be positive\n    integers. Additionally, a larger quantity of juice will not always be more\n    expensive than a smaller quantity. For simplicity, all of the test cases\n    only have one possible solution.\n  </p>\n\n  <h3>Sample Input</h3>\n  <pre><span class=\"CodeEditor-promptParameter\">prices</span> = [0, 1, 3, 2]</pre>\n  <h3>Sample Output</h3>\n  <pre>[1, 2] <span class=\"CodeEditor-promptComment\">// We have 3 total units of juice,\n// because the length of prices is 4.\n// To maximize revenue, we split the juice into\n// quantities of 1 and 2, giving a revenue of 1 + 3 = 4\n</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  If there were only 2 units of juice, how would you decide if it needs to be\n  broken up?\n</p>\n",
+        "\n<p>\n  If we add a third unit of juice, can you use the price of that entire unit and\n  the solution for only 2 units to find the new solution?\n</p>\n",
+        "\n<p>\n  The maximum profit at n can be modeled as the greater value of\n  <span>prices[n]</span> and <span>profit[size - m] + size[m]</span> for\n  every value m.\n</p>"
+    ],
+    "spaceTime": "(n^2) time | O(n) space - where n is the length of prices",
+    "notes": "<div class=\"html\">\n  <p>\n    There's a typo in the code walkthrough of the video explanation, at 18:30. The <span>for</span> loop is intended to iterate through the\n    the array's indicies\u2014not its values. Therefore, the line should be\n    <span>for size in range(numSizes)</span>, because <span>numSizes</span> is the\n    length of the array.\n  </p>\n</div>",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nvector<int> juiceBottling(vector<int> prices) {\n  // Write your code here.\n  return {};\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n#include <algorithm>\n\nusing namespace std;\n\n// O(n^3) time | O(n^2) space - where n is the length of prices\nvector<int> juiceBottling(vector<int> prices) {\n  int numSizes = prices.size();\n  vector<int> maxProfit(numSizes);\n  vector<vector<int>> solutions;\n  for (int size = 0; size < numSizes; size++) {\n    solutions.push_back({});\n  }\n\n  for (int size = 0; size < numSizes; size++) {\n    for (int dividingPoint = 0; dividingPoint <= size; dividingPoint++) {\n      int possibleProfit =\n        maxProfit[size - dividingPoint] + prices[dividingPoint];\n\n      if (possibleProfit > maxProfit[size]) {\n        maxProfit[size] = possibleProfit;\n        vector<int> newSolution;\n        newSolution.push_back(dividingPoint);\n        newSolution.insert(\n          newSolution.end(),\n          solutions[size - dividingPoint].begin(),\n          solutions[size - dividingPoint].end()\n        );\n        solutions[size] = newSolution;\n      }\n    }\n  }\n  return solutions[numSizes - 1];\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing namespace std;\n\n// O(n^2) time | O(n) space - where n is the length of prices\nvector<int> juiceBottling(vector<int> prices) {\n  int numSizes = prices.size();\n  vector<int> maxProfit(numSizes);\n  vector<int> dividingPoints(numSizes);\n\n  for (int size = 0; size < numSizes; size++) {\n    for (int dividingPoint = 0; dividingPoint <= size; dividingPoint++) {\n      int possibleProfit =\n        maxProfit[size - dividingPoint] + prices[dividingPoint];\n\n      if (possibleProfit > maxProfit[size]) {\n        maxProfit[size] = possibleProfit;\n        dividingPoints[size] = dividingPoint;\n      }\n    }\n  }\n\n  vector<int> solution;\n  int currentDividingPoint = numSizes - 1;\n  while (currentDividingPoint > 0) {\n    solution.push_back(dividingPoints[currentDividingPoint]);\n    currentDividingPoint -= dividingPoints[currentDividingPoint];\n  }\n\n  return solution;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input = {0, 2, 5, 6};\n      vector<int> expected = {1, 2};\n      auto actual = juiceBottling(input);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input = {0, 2, 5, 6};\n      vector<int> expected = {1, 2};\n      auto actual = juiceBottling(input);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System.Collections.Generic;\nusing System;\n\npublic class Program {\n  public List<int> JuiceBottling(int[] prices) {\n    // Write your code here.\n    return null;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n^3) time | O(n^2) space - where n is the length of prices\n  public List<int> JuiceBottling(int[] prices) {\n    int numSizes = prices.Length;\n    int[] maxProfit = new int[numSizes];\n    List<List<int> > solutions = new List<List<int> >();\n    for (int size = 0; size < numSizes; size++) {\n      solutions.Add(new List<int>());\n    }\n\n    for (int size = 0; size < numSizes; size++) {\n      for (int dividingPoint = 0; dividingPoint <= size; dividingPoint++) {\n        int possibleProfit =\n          maxProfit[size - dividingPoint] + prices[dividingPoint];\n\n        if (possibleProfit > maxProfit[size]) {\n          maxProfit[size] = possibleProfit;\n          List<int> newSolution = new List<int>();\n          newSolution.Add(dividingPoint);\n          newSolution.AddRange(solutions[size - dividingPoint]);\n          solutions[size] = newSolution;\n        }\n      }\n    }\n    return solutions[numSizes - 1];\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System.Collections.Generic;\nusing System;\n\npublic class Program {\n  // O(n^2) time | O(n) space - where n is the length of prices\n  public List<int> JuiceBottling(int[] prices) {\n    int numSizes = prices.Length;\n    int[] maxProfit = new int[numSizes];\n    int[] dividingPoints = new int[numSizes];\n\n    for (int size = 0; size < numSizes; size++) {\n      for (int dividingPoint = 0; dividingPoint <= size; dividingPoint++) {\n        int possibleProfit =\n          maxProfit[size - dividingPoint] + prices[dividingPoint];\n\n        if (possibleProfit > maxProfit[size]) {\n          maxProfit[size] = possibleProfit;\n          dividingPoints[size] = dividingPoint;\n        }\n      }\n    }\n\n    List<int> solution = new List<int>();\n    int currentDividingPoint = numSizes - 1;\n    while (currentDividingPoint > 0) {\n      solution.Add(dividingPoints[currentDividingPoint]);\n      currentDividingPoint -= dividingPoints[currentDividingPoint];\n    }\n\n    return solution;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    var input = new int[] { 0, 2, 5, 6 };\n    var expected = new int[] { 1, 2 };\n    var actual = new Program().JuiceBottling(input);\n    Utils.AssertTrue(expected.Length == actual.Count);\n    for (int i = 0; i < actual.Count; i++) {\n      Utils.AssertTrue(expected[i] == actual[i]);\n    }\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    var input = new int[] { 0, 2, 5, 6 };\n    var expected = new int[] { 1, 2 };\n    var actual = new Program().JuiceBottling(input);\n    Utils.AssertTrue(expected.Length == actual.Count);\n    for (int i = 0; i < actual.Count; i++) {\n      Utils.AssertTrue(expected[i] == actual[i]);\n    }\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc JuiceBottling(prices []int) []int {\n\t// Write your code here.\n\treturn []int{}\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n^3) time | O(n^2) space - where n is the length of prices\nfunc JuiceBottling(prices []int) []int {\n\tnumSizes := len(prices)\n\tmaxProfit := make([]int, numSizes)\n\tsolutions := make([][]int, numSizes)\n\n\tfor size := 0; size < numSizes; size++ {\n\t\tfor dividingPoint := 0; dividingPoint < size+1; dividingPoint++ {\n\t\t\tpossibleProfit := maxProfit[size-dividingPoint] + prices[dividingPoint]\n\n\t\t\tif possibleProfit > maxProfit[size] {\n\t\t\t\tmaxProfit[size] = possibleProfit\n\t\t\t\tsolutions[size] = append([]int{dividingPoint}, solutions[size-dividingPoint]...)\n\t\t\t}\n\t\t}\n\t}\n\treturn solutions[numSizes-1]\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n^2) time | O(n) space - where n is the length of prices\nfunc JuiceBottling(prices []int) []int {\n\tnumSizes := len(prices)\n\tmaxProfit := make([]int, numSizes)\n\tdividingPoints := make([]int, numSizes)\n\n\tfor size := 0; size < numSizes; size++ {\n\t\tfor dividingPoint := 0; dividingPoint < size+1; dividingPoint++ {\n\t\t\tpossibleProfit := maxProfit[size-dividingPoint] + prices[dividingPoint]\n\n\t\t\tif possibleProfit > maxProfit[size] {\n\t\t\t\tmaxProfit[size] = possibleProfit\n\t\t\t\tdividingPoints[size] = dividingPoint\n\t\t\t}\n\t\t}\n\t}\n\n\tsolution := make([]int, 0)\n\tcurrentDividingPoint := numSizes - 1\n\tfor currentDividingPoint > 0 {\n\t\tsolution = append(solution, dividingPoints[currentDividingPoint])\n\t\tcurrentDividingPoint -= dividingPoints[currentDividingPoint]\n\t}\n\treturn solution\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []int{0, 2, 5, 6}\n\texpected := []int{1, 2}\n\tactual := JuiceBottling(input)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []int{0, 2, 5, 6}\n\texpected := []int{1, 2}\n\tactual := JuiceBottling(input)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public ArrayList<Integer> juiceBottling(int[] prices) {\n    // Write your code here.\n    return null;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n^3) time | O(n^2) space - where n is the length of prices\n  public ArrayList<Integer> juiceBottling(int[] prices) {\n    int numSizes = prices.length;\n    int[] maxProfit = new int[numSizes];\n    ArrayList<ArrayList<Integer>> solutions =\n      new ArrayList<ArrayList<Integer>>();\n    for (int size = 0; size < numSizes; size++) {\n      solutions.add(new ArrayList<Integer>());\n    }\n\n    for (int size = 0; size < numSizes; size++) {\n      for (int dividingPoint = 0; dividingPoint <= size; dividingPoint++) {\n        int possibleProfit =\n          maxProfit[size - dividingPoint] + prices[dividingPoint];\n\n        if (possibleProfit > maxProfit[size]) {\n          maxProfit[size] = possibleProfit;\n          ArrayList<Integer> newSolution = new ArrayList<Integer>();\n          newSolution.add(dividingPoint);\n          newSolution.addAll(solutions.get(size - dividingPoint));\n          solutions.set(size, newSolution);\n        }\n      }\n    }\n    return solutions.get(numSizes - 1);\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n^2) time | O(n) space - where n is the length of prices\n  public ArrayList<Integer> juiceBottling(int[] prices) {\n    int numSizes = prices.length;\n    int[] maxProfit = new int[numSizes];\n    int[] dividingPoints = new int[numSizes];\n\n    for (int size = 0; size < numSizes; size++) {\n      for (int dividingPoint = 0; dividingPoint <= size; dividingPoint++) {\n        int possibleProfit =\n          maxProfit[size - dividingPoint] + prices[dividingPoint];\n\n        if (possibleProfit > maxProfit[size]) {\n          maxProfit[size] = possibleProfit;\n          dividingPoints[size] = dividingPoint;\n        }\n      }\n    }\n\n    ArrayList<Integer> solution = new ArrayList<Integer>();\n    int currentDividingPoint = numSizes - 1;\n    while (currentDividingPoint > 0) {\n      solution.add(dividingPoints[currentDividingPoint]);\n      currentDividingPoint -= dividingPoints[currentDividingPoint];\n    }\n\n    return solution;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var input = new int[] {0, 2, 5, 6};\n    var expected = new int[] {1, 2};\n    var actual = new Program().juiceBottling(input);\n    Utils.assertTrue(expected.length == actual.size());\n    for (int i = 0; i < actual.size(); i++) {\n      Utils.assertTrue(expected[i] == actual.get(i));\n    }\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var input = new int[] {0, 2, 5, 6};\n    var expected = new int[] {1, 2};\n    var actual = new Program().juiceBottling(input);\n    Utils.assertTrue(expected.length == actual.size());\n    for (int i = 0; i < actual.size(); i++) {\n      Utils.assertTrue(expected[i] == actual.get(i));\n    }\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function juiceBottling(prices) {\n  // Write your code here.\n  return [];\n}\n\n// Do not edit the line below.\nexports.juiceBottling = juiceBottling;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^3) time | O(n^2) space - where n is the length of prices\nfunction juiceBottling(prices) {\n  const numSizes = prices.length;\n  const maxProfit = new Array(numSizes).fill(0);\n  const solutions = new Array(numSizes).fill(undefined).map(_ => []);\n\n  for (let size = 0; size < numSizes; size++) {\n    for (let dividingPoint = 0; dividingPoint < size + 1; dividingPoint++) {\n      const possibleProfit = maxProfit[size - dividingPoint] + prices[dividingPoint];\n\n      if (possibleProfit > maxProfit[size]) {\n        maxProfit[size] = possibleProfit;\n        solutions[size] = [dividingPoint].concat(solutions[size - dividingPoint]);\n      }\n    }\n  }\n\n  return solutions[numSizes - 1];\n}\n\n// Do not edit the line below.\nexports.juiceBottling = juiceBottling;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^2) time | O(n) space - where n is the length of prices\nfunction juiceBottling(prices) {\n  const numSizes = prices.length;\n  const maxProfit = new Array(numSizes).fill(0);\n  const dividingPoints = new Array(numSizes).fill(0);\n\n  for (let size = 0; size < numSizes; size++) {\n    for (let dividingPoint = 0; dividingPoint < size + 1; dividingPoint++) {\n      const possibleProfit = maxProfit[size - dividingPoint] + prices[dividingPoint];\n\n      if (possibleProfit > maxProfit[size]) {\n        maxProfit[size] = possibleProfit;\n        dividingPoints[size] = dividingPoint;\n      }\n    }\n  }\n\n  const solution = [];\n  let currentDividingPoint = numSizes - 1;\n  while (currentDividingPoint > 0) {\n    solution.push(dividingPoints[currentDividingPoint]);\n    currentDividingPoint -= dividingPoints[currentDividingPoint];\n  }\n\n  return solution;\n}\n\n// Do not edit the line below.\nexports.juiceBottling = juiceBottling;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [0, 2, 5, 6];\n  const expected = [1, 2];\n  const actual = program.juiceBottling(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [0, 2, 5, 6];\n  const expected = [1, 2];\n  const actual = program.juiceBottling(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun juiceBottling(prices: MutableList<Int>): MutableList<Int> {\n    // Write your code here.\n    return mutableListOf()\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n^3) time | O(n^2) space - where n is the length of prices\nfun juiceBottling(prices: MutableList<Int>): MutableList<Int> {\n    val numSizes = prices.size\n    val maxProfit = MutableList(numSizes) { 0 }\n    val solutions = MutableList(numSizes) { mutableListOf<Int>() }\n\n    for (size in 0 until numSizes) {\n        for (dividingPoint in 0 until size + 1) {\n            val possibleProfit = maxProfit[size - dividingPoint] + prices[dividingPoint]\n\n            if (possibleProfit > maxProfit[size]) {\n                maxProfit[size] = possibleProfit\n                solutions[size] = (listOf(dividingPoint) + solutions[size - dividingPoint]).toMutableList()\n            }\n        }\n    }\n\n    return solutions[numSizes - 1]\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n^2) time | O(n) space - where n is the length of prices\nfun juiceBottling(prices: MutableList<Int>): MutableList<Int> {\n    val numSizes = prices.size\n    val maxProfit = MutableList(numSizes) { 0 }\n    val dividingPoints = MutableList(numSizes) { 0 }\n\n    for (size in 0 until numSizes) {\n        for (dividingPoint in 0 until size + 1) {\n            val possibleProfit = maxProfit[size - dividingPoint] + prices[dividingPoint]\n\n            if (possibleProfit > maxProfit[size]) {\n                maxProfit[size] = possibleProfit\n                dividingPoints[size] = dividingPoint\n            }\n        }\n    }\n\n    val solution = mutableListOf<Int>()\n    var currentDividingPoint = numSizes - 1\n    while (currentDividingPoint > 0) {\n        solution.add(dividingPoints[currentDividingPoint])\n        currentDividingPoint -= dividingPoints[currentDividingPoint]\n    }\n\n    return solution\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.juiceBottling\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(0, 2, 5, 6)\n        val expected = mutableListOf(1, 2)\n        val output = juiceBottling(input)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.juiceBottling\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(0, 2, 5, 6)\n        val expected = mutableListOf(1, 2)\n        val output = juiceBottling(input)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def juiceBottling(prices):\n    # Write your code here.\n    return []\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n^3) time | O(n^2) space - where n is the length of prices\ndef juiceBottling(prices):\n    numSizes = len(prices)\n    maxProfit = [0] * numSizes\n    solutions = [[]] * numSizes\n\n    for size in range(numSizes):\n        for dividingPoint in range(size + 1):\n            possibleProfit = maxProfit[size - dividingPoint] + prices[dividingPoint]\n\n            if possibleProfit > maxProfit[size]:\n                maxProfit[size] = possibleProfit\n                solutions[size] = [dividingPoint] + solutions[size - dividingPoint]\n\n    return solutions[numSizes - 1]\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n^2) time | O(n) space - where n is the length of prices\ndef juiceBottling(prices):\n    numSizes = len(prices)\n    maxProfit = [0] * numSizes\n    dividingPoints = [0] * numSizes\n\n    for size in range(numSizes):\n        for dividingPoint in range(size + 1):\n            possibleProfit = maxProfit[size - dividingPoint] + prices[dividingPoint]\n\n            if possibleProfit > maxProfit[size]:\n                maxProfit[size] = possibleProfit\n                dividingPoints[size] = dividingPoint\n\n    solution = []\n    currentDividingPoint = numSizes - 1\n    while currentDividingPoint > 0:\n        solution.append(dividingPoints[currentDividingPoint])\n        currentDividingPoint -= dividingPoints[currentDividingPoint]\n\n    return solution\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [0, 2, 5, 6]\n        expected = [1, 2]\n        actual = program.juiceBottling(input)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [0, 2, 5, 6]\n        expected = [1, 2]\n        actual = program.juiceBottling(input)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def juiceBottling(prices)\n        # Write your code here.\n        return []\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def juiceBottling(prices)\n        # Write your code here.\n        return []\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.juiceBottling\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.juiceBottling\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func juiceBottling(_ prices: [Int]) -> [Int] {\n    // Write your code here.\n    return [Int]()\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n^3) time | O(n^2) space - where n is the length of prices\n  func juiceBottling(_ prices: [Int]) -> [Int] {\n    let numSizes = prices.count\n    var maxProfit = Array(repeating: 0, count: numSizes)\n    var solutions = Array(repeating: [Int](), count: numSizes)\n\n    for size in 0 ..< numSizes {\n      for dividingPoint in 0 ..< (size + 1) {\n        let possibleProfit = maxProfit[size - dividingPoint] + prices[dividingPoint]\n\n        if possibleProfit > maxProfit[size] {\n          maxProfit[size] = possibleProfit\n          solutions[size] = [dividingPoint] + solutions[size - dividingPoint]\n        }\n      }\n    }\n    return solutions[numSizes - 1]\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n^2) time | O(n) space - where n is the length of prices\n  func juiceBottling(_ prices: [Int]) -> [Int] {\n    let numSizes = prices.count\n    var maxProfit = Array(repeating: 0, count: numSizes)\n    var dividingPoints = Array(repeating: 0, count: numSizes)\n\n    for size in 0 ..< numSizes {\n      for dividingPoint in 0 ..< (size + 1) {\n        let possibleProfit = maxProfit[size - dividingPoint] + prices[dividingPoint]\n\n        if possibleProfit > maxProfit[size] {\n          maxProfit[size] = possibleProfit\n          dividingPoints[size] = dividingPoint\n        }\n      }\n    }\n\n    var solution = [Int]()\n    var currentDividingPoint = numSizes - 1\n    while currentDividingPoint > 0 {\n      solution.append(dividingPoints[currentDividingPoint])\n      currentDividingPoint -= dividingPoints[currentDividingPoint]\n    }\n    return solution\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      let input = [0, 2, 5, 6]\n      let expected = [1, 2]\n      var actual = Program().juiceBottling(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      let input = [0, 2, 5, 6]\n      let expected = [1, 2]\n      var actual = Program().juiceBottling(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function juiceBottling(prices: number[]) {\n  // Write your code here.\n  return [];\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^3) time | O(n^2) space - where n is the length of prices\nexport function juiceBottling(prices: number[]) {\n  const numSizes = prices.length;\n  const maxProfit = new Array(numSizes).fill(0);\n  const solutions: number[][] = new Array(numSizes).fill(undefined).map(_ => []);\n\n  for (let size = 0; size < numSizes; size++) {\n    for (let dividingPoint = 0; dividingPoint < size + 1; dividingPoint++) {\n      const possibleProfit = maxProfit[size - dividingPoint] + prices[dividingPoint];\n\n      if (possibleProfit > maxProfit[size]) {\n        maxProfit[size] = possibleProfit;\n        solutions[size] = [dividingPoint].concat(solutions[size - dividingPoint]);\n      }\n    }\n  }\n\n  return solutions[numSizes - 1];\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n^2) time | O(n) space - where n is the length of prices\nexport function juiceBottling(prices: number[]) {\n  const numSizes = prices.length;\n  const maxProfit = new Array(numSizes).fill(0);\n  const dividingPoints = new Array(numSizes).fill(0);\n\n  for (let size = 0; size < numSizes; size++) {\n    for (let dividingPoint = 0; dividingPoint < size + 1; dividingPoint++) {\n      const possibleProfit = maxProfit[size - dividingPoint] + prices[dividingPoint];\n\n      if (possibleProfit > maxProfit[size]) {\n        maxProfit[size] = possibleProfit;\n        dividingPoints[size] = dividingPoint;\n      }\n    }\n  }\n\n  const solution: number[] = [];\n  let currentDividingPoint = numSizes - 1;\n  while (currentDividingPoint > 0) {\n    solution.push(dividingPoints[currentDividingPoint]);\n    currentDividingPoint -= dividingPoints[currentDividingPoint];\n  }\n\n  return solution;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [0, 2, 5, 6];\n  const expected = [1, 2];\n  const actual = program.juiceBottling(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [0, 2, 5, 6];\n  const expected = [1, 2];\n  const actual = program.juiceBottling(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "prices",
+            "example": [
+                0,
+                1
+            ],
+            "schema": {
+                "items": {
+                    "type": "integer"
+                },
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "prices": [
+                0,
+                1
+            ]
+        },
+        {
+            "prices": [
+                0,
+                1,
+                3
+            ]
+        },
+        {
+            "prices": [
+                0,
+                2,
+                3
+            ]
+        },
+        {
+            "prices": [
+                0,
+                2,
+                3,
+                4
+            ]
+        },
+        {
+            "prices": [
+                0,
+                2,
+                5,
+                6
+            ]
+        },
+        {
+            "prices": [
+                0,
+                2,
+                5,
+                6,
+                7
+            ]
+        },
+        {
+            "prices": [
+                0,
+                2,
+                5,
+                6,
+                11
+            ]
+        },
+        {
+            "prices": [
+                0,
+                2,
+                5,
+                10,
+                11
+            ]
+        },
+        {
+            "prices": [
+                0,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ]
+        },
+        {
+            "prices": [
+                0,
+                2,
+                5,
+                4,
+                4
+            ]
+        },
+        {
+            "prices": [
+                0,
+                1,
+                3,
+                2
+            ]
+        },
+        {
+            "prices": [
+                0,
+                1,
+                3,
+                2,
+                4
+            ]
+        },
+        {
+            "prices": [
+                0,
+                3,
+                5,
+                10,
+                8,
+                4,
+                12,
+                15,
+                20,
+                18,
+                25
+            ]
+        },
+        {
+            "prices": [
+                0,
+                1,
+                3,
+                7,
+                5,
+                4,
+                12,
+                15,
+                20,
+                18,
+                25
+            ]
+        },
+        {
+            "prices": [
+                0,
+                1,
+                3,
+                6,
+                5,
+                4,
+                17,
+                15,
+                20,
+                18,
+                21
+            ]
+        },
+        {
+            "prices": [
+                0,
+                1,
+                3,
+                5,
+                4,
+                8,
+                7,
+                12,
+                15,
+                13,
+                16
+            ]
+        },
+        {
+            "prices": [
+                0,
+                1,
+                3,
+                5,
+                4,
+                10,
+                7,
+                12,
+                15,
+                13,
+                16
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "prices": [
+                0,
+                1
+            ]
+        },
+        {
+            "prices": [
+                0,
+                1,
+                3
+            ]
+        },
+        {
+            "prices": [
+                0,
+                2,
+                3
+            ]
+        },
+        {
+            "prices": [
+                0,
+                2,
+                3,
+                4
+            ]
+        },
+        {
+            "prices": [
+                0,
+                2,
+                5,
+                6
+            ]
+        },
+        {
+            "prices": [
+                0,
+                2,
+                5,
+                6,
+                7
+            ]
+        },
+        {
+            "prices": [
+                0,
+                2,
+                5,
+                6,
+                11
+            ]
+        },
+        {
+            "prices": [
+                0,
+                2,
+                5,
+                10,
+                11
+            ]
+        },
+        {
+            "prices": [
+                0,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ]
+        },
+        {
+            "prices": [
+                0,
+                2,
+                5,
+                4,
+                4
+            ]
+        },
+        {
+            "prices": [
+                0,
+                1,
+                3,
+                2
+            ]
+        },
+        {
+            "prices": [
+                0,
+                1,
+                3,
+                2,
+                4
+            ]
+        },
+        {
+            "prices": [
+                0,
+                3,
+                5,
+                10,
+                8,
+                4,
+                12,
+                15,
+                20,
+                18,
+                25
+            ]
+        },
+        {
+            "prices": [
+                0,
+                1,
+                3,
+                7,
+                5,
+                4,
+                12,
+                15,
+                20,
+                18,
+                25
+            ]
+        },
+        {
+            "prices": [
+                0,
+                1,
+                3,
+                6,
+                5,
+                4,
+                17,
+                15,
+                20,
+                18,
+                21
+            ]
+        },
+        {
+            "prices": [
+                0,
+                1,
+                3,
+                5,
+                4,
+                8,
+                7,
+                12,
+                15,
+                13,
+                16
+            ]
+        },
+        {
+            "prices": [
+                0,
+                1,
+                3,
+                5,
+                4,
+                10,
+                7,
+                12,
+                15,
+                13,
+                16
+            ]
+        }
+    ],
+    "changelog": []
+}

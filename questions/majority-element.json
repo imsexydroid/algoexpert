@@ -1,0 +1,499 @@
+{
+    "uid": "majority-element",
+    "testStrategy": "JSON",
+    "name": "Majority Element",
+    "version": 0,
+    "releaseDate": "2023-06-02T00:00:00Z",
+    "category": "Arrays",
+    "difficulty": 2,
+    "acl": {
+        "isFree": false,
+        "isFreeForStudents": false,
+        "productRequired": [
+            "algoexpert"
+        ],
+        "isAvailable": true
+    },
+    "languagesSupported": [
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "kotlin",
+        "swift",
+        "python",
+        "typescript"
+    ],
+    "submissionStatistics": {
+        "correctCount": 6843,
+        "failureCount": 492
+    },
+    "assessmentSummary": null,
+    "video": {
+        "vimeoId": "793979859",
+        "duration": 0,
+        "annotations": [],
+        "instructor": "Conner Ardman",
+        "overviewTime": 0,
+        "codeWalkthroughTime": 1153
+    },
+    "prompt": "<div class=\"html\">\n  <p>\n    Write a function that takes in a non-empty, unordered <span>array</span> of\n    positive integers and returns the array's majority element without sorting\n    the array and without using more than constant space.\n  </p>\n  <p>\n    An array's majority element is an element of the array that appears in over\n    half of its indices. Note that the most common element of an array (the\n    element that appears the most times in the array) isn't necessarily the\n    array's majority element; for example, the arrays\n    <span>[3, 2, 2, 1]</span> and <span>[3, 4, 2, 2, 1]</span> both have\n    <span>2</span> as their most common element, yet neither of these arrays\n    have a majority element, because neither <span>2</span> nor any other\n    element appears in over half of the respective arrays' indices.\n  </p>\n  <p>\n    You can assume that the input array will always have a majority element.\n  </p>\n  <h3>Sample Input</h3>\n  <pre><span class=\"CodeEditor-promptParameter\">array</span> = [1, 2, 3, 2, 2, 1, 2]</pre>\n  <h3>Sample Output</h3>\n  <pre>2<span class=\"CodeEditor-promptComment\"> // 2 occurs in 4/7 array indices, making it the majority element</span>\n</pre>\n</div>",
+    "hints": [
+        "<p>\n  If the <span>array</span> were sorted, the middle element would have to be\n  the majority element. However, this does not produce an optimal algorithm.\n  Can you find a solution that does not require sorting?\n</p>\n",
+        "\n<p>\n  Try to first guess that the first element in the <span>array</span> is the\n  majority element. From here, iterate through the array, incrementing a counter\n  for each copy of that candidate element that is found, and decrementing the\n  counter for each other element that is found. If the counter ends greater than\n  1, then that element must be the majority element. Can you generalize this\n  idea to work for cases where the majority element isn't the first element?\n</p>\n",
+        "\n<p>\n  Instead of iterating all the way to the end of the <span>array</span>, try\n  stopping once the counter hits 0. At this point, the guessed majority element\n  must not be the majority element in the subarray of the <span>array</span>\n  that you have already looked at. Moreover, the actual majority element must\n  still be the majority element in the remaining subarray of the\n  <span>array</span>, since at most half of the values in the first subarray\n  were the majority element (otherwise it would have had a negative count).\n  With this intuition, you can just repeat this process, only using the\n  remaining subarray.\n</p>\n",
+        "\n<p>\n  This problem can also be solved using bit manipulation. Consider each of the\n  bits used to store an integer. For each of these bits, if over half of the\n  elements in the <span>array</span> have the bit set, then that bit must be\n  set in the majority element as well. Doing this for each bit can determine\n  which bits are set in the majority element, and thus what the majority\n  element is.\n</p>"
+    ],
+    "spaceTime": "O(n) time | O(1) space - where n is the number of elements in the array",
+    "notes": "",
+    "isSlowExecution": false,
+    "isLongOutput": false,
+    "visualization": {
+        "inputType": null,
+        "outputType": null
+    },
+    "resources": {
+        "cpp": {
+            "language": "cpp",
+            "solutionsDisabled": false,
+            "startingCode": "using namespace std;\n\nint majorityElement(vector<int> array) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing namespace std;\n\n// O(n) time | O(1) space - where n is the number of elements in the array\nint majorityElement(vector<int> array) {\n  int count = 0;\n  int answer = array[0];\n\n  for (int value : array) {\n    if (count == 0) {\n      answer = value;\n    }\n\n    if (value == answer) {\n      count++;\n    } else {\n      count--;\n    }\n  }\n\n  return answer;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing namespace std;\n\n// O(n) time | O(1) space - where n is the number of elements in the array\nint majorityElement(vector<int> array) {\n  int answer = 0;\n\n  for (int currentBit = 0; currentBit < 32; currentBit++) {\n    int currentBitValue = 1 << currentBit;\n    int onesCount = 0;\n\n    for (int num : array) {\n      if ((num & currentBitValue) != 0) {\n        onesCount++;\n      }\n    }\n\n    if (onesCount > array.size() / 2) {\n      answer += currentBitValue;\n    }\n  }\n\n  return answer;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input = {1, 2, 3, 2, 2, 1, 2};\n      auto expected = 2;\n      auto actual = majorityElement(input);\n      assert(expected == actual);\n    });\n  }\n};\n",
+            "unitTests": "class ProgramTest : public TestSuite {\n public:\n  void Run() {\n    RunTest(\"Test Case 1\", []() {\n      vector<int> input = {1, 2, 3, 2, 2, 1, 2};\n      auto expected = 2;\n      auto actual = majorityElement(input);\n      assert(expected == actual);\n    });\n  }\n};\n"
+        },
+        "csharp": {
+            "language": "csharp",
+            "solutionsDisabled": false,
+            "startingCode": "using System;\n\npublic class Program {\n  public int MajorityElement(int[] array) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(n) time | O(1) space - where n is the number of elements in the array\n  public int MajorityElement(int[] array) {\n    int count = 0;\n    int answer = array[0];\n\n    foreach (var value in array) {\n      if (count == 0) {\n        answer = value;\n      }\n\n      if (value == answer) {\n        count++;\n      } else {\n        count--;\n      }\n    }\n\n    return answer;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nusing System;\n\npublic class Program {\n  // O(n) time | O(1) space - where n is the number of elements in the array\n  public int MajorityElement(int[] array) {\n    int answer = 0;\n\n    for (int currentBit = 0; currentBit < 32; currentBit++) {\n      int currentBitValue = 1 << currentBit;\n      int onesCount = 0;\n\n      foreach (var num in array) {\n        if ((num & currentBitValue) != 0) {\n          onesCount++;\n        }\n      }\n\n      if (onesCount > array.Length / 2) {\n        answer += currentBitValue;\n      }\n    }\n\n    return answer;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nusing System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    var input = new int[] { 1, 2, 3, 2, 2, 1, 2 };\n    var expected = 2;\n    var actual = new Program().MajorityElement(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "using System;\n\npublic class ProgramTest {\n  [Test]\n  public void TestCase1() {\n    var input = new int[] { 1, 2, 3, 2, 2, 1, 2 };\n    var expected = 2;\n    var actual = new Program().MajorityElement(input);\n    Utils.AssertTrue(expected == actual);\n  }\n}\n"
+        },
+        "go": {
+            "language": "go",
+            "solutionsDisabled": false,
+            "startingCode": "package main\n\nfunc MajorityElement(array []int) int {\n\t// Write your code here.\n\treturn -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n) time | O(1) space - where n is the number of elements in the array\nfunc MajorityElement(array []int) int {\n\tcount := 0\n\tvar answer int\n\n\tfor _, value := range array {\n\t\tif count == 0 {\n\t\t\tanswer = value\n\t\t}\n\n\t\tif value == answer {\n\t\t\tcount++\n\t\t} else {\n\t\t\tcount--\n\t\t}\n\t}\n\n\treturn answer\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage main\n\n// O(n) time | O(1) space - where n is the number of elements in the array\nfunc MajorityElement(array []int) int {\n\tanswer := 0\n\n\tfor currentBit := 0; currentBit < 32; currentBit++ {\n\t\tcurrentBitValue := 1 << currentBit\n\t\tonesCount := 0\n\n\t\tfor _, num := range array {\n\t\t\tif (num & currentBitValue) != 0 {\n\t\t\t\tonesCount++\n\t\t\t}\n\t\t}\n\n\t\tif onesCount > len(array)/2 {\n\t\t\tanswer += currentBitValue\n\t\t}\n\t}\n\n\treturn answer\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\npackage main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []int{1, 2, 3, 2, 2, 1, 2}\n\texpected := 2\n\tactual := MajorityElement(input)\n\trequire.Equal(t, expected, actual)\n}\n",
+            "unitTests": "package main\n\nimport (\n\t\"github.com/stretchr/testify/require\"\n)\n\nfunc (s *TestSuite) TestCase1(t *TestCase) {\n\tinput := []int{1, 2, 3, 2, 2, 1, 2}\n\texpected := 2\n\tactual := MajorityElement(input)\n\trequire.Equal(t, expected, actual)\n}\n"
+        },
+        "java": {
+            "language": "java",
+            "solutionsDisabled": false,
+            "startingCode": "import java.util.*;\n\nclass Program {\n  public int majorityElement(int[] array) {\n    // Write your code here.\n    return -1;\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n) time | O(1) space - where n is the number of elements in the array\n  public int majorityElement(int[] array) {\n    int count = 0;\n    int answer = array[0];\n\n    for (int value : array) {\n      if (count == 0) {\n        answer = value;\n      }\n\n      if (value == answer) {\n        count++;\n      } else {\n        count--;\n      }\n    }\n\n    return answer;\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nimport java.util.*;\n\nclass Program {\n  // O(n) time | O(1) space - where n is the number of elements in the array\n  public int majorityElement(int[] array) {\n    int answer = 0;\n\n    for (int currentBit = 0; currentBit < 32; currentBit++) {\n      int currentBitValue = 1 << currentBit;\n      int onesCount = 0;\n\n      for (int num : array) {\n        if ((num & currentBitValue) != 0) {\n          onesCount++;\n        }\n      }\n\n      if (onesCount > array.length / 2) {\n        answer += currentBitValue;\n      }\n    }\n\n    return answer;\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var input = new int[] {1, 2, 3, 2, 2, 1, 2};\n    var expected = 2;\n    var actual = new Program().majorityElement(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n",
+            "unitTests": "import java.util.*;\n\nclass ProgramTest {\n  @Test\n  public void TestCase1() {\n    var input = new int[] {1, 2, 3, 2, 2, 1, 2};\n    var expected = 2;\n    var actual = new Program().majorityElement(input);\n    Utils.assertTrue(expected == actual);\n  }\n}\n"
+        },
+        "javascript": {
+            "language": "javascript",
+            "solutionsDisabled": false,
+            "startingCode": "function majorityElement(array) {\n  // Write your code here.\n  return -1;\n}\n\n// Do not edit the line below.\nexports.majorityElement = majorityElement;\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(1) space - where n is the number of elements in the array\nfunction majorityElement(array) {\n  let count = 0;\n  let answer = null;\n\n  for (const value of array) {\n    if (count === 0) answer = value;\n\n    if (value === answer) {\n      count++;\n    } else {\n      count--;\n    }\n  }\n\n  return answer;\n}\n\n// Do not edit the line below.\nexports.majorityElement = majorityElement;\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(1) space - where n is the number of elements in the array\nfunction majorityElement(array) {\n  let answer = 0;\n\n  for (let currentBit = 0; currentBit < 32; currentBit++) {\n    const currentBitValue = 1 << currentBit;\n    let onesCount = 0;\n\n    for (const num of array) {\n      if ((num & currentBitValue) !== 0) onesCount++;\n    }\n\n    if (onesCount > array.length / 2) answer += currentBitValue;\n  }\n\n  return answer;\n}\n\n// Do not edit the line below.\nexports.majorityElement = majorityElement;\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nconst program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [1, 2, 3, 2, 2, 1, 2];\n  const expected = 2;\n  const actual = program.majorityElement(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "const program = require('./program');\nconst chai = require('chai');\n\nit('Test Case #1', function () {\n  const input = [1, 2, 3, 2, 2, 1, 2];\n  const expected = 2;\n  const actual = program.majorityElement(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        },
+        "kotlin": {
+            "language": "kotlin",
+            "solutionsDisabled": false,
+            "startingCode": "package com.algoexpert.program\n\nfun majorityElement(array: MutableList<Int>): Int {\n    // Write your code here.\n    return -1\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n) time | O(1) space - where n is the number of elements in the array\nfun majorityElement(array: MutableList<Int>): Int {\n    var count = 0\n    var answer: Int? = null\n\n    for (value in array) {\n        if (count == 0) answer = value\n\n        if (value == answer) {\n            count++\n        } else {\n            count--\n        }\n    }\n\n    return answer!!\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\npackage com.algoexpert.program\n\n// O(n) time | O(1) space - where n is the number of elements in the array\nfun majorityElement(array: MutableList<Int>): Int {\n    var answer = 0\n\n    for (currentBit in 0 until 32) {\n        val currentBitValue = 1 shl currentBit\n        var onesCount = 0\n\n        for (num in array) {\n            if ((num and currentBitValue) != 0) onesCount++\n        }\n\n        if (onesCount > array.size / 2) answer += currentBitValue\n    }\n\n    return answer\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport com.algoexpert.program.majorityElement\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(1, 2, 3, 2, 2, 1, 2)\n        val expected = 2\n        val output = majorityElement(input)\n        assert(expected == output)\n    }\n}\n",
+            "unitTests": "import com.algoexpert.program.majorityElement\n\nclass ProgramTest {\n    @Test\n    fun TestCase1() {\n        val input = mutableListOf(1, 2, 3, 2, 2, 1, 2)\n        val expected = 2\n        val output = majorityElement(input)\n        assert(expected == output)\n    }\n}\n"
+        },
+        "python": {
+            "language": "python",
+            "solutionsDisabled": false,
+            "startingCode": "def majorityElement(array):\n    # Write your code here.\n    return -1\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(1) space - where n is the number of elements in the array\ndef majorityElement(array):\n    count = 0\n    answer = None\n\n    for value in array:\n        if count == 0:\n            answer = value\n\n        if value == answer:\n            count += 1\n        else:\n            count -= 1\n\n    return answer\n",
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n# O(n) time | O(1) space - where n is the number of elements in the array\ndef majorityElement(array):\n    answer = 0\n\n    for currentBit in range(32):\n        currentBitValue = 1 << currentBit\n        onesCount = 0\n\n        for num in array:\n            if (num & currentBitValue) != 0:\n                onesCount += 1\n\n        if onesCount > len(array) / 2:\n            answer += currentBitValue\n\n    return answer\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nimport program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [1, 2, 3, 2, 2, 1, 2]\n        expected = 2\n        actual = program.majorityElement(input)\n        self.assertEqual(actual, expected)\n",
+            "unitTests": "import program\nimport unittest\n\n\nclass TestProgram(unittest.TestCase):\n    def test_case_1(self):\n        input = [1, 2, 3, 2, 2, 1, 2]\n        expected = 2\n        actual = program.majorityElement(input)\n        self.assertEqual(actual, expected)\n"
+        },
+        "ruby": {
+            "language": "ruby",
+            "solutionsDisabled": false,
+            "startingCode": "\nclass Program\n    def majorityElement(array)\n        # Write your code here.\n        return -1\n    end\nend\n",
+            "solutions": [
+                "# Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n\nclass Program\n    def majorityElement(array)\n        # Write your code here.\n        return -1\n    end\nend\n"
+            ],
+            "sandboxCode": "# This file is initialized with a code version of this\n# question's sample test case. Feel free to add, edit,\n# or remove test cases in this file as you see fit!\n\nrequire './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.majorityElement\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n",
+            "unitTests": "require './program.rb'\n\nclass TestSuite\n    include Assertions\n    def test_1\n        # inputs = ...\n        # output = Program.new.majorityElement\n        # expected = ...\n        # assertEqual(expected, output)\n    end\nend\n\n"
+        },
+        "swift": {
+            "language": "swift",
+            "solutionsDisabled": false,
+            "startingCode": "class Program {\n  func majorityElement(_ array: [Int]) -> Int {\n    // Write your code here.\n    return -1\n  }\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(1) space - where n is the number of elements in the array\n  func majorityElement(_ array: [Int]) -> Int {\n    var count = 0\n    var answer: Int?\n\n    for value in array {\n      if count == 0 {\n        answer = value\n      }\n\n      if value == answer {\n        count += 1\n      } else {\n        count -= 1\n      }\n    }\n\n    return answer!\n  }\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\nclass Program {\n  // O(n) time | O(1) space - where n is the number of elements in the array\n  func majorityElement(_ array: [Int]) -> Int {\n    var answer = 0\n\n    for currentBit in 0 ..< 32 {\n      let currentBitValue = 1 << currentBit\n      var onesCount = 0\n\n      for num in array {\n        if (num & currentBitValue) != 0 {\n          onesCount += 1\n        }\n      }\n\n      if onesCount > array.count / 2 {\n        answer += currentBitValue\n      }\n    }\n\n    return answer\n  }\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nclass ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var input = [1, 2, 3, 2, 2, 1, 2]\n      var expected = 2\n      var actual = Program().majorityElement(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n",
+            "unitTests": "class ProgramTest: TestSuite {\n  func test() {\n    runTest(\"Test Case 1\") { () throws in\n      var input = [1, 2, 3, 2, 2, 1, 2]\n      var expected = 2\n      var actual = Program().majorityElement(input)\n      try assertEqual(expected, actual)\n    }\n  }\n}\n"
+        },
+        "typescript": {
+            "language": "typescript",
+            "solutionsDisabled": false,
+            "startingCode": "export function majorityElement(array: number[]) {\n  // Write your code here.\n  return -1;\n}\n",
+            "solutions": [
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(1) space - where n is the number of elements in the array\nexport function majorityElement(array: number[]) {\n  let count = 0;\n  let answer: number | null = null;\n\n  for (const value of array) {\n    if (count === 0) answer = value;\n\n    if (value === answer) {\n      count++;\n    } else {\n      count--;\n    }\n  }\n\n  return answer;\n}\n",
+                "// Copyright \u00a9 2023 AlgoExpert LLC. All rights reserved.\n\n// O(n) time | O(1) space - where n is the number of elements in the array\nexport function majorityElement(array: number[]) {\n  let answer = 0;\n\n  for (let currentBit = 0; currentBit < 32; currentBit++) {\n    const currentBitValue = 1 << currentBit;\n    let onesCount = 0;\n\n    for (const num of array) {\n      if ((num & currentBitValue) !== 0) onesCount++;\n    }\n\n    if (onesCount > array.length / 2) answer += currentBitValue;\n  }\n\n  return answer;\n}\n"
+            ],
+            "sandboxCode": "// This file is initialized with a code version of this\n// question's sample test case. Feel free to add, edit,\n// or remove test cases in this file as you see fit!\n\nimport * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [1, 2, 3, 2, 2, 1, 2];\n  const expected = 2;\n  const actual = program.majorityElement(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n",
+            "unitTests": "import * as program from './program';\nimport * as chai from 'chai';\n\nit('Test Case #1', function () {\n  const input = [1, 2, 3, 2, 2, 1, 2];\n  const expected = 2;\n  const actual = program.majorityElement(input);\n  chai.expect(actual).to.deep.equal(expected);\n});\n"
+        }
+    },
+    "customInputVars": [
+        {
+            "name": "array",
+            "example": [
+                2
+            ],
+            "schema": {
+                "items": {
+                    "type": "integer"
+                },
+                "minimum": 1,
+                "type": "array"
+            }
+        }
+    ],
+    "tests": [
+        {
+            "array": [
+                2
+            ]
+        },
+        {
+            "array": [
+                1,
+                2,
+                1
+            ]
+        },
+        {
+            "array": [
+                3,
+                3,
+                1
+            ]
+        },
+        {
+            "array": [
+                4,
+                5,
+                5
+            ]
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                2,
+                2,
+                1,
+                2
+            ]
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                2,
+                3,
+                2,
+                2,
+                4,
+                2
+            ]
+        },
+        {
+            "array": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ]
+        },
+        {
+            "array": [
+                5,
+                4,
+                3,
+                2,
+                1,
+                1,
+                1,
+                1,
+                1
+            ]
+        },
+        {
+            "array": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                5,
+                4,
+                3,
+                2
+            ]
+        },
+        {
+            "array": [
+                1,
+                1,
+                1,
+                1,
+                2,
+                2,
+                2,
+                2,
+                2
+            ]
+        },
+        {
+            "array": [
+                435,
+                6543,
+                6543,
+                435,
+                535,
+                6543,
+                6543,
+                12,
+                43,
+                6543,
+                6543
+            ]
+        },
+        {
+            "array": [
+                1,
+                2,
+                2,
+                2,
+                1
+            ]
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                3,
+                2,
+                1
+            ]
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                2,
+                2,
+                4,
+                2,
+                2,
+                5,
+                2,
+                1
+            ]
+        }
+    ],
+    "jsonTests": [
+        {
+            "array": [
+                2
+            ]
+        },
+        {
+            "array": [
+                1,
+                2,
+                1
+            ]
+        },
+        {
+            "array": [
+                3,
+                3,
+                1
+            ]
+        },
+        {
+            "array": [
+                4,
+                5,
+                5
+            ]
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                2,
+                2,
+                1,
+                2
+            ]
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                2,
+                3,
+                2,
+                2,
+                4,
+                2
+            ]
+        },
+        {
+            "array": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ]
+        },
+        {
+            "array": [
+                5,
+                4,
+                3,
+                2,
+                1,
+                1,
+                1,
+                1,
+                1
+            ]
+        },
+        {
+            "array": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                5,
+                4,
+                3,
+                2
+            ]
+        },
+        {
+            "array": [
+                1,
+                1,
+                1,
+                1,
+                2,
+                2,
+                2,
+                2,
+                2
+            ]
+        },
+        {
+            "array": [
+                435,
+                6543,
+                6543,
+                435,
+                535,
+                6543,
+                6543,
+                12,
+                43,
+                6543,
+                6543
+            ]
+        },
+        {
+            "array": [
+                1,
+                2,
+                2,
+                2,
+                1
+            ]
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                3,
+                2,
+                1
+            ]
+        },
+        {
+            "array": [
+                1,
+                2,
+                3,
+                2,
+                2,
+                4,
+                2,
+                2,
+                5,
+                2,
+                1
+            ]
+        }
+    ],
+    "changelog": []
+}
