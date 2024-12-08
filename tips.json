@@ -1,0 +1,154 @@
+{
+    "tips": [
+        {
+            "uid": "how-to-best-use-algoexpert",
+            "name": "How To Best Use AlgoExpert",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": true,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "AlgoExpert gives you a lot of great tools to prepare for coding interviews.\n\nThis video covers how to best use these tools to get the most out of AlgoExpert.",
+            "video": {
+                "vimeoId": "316726307",
+                "duration": 30,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299637901-1c2bf728af58b4ecb2cf2a61a40cf05046e5cccf3065065a7_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [],
+            "section": "",
+            "hasCodeExample": false
+        },
+        {
+            "uid": "coding-skills",
+            "name": "Coding Skills",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": false,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "A coding interview for a coding job will naturally be testing your coding skills.\n\nThis video covers a few simple things you can do to show off your coding skills in interviews.",
+            "video": {
+                "vimeoId": "316724920",
+                "duration": 22,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299638080-308a136a9b306e6bde4ada4b3e9f09c51b4804cc17fa43785_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [],
+            "section": "",
+            "hasCodeExample": false
+        },
+        {
+            "uid": "problem-solving-ability",
+            "name": "Problem Solving Ability",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": false,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "Being a great Software Engineer comes down to being a great problem solver.\n\nThis video covers what you can do to demonstrate solid problem solving ability in coding interviews.",
+            "video": {
+                "vimeoId": "316729502",
+                "duration": 20,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299637425-341fc259e2741545ae1c72edb1b862f90b5d2eff1ea8ce77c_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [],
+            "section": "",
+            "hasCodeExample": false
+        },
+        {
+            "uid": "communication",
+            "name": "Communication",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": false,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "Communication is an often overlooked yet very important aspect of coding interviews.\n\nThis video covers why communication is so critical and how to nail it in interviews.",
+            "video": {
+                "vimeoId": "316736677",
+                "duration": 37,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299638252-7936f91eb2f8b03d2637d944cdbfe70769fe53cd597b25ff5_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [],
+            "section": "",
+            "hasCodeExample": false
+        },
+        {
+            "uid": "culture-fit",
+            "name": "Culture Fit",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": false,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "Culture fit is a nebulous part of coding interviews that means different things at different companies.\n\nThis video eliminates the ambiguity around culture fit and gives you tips to prepare for it.",
+            "video": {
+                "vimeoId": "316724393",
+                "duration": 19,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299637702-5933379d70067a7598a4c18559cfa44da16a8bbc3d3eee2c8_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [],
+            "section": "",
+            "hasCodeExample": false
+        }
+    ]
+}
