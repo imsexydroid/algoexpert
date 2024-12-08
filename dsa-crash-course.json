@@ -1,0 +1,637 @@
+{
+    "datastructures": [
+        {
+            "uid": "introduction",
+            "name": "Introduction",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": true,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "Coding interviews. Problem-solving skills. Algorithm questions. What do you call the intersection of their Venn Diagram?\n\nHint: it starts with \"data\" and ends with \"structures\".\n",
+            "video": {
+                "vimeoId": "376961593",
+                "duration": 5,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299639799-4f2ebc0a55985b9124b611abc77aed5ca261c66e1ced93374_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [],
+            "section": "",
+            "hasCodeExample": false
+        },
+        {
+            "uid": "what-are-data-structures",
+            "name": "What Are Data Structures?",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": false,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "The elementary particles of algorithms, data structures are woven into the very fabric of computer science and are essential building blocks of many a solution to coding interview problems.\n\nSans the need for a microscope.\n",
+            "video": {
+                "vimeoId": "379332240",
+                "duration": 9,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299640412-fb54326f5c6da7bcfe475fb3f089c32d24f6d51da8890829e_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [],
+            "section": "",
+            "hasCodeExample": false
+        },
+        {
+            "uid": "complexity-analysis",
+            "name": "Complexity Analysis",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": false,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "Two dimensions, time and space, diverged in a yellow wood, and I—\nI watched the Complexity Analysis video on AlgoExpert,\nAnd that has made all the difference (in my coding interviews).\n",
+            "video": {
+                "vimeoId": "377475165",
+                "duration": 8,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299640863-bf70f970f83d868fc48a8d004e09295176b071e5ebe503b5e_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [
+                {
+                    "name": "Complexity Analysis",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003eThe process of determining how efficient an algorithm is. Complexity analysis usually involves finding both the\n    \u003cb\u003etime complexity\u003c/b\u003e and the \u003cb\u003espace complexity\u003c/b\u003e of an algorithm.\n\u003c/p\u003e\n\u003cp\u003eComplexity analysis is effectively used to determine how \"good\" an algorithm is and whether it's \"better\" than\n    another one.\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Time Complexity",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003eA measure of how fast an algorithm runs, time complexity is a central concept in the field of algorithms and in\n    coding interviews.\u003c/p\u003e\n\u003cp\u003eIt's expressed using \u003cb\u003eBig O\u003c/b\u003e notation.\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Space Complexity",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003eA measure of how much auxiliary memory an algorithm takes up, space complexity is a central concept in the field of\n    algorithms and in coding interviews.\u003c/p\u003e\n\u003cp\u003eIt's expressed using \u003cb\u003eBig O\u003c/b\u003e notation.\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                }
+            ],
+            "section": "",
+            "hasCodeExample": false
+        },
+        {
+            "uid": "memory",
+            "name": "Memory",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": false,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "The bedrock of all data structures, memory is the underlying concept that you absolutely need to know in order to understand why data structures work the way they do.\n\nBits and bytes may keep me up all night,\nBut memory will never ail me!\n",
+            "video": {
+                "vimeoId": "378409837",
+                "duration": 28,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299639683-681bf81bfab50384cd4d626242e43b0c695424d43330dee20_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [
+                {
+                    "name": "Bit",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003eShort for \u003cb\u003ebinary digit\u003c/b\u003e, a bit is a fundamental unit of information in Computer Science that represents a\n    state with one of two values, typically \u003cb\u003e0\u003c/b\u003e and \u003cb\u003e1\u003c/b\u003e.\u003c/p\u003e\n\u003cp\u003eAny data stored in a computer is, at the most basic level, represented in bits.\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Byte",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003eA group of eight \u003cb\u003ebits\u003c/b\u003e. For example, \u003cb\u003e01101000\u003c/b\u003e is a byte.\u003c/p\u003e\n\u003cp\u003e\n  A single byte can represent up to \u003cb\u003e256\u003c/b\u003e data values (\u003cb\u003e2\u003csup\u003e8\u003c/sup\u003e\u003c/b\n  \u003e).\n\u003c/p\u003e\n\u003cp\u003e\n  Since a \u003cb\u003ebinary number\u003c/b\u003e is a number expressed with only two symbols, like\n  \u003cb\u003e0\u003c/b\u003e and \u003cb\u003e1\u003c/b\u003e, a byte can effectively represent all of the numbers\n  between 0 and 255, inclusive, in binary format.\n\u003c/p\u003e\n\u003cp\u003e\n  The following bytes represent the numbers 1, 2, 3, and 4 in binary format.\n\u003c/p\u003e\n\u003cpre\u003e\n1: 00000001\n2: 00000010\n3: 00000011\n4: 00000100\n\u003c/pre\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Fixed-Width Integer",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  An integer represented by a fixed amount of \u003cb\u003ebits\u003c/b\u003e. For example, a\n  \u003cb\u003e32-bit integer\u003c/b\u003e is an integer represented by 32 bits (4 bytes), and a\n  \u003cb\u003e64-bit integer\u003c/b\u003e is an integer represented by 64 bits (8 bytes).\n\u003c/p\u003e\n\u003cp\u003e\n  The following is the 32-bit representation of the number 1, with clearly\n  separated bytes:\n\u003c/p\u003e\n\u003cpre\u003e\n00000000 00000000 00000000 00000001\n\u003c/pre\u003e\n\u003cp\u003e\n  The following is the 64-bit representation of the number 10, with clearly\n  separated bytes:\n\u003c/p\u003e\n\u003cpre\u003e\n00000000 00000000 00000000 00000000 00000000 00000000 00000000 00001010\n\u003c/pre\u003e\n\u003cp\u003e\n  Regardless of how large an integer is, its fixed-width-integer representation\n  is, by definition, made up of a constant number of bits.\n\u003c/p\u003e\n\u003cp\u003e\n  It follows that, regardless of how large an integer is, an operation performed\n  on its fixed-width-integer representation consists of a constant number of bit\n  manipulations, since the integer is made up of a fixed number of bits.\n\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Memory",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  Broadly speaking, memory is the foundational layer of computing, where all\n  data is stored.\n\u003c/p\u003e\n\u003cp\u003e\n  In the context of coding interviews, it's important to note the following\n  points:\n\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003eData stored in memory is stored in bytes and, by extension, bits.\u003c/li\u003e\n  \u003cli\u003e\n    Bytes in memory can \"point\" to other bytes in memory, so as to store\n    references to other data.\n  \u003c/li\u003e\n  \u003cli\u003e\n    The amount of memory that a machine has is bounded, making it valuable to\n    limit how much memory an algorithm takes up.\n  \u003c/li\u003e\n  \u003cli\u003e\n    Accessing a byte or a fixed number of bytes (like 4 bytes or 8 bytes in the\n    case of \u003cb\u003e32-bit\u003c/b\u003e and \u003cb\u003e64-bit integers\u003c/b\u003e) is an elementary\n    operation, which can be loosely treated as a single unit of operational\n    work.\n  \u003c/li\u003e\n\u003c/ul\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                }
+            ],
+            "section": "",
+            "hasCodeExample": false
+        },
+        {
+            "uid": "big-o-notation",
+            "name": "Big O Notation",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": false,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "The speed and memory usage of an algorithm aren't necessarily fixed; they might change depending on the input. So how do we express the performance of an algorithm then?\n\nEnter Big O Notation, a powerful tool that allows us to generalize the space-time complexity of an algorithm as a function of its input size.\n",
+            "video": {
+                "vimeoId": "379257125",
+                "duration": 37,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299640152-1f4129d6a21c3c87387d5ee6d458a8c30000488546ca09bd2_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [
+                {
+                    "name": "Time Complexity",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003eA measure of how fast an algorithm runs, time complexity is a central concept in the field of algorithms and in\n    coding interviews.\u003c/p\u003e\n\u003cp\u003eIt's expressed using \u003cb\u003eBig O\u003c/b\u003e notation.\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Space Complexity",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003eA measure of how much auxiliary memory an algorithm takes up, space complexity is a central concept in the field of\n    algorithms and in coding interviews.\u003c/p\u003e\n\u003cp\u003eIt's expressed using \u003cb\u003eBig O\u003c/b\u003e notation.\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                }
+            ],
+            "keyTerms": [
+                {
+                    "name": "Big O Notation",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  The notation used to describe the \u003cb\u003etime complexity\u003c/b\u003e and\n  \u003cb\u003espace complexity\u003c/b\u003e of algorithms.\n\u003c/p\u003e\n\u003cp\u003e\n  Variables used in Big O notation denote the sizes of inputs to algorithms. For\n  example, \u003cb\u003eO(n)\u003c/b\u003e might be the time complexity of an algorithm that\n  traverses through an array of length \u003cb\u003en\u003c/b\u003e; similarly,\n  \u003cb\u003eO(n + m)\u003c/b\u003e might be the time complexity of an algorithm that traverses\n  through an array of length \u003cb\u003en\u003c/b\u003e and through a string of length \u003cb\u003em\u003c/b\u003e.\n\u003c/p\u003e\n\u003cp\u003e\n  The following are examples of common complexities and their Big O notations,\n  ordered from fastest to slowest:\n\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003e\u003cb\u003eConstant\u003c/b\u003e: O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eLogarithmic\u003c/b\u003e: O(log(n))\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eLinear\u003c/b\u003e: O(n)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eLog-linear\u003c/b\u003e: O(nlog(n))\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eQuadratic\u003c/b\u003e: O(n\u003csup\u003e2\u003c/sup\u003e)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eCubic\u003c/b\u003e: O(n\u003csup\u003e3\u003c/sup\u003e)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eExponential\u003c/b\u003e: O(2\u003csup\u003en\u003c/sup\u003e)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eFactorial\u003c/b\u003e: O(n!)\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003e\n  Note that in the context of coding interviews, Big O notation is usually\n  understood to describe the\n  \u003cb\u003eworst-case\u003c/b\u003e complexity of an algorithm, even though the worst-case\n  complexity might differ from the \u003cb\u003eaverage-case\u003c/b\u003e complexity.\n\u003c/p\u003e\n\u003cp\u003e\n  For example, some sorting algorithms have different time complexities\n  depending on the layout of elements in their input array. In rare cases, their\n  time complexity will be much worse than in more common cases. Similarly, an\n  algorithm that takes in a string and performs special operations on uppercase\n  characters might have a different time complexity when run on an input string\n  of only uppercase characters vs. on an input string with just a few uppercase\n  characters.\n\u003c/p\u003e\n\u003cp\u003e\n  Thus, when describing the time complexity of an algorithm, it can sometimes be\n  helpful to specify whether the time complexity refers to the average case or\n  to the worst case (e.g., \"this algorithm runs in O(nlog(n)) time on average\n  and in O(n\u003csup\u003e2\u003c/sup\u003e) time in the worse case\").\n\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                }
+            ],
+            "section": "",
+            "hasCodeExample": false
+        },
+        {
+            "uid": "logarithm",
+            "name": "Logarithm",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": true,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "That scary-looking word you know you should understand but just really...don’t? Yeah, that one. It’s time to make it your best friend.\n\nWarning: a logarithmless way of life will seem inconceivable after watching this video.\n",
+            "video": {
+                "vimeoId": "378706213",
+                "duration": 20,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299640542-99cd7e4919d5ed4cc2b5303a73cff7edc828ebb66f66e70ac_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [
+                {
+                    "name": "Logarithm",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003eA mathematical concept that's widely used in Computer Science and that's defined by the following equation:\u003c/p\u003e\n\u003cp\u003e\u003cb\u003elog\u003csub\u003eb\u003c/sub\u003e(x) = y\u003c/b\u003e if and only if \u003cb\u003eb\u003csup\u003ey\u003c/sup\u003e = x\u003c/b\u003e\u003c/p\u003e\n\u003cp\u003eIn the context of coding interviews, the logarithm is used to describe the complexity analysis of algorithms, and\n    its usage always implies a logarithm of base \u003cb\u003e2\u003c/b\u003e. In other words, the logarithm used in the context of coding\n    interviews is defined by the following equation:\u003c/p\u003e\n\u003cp\u003e\u003cb\u003elog(n) = y\u003c/b\u003e if and only if \u003cb\u003e2\u003csup\u003ey\u003c/sup\u003e = n\u003c/b\u003e\u003c/p\u003e\n\u003cp\u003eIn plain English, if an algorithm has a logarithmic time complexity (\u003cb\u003eO(log(n))\u003c/b\u003e, where n is the size of the\n    input), then whenever the algorithm's input doubles in size (i.e., whenever \u003cb\u003en\u003c/b\u003e doubles), the number of\n    operations needed to\n    complete the algorithm only increases by one unit. Conversely, an algorithm with a linear time complexity would\n    see its number of operations double if its input size doubled.\u003c/p\u003e\n\u003cp\u003eAs an example, a linear-time-complexity algorithm with an input of size 1,000 might take roughly 1,000 operations to\n    complete, whereas a logarithmic-time-complexity algorithm with the same input would take roughly 10 operations to\n    complete, since \u003cb\u003e2\u003csup\u003e10\u003c/sup\u003e ~= 1,000\u003c/b\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                }
+            ],
+            "section": "",
+            "hasCodeExample": false
+        },
+        {
+            "uid": "arrays",
+            "name": "Arrays",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": false,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "Perhaps the most classic and most commonly used of all data structures, the array is deceptively simple. Key word: \"deceptively.\"\n\nDon’t be fooled! Where it might appear trivially straightforward at surface level, it actually boasts an array—pun intended—of nuances worthy of taking a second gander.\n",
+            "video": {
+                "vimeoId": "379090197",
+                "duration": 42,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299640055-45acdcb7a0078f8f3fd992bcdd73245c4754ddb231778d0d7_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [
+                {
+                    "name": "Array",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  A linear collection of data values that are accessible at numbered indices,\n  starting at index 0.\n\u003c/p\u003e\n\u003cp\u003e\n  The following are an array's standard operations and their corresponding time\n  complexities:\n\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003e\u003cb\u003eAccessing a value at a given index\u003c/b\u003e: O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eUpdating a value at a given index\u003c/b\u003e: O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eInserting a value at the beginning\u003c/b\u003e: O(n)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eInserting a value in the middle\u003c/b\u003e: O(n)\u003c/li\u003e\n  \u003cli\u003e\n    \u003cb\u003eInserting a value at the end\u003c/b\u003e:\n    \u003cul\u003e\n      \u003cli\u003eamortized O(1) when dealing with a \u003cb\u003edynamic array\u003c/b\u003e\u003c/li\u003e\n      \u003cli\u003eO(n) when dealing with a \u003cb\u003estatic array\u003c/b\u003e\u003c/li\u003e\n    \u003c/ul\u003e\n  \u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eRemoving a value at the beginning\u003c/b\u003e: O(n)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eRemoving a value in the middle\u003c/b\u003e: O(n)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eRemoving a value at the end\u003c/b\u003e: O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eCopying the array\u003c/b\u003e: O(n)\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003e\n  A static array is an implementation of an array that allocates a fixed amount\n  of memory to be used for storing the array's values. Appending values to the\n  array therefore involves copying the entire array and allocating new memory\n  for it, accounting for the extra space needed for the newly appended value.\n  This is a linear-time operation.\n\u003c/p\u003e\n\u003cp\u003e\n  A dynamic array is an implementation of an array that preemptively allocates\n  double the amount of memory needed to store the array's values. Appending\n  values to the array is a constant-time operation until the allocated memory is\n  filled up, at which point the array is copied and double the memory is once\n  again allocated for it. This implementation leads to an amortized\n  constant-time insertion-at-end operation.\n\u003c/p\u003e\n\u003cp\u003e\n  A lot of popular programming languages like JavaScript and Python implement\n  arrays as dynamic arrays.\n\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                }
+            ],
+            "section": "",
+            "hasCodeExample": false
+        },
+        {
+            "uid": "linked-lists",
+            "name": "Linked Lists",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": false,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "The data structure whose singular purpose in life is to be reversed. Even right here on AlgoExpert, in fact.\n\nThat’s right, head on over to the hard questions list after watching this video, and reverse that bad boy six ways to Sunday.\n",
+            "video": {
+                "vimeoId": "378948326",
+                "duration": 31,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299640705-c51b92e7a4c42c79c9b498b30c8f3dbe55584b9f9a40bbb78_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [
+                {
+                    "name": "Singly Linked List",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  A data structure that consists of nodes, each with some value and a pointer to\n  the next node in the linked list. A linked list node's value and next node are\n  typically stored in \u003cspan\u003evalue\u003c/span\u003e\n  and\n  \u003cspan\u003enext\u003c/span\u003e properties, respectively.\n\u003c/p\u003e\n\u003cp\u003e\n  The first node in a linked list is referred to as the \u003cb\u003ehead\u003c/b\u003e of the\n  linked list, while the last node in a linked list, whose\n  \u003cspan\u003enext\u003c/span\u003e property points to the \u003cspan\u003enull\u003c/span\u003e value, is known as\n  the \u003cb\u003etail\u003c/b\u003e of the linked list.\n\u003c/p\u003e\n\u003cp\u003e\n  Below is a visual representation of a singly linked list whose nodes hold\n  integer values:\n\u003c/p\u003e\n\u003cpre\u003e\n0 -\u003e 1 -\u003e 2 -\u003e 3 -\u003e 4 -\u003e 5 -\u003e null\n\u003c/pre\u003e\n\u003cp\u003e\n  A singly linked list typically exposes its head to its user for easy access.\n  While finding a node in a singly linked list involves traversing through all\n  of the nodes leading up to the node in question (as opposed to instant access\n  with an array), adding or removing nodes simply involves overwriting\n  \u003cspan\u003enext\u003c/span\u003e pointers (assuming that you have access to the node right\n  before the node that you're adding or removing).\n\u003c/p\u003e\n\u003cp\u003e\n  The following are a singly linked list's standard operations and their\n  corresponding time complexities:\n\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003e\u003cb\u003eAccessing the head\u003c/b\u003e: O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eAccessing the tail\u003c/b\u003e: O(n)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eAccessing a middle node\u003c/b\u003e: O(n)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eInserting / Removing the head\u003c/b\u003e: O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eInserting / Removing the tail\u003c/b\u003e: O(n) to access + O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eInserting / Removing a middle node\u003c/b\u003e: O(n) to access + O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eSearching for a value\u003c/b\u003e: O(n)\u003c/li\u003e\n\u003c/ul\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Doubly Linked List",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  Similar to a \u003cb\u003esingly linked list\u003c/b\u003e, except that each node in a doubly\n  linked list also has a pointer to the previous node in the linked list. The\n  previous node is typically stored in a \u003cspan\u003eprev\u003c/span\u003e property.\n\u003c/p\u003e\n\u003cp\u003e\n  Just as the \u003cspan\u003enext\u003c/span\u003e property of a doubly linked list's\n  \u003cb\u003etail\u003c/b\u003e points to the \u003cspan\u003enull\u003c/span\u003e value, so too does the\n  \u003cspan\u003eprev\u003c/span\u003e property of a doubly linked list's \u003cb\u003ehead\u003c/b\u003e.\n\u003c/p\u003e\n\u003cp\u003e\n  Below is a visual representation of a doubly linked list whose nodes hold\n  integer values:\n\u003c/p\u003e\n\u003cpre\u003e\nnull \u003c- 0 \u003c-\u003e 1 \u003c-\u003e 2 \u003c-\u003e 3 \u003c-\u003e 4 \u003c-\u003e 5 -\u003e null\n\u003c/pre\u003e\n\u003cp\u003e\n  While a doubly linked list typically exposes both its head and tail to its\n  user, as opposed to just its head in the case of a singly linked list, it\n  otherwise behaves very similarly to a singly linked list.\n\u003c/p\u003e\n\u003cp\u003e\n  The following are a doubly linked list's standard operations and their\n  corresponding time complexities:\n\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003e\u003cb\u003eAccessing the head\u003c/b\u003e: O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eAccessing the tail\u003c/b\u003e: O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eAccessing a middle node\u003c/b\u003e: O(n)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eInserting / Removing the head\u003c/b\u003e: O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eInserting / Removing the tail\u003c/b\u003e: O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eInserting / Removing a middle node\u003c/b\u003e: O(n) to access + O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eSearching for a value\u003c/b\u003e: O(n)\u003c/li\u003e\n\u003c/ul\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Circular Linked List",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  A linked list that has no clear \u003cb\u003ehead\u003c/b\u003e or \u003cb\u003etail\u003c/b\u003e, because its \"tail\"\n  points to its \"head,\" effectively forming a closed circle.\n\u003c/p\u003e\n\u003cp\u003e\n  A circular linked list can be either a \u003cb\u003esingly circular linked list\u003c/b\u003e or a\n  \u003cb\u003edoubly circular linked list\u003c/b\u003e.\n\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                }
+            ],
+            "section": "",
+            "hasCodeExample": false
+        },
+        {
+            "uid": "hash-tables",
+            "name": "Hash Tables",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": false,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "Fun. Fast. Flexible. This beloved data structure is a fan favorite among interviewers and interviewees alike, and for good reason: it lends itself extremely well to any problem requiring some sort of lookup operation, of which (spoiler alert) there are many.\n\nWatch out for those collisions though!\n",
+            "video": {
+                "vimeoId": "379167390",
+                "duration": 25,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299639935-2e6aee6859388cb9adb685e34fa4a3af2b2519a6a6f624ff8_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [
+                {
+                    "name": "Hash Table",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  A data structure that provides fast insertion, deletion, and lookup of\n  key/value pairs.\n\u003c/p\u003e\n\u003cp\u003e\n  Under the hood, a hash table uses a \u003cb\u003edynamic array\u003c/b\u003e of\n  \u003cb\u003elinked lists\u003c/b\u003e to efficiently store key/value pairs. When inserting a\n  key/value pair, a hash function first maps the key, which is typically a\n  string (or any data that can be hashed, depending on the implementation of the\n  hash table), to an integer value and, by extension, to an index in the\n  underlying dynamic array. Then, the value associated with the key is added to\n  the linked list stored at that index in the dynamic array, and a reference to\n  the key is also stored with the value.\n\u003c/p\u003e\n\u003cp\u003e\n  Hash tables rely on highly optimized hash functions to minimize the number of\n  \u003cb\u003ecollisions\u003c/b\u003e that occur when storing values: cases where two keys map to\n  the same index.\n\u003c/p\u003e\n\u003cp\u003eBelow is an example of what a hash table might look like under the hood:\u003c/p\u003e\n\u003cpre\u003e\n[\n  0: (value1, key1) -\u003e null\n  1: (value2, key2) -\u003e (value3, key3) -\u003e (value4, key4)\n  2: (value5, key5) -\u003e null\n  3: (value6, key6) -\u003e null\n  4: null\n  5: (value7, key7) -\u003e (value8, key8)\n  6: (value9, key9) -\u003e null\n]\n\u003c/pre\u003e\n\u003cp\u003e\n  In the hash table above, the keys \u003cb\u003ekey2\u003c/b\u003e, \u003cb\u003ekey3\u003c/b\u003e, and\n  \u003cb\u003ekey4\u003c/b\u003e collided by all being hashed to \u003cb\u003e1\u003c/b\u003e, and the keys\n  \u003cb\u003ekey7\u003c/b\u003e and \u003cb\u003ekey8\u003c/b\u003e collided by both being hashed to \u003cb\u003e5\u003c/b\u003e.\n\u003c/p\u003e\n\u003cp\u003e\n  The following are a hash table's standard operations and their corresponding\n  time complexities:\n\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003e\n    \u003cb\u003eInserting a key/value pair\u003c/b\u003e: O(1) on average; O(n) in the worse case\n  \u003c/li\u003e\n  \u003cli\u003e\n    \u003cb\u003eRemoving a key/value pair\u003c/b\u003e: O(1) on average; O(n) in the worse case\n  \u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eLooking up a key\u003c/b\u003e: O(1) on average; O(n) in the worse case\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003e\n  The worst-case linear-time operations occur when a hash table experiences a\n  lot of collisions, leading to long linked lists internally, which take O(n)\n  time to traverse.\n\u003c/p\u003e\n\u003cp\u003e\n  However, in practice and especially in coding interviews, we typically assume\n  that the hash functions employed by hash tables are so optimized that\n  collisions are extremely rare and constant-time operations are all but\n  guaranteed.\n\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                }
+            ],
+            "section": "",
+            "hasCodeExample": false
+        },
+        {
+            "uid": "stacks-and-queues",
+            "name": "Stacks And Queues",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": false,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "Push. Pop. FIFO. LIFO. That pretty much sums up stacks and queues.\n\nOk, there might be a bit more to them than meets the eye. Watch our video to find out. Plus, it even features nifty stick figures!\n",
+            "video": {
+                "vimeoId": "378426072",
+                "duration": 13,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299639030-ce099eb3196dfe1de2aed25a0f889ff2b52fe2d387c982cee_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [
+                {
+                    "name": "Stack",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  An array-like data structure whose elements follow the \u003cb\u003eLIFO\u003c/b\u003e rule: \u003cb\u003eL\u003c/b\u003east \u003cb\u003eI\u003c/b\u003en, \u003cb\u003eF\u003c/b\u003eirst\n  \u003cb\u003eO\u003c/b\u003eut.\n\u003c/p\u003e\n\u003cp\u003e\n  A stack is often compared to a stack of books on a table: the last book that's placed on the stack of books is the\n  first one that's taken off the stack.\n\u003c/p\u003e\n\u003cp\u003e\n  The following are a stack's standard operations and their\n  corresponding time complexities:\n\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003e\u003cb\u003ePushing an element onto the stack\u003c/b\u003e: O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003ePopping an element off the stack\u003c/b\u003e: O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003ePeeking at the element on the top of the stack\u003c/b\u003e: O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eSearching for an element in the stack\u003c/b\u003e: O(n)\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003e\n  A stack is typically implemented with a \u003cb\u003edynamic array\u003c/b\u003e or with a \u003cb\u003esingly linked list\u003c/b\u003e.\n\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Queue",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  An array-like data structure whose elements follow the \u003cb\u003eFIFO\u003c/b\u003e rule: \u003cb\u003eF\u003c/b\u003eirst \u003cb\u003eI\u003c/b\u003en, \u003cb\u003eF\u003c/b\u003eirst\n  \u003cb\u003eO\u003c/b\u003eut.\n\u003c/p\u003e\n\u003cp\u003e\n  A queue is often compared to a group of people standing in line to purchase items at a store: the first person to get\n  in line is the\n  first one to purchase items and to get out of the queue.\n\u003c/p\u003e\n\u003cp\u003e\n  The following are a queue's standard operations and their\n  corresponding time complexities:\n\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003e\u003cb\u003eEnqueuing an element into the queue\u003c/b\u003e: O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eDequeuing an element out of the queue\u003c/b\u003e: O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003ePeeking at the element at the front of the queue\u003c/b\u003e: O(1)\u003c/li\u003e\n  \u003cli\u003e\u003cb\u003eSearching for an element in the queue\u003c/b\u003e: O(n)\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003e\n  A queue is typically implemented with a \u003cb\u003edoubly linked list\u003c/b\u003e.\n\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                }
+            ],
+            "section": "",
+            "hasCodeExample": false
+        },
+        {
+            "uid": "strings",
+            "name": "Strings",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": false,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "Not a standalone data structure per se, strings are generally considered to be a data type that behaves like a data structure.\n\nNonetheless, they do possess a few interesting characteristics that earn them a dedicated video here in our course. Let’s dive in!\n",
+            "video": {
+                "vimeoId": "378882246",
+                "duration": 10,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299639159-d4f3bf7a0961b6ed0a4a061034ee98283c43d75131ff13ad0_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [
+                {
+                    "name": "String",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  One of the fundamental data types in Computer Science, strings are stored in\n  \u003cb\u003ememory\u003c/b\u003e as \u003cb\u003earrays\u003c/b\u003e of integers, where each character in a given\n  string is mapped to an integer via some character-encoding standard like\n  \u003cb\u003eASCII\u003c/b\u003e.\n\u003c/p\u003e\n\u003cp\u003e\n  Strings behave much like normal arrays, with the main distinction being that,\n  in most programming languages (C++ is a notable exception), strings are\n  \u003cb\u003eimmutable\u003c/b\u003e, meaning that they can't be edited after creation. This also\n  means that simple operations like appending a character to a string are more\n  expensive than they might appear.\n\u003c/p\u003e\n\u003cp\u003e\n  The canonical example of an operation that's deceptively expensive due to\n  string immutability is the following:\n\u003c/p\u003e\n\u003cpre\u003e\nstring = \"this is a string\"\nnewString = \"\"\n\nfor character in string:\n    newString += character\n\u003c/pre\u003e\n\u003cp\u003e\n  The operation above has a time complexity of \u003cb\u003eO(n\u003csup\u003e2\u003c/sup\u003e)\u003c/b\u003e where n\n  is the length of \u003cspan\u003estring\u003c/span\u003e, because each addition of a character to\n  \u003cspan\u003enewString\u003c/span\u003e creates an entirely new string and is itself an\n  \u003cb\u003eO(n)\u003c/b\u003e operation. Therefore, n O(n) operations are performed, leading to\n  an O(n\u003csup\u003e2\u003c/sup\u003e) time-complexity operation overall.\n\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                }
+            ],
+            "section": "",
+            "hasCodeExample": false
+        },
+        {
+            "uid": "graphs",
+            "name": "Graphs",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": false,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "These collections of edges and vertices might look as banal as a child's scribble on a restaurant table, but they're of fundamental importance in discrete mathematics. The eponymous field of \"graph theory\" is dedicated to their study, and their importance in mathematics carries over to computer science.",
+            "video": {
+                "vimeoId": "381806195",
+                "duration": 19,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299640270-6d8312da0aa13578b5fc9084850c0bfb603d0f5ad82141744_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [
+                {
+                    "name": "Graph",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003eA collection of nodes or values called \u003cb\u003evertices\u003c/b\u003e that might be related; relations between vertices are\n    called \u003cb\u003eedges\u003c/b\u003e.\u003c/p\u003e\n\u003cp\u003eMany things in life can be represented by graphs; for example, a social network can be represented by a graph whose\n    vertices are users and whose edges are friendships between the users. Similarly, a city map can be represented by a\n    graph whose vertices are locations in the city and whose edges are roads between the locations.\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Graph Cycle",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  Simply put, a cycle occurs in a \u003cb\u003egraph\u003c/b\u003e when three or more\n  \u003cb\u003evertices\u003c/b\u003e in the graph are connected so as to form a closed loop.\n\u003c/p\u003e\n\u003cp\u003e\n  Note that the definition of a graph cycle is sometimes broadened to include\n  cycles of length two or one; in the context of coding interviews, when dealing\n  with questions that involve graph cycles, it's important to clarify what\n  exactly constitutes a cycle.\n\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Acyclic Graph",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003eA \u003cb\u003egraph\u003c/b\u003e that has no \u003cb\u003ecycles\u003c/b\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Cyclic Graph",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003eA \u003cb\u003egraph\u003c/b\u003e that has at least one \u003cb\u003ecycle\u003c/b\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Directed Graph",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  A \u003cb\u003egraph\u003c/b\u003e whose \u003cb\u003eedges\u003c/b\u003e are directed, meaning that they can only be\n  traversed in one direction, which is specified.\n\u003c/p\u003e\n\u003cp\u003e\n  For example, a graph of airports and flights would likely be directed, since a\n  flight specifically goes from one airport to another (i.e., it has a\n  direction), without necessarily implying the presence of a flight in the\n  opposite direction.\n\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Undirected Graph",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  A \u003cb\u003egraph\u003c/b\u003e whose \u003cb\u003eedges\u003c/b\u003e are undirected, meaning that they can be\n  traversed in both directions.\n\u003c/p\u003e\n\u003cp\u003e\n  For example, a graph of friends would likely be undirected, since a friendship\n  is, by nature, bidirectional.\n\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Connected Graph",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  A \u003cb\u003egraph\u003c/b\u003e is connected if for every pair of \u003cb\u003evertices\u003c/b\u003e in the graph,\n  there's a path of one or more \u003cb\u003eedges\u003c/b\u003e connecting the given vertices.\n\u003c/p\u003e\n\u003cp\u003eIn the case of a \u003cb\u003edirected graph\u003c/b\u003e, the graph is:\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003e\n    \u003cb\u003estrongly connected\u003c/b\u003e if there are bidirectional connections between the\n    vertices of every pair of vertices (i.e., for every vertex-pair\n    \u003cspan\u003e(u, v)\u003c/span\u003e you can reach \u003cspan\u003ev\u003c/span\u003e from \u003cspan\u003eu\u003c/span\u003e and\n    \u003cspan\u003eu\u003c/span\u003e from \u003cspan\u003ev\u003c/span\u003e)\n  \u003c/li\u003e\n  \u003cli\u003e\n    \u003cb\u003eweakly connected\u003c/b\u003e if there are connections (but not necessarily\n    bidirectional ones) between the vertices of every pair of vertices\n  \u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003eA graph that isn't connected is said to be \u003cb\u003edisconnected\u003c/b\u003e.\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                }
+            ],
+            "section": "",
+            "hasCodeExample": false
+        },
+        {
+            "uid": "trees",
+            "name": "Trees",
+            "module": null,
+            "releaseDate": "0001-01-01T00:00:00Z",
+            "acl": {
+                "isFree": false,
+                "isFreeForStudents": false,
+                "productRequired": [
+                    "algoexpert"
+                ],
+                "isAvailable": true
+            },
+            "description": "A special type of graph, trees excel at storing data hierarchically and are commonly used as a means of testing your knowledge of recursion during coding interviews.\n\nInteresting fact: unlike their botanical counterparts, these digital perennials sport but a single, unique root.",
+            "video": {
+                "vimeoId": "381799237",
+                "duration": 20,
+                "annotations": [],
+                "instructor": "Clement Mihailescu",
+                "thumbnail": "https://i.vimeocdn.com/video/1299639276-453d77a4573a91360d7f44dfe5d9994a39b9d3885c12278a4_640x360?r=pad"
+            },
+            "questions": [],
+            "references": [],
+            "codeExample": null,
+            "links": null,
+            "preReqs": [],
+            "keyTerms": [
+                {
+                    "name": "Tree",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  A data structure that consists of nodes, each with some value and pointers to\n  child-nodes, which recursively form \u003cb\u003esubtrees\u003c/b\u003e in the tree.\n\u003c/p\u003e\n\u003cp\u003e\n  The first node in a tree is referred to as the \u003cb\u003eroot\u003c/b\u003e of the tree, while\n  the nodes at the bottom of a tree (the nodes with no child-nodes) are referred\n  to as \u003cb\u003eleaf nodes\u003c/b\u003e or simply \u003cb\u003eleaves\u003c/b\u003e. The paths between the root of\n  a tree and its leaves are called \u003cb\u003ebranches\u003c/b\u003e, and the \u003cb\u003eheight\u003c/b\u003e of a\n  tree is the length of its longest branch. The \u003cb\u003edepth\u003c/b\u003e of a tree node is\n  its distance from its tree's root; this is also known as the node's\n  \u003cb\u003elevel\u003c/b\u003e in the tree.\n\u003c/p\u003e\n\u003cp\u003e\n  A tree is effectively a \u003cb\u003egraph\u003c/b\u003e that's \u003cb\u003econnected\u003c/b\u003e, \u003cb\u003edirected\u003c/b\u003e,\n  and \u003cb\u003eacyclic\u003c/b\u003e, that has an explicit root node, and whose nodes all have a\n  single \u003cb\u003eparent\u003c/b\u003e (except for the root node, which effectively has no\n  parent). Note that in most implementations of trees, tree nodes don't have a\n  pointer to their parent, but they can if desired.\n\u003c/p\u003e\n\u003cp\u003e\n  There are many types of trees and tree-like structures, including\n  \u003cb\u003ebinary trees\u003c/b\u003e, \u003cb\u003eheaps\u003c/b\u003e, and \u003cb\u003etries\u003c/b\u003e.\n\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Binary Tree",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003eA \u003cb\u003etree\u003c/b\u003e whose nodes have up to \u003cb\u003etwo\u003c/b\u003e child-nodes.\u003c/p\u003e\n\u003cp\u003e\n  The structure of a binary tree is such that many of its operations have a\n  logarithmic time complexity, making the binary tree an incredibly attractive\n  and commonly used data structure.\n\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "K-ary Tree",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  A \u003cb\u003etree\u003c/b\u003e whose nodes have up to \u003cb\u003ek\u003c/b\u003e child-nodes. A\n  \u003cb\u003ebinary tree\u003c/b\u003e is a k-ary tree where \u003cb\u003ek == 2\u003c/b\u003e.\n\u003c/p\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Perfect Binary Tree",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  A \u003cb\u003ebinary tree\u003c/b\u003e whose interior nodes all have two child-nodes and whose\n  \u003cb\u003eleaf nodes\u003c/b\u003e all have the same \u003cb\u003edepth\u003c/b\u003e. Example:\n\u003c/p\u003e\n\u003cpre\u003e\n           1\n      /         \\\n     2           3\n   /   \\       /   \\\n  4     5     6     7\n / \\   / \\   / \\   / \\\n8   9 10 11 12 13 14 15\n\u003c/pre\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Complete Binary Tree",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  A \u003cb\u003ebinary tree\u003c/b\u003e that's \u003ci\u003ealmost\u003c/i\u003e \u003cb\u003eperfect\u003c/b\u003e; its interior nodes\n  all have two child-nodes, but its \u003cb\u003eleaf nodes\u003c/b\u003e don't necessarily all have\n  the same \u003cb\u003edepth\u003c/b\u003e. Furthermore, the nodes in the last \u003cb\u003elevel\u003c/b\u003e of a\n  complete binary tree are as far left as possible. Example:\n\u003c/p\u003e\n\u003cpre\u003e\n          1\n       /     \\\n      2       3\n    /   \\   /   \\\n   4     5 6     7\n /   \\\n8     9\n\u003c/pre\u003e\n\u003cp\u003e\n  Conversely, the following binary tree \u003ci\u003eisn't\u003c/i\u003e complete, because the nodes\n  in its last level aren't as far left as possible:\n\u003c/p\u003e\n\u003cpre\u003e\n          1\n       /     \\\n      2       3\n    /   \\   /   \\\n   4     5 6     7\n         /   \\\n        8     9\n\u003c/pre\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Balanced Binary Tree",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  A \u003cb\u003ebinary tree\u003c/b\u003e whose nodes all have left and right \u003cb\u003esubtrees\u003c/b\u003e whose\n  \u003cb\u003eheights\u003c/b\u003e differ by no more than 1.\n\u003c/p\u003e\n\u003cp\u003e\n  A balanced binary tree is such that the logarithmic time complexity of its\n  operations is maintained.\n\u003c/p\u003e\n\u003cp\u003e\n  For example, inserting a node at the bottom of the following\n  \u003ci\u003eimbalanced\u003c/i\u003e binary tree's left subtree would cleary not be a\n  logarithmic-time operation, since it would involve traversing through most of\n  the tree's nodes:\n\u003c/p\u003e\n\u003cpre\u003e\n             1\n          /     \\\n         2       3\n       /\n      4\n    /\n   8\n  /\n10\n\u003c/pre\u003e\n\u003cp\u003eThe following is an example of a balanced binary tree:\u003c/p\u003e\n\u003cpre\u003e\n          1\n       /     \\\n      2       3\n    /   \\   /   \\\n   4     5 6     7\n /   \\         /   \n10    9       8\n\u003c/pre\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                },
+                {
+                    "name": "Full Binary Tree",
+                    "section": null,
+                    "definition": "\u003cdiv class=\"html\"\u003e\n\u003cp\u003e\n  A \u003cb\u003ebinary tree\u003c/b\u003e whose nodes all have either two child-nodes or zero\n  child-nodes. Example:\n\u003c/p\u003e\n\u003cpre\u003e\n    1\n /     \\\n2       3\n      /   \\\n     6     7\n   /   \\\n  8     9\n\u003c/pre\u003e\n\u003c/div\u003e",
+                    "url": null,
+                    "kinds": []
+                }
+            ],
+            "section": "",
+            "hasCodeExample": false
+        }
+    ]
+}
